@@ -7,13 +7,21 @@ import org.springframework.core.io.Resource
 import java.util.*
 
 interface ScheduleService {
-    fun getCurrentSchedule(telegramId: Long): Schedule
+    /**
+     * Get all schedules for user by telegram id
+     *
+     * @param telegramId user telegram id
+     * @return all user schedules
+     */
+    fun getUserSchedulesByTelegramId(telegramId: Long): List<Schedule>
 
-    fun getCurrentSchedule(id: UUID): Schedule
-
-    fun getNextSchedule(telegramId: Long): Schedule
-
-    fun getNextSchedule(id: UUID): Schedule
+    /**
+     * Get all schedules for user by id
+     *
+     * @param id user id
+     * @return ll user schedules
+     */
+    fun getUserSchedulesById(id: UUID): List<Schedule>
 
     /**
      * Returns resource file for mobile calendar of schedule for user
@@ -28,7 +36,7 @@ interface ScheduleService {
      * @param id user's telegram id
      * @return schedule file object
      */
-    fun getScheduleFileByTelegramId(baseUrl: String, id: Long): ScheduleFile
+    fun getScheduleFileByTelegramId(baseUrl: String, telegramId: Long): ScheduleFile
 
     fun getAvailableCourses(): List<Int>
 

@@ -22,39 +22,21 @@ import org.springframework.web.bind.annotation.RestController
 class ScheduleController(
     private val scheduleService: ScheduleService,
 ) {
-
     @SecurityRequirement(name = "X-Secret-Key")
     @Operation(
-        summary = "Получение расписания текущей недели",
-        description = "Позволяет получить расписания текущей недели для пользователя по его Telegram ID"
+        summary = "Получение расписания пользователя",
+        description = "Позволяет получить расписания пользователя по его Telegram ID"
     )
     @GetMapping(
-        "current_schedule/{telegramId}",
-        produces = [MediaType.APPLICATION_JSON_VALUE]
-    )
-    fun getCurrentSchedule(
-        @Parameter(description = "Telegram ID пользователя")
-        @PathVariable("telegramId")
-        telegramId: Long,
-    ): Response<Schedule> {
-        return Response(scheduleService.getCurrentSchedule(telegramId))
-    }
-
-    @SecurityRequirement(name = "X-Secret-Key")
-    @Operation(
-        summary = "Получение расписания следующей недели",
-        description = "Позволяет получить расписания следующей недели для пользователя по его Telegram ID"
-    )
-    @GetMapping(
-        "next_schedule/{telegramId}",
+        "schedule/{telegramId}",
         produces = [MediaType.APPLICATION_JSON_VALUE]
     )
     fun getNextSchedule(
         @Parameter(description = "Telegram ID пользователя")
         @PathVariable("telegramId")
         telegramId: Long,
-    ): Response<Schedule> {
-        return Response(scheduleService.getNextSchedule(telegramId))
+    ): Response<List<Schedule>> {
+        return Response(scheduleService.getUserSchedulesByTelegramId(telegramId))
     }
 
     @SecurityRequirement(name = "X-Secret-Key")

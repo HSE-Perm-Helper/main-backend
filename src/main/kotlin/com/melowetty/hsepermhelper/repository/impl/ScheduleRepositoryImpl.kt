@@ -5,49 +5,49 @@ import com.melowetty.hsepermhelper.exceptions.ScheduleNotFoundException
 import com.melowetty.hsepermhelper.models.Lesson
 import com.melowetty.hsepermhelper.models.LessonType
 import com.melowetty.hsepermhelper.repository.ScheduleRepository
-import com.melowetty.hsepermhelper.utils.getHash
+import com.melowetty.hsepermhelper.service.ScheduleFilesService
 import org.apache.poi.ss.usermodel.*
 import org.springframework.stereotype.Component
-import java.io.File
-import java.io.FileNotFoundException
+import java.io.InputStream
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 
 @Component
-class ScheduleRepositoryImpl: ScheduleRepository {
-    private var currentSchedule: Schedule? = null
-    private var nextSchedule: Schedule? = null
+class ScheduleRepositoryImpl(
+    private val scheduleFilesService: ScheduleFilesService
+): ScheduleRepository {
+    private val schedules = mutableListOf<Schedule>()
 
-    override fun getCurrentSchedule(): Schedule? {
-        if(currentSchedule == null) return retrieveCurrentSchedule()
-        val currentTime = LocalDateTime.now()
-        val differentMinutes = (currentTime.minute - currentSchedule?.parsedDate?.minute!!)
-        if(differentMinutes > 5) return retrieveCurrentSchedule()
-        return currentSchedule
+    override fun getSchedules(): List<Schedule> {
+        return schedules
     }
 
-    override fun getNextSchedule(): Schedule? {
-        if(nextSchedule == null) return retrieveNextSchedule()
-        val currentTime = LocalDateTime.now()
-        val differentMinutes = (currentTime.minute - nextSchedule?.parsedDate?.minute!!)
-        if(differentMinutes > 5) return retrieveNextSchedule()
-        return nextSchedule
+    override fun fetchSchedules(): List<Schedule> {
+        scheduleFilesService.getScheduleFilesAsInputStream()
+            .forEach {
+                val schedule = parseSchedule(it)
+                if(schedule != null) schedules.add(schedule)
+            }
+        return schedules
     }
 
     override fun getAvailableCourses(): List<Int> {
-        if(getCurrentSchedule() == null) throw ScheduleNotFoundException("Расписание не найдено!")
-        val courses = currentSchedule!!.lessons.values.flatMap { lessons ->
-            lessons.map { it.course }
-        }.toSortedSet().toList()
+        if(schedules.isEmpty()) throw ScheduleNotFoundException("Расписание не найдено!")
+        val courses = schedules.flatMap { it.lessons.values }
+            .asSequence()
+            .flatten()
+            .map { it.course }
+            .toSortedSet()
+            .toList()
         if(courses.isEmpty()) throw RuntimeException("Возникли проблемы с обработкой расписания!")
         return courses
     }
 
     override fun getAvailablePrograms(course: Int): List<String> {
-        if (getCurrentSchedule() == null) throw ScheduleNotFoundException("Расписание не найдено!")
-        val programs = currentSchedule!!.lessons.values
+        if(schedules.isEmpty()) throw ScheduleNotFoundException("Расписание не найдено!")
+        val programs = schedules.flatMap { it.lessons.values }
             .asSequence()
             .flatten()
             .filter { it.course == course }
@@ -59,8 +59,8 @@ class ScheduleRepositoryImpl: ScheduleRepository {
     }
 
     override fun getAvailableGroups(course: Int, program: String): List<String> {
-        if (getCurrentSchedule() == null) throw ScheduleNotFoundException("Расписание не найдено!")
-        val groups = currentSchedule!!.lessons.values
+        if(schedules.isEmpty()) throw ScheduleNotFoundException("Расписание не найдено!")
+        val groups = schedules.flatMap { it.lessons.values }
             .asSequence()
             .flatten()
             .filter { it.course == course && it.programme == program }
@@ -72,7 +72,7 @@ class ScheduleRepositoryImpl: ScheduleRepository {
     }
 
     override fun getAvailableSubgroups(course: Int, program: String, group: String): List<Int> {
-        if (getCurrentSchedule() == null) throw ScheduleNotFoundException("Расписание не найдено!")
+        if(schedules.isEmpty()) throw ScheduleNotFoundException("Расписание не найдено!")
         val groups = getAvailableGroups(course, program)
         if(groups.isEmpty()) throw IllegalArgumentException("Группа не найдена в расписании!")
         val groupNumRegex = Regex("[А-Яа-яЁёa-zA-Z]+-\\d*-(\\d*)")
@@ -86,30 +86,8 @@ class ScheduleRepositoryImpl: ScheduleRepository {
         }
     }
 
-    private fun getFile(path: String): File {
-        try {
-            val file = File(path)
-            if (!file.isFile) throw ScheduleNotFoundException("Файл с расписанием не найден!")
-            return file
-        } catch (exception: FileNotFoundException) {
-            throw ScheduleNotFoundException("Файл с расписанием не найден!")
-        }
-    }
-
-    private fun retrieveCurrentSchedule(): Schedule? {
-        val file = getFile(CURRENT_SCHEDULE_FILE)
-        currentSchedule = parseSchedule(file)
-        return currentSchedule
-    }
-
-    private fun retrieveNextSchedule(): Schedule? {
-        val file = getFile(NEXT_SCHEDULE_FILE)
-        nextSchedule = parseSchedule(file)
-        return nextSchedule
-    }
-
-    private fun getWorkbook(file: File): Workbook {
-        return WorkbookFactory.create(file)
+    private fun getWorkbook(inputStream: InputStream): Workbook {
+        return WorkbookFactory.create(inputStream)
     }
 
     private fun getProgramme(programme: String): String {
@@ -122,10 +100,9 @@ class ScheduleRepositoryImpl: ScheduleRepository {
         return (courseRegex.find(sheetName)?.value ?: "0").toInt()
     }
 
-    private fun parseSchedule(file: File): Schedule? {
+    private fun parseSchedule(inputStream: InputStream): Schedule? {
         try {
-            val hash = getHash(file)
-            val workbook = getWorkbook(file)
+            val workbook = getWorkbook(inputStream)
             val lessonsList = mutableListOf<Lesson>()
             val (weekNum, weekStart, weekEnd) = getWeekInfo(getValue(
                 workbook.getSheetAt(1),
@@ -208,8 +185,6 @@ class ScheduleRepositoryImpl: ScheduleRepository {
                     it.date
                 },
                 isSession = isSession,
-                parsedDate = LocalDateTime.now(),
-                hash = hash,
             )
         } catch (exception: Exception) {
             throw RuntimeException("Произошла ошибка во время обработки файла с расписанием!")
@@ -456,10 +431,5 @@ class ScheduleRepositoryImpl: ScheduleRepository {
         if (str == null) return null
         if (str.isEmpty()) return null
         return str
-    }
-
-    companion object {
-        const val CURRENT_SCHEDULE_FILE = "rasp3.xls"
-        const val NEXT_SCHEDULE_FILE = "rasp.xls"
     }
 }

@@ -11,6 +11,7 @@ import com.melowetty.hsepermhelper.repository.ScheduleRepository
 import com.melowetty.hsepermhelper.service.ScheduleService
 import com.melowetty.hsepermhelper.service.UserFilesService
 import com.melowetty.hsepermhelper.service.UserService
+import com.melowetty.hsepermhelper.utils.FileUtils
 import org.springframework.context.event.EventListener
 import org.springframework.core.env.Environment
 import org.springframework.core.io.Resource
@@ -27,57 +28,38 @@ class ScheduleServiceImpl(
     init {
         refreshScheduleFiles()
     }
-    private fun filterSchedule(schedule: Schedule, user: UserDto): Schedule {
-        val filteredLessons = schedule.lessons.flatMap { it.value }.filter{ lesson: Lesson ->
-            if (lesson.subGroup != null) lesson.group == user.settings?.group
-                    && lesson.subGroup == user.settings.subGroup
-            else lesson.group == user.settings?.group
+    private fun filterSchedules(schedules: List<Schedule>, user: UserDto): List<Schedule> {
+        val filteredSchedules = mutableListOf<Schedule>()
+        schedules.forEach { schedule ->
+            val filteredLessons = schedule.lessons.flatMap { it.value }.filter { lesson: Lesson ->
+                if (lesson.subGroup != null) lesson.group == user.settings?.group
+                        && lesson.subGroup == user.settings.subGroup
+                else lesson.group == user.settings?.group
+            }
+            val groupedLessons = filteredLessons.groupBy { it.date }
+            filteredSchedules.add(
+                schedule.copy(
+                    lessons = groupedLessons
+                )
+            )
         }
-        val groupedLessons = filteredLessons.groupBy { it.date }
-        return schedule.copy(
-            lessons = groupedLessons
-        )
+        return filteredSchedules
     }
 
-    private fun getCurrentSchedule(user: UserDto): Schedule {
-        val schedule = scheduleRepository.getCurrentSchedule() ?: throw ScheduleNotFoundException("Расписание на текущую неделю не было найдено!")
-        return filterSchedule(schedule, user)
-    }
-
-    override fun getCurrentSchedule(telegramId: Long): Schedule {
+    override fun getUserSchedulesByTelegramId(telegramId: Long): List<Schedule> {
         val user = userService.getByTelegramId(telegramId)
-        return getCurrentSchedule(user)
+        return filterSchedules(scheduleRepository.getSchedules(), user)
     }
 
-    override fun getCurrentSchedule(id: UUID): Schedule {
+    override fun getUserSchedulesById(id: UUID): List<Schedule> {
         val user = userService.getById(id)
-        return getCurrentSchedule(user)
+        return filterSchedules(scheduleRepository.getSchedules(), user)
     }
 
-    private fun getNextSchedule(user: UserDto): Schedule {
-        val schedule = scheduleRepository.getNextSchedule() ?: throw ScheduleNotFoundException("Расписание на текущую неделю не было найдено!")
-        return filterSchedule(schedule, user)
-    }
-
-    override fun getNextSchedule(telegramId: Long): Schedule {
-        val user = userService.getByTelegramId(telegramId)
-        return getNextSchedule(user)
-    }
-
-    override fun getNextSchedule(id: UUID): Schedule {
-        val user = userService.getById(id)
-        return getNextSchedule(user)
-    }
 
     override fun getScheduleResource(id: UUID): Resource {
-        val currentSchedule = getCurrentSchedule(id)
-        val nextSchedule = getNextSchedule(id)
-        val lessons = currentSchedule.lessons.toMutableMap()
-        nextSchedule.lessons.forEach { lessons[it.key] = it.value }
-        val schedule = currentSchedule.copy(
-            lessons = lessons
-        )
-        return schedule.toResource()
+        val schedules = getUserSchedulesById(id)
+        return FileUtils.convertSchedulesToCalendarFile(schedules)
     }
 
     @EventListener
@@ -90,9 +72,9 @@ class ScheduleServiceImpl(
         }
     }
 
-    override fun getScheduleFileByTelegramId(baseUrl: String, id: Long): ScheduleFile {
-        val schedule = getCurrentSchedule(id)
-        val user = userService.getByTelegramId(id)
+    override fun getScheduleFileByTelegramId(baseUrl: String, telegramId: Long): ScheduleFile {
+        if (getUserSchedulesByTelegramId(telegramId).isEmpty()) throw ScheduleNotFoundException("Расписание для пользователя не найдено!")
+        val user = userService.getByTelegramId(telegramId)
         val link = "${baseUrl}${env.getProperty("server.servlet.context-path")}/files/user_files/${user.id}/${SCHEDULE_FILE}"
         return ScheduleFile(
             linkForDownload = link,
