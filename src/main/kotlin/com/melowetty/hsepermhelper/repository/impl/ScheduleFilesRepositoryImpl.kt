@@ -26,7 +26,7 @@ class ScheduleFilesRepositoryImpl: ScheduleFilesRepository {
     }
     private fun downloadFileAsInputStream(path: String): InputStream? {
         return try {
-            URL("$SCHEDULE_BASE_URL${path}").openStream()
+            URL("$SCHEDULE_BASE_DOWNLOAD_URL${path}").openStream()
         } catch (e: Exception) {
             e.printStackTrace()
             null
@@ -34,5 +34,6 @@ class ScheduleFilesRepositoryImpl: ScheduleFilesRepository {
     }
     companion object {
         const val SCHEDULE_BASE_URL = "http://students.perm.hse.ru/timetable"
+        const val SCHEDULE_BASE_DOWNLOAD_URL = "http://students.perm.hse.ru"
     }
 }
