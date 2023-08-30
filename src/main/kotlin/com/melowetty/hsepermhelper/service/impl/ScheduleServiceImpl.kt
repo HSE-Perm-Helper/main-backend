@@ -6,7 +6,7 @@ import com.melowetty.hsepermhelper.events.EventType
 import com.melowetty.hsepermhelper.events.UsersChangedEvent
 import com.melowetty.hsepermhelper.exceptions.ScheduleNotFoundException
 import com.melowetty.hsepermhelper.models.Lesson
-import com.melowetty.hsepermhelper.models.ScheduleFile
+import com.melowetty.hsepermhelper.models.ScheduleFileLinks
 import com.melowetty.hsepermhelper.repository.ScheduleRepository
 import com.melowetty.hsepermhelper.service.ScheduleService
 import com.melowetty.hsepermhelper.service.UserFilesService
@@ -72,11 +72,11 @@ class ScheduleServiceImpl(
         }
     }
 
-    override fun getScheduleFileByTelegramId(baseUrl: String, telegramId: Long): ScheduleFile {
+    override fun getScheduleFileByTelegramId(baseUrl: String, telegramId: Long): ScheduleFileLinks {
         if (getUserSchedulesByTelegramId(telegramId).isEmpty()) throw ScheduleNotFoundException("Расписание для пользователя не найдено!")
         val user = userService.getByTelegramId(telegramId)
         val link = "${baseUrl}${env.getProperty("server.servlet.context-path")}/files/user_files/${user.id}/${SCHEDULE_FILE}"
-        return ScheduleFile(
+        return ScheduleFileLinks(
             linkForDownload = link,
             linkForRemoteCalendar = "webcal://${link}"
         )

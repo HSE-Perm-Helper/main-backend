@@ -2,7 +2,7 @@ package com.melowetty.hsepermhelper.service
 
 import Schedule
 import com.melowetty.hsepermhelper.dto.UserDto
-import com.melowetty.hsepermhelper.models.ScheduleFile
+import com.melowetty.hsepermhelper.models.ScheduleFileLinks
 import org.springframework.core.io.Resource
 import java.util.*
 
@@ -36,7 +36,7 @@ interface ScheduleService {
      * @param id user's telegram id
      * @return schedule file object
      */
-    fun getScheduleFileByTelegramId(baseUrl: String, telegramId: Long): ScheduleFile
+    fun getScheduleFileByTelegramId(baseUrl: String, telegramId: Long): ScheduleFileLinks
 
     fun getAvailableCourses(): List<Int>
 
