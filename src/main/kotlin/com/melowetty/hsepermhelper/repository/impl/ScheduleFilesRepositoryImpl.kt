@@ -26,7 +26,8 @@ class ScheduleFilesRepositoryImpl: ScheduleFilesRepository {
     }
     private fun downloadFileAsInputStream(path: String): InputStream? {
         return try {
-            URL("$SCHEDULE_BASE_DOWNLOAD_URL${path}").openStream()
+            val urlParts = path.split("/data")
+            URL("$SCHEDULE_BASE_DOWNLOAD_URL/data${urlParts[1]}").openStream()
         } catch (e: Exception) {
             e.printStackTrace()
             null
