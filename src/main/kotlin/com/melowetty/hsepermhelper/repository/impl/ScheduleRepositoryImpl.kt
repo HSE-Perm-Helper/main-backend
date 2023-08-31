@@ -1,12 +1,14 @@
 package com.melowetty.hsepermhelper.repository.impl
 
 import Schedule
+import com.melowetty.hsepermhelper.events.ScheduleFilesChangedEvent
 import com.melowetty.hsepermhelper.exceptions.ScheduleNotFoundException
 import com.melowetty.hsepermhelper.models.Lesson
 import com.melowetty.hsepermhelper.models.LessonType
 import com.melowetty.hsepermhelper.repository.ScheduleRepository
 import com.melowetty.hsepermhelper.service.ScheduleFilesService
 import org.apache.poi.ss.usermodel.*
+import org.springframework.context.event.EventListener
 import org.springframework.stereotype.Component
 import java.io.InputStream
 import java.time.LocalDate
@@ -22,6 +24,11 @@ class ScheduleRepositoryImpl(
 
     override fun getSchedules(): List<Schedule> {
         return schedules
+    }
+
+    @EventListener
+    fun handleScheduleFilesUpdate(event: ScheduleFilesChangedEvent) {
+        fetchSchedules()
     }
 
     override fun fetchSchedules(): List<Schedule> {
