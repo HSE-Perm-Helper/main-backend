@@ -1,21 +1,22 @@
 package com.melowetty.hsepermhelper.service
 
+import com.melowetty.hsepermhelper.models.ScheduleFile
 import java.io.InputStream
 
 interface ScheduleFilesService {
     /**
-     * Fetch all schedule files from site and return as input stream
+     * Fetch all schedule files from site and return their
      * Returns empty list if schedules are not found
      * Calls update schedule event when schedule is changed
      *
-     * @return list of schedule files as input stream
+     * @return list of schedule files
      */
-    fun fetchScheduleFilesAsInputStream(): List<InputStream>
+    fun fetchScheduleFiles(): List<ScheduleFile>
 
     /**
      * Get schedule files from memory without fetching new files
      *
-     * @return list of schedule files as input stream from memory
+     * @return list of schedule files from memory
      */
-    fun getScheduleFilesAsInputStream(): List<InputStream>
+    fun getScheduleFiles(): List<ScheduleFile>
 }

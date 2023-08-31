@@ -25,9 +25,9 @@ class ScheduleRepositoryImpl(
     }
 
     override fun fetchSchedules(): List<Schedule> {
-        scheduleFilesService.getScheduleFilesAsInputStream()
+        scheduleFilesService.getScheduleFiles()
             .forEach {
-                val schedule = parseSchedule(it)
+                val schedule = parseSchedule(it.file)
                 if(schedule != null) schedules.add(schedule)
             }
         return schedules
