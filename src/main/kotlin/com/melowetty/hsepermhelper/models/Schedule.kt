@@ -1,17 +1,9 @@
 import com.fasterxml.jackson.annotation.JsonFormat
 import com.fasterxml.jackson.annotation.JsonGetter
-import com.fasterxml.jackson.annotation.JsonIgnore
 import com.melowetty.hsepermhelper.models.Lesson
-import com.melowetty.hsepermhelper.models.LessonType
 import com.melowetty.hsepermhelper.utils.DateUtils
 import io.swagger.v3.oas.annotations.media.Schema
-import net.fortuna.ical4j.model.Calendar
-import net.fortuna.ical4j.model.property.*
-import org.springframework.core.io.ByteArrayResource
-import org.springframework.core.io.Resource
-import java.time.Duration
 import java.time.LocalDate
-import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
 @Schema(description = "Расписание")

@@ -1,7 +1,6 @@
 package com.melowetty.hsepermhelper.service
 
 import com.melowetty.hsepermhelper.models.ScheduleFile
-import java.io.InputStream
 
 interface ScheduleFilesService {
     /**

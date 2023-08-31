@@ -1,6 +1,5 @@
 package com.melowetty.hsepermhelper.service.impl
 
-import com.melowetty.hsepermhelper.events.EventType
 import com.melowetty.hsepermhelper.events.ScheduleFilesChangedEvent
 import com.melowetty.hsepermhelper.models.ScheduleFile
 import com.melowetty.hsepermhelper.repository.ScheduleFilesRepository
@@ -9,7 +8,6 @@ import org.springframework.context.ApplicationEventPublisher
 import org.springframework.context.event.EventListener
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Service
-import java.io.InputStream
 
 @Service
 class ScheduleFilesServiceImpl(
