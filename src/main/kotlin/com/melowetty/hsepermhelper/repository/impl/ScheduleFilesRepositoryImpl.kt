@@ -14,6 +14,7 @@ class ScheduleFilesRepositoryImpl: ScheduleFilesRepository {
         val files = mutableListOf<InputStream>()
         for (element in elements) {
             if (element.html().contains("Бакалавриат")) continue
+            if(element.html().lowercase().contains("английский")) continue
             if(element.html().contains("Магистратура")) break
             val childLink = element.select("a")
             if (childLink.isEmpty()) continue
@@ -27,7 +28,7 @@ class ScheduleFilesRepositoryImpl: ScheduleFilesRepository {
     private fun downloadFileAsInputStream(path: String): InputStream? {
         return try {
             val urlParts = path.split("/data")
-            URL("$SCHEDULE_BASE_DOWNLOAD_URL/data${urlParts[1]}").openStream()
+            URL("$SCHEDULE_BASE_DOWNLOAD_URL/data${urlParts[1]}").openStream().readAllBytes().inputStream()
         } catch (e: Exception) {
             e.printStackTrace()
             null

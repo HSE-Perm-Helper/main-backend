@@ -17,23 +17,25 @@ class ScheduleFilesServiceImpl(
     private var scheduleFiles: List<ScheduleFile> = listOf()
     final override fun fetchScheduleFiles(): List<ScheduleFile> {
         val newScheduleFiles = repository.fetchScheduleFilesAsInputStream().map { ScheduleFile(file = it) }
+        var event: ScheduleFilesChangedEvent? = null
         if (newScheduleFiles.size != scheduleFiles.size) {
-            val event = ScheduleFilesChangedEvent(
+            event = ScheduleFilesChangedEvent(
                 newFiles = newScheduleFiles
             )
-            eventPublisher.publishEvent(event)
         } else {
             if(newScheduleFiles.any { scheduleFile ->
                     scheduleFiles.map { it.hashCode }.contains(scheduleFile.hashCode).not()
             }
                 ) {
-                val event = ScheduleFilesChangedEvent(
+                event = ScheduleFilesChangedEvent(
                     newFiles = newScheduleFiles
                 )
-                eventPublisher.publishEvent(event)
             }
         }
         scheduleFiles = newScheduleFiles
+        if (event != null) {
+            eventPublisher.publishEvent(event)
+        }
         return scheduleFiles
     }
 
