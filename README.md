@@ -9,3 +9,4 @@
 * PostgreSQL
 * Apache POI
 * Ical4j
+* Jsoup
