@@ -31,7 +31,7 @@ class ScheduleController(
         "schedule/{telegramId}",
         produces = [MediaType.APPLICATION_JSON_VALUE]
     )
-    fun getNextSchedule(
+    fun getSchedule(
         @Parameter(description = "Telegram ID пользователя")
         @PathVariable("telegramId")
         telegramId: Long,
