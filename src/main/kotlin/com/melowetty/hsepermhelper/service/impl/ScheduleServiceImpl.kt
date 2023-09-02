@@ -3,6 +3,7 @@ package com.melowetty.hsepermhelper.service.impl
 import Schedule
 import com.melowetty.hsepermhelper.dto.UserDto
 import com.melowetty.hsepermhelper.events.EventType
+import com.melowetty.hsepermhelper.events.ScheduleChangedEvent
 import com.melowetty.hsepermhelper.events.UsersChangedEvent
 import com.melowetty.hsepermhelper.exceptions.ScheduleNotFoundException
 import com.melowetty.hsepermhelper.models.Lesson
@@ -70,6 +71,11 @@ class ScheduleServiceImpl(
         else if(event.type == EventType.EDITED) {
             refreshScheduleFile(user = event.source)
         }
+    }
+
+    @EventListener
+    fun handleScheduleChanging(event: ScheduleChangedEvent) {
+        refreshScheduleFiles()
     }
 
     override fun getScheduleFileByTelegramId(baseUrl: String, telegramId: Long): ScheduleFileLinks {
