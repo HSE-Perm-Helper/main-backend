@@ -2,7 +2,7 @@ package com.melowetty.hsepermhelper.controllers
 
 import Schedule
 import com.melowetty.hsepermhelper.models.Response
-import com.melowetty.hsepermhelper.models.ScheduleFile
+import com.melowetty.hsepermhelper.models.ScheduleFileLinks
 import com.melowetty.hsepermhelper.service.ScheduleService
 import com.melowetty.hsepermhelper.utils.UrlUtils
 import io.swagger.v3.oas.annotations.Operation
@@ -22,39 +22,21 @@ import org.springframework.web.bind.annotation.RestController
 class ScheduleController(
     private val scheduleService: ScheduleService,
 ) {
-
     @SecurityRequirement(name = "X-Secret-Key")
     @Operation(
-        summary = "Получение расписания текущей недели",
-        description = "Позволяет получить расписания текущей недели для пользователя по его Telegram ID"
+        summary = "Получение расписания пользователя",
+        description = "Позволяет получить расписания пользователя по его Telegram ID"
     )
     @GetMapping(
-        "current_schedule/{telegramId}",
+        "schedule/{telegramId}",
         produces = [MediaType.APPLICATION_JSON_VALUE]
     )
-    fun getCurrentSchedule(
+    fun getSchedule(
         @Parameter(description = "Telegram ID пользователя")
         @PathVariable("telegramId")
         telegramId: Long,
-    ): Response<Schedule> {
-        return Response(scheduleService.getCurrentSchedule(telegramId))
-    }
-
-    @SecurityRequirement(name = "X-Secret-Key")
-    @Operation(
-        summary = "Получение расписания следующей недели",
-        description = "Позволяет получить расписания следующей недели для пользователя по его Telegram ID"
-    )
-    @GetMapping(
-        "next_schedule/{telegramId}",
-        produces = [MediaType.APPLICATION_JSON_VALUE]
-    )
-    fun getNextSchedule(
-        @Parameter(description = "Telegram ID пользователя")
-        @PathVariable("telegramId")
-        telegramId: Long,
-    ): Response<Schedule> {
-        return Response(scheduleService.getNextSchedule(telegramId))
+    ): Response<List<Schedule>> {
+        return Response(scheduleService.getUserSchedulesByTelegramId(telegramId))
     }
 
     @SecurityRequirement(name = "X-Secret-Key")
@@ -70,7 +52,7 @@ class ScheduleController(
         @Parameter(description = "Telegram ID пользователя")
         @PathVariable telegramId: Long,
         request: HttpServletRequest
-    ): Response<ScheduleFile> {
+    ): Response<ScheduleFileLinks> {
         val baseUrl = UrlUtils.getBaseUrl(request)
         return Response(scheduleService.getScheduleFileByTelegramId(baseUrl, telegramId))
     }
