@@ -9,7 +9,7 @@ plugins {
 }
 
 group = "com.melowetty"
-version = "0.9.5-ALPHA"
+version = "0.9.6-ALPHA"
 
 java {
     sourceCompatibility = JavaVersion.VERSION_17
@@ -44,6 +44,8 @@ dependencies {
     runtimeOnly("org.springdoc:springdoc-openapi-kotlin:1.7.0")
     /* [Calendar File Module] */
     implementation("org.mnode.ical4j:ical4j:4.0.0-beta9")
+    // jsoup HTML parser library @ https://jsoup.org/
+    implementation("org.jsoup:jsoup:1.16.1")
 }
 
 tasks.withType<KotlinCompile> {

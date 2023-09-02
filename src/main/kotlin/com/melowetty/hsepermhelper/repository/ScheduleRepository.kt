@@ -4,16 +4,18 @@ import Schedule
 
 interface ScheduleRepository {
     /**
-     * Gets this week schedule and return null when schedule is not found/checking through error
-     * @return this week schedule or null if schedule not found
+     * Get parsed schedules
+     *
+     * @return list of schedules
      */
-    fun getCurrentSchedule(): Schedule?
+    fun getSchedules(): List<Schedule>
 
     /**
-     * Gets next week schedule and return null when schedule is not found/checking through error
-     * @return next week schedule or null if schedule not found
+     * Fetch schedules from list of files in schedule files
+     *
+     * @return new list of schedules
      */
-    fun getNextSchedule(): Schedule?
+    fun fetchSchedules(): List<Schedule>
 
     /**
      * Gets available courses
