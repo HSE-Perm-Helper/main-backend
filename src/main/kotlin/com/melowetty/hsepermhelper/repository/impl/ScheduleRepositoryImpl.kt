@@ -1,6 +1,8 @@
 package com.melowetty.hsepermhelper.repository.impl
 
 import Schedule
+import com.melowetty.hsepermhelper.events.EventType
+import com.melowetty.hsepermhelper.events.ScheduleChangedEvent
 import com.melowetty.hsepermhelper.events.ScheduleFilesChangedEvent
 import com.melowetty.hsepermhelper.exceptions.ScheduleNotFoundException
 import com.melowetty.hsepermhelper.models.Lesson
@@ -8,6 +10,7 @@ import com.melowetty.hsepermhelper.models.LessonType
 import com.melowetty.hsepermhelper.repository.ScheduleRepository
 import com.melowetty.hsepermhelper.service.ScheduleFilesService
 import org.apache.poi.ss.usermodel.*
+import org.springframework.context.ApplicationEventPublisher
 import org.springframework.context.event.EventListener
 import org.springframework.stereotype.Component
 import java.io.InputStream
@@ -18,9 +21,10 @@ import java.time.format.DateTimeFormatter
 
 @Component
 class ScheduleRepositoryImpl(
+    private val eventPublisher: ApplicationEventPublisher,
     private val scheduleFilesService: ScheduleFilesService
 ): ScheduleRepository {
-    private val schedules = mutableListOf<Schedule>()
+    private var schedules = mutableListOf<Schedule>()
 
     override fun getSchedules(): List<Schedule> {
         return schedules
@@ -32,11 +36,37 @@ class ScheduleRepositoryImpl(
     }
 
     override fun fetchSchedules(): List<Schedule> {
+        val newSchedules = mutableListOf<Schedule>()
         scheduleFilesService.getScheduleFiles()
             .forEach {
                 val schedule = parseSchedule(it.file)
-                if(schedule != null) schedules.add(schedule)
+                if(schedule != null) newSchedules.add(schedule)
             }
+        val changes = mutableMapOf<EventType, List<Schedule>>()
+        val mappedSchedules = schedules.map { it.weekStart }
+        for (newSchedule in newSchedules) {
+            val existsSchedule = schedules.find { it.weekStart == newSchedule.weekStart }
+            if(existsSchedule != null && existsSchedule.lessons.equals(newSchedule).not()) {
+                val editedSchedules: MutableList<Schedule> = changes.getOrDefault(EventType.EDITED, listOf()).toMutableList()
+                editedSchedules.add(newSchedule)
+                changes[EventType.EDITED] = editedSchedules
+            }
+            else if(mappedSchedules.contains(newSchedule.weekStart).not()) {
+                val addedSchedules: MutableList<Schedule> = changes.getOrDefault(EventType.ADDED, listOf()).toMutableList()
+                addedSchedules.add(newSchedule)
+                changes[EventType.ADDED] = addedSchedules
+            }
+        }
+        val deletedSchedules = schedules
+            .filter { schedule ->
+                newSchedules.map { it.weekStart }.contains(schedule.weekStart).not()
+            }
+        changes[EventType.DELETED] = deletedSchedules
+        val event = ScheduleChangedEvent(
+            changes = changes
+        )
+        schedules = newSchedules
+        eventPublisher.publishEvent(event)
         return schedules
     }
 
