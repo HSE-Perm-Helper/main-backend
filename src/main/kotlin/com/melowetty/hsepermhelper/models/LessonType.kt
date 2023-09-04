@@ -35,6 +35,7 @@ enum class LessonType(val type: String, private val scheduleFilePattern: String)
     ENGLISH("Английский", "{type}"),
     STATEMENT("Ведомость", "{type}: {subject}"),
     ICC("МКД", "{type}: {subject}"),
+    UNDEFINED_AED("ДОЦ по выбору", "{subject}"),
     AED("ДОЦ", "{subject}") {
         override fun reformatSubject(subject: String): String {
             return subject
