@@ -409,7 +409,7 @@ class ScheduleRepositoryImpl(
         val lessonInfoGroups = lessonInfoMatch?.groups
         val lecturer = getLecturer(lessonInfoGroups?.get(1)?.value?.strip())?.replace("  ", " ")
         val info = lessonInfoGroups?.get(2)?.value
-        val infoRegex = Regex("^([а-яА-ЯеЕёЁ\\s\\d,^]+)|([\\d+])")
+        val infoRegex = Regex("^([а-яА-ЯеЕёЁ\\s\\d.,^]+)|([\\d+])")
         val infoMatches = info?.let { infoRegex.findAll(it) }
         var office = infoMatches?.elementAt(0)?.groups?.get(1)?.value?.strip()
         if (office != null
