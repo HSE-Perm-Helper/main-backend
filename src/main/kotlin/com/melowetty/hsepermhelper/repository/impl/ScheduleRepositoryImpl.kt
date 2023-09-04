@@ -254,6 +254,29 @@ class ScheduleRepositoryImpl(
         val splitCell = cellValue.split("\n").toMutableList()
         splitCell.removeAll(listOf(""))
         if(splitCell.size == 3) {
+            val thirdLine = splitCell[2].strip()
+            val linkRegex = Regex("^((((https?|ftps?|gopher|telnet|nntp)://)|(mailto:|news:))" +
+                    "(%[0-9A-Fa-f]{2}|[-()_.!~*';/?:@&=+\$,A-Za-z0-9])+)" +
+                    "([).!';/?:,][[:blank:]])?\$")
+            val linkMatch = linkRegex.find(thirdLine)
+            if(linkMatch != null) {
+                return listOf(
+                    parseLesson(
+                        isSessionWeek = isSessionWeek,
+                        course = course,
+                        programme = programme,
+                        group = group,
+                        date = date,
+                        startTimeStr = startTimeStr,
+                        endTimeStr = endTimeStr,
+                        startTime = startTime,
+                        endTime = endTime,
+                        isUnderlined = isUnderlined,
+                        splitCell.subList(0, 2),
+                        link = linkMatch.value
+                    )
+                )
+            }
             val lessons = mutableListOf<Lesson>()
             lessons.add(
                 parseLesson(
@@ -376,6 +399,7 @@ class ScheduleRepositoryImpl(
         endTime: LocalDateTime,
         isUnderlined: Boolean,
         lines: List<String>,
+        link: String? = null,
     ): Lesson {
         var subject = lines[0].strip().replace("  ", " ")
         val lessonInfo = lines[1].strip()
@@ -416,6 +440,7 @@ class ScheduleRepositoryImpl(
             office = office,
             building = building,
             lessonType = lessonType,
+            link = link,
         )
     }
 
