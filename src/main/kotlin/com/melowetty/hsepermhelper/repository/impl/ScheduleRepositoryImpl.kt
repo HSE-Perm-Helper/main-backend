@@ -310,6 +310,7 @@ class ScheduleRepositoryImpl(
                     newCell
                 )
             )
+            return lessons
         }
         else if(splitCell.size % 2 == 0) {
             val lessons = mutableListOf<Lesson>()
