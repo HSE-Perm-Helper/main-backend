@@ -9,7 +9,7 @@ import org.apache.commons.lang3.exception.ExceptionUtils
 data class Response<T>(
     @Schema(description = "Тело ответа от сервера")
     val response: T,
-    @Schema(description = "Наличие ошибки", example = "false")
+    @Schema(description = "Наличие ошибки (true - если есть)", example = "false")
     val error: Boolean = false,
 ) {
 }

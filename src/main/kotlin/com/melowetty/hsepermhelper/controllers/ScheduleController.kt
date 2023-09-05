@@ -41,8 +41,8 @@ class ScheduleController(
 
     @SecurityRequirement(name = "X-Secret-Key")
     @Operation(
-        summary = "Получение расписания пользователя на 2 недели в виде файла",
-        description = "Позволяет получить расписание на 2 недели в виде файла для пользователя по его Telegram ID"
+        summary = "Получение всех расписаний пользователя в виде файла типа ICS",
+        description = "Позволяет получить все расписания пользователя в виде файла типа ICS по его Telegram ID"
     )
     @GetMapping(
         "schedule/{telegramId}/download",
@@ -60,7 +60,7 @@ class ScheduleController(
     @SecurityRequirement(name = "X-Secret-Key")
     @Operation(
         summary = "Получение доступных для выбора курсов",
-        description = "Позволяет получить доступные для выбора курсы для регистрации"
+        description = "Позволяет получить доступные для выбора курсы для регистрации или изменения данных"
     )
     @GetMapping(
         "schedule/available_courses",
@@ -73,8 +73,8 @@ class ScheduleController(
 
     @SecurityRequirement(name = "X-Secret-Key")
     @Operation(
-        summary = "Получение доступных для выбора проргамм",
-        description = "Позволяет получить доступные для выбора программ для регистрации",
+        summary = "Получение доступных для выбора программ",
+        description = "Позволяет получить доступные для выбора программ для регистрации или изменения данных",
     )
     @GetMapping(
         "schedule/available_programs",
@@ -91,7 +91,7 @@ class ScheduleController(
     @SecurityRequirement(name = "X-Secret-Key")
     @Operation(
         summary = "Получение доступных для выбора групп",
-        description = "Позволяет получить доступные для выбора группы для регистрации",
+        description = "Позволяет получить доступные для выбора группы для регистрации или изменения данных",
     )
     @GetMapping(
         "schedule/available_groups",
@@ -111,7 +111,7 @@ class ScheduleController(
     @SecurityRequirement(name = "X-Secret-Key")
     @Operation(
         summary = "Получение доступных для выбора подгрупп",
-        description = "Позволяет получить доступные для выбора подгруппы для регистрации"
+        description = "Позволяет получить доступные для выбора подгруппы для регистрации или изменения данных"
     )
     @GetMapping(
         "schedule/available_subgroups",

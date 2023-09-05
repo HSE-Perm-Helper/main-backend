@@ -64,7 +64,7 @@ class UserController(
     @SecurityRequirement(name = "X-Secret-Key")
     @Operation(
         summary = "Удаление пользователя",
-        description = "Позволяет удалиить пользователя по его ID"
+        description = "Позволяет удалить пользователя по его ID"
     )
     @DeleteMapping(
         "user/{id}",
@@ -112,6 +112,7 @@ class UserController(
         @RequestParam("telegramId")
         telegramId: Long,
         @RequestBody
+        @Parameter(description = "Новые настройки пользователя")
         settings: Settings,
     ): Response<UserDto> {
         val user = userService.updateUserSettings(telegramId, settings)
