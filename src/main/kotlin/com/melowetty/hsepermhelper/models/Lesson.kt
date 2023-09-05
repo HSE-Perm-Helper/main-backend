@@ -70,10 +70,18 @@ data class Lesson(
                 descriptionLines.add("Место: онлайн")
             }
         } else {
-            if (building == null && office == null)
-                descriptionLines.add("Место: не указано")
-            else
+            if (building == null && office == null) {
+                if(lessonType == LessonType.MINOR) {
+                    descriptionLines.add("Информацию о времени и ссылке на майнор узнайте " +
+                            "подробнее в HSE App X или в системе РУЗ")
+                }
+                else {
+                    descriptionLines.add("Место: не указано")
+                }
+            }
+            else {
                 descriptionLines.add("Место: $building корпус - ${getOfficeStr()}")
+            }
         }
         event.add(
             Description(
