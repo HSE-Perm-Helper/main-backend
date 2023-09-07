@@ -8,12 +8,11 @@ interface FilesRepository {
     /**
      * Upload file on server and store in files storage location
      *
-     * @param path file path (do not contain file name)
+     * @param path file path (contain file name)
      * @param resource file converted to resource
-     * @param fileName name of file
      * @return file path
      */
-    fun storeFile(path: Path, resource: Resource, fileName: String): String
+    fun storeFile(path: Path, resource: Resource): String
 
     /**
      * Delete file by path

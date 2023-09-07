@@ -1,7 +1,7 @@
 package com.melowetty.hsepermhelper.service
 
+import com.melowetty.hsepermhelper.dto.SettingsDto
 import com.melowetty.hsepermhelper.dto.UserDto
-import com.melowetty.hsepermhelper.models.Settings
 import java.util.*
 
 interface UserService {
@@ -63,5 +63,5 @@ interface UserService {
      * @param settings new user settings
      * @return new user object
      */
-    fun updateUserSettings(telegramId: Long, settings: Settings): UserDto
+    fun updateUserSettings(telegramId: Long, settings: SettingsDto): UserDto
 }

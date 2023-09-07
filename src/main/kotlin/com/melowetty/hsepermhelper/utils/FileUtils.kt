@@ -30,7 +30,13 @@ class FileUtils {
             header.add("Cache-Control", "no-cache, no-store, must-revalidate")
             header.add("Pragma", "no-cache")
             header.add("Expires", "0")
-
+            if(fileName.endsWith(".ics")) {
+                return ResponseEntity
+                    .ok()
+                    .headers(header)
+                    .contentType(MediaType.parseMediaType("text/calendar"))
+                    .body(resource)
+            }
             return ResponseEntity
                 .ok()
                 .headers(header)
