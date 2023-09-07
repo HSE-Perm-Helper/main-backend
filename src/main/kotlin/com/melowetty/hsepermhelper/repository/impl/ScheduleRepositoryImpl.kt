@@ -224,7 +224,8 @@ class ScheduleRepositoryImpl(
                 isSession = isSession,
             )
         } catch (exception: Exception) {
-            throw RuntimeException("Произошла ошибка во время обработки файла с расписанием!")
+            println("Произошла ошибка во время обработки файла с расписанием!")
+            return null
         }
     }
 

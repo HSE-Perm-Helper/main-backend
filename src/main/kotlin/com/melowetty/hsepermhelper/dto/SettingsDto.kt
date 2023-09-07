@@ -1,17 +1,16 @@
-package com.melowetty.hsepermhelper.models
+package com.melowetty.hsepermhelper.dto
 
+import com.fasterxml.jackson.annotation.JsonIgnore
 import io.swagger.v3.oas.annotations.media.Schema
-import jakarta.persistence.Column
-import jakarta.persistence.Embeddable
 
 @Schema(description = "Настройки пользователя")
-@Embeddable
-data class Settings(
+data class SettingsDto(
+    @JsonIgnore
+    val id: Long? = null,
+
     @Schema(description = "Учебная группа пользователя", example = "РИС-22-3")
-    @Column(name = "user_group")
     val group: String = "",
 
     @Schema(description = "Учебная подгруппа пользователя", example = "5")
-    @Column(name = "user_sub_group")
     val subGroup: Int = 0,
 )
