@@ -10,8 +10,8 @@ import java.nio.file.Path
 class FileStorageServiceImpl(
     private val fileStorageRepository: FilesRepository,
 ): FileStorageService {
-    override fun storeFile(path: Path, resource: Resource, fileName: String): String {
-        return fileStorageRepository.storeFile(path = path, resource = resource, fileName = fileName)
+    override fun storeFile(path: Path, resource: Resource): String {
+        return fileStorageRepository.storeFile(path = path, resource = resource)
     }
 
     override fun deleteFile(path: Path) {
@@ -31,6 +31,6 @@ class FileStorageServiceImpl(
     }
 
     override fun getFilesPath(): Path {
-        return getFilesPath()
+        return fileStorageRepository.getFilesPath()
     }
 }

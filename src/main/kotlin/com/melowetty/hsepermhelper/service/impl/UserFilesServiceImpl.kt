@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service
 import java.io.FileNotFoundException
 import java.nio.file.Path
 import kotlin.io.path.Path
+import kotlin.io.path.name
 
 @Service
 class UserFilesServiceImpl(
@@ -34,14 +35,14 @@ class UserFilesServiceImpl(
         }
     }
 
-    override fun storeFile(user: UserDto, path: Path, resource: Resource, fileName: String): String {
+    override fun storeFile(user: UserDto, path: Path, resource: Resource): String {
         val userPath = basePath.resolve(user.id.toString()).resolve(path)
-        fileStorageService.storeFile(userPath, resource, fileName)
-        return fileName
+        fileStorageService.storeFile(userPath, resource)
+        return path.fileName.name
     }
 
     override fun storeFile(user: UserDto, resource: Resource, fileName: String): String {
-        return storeFile(user, Path(""), resource, fileName)
+        return storeFile(user, Path(fileName), resource)
     }
 
     override fun deleteFile(user: UserDto, path: Path) {
