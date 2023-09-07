@@ -1,8 +1,8 @@
 package com.melowetty.hsepermhelper.controllers
 
+import com.melowetty.hsepermhelper.dto.SettingsDto
 import com.melowetty.hsepermhelper.dto.UserDto
 import com.melowetty.hsepermhelper.models.Response
-import com.melowetty.hsepermhelper.models.Settings
 import com.melowetty.hsepermhelper.service.UserFilesService
 import com.melowetty.hsepermhelper.service.UserService
 import com.melowetty.hsepermhelper.utils.FileUtils
@@ -64,7 +64,7 @@ class UserController(
     @SecurityRequirement(name = "X-Secret-Key")
     @Operation(
         summary = "Удаление пользователя",
-        description = "Позволяет удалиить пользователя по его ID"
+        description = "Позволяет удалить пользователя по его ID"
     )
     @DeleteMapping(
         "user/{id}",
@@ -112,7 +112,8 @@ class UserController(
         @RequestParam("telegramId")
         telegramId: Long,
         @RequestBody
-        settings: Settings,
+        @Parameter(description = "Новые настройки пользователя")
+        settings: SettingsDto,
     ): Response<UserDto> {
         val user = userService.updateUserSettings(telegramId, settings)
         return Response(user)

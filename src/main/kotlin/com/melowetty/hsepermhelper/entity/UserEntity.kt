@@ -1,6 +1,5 @@
 package com.melowetty.hsepermhelper.entity
 
-import com.melowetty.hsepermhelper.models.Settings
 import jakarta.persistence.*
 import java.util.*
 
@@ -14,5 +13,7 @@ data class UserEntity(
     @Column(name = "telegram_id")
     val telegramId: Long = 0L,
 
-    val settings: Settings? = null,
+    @OneToOne(cascade = [CascadeType.ALL])
+    @JoinColumn(name = "user_id")
+    val settings: SettingsEntity? = null,
 )

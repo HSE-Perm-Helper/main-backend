@@ -1,12 +1,13 @@
 package com.melowetty.hsepermhelper.service.impl
 
+import com.melowetty.hsepermhelper.dto.SettingsDto
 import com.melowetty.hsepermhelper.dto.UserDto
+import com.melowetty.hsepermhelper.entity.SettingsEntity
 import com.melowetty.hsepermhelper.entity.UserEntity
 import com.melowetty.hsepermhelper.events.EventType
 import com.melowetty.hsepermhelper.events.UsersChangedEvent
 import com.melowetty.hsepermhelper.exceptions.UserIsExistsException
 import com.melowetty.hsepermhelper.exceptions.UserNotFoundException
-import com.melowetty.hsepermhelper.models.Settings
 import com.melowetty.hsepermhelper.repository.UserRepository
 import com.melowetty.hsepermhelper.service.UserService
 import org.springframework.context.ApplicationEventPublisher
@@ -78,7 +79,7 @@ class UserServiceImpl(
         return newUser
     }
 
-    override fun updateUserSettings(telegramId: Long, settings: Settings): UserDto {
+    override fun updateUserSettings(telegramId: Long, settings: SettingsDto): UserDto {
         val user = getByTelegramId(telegramId)
         val newUser = userRepository.save(
             user.copy(settings = settings).toEntity()
@@ -100,7 +101,7 @@ class UserServiceImpl(
         return UserDto(
             id = id,
             telegramId = telegramId,
-            settings = settings,
+            settings = settings?.toDto(),
         )
     }
 
@@ -108,7 +109,23 @@ class UserServiceImpl(
         return UserEntity(
             id = id,
             telegramId = telegramId,
-            settings = settings,
+            settings = settings?.toEntity(),
+        )
+    }
+
+    fun SettingsDto.toEntity(): SettingsEntity {
+        return SettingsEntity(
+            id = id,
+            group = group,
+            subGroup = subGroup,
+        )
+    }
+
+    fun SettingsEntity.toDto(): SettingsDto {
+        return SettingsDto(
+            id = id,
+            group = group,
+            subGroup = subGroup,
         )
     }
 }

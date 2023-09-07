@@ -13,6 +13,7 @@ import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.Paths
 import java.nio.file.StandardCopyOption
+import kotlin.io.path.name
 
 
 @Component
@@ -32,23 +33,23 @@ class FilesRepositoryImpl(
         }
     }
 
-    override fun storeFile(path: Path, resource: Resource, fileName: String): String {
+    override fun storeFile(path: Path, resource: Resource): String {
         return try {
-            if (fileName.contains("..")) {
-                throw RuntimeException("Имя файла содержит неправильное расширение: $fileName")
+            if (path.fileName.name.contains("..")) {
+                throw RuntimeException("Имя файла содержит неправильное расширение: ${path.fileName}")
             }
 
-            val targetLocation = fileStorageLocation.resolve(path).resolve(fileName)
+            val targetLocation = fileStorageLocation.resolve(path)
 
             val directoryPath = fileStorageLocation.resolve(path)
             if(Files.exists(directoryPath).not()) {
                 Files.createDirectory(fileStorageLocation.resolve(path))
             }
             Files.copy(resource.inputStream, targetLocation, StandardCopyOption.REPLACE_EXISTING)
-            fileName
+            path.fileName.name
         } catch (e: IOException) {
             e.printStackTrace()
-            throw RuntimeException("Не удалось сохранить $fileName. Попробуйте ещё раз!", e)
+            throw RuntimeException("Не удалось сохранить ${path.fileName}. Попробуйте ещё раз!", e)
         }
     }
 

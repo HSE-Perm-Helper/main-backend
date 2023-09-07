@@ -6,7 +6,7 @@ import io.swagger.v3.oas.annotations.media.Schema
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
-@Schema(description = "Расписание")
+@Schema(description = "Расписание занятий")
 data class Schedule(
     @Schema(description = "Номер недели", example = "6", nullable = true)
     val weekNumber: Int?,

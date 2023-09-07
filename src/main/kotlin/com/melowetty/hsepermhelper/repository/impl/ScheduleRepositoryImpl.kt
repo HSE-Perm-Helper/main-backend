@@ -224,7 +224,8 @@ class ScheduleRepositoryImpl(
                 isSession = isSession,
             )
         } catch (exception: Exception) {
-            throw RuntimeException("Произошла ошибка во время обработки файла с расписанием!")
+            println("Произошла ошибка во время обработки файла с расписанием!")
+            return null
         }
     }
 
@@ -254,6 +255,29 @@ class ScheduleRepositoryImpl(
         val splitCell = cellValue.split("\n").toMutableList()
         splitCell.removeAll(listOf(""))
         if(splitCell.size == 3) {
+            val thirdLine = splitCell[2].strip()
+            val linkRegex = Regex("^((((https?|ftps?|gopher|telnet|nntp)://)|(mailto:|news:))" +
+                    "(%[0-9A-Fa-f]{2}|[-()_.!~*';/?:@&=+\$,A-Za-z0-9])+)" +
+                    "([).!';/?:,][[:blank:]])?\$")
+            val linkMatch = linkRegex.find(thirdLine)
+            if(linkMatch != null) {
+                return listOf(
+                    parseLesson(
+                        isSessionWeek = isSessionWeek,
+                        course = course,
+                        programme = programme,
+                        group = group,
+                        date = date,
+                        startTimeStr = startTimeStr,
+                        endTimeStr = endTimeStr,
+                        startTime = startTime,
+                        endTime = endTime,
+                        isUnderlined = isUnderlined,
+                        splitCell.subList(0, 2),
+                        link = linkMatch.value
+                    )
+                )
+            }
             val lessons = mutableListOf<Lesson>()
             lessons.add(
                 parseLesson(
@@ -287,6 +311,7 @@ class ScheduleRepositoryImpl(
                     newCell
                 )
             )
+            return lessons
         }
         else if(splitCell.size % 2 == 0) {
             val lessons = mutableListOf<Lesson>()
@@ -376,6 +401,7 @@ class ScheduleRepositoryImpl(
         endTime: LocalDateTime,
         isUnderlined: Boolean,
         lines: List<String>,
+        link: String? = null,
     ): Lesson {
         var subject = lines[0].strip().replace("  ", " ")
         val lessonInfo = lines[1].strip()
@@ -384,7 +410,7 @@ class ScheduleRepositoryImpl(
         val lessonInfoGroups = lessonInfoMatch?.groups
         val lecturer = getLecturer(lessonInfoGroups?.get(1)?.value?.strip())?.replace("  ", " ")
         val info = lessonInfoGroups?.get(2)?.value
-        val infoRegex = Regex("^([а-яА-ЯеЕёЁ\\s\\d,^]+)|([\\d+])")
+        val infoRegex = Regex("^([а-яА-ЯеЕёЁ\\s\\d.,^]+)|([\\d+])")
         val infoMatches = info?.let { infoRegex.findAll(it) }
         var office = infoMatches?.elementAt(0)?.groups?.get(1)?.value?.strip()
         if (office != null
@@ -416,6 +442,7 @@ class ScheduleRepositoryImpl(
             office = office,
             building = building,
             lessonType = lessonType,
+            link = link,
         )
     }
 
@@ -448,7 +475,8 @@ class ScheduleRepositoryImpl(
         if (pureLessonInfo?.contains("мкд") == true) return LessonType.ICC
         if (pureSubject.contains("лекция") || pureSubject.contains("лекции")) return LessonType.LECTURE
         if (pureSubject.contains("семинар") || pureSubject.contains("семинары")) return LessonType.SEMINAR
-        if(pureSubject.contains("доц по выбору")) return LessonType.AED
+        if (pureSubject.contains("доц по выбору")) return LessonType.UNDEFINED_AED
+        if (pureSubject.contains("доц")) return LessonType.AED
         if (isUnderlined) return LessonType.LECTURE
         return LessonType.SEMINAR
     }
