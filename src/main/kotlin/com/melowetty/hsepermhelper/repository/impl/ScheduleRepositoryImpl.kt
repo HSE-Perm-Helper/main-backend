@@ -7,6 +7,7 @@ import com.melowetty.hsepermhelper.events.ScheduleFilesChangedEvent
 import com.melowetty.hsepermhelper.exceptions.ScheduleNotFoundException
 import com.melowetty.hsepermhelper.models.Lesson
 import com.melowetty.hsepermhelper.models.LessonType
+import com.melowetty.hsepermhelper.models.ScheduleType
 import com.melowetty.hsepermhelper.repository.ScheduleRepository
 import com.melowetty.hsepermhelper.service.ScheduleFilesService
 import org.apache.poi.ss.usermodel.*
@@ -141,16 +142,12 @@ class ScheduleRepositoryImpl(
         try {
             val workbook = getWorkbook(inputStream)
             val lessonsList = mutableListOf<Lesson>()
-            val (weekNum, weekStart, weekEnd) = getWeekInfo(getValue(
+            val scheduleInfo = getWeekInfo(getValue(
                 workbook.getSheetAt(1),
                 workbook.getSheetAt(1).getRow(1).getCell(3))
             )
-            if (weekStart == null || weekEnd == null) {
+            if (scheduleInfo.weekStartDate == null || scheduleInfo.weekEndDate == null) {
                 return null
-            }
-            var isSession = false
-            if(weekNum == null) {
-                isSession = true
             }
             for (i in 0 until workbook.numberOfSheets) {
                 val sheet = workbook.getSheetAt(i)
@@ -186,6 +183,8 @@ class ScheduleRepositoryImpl(
                         run line@ {
                             for (cellNum in 2 until row.physicalNumberOfCells) {
                                 val cell = row.getCell(cellNum)
+                                val cellValue = getValue(sheet = sheet, cell = cell)
+                                if(cellValue.isEmpty()) continue
                                 val group = groups.getOrDefault(cellNum, "")
                                 if (group == "") {
                                     return@line
@@ -193,21 +192,31 @@ class ScheduleRepositoryImpl(
                                 val programme = programs.getOrDefault(cellNum, "N/a")
                                 val font = workbook.getFontAt(cell.cellStyle.fontIndex)
                                 val isUnderlined = font.underline != Font.U_NONE
-                                val lessons = getLesson(
-                                    isSessionWeek = isSession,
-                                    course = course,
-                                    programme = programme,
-                                    group = group,
-                                    date = date,
-                                    startTimeStr = startTime,
-                                    endTimeStr = endTime,
-                                    startTime = startLocalDateTime,
-                                    endTime = endLocalDateTime,
-                                    isUnderlined = isUnderlined,
-                                    cellValue = getValue(sheet = sheet, cell = cell)
-                                )
-                                for (lesson in lessons) {
-                                    lessonsList.add(lesson)
+                                try {
+                                    val lessons = getLesson(
+                                        isSessionWeek = scheduleInfo.scheduleType == ScheduleType.SESSION_WEEK_SCHEDULE,
+                                        cell = CellInfo(
+                                            value = cellValue,
+                                            isUnderlined = isUnderlined,
+                                        ),
+                                        serviceLessonInfo = ServiceLessonInfo(
+                                            course = course,
+                                            programme = programme,
+                                            group = group,
+                                            date = date,
+                                            startTimeStr = startTime,
+                                            endTimeStr = endTime,
+                                            startTime = startLocalDateTime,
+                                            endTime = endLocalDateTime,
+                                        )
+                                    )
+                                    for (lesson in lessons) {
+                                        lessonsList.add(lesson)
+                                    }
+                                } catch (e: Exception) {
+                                    println("Произошла ошибка во время обработки пары!")
+                                    println("cell: ${cellValue}")
+                                    e.printStackTrace()
                                 }
                             }
                         }
@@ -215,15 +224,17 @@ class ScheduleRepositoryImpl(
                 }
             }
             return Schedule(
-                weekNumber = weekNum,
-                weekStart = weekStart,
-                weekEnd = weekEnd,
+                weekNumber = scheduleInfo.weekNumber,
+                weekStart = scheduleInfo.weekStartDate,
+                weekEnd = scheduleInfo.weekEndDate,
                 lessons = lessonsList.groupBy {
                     it.date
                 },
-                isSession = isSession,
+                scheduleType = scheduleInfo.scheduleType,
+
             )
         } catch (exception: Exception) {
+            exception.printStackTrace()
             println("Произошла ошибка во время обработки файла с расписанием!")
             return null
         }
@@ -241,217 +252,203 @@ class ScheduleRepositoryImpl(
 
     private fun getLesson(
         isSessionWeek: Boolean,
-        course: Int,
-        programme: String,
-        group: String,
-        date: LocalDate,
-        startTimeStr: String,
-        endTimeStr: String,
-        startTime: LocalDateTime,
-        endTime: LocalDateTime,
-        isUnderlined: Boolean,
-        cellValue: String
+        serviceLessonInfo: ServiceLessonInfo,
+        cell: CellInfo
     ): List<Lesson> {
-        val splitCell = cellValue.split("\n").toMutableList()
+        val splitCell = cell.value.split("\n").toMutableList()
         splitCell.removeAll(listOf(""))
-        if(splitCell.size == 3) {
-            val thirdLine = splitCell[2].strip()
-            val linkRegex = Regex("^((((https?|ftps?|gopher|telnet|nntp)://)|(mailto:|news:))" +
-                    "(%[0-9A-Fa-f]{2}|[-()_.!~*';/?:@&=+\$,A-Za-z0-9])+)" +
-                    "([).!';/?:,][[:blank:]])?\$")
-            val linkMatch = linkRegex.find(thirdLine)
-            if(linkMatch != null) {
-                return listOf(
-                    parseLesson(
-                        isSessionWeek = isSessionWeek,
-                        course = course,
-                        programme = programme,
-                        group = group,
-                        date = date,
-                        startTimeStr = startTimeStr,
-                        endTimeStr = endTimeStr,
-                        startTime = startTime,
-                        endTime = endTime,
-                        isUnderlined = isUnderlined,
-                        splitCell.subList(0, 2),
-                        link = linkMatch.value
-                    )
-                )
-            }
-            val lessons = mutableListOf<Lesson>()
-            lessons.add(
-                parseLesson(
-                    isSessionWeek = isSessionWeek,
-                    course = course,
-                    programme = programme,
-                    group = group,
-                    date = date,
-                    startTimeStr = startTimeStr,
-                    endTimeStr = endTimeStr,
-                    startTime = startTime,
-                    endTime = endTime,
-                    isUnderlined = isUnderlined,
-                    splitCell.subList(0, 2)
-                )
-            )
-            val newCell = splitCell.toMutableList()
-            newCell.removeAt(1)
-            lessons.add(
-                parseLesson(
-                    isSessionWeek = isSessionWeek,
-                    course = course,
-                    programme = programme,
-                    group = group,
-                    date = date,
-                    startTimeStr = startTimeStr,
-                    endTimeStr = endTimeStr,
-                    startTime = startTime,
-                    endTime = endTime,
-                    isUnderlined = isUnderlined,
-                    newCell
-                )
-            )
-            return lessons
-        }
-        else if(splitCell.size % 2 == 0) {
-            val lessons = mutableListOf<Lesson>()
-            for (i in 0 until splitCell.size / 2) {
-                lessons.add(
-                    parseLesson(
-                        isSessionWeek = isSessionWeek,
-                        course = course,
-                        programme = programme,
-                        group = group,
-                        date = date,
-                        startTimeStr = startTimeStr,
-                        endTimeStr = endTimeStr,
-                        startTime = startTime,
-                        endTime = endTime,
-                        isUnderlined = isUnderlined,
-                        splitCell.subList(i * 2, (i + 1) * 2)
-                    )
-                )
-            }
-            return lessons
-        }
-        return listOf(
-            parseLesson(
+        val fields = getFieldsByType(splitCell)
+        val rawLessons = getRawLessons(fields)
+        val unmergedLessons = unmergeLessonFields(rawLessons)
+        val lessons = clearIncorrectLessonFields(unmergedLessons)
+        val builtLessons = lessons.map {
+            val additionalLessonInfo = getAdditionalLessonInfo(fields)
+            buildLesson(
+                fields = it,
                 isSessionWeek = isSessionWeek,
-                course = course,
-                programme = programme,
-                group = group,
-                date = date,
-                startTimeStr = startTimeStr,
-                endTimeStr = endTimeStr,
-                startTime = startTime,
-                endTime = endTime,
-                isUnderlined = isUnderlined,
-                line = splitCell[0]
+                serviceLessonInfo = serviceLessonInfo,
+                additionalLessonInfo = additionalLessonInfo,
+                cell = cell,
             )
-        )
-    }
-
-    private fun parseLesson(
-        isSessionWeek: Boolean,
-        course: Int,
-        programme: String,
-        group: String,
-        date: LocalDate,
-        startTimeStr: String,
-        endTimeStr: String,
-        startTime: LocalDateTime,
-        endTime: LocalDateTime,
-        isUnderlined: Boolean,
-        line: String
-    ): Lesson {
-        var subject = line.replace("  ", " ")
-        val lessonType = getLessonType(
-            subject = subject,
-            isUnderlined = isUnderlined,
-            isSessionWeek = isSessionWeek
-        )
-        subject = lessonType.reformatSubject(subject)
-        return Lesson(
-            subject = subject,
-            course = course,
-            programme = programme,
-            group = group,
-            subGroup = null,
-            date = date,
-            startTimeStr = startTimeStr,
-            endTimeStr = endTimeStr,
-            startTime = startTime,
-            endTime = endTime,
-            lecturer = null,
-            office = null,
-            building = null,
-            lessonType = lessonType,
-        )
-    }
-
-    private fun parseLesson(
-        isSessionWeek: Boolean,
-        course: Int,
-        programme: String,
-        group: String,
-        date: LocalDate,
-        startTimeStr: String,
-        endTimeStr: String,
-        startTime: LocalDateTime,
-        endTime: LocalDateTime,
-        isUnderlined: Boolean,
-        lines: List<String>,
-        link: String? = null,
-    ): Lesson {
-        var subject = lines[0].strip().replace("  ", " ")
-        val lessonInfo = lines[1].strip()
-        val lessonInfoRegex = Regex("([^\\/]*)\\((.*)\\)")
-        val lessonInfoMatch = lessonInfoRegex.find(lessonInfo)
-        val lessonInfoGroups = lessonInfoMatch?.groups
-        val lecturer = getLecturer(lessonInfoGroups?.get(1)?.value?.strip())?.replace("  ", " ")
-        val info = lessonInfoGroups?.get(2)?.value
-        val infoRegex = Regex("^([а-яА-ЯеЕёЁ\\s\\d.,^]+)|([\\d+])")
-        val infoMatches = info?.let { infoRegex.findAll(it) }
-        var office = infoMatches?.elementAt(0)?.groups?.get(1)?.value?.strip()
-        if (office != null
-            && office.contains(",")) {
-            office = office.replace(" ", "")
-            office = office.split(",").joinToString(", ")
         }
-        val building = (infoMatches?.elementAt(1)?.groups?.get(2)?.value)?.toIntOrNull()
-        val subGroup = (getSubGroup(infoMatches)?.strip())?.toIntOrNull()
+        return builtLessons
+    }
+
+    private fun getFieldsByType(cells: List<String>): List<LessonField> {
+        val fields = mutableListOf<LessonField>()
+        cells.forEach { cell ->
+            var flag = false
+            LINK_REGEX.findAll(cell)
+                .forEach {
+                    fields.add(LessonField(it.value.trim(), FieldType.LINK))
+                    flag = true
+                }
+            if(LESSON_BUILDING_INFO_REGEX.find(cell) != null) {
+                fields.add(LessonField(cell.trim(), FieldType.INFO))
+                flag = true
+            }
+            if(!flag) {
+                fields.add(LessonField(cell.trim(), FieldType.SUBJECT))
+            }
+        }
+        return fields
+    }
+
+    private fun getRawLessons(fields: List<LessonField>): List<List<LessonField>> {
+        val rawLessons = mutableListOf<List<LessonField>>()
+        val tempLessonFields = mutableListOf<LessonField>()
+        fields
+            .forEach {
+                if (it.fieldType == FieldType.SUBJECT) {
+                    if(tempLessonFields.isNotEmpty()) {
+                        rawLessons.add(tempLessonFields.toMutableList())
+                    }
+                    tempLessonFields.clear()
+                    tempLessonFields.add(it)
+                } else {
+                    tempLessonFields.add(it)
+                }
+            }
+        if(tempLessonFields.isNotEmpty()) {
+            rawLessons.add(tempLessonFields.toMutableList())
+        }
+        return rawLessons
+    }
+
+    private fun unmergeLessonFields(fields: List<List<LessonField>>): List<List<LessonField>> {
+        val unmergedLessonFields = mutableListOf<List<LessonField>>()
+        fields.forEach { lessonFields ->
+            val count = lessonFields.count { it.fieldType == FieldType.INFO }
+            if (count <= 1) {
+                unmergedLessonFields.add(lessonFields)
+                return@forEach
+            }
+            var currentCount = 0
+            val tempFields = mutableListOf<LessonField>()
+            while(currentCount < count) {
+                var i = 0
+                var flag = false
+                lessonFields.forEach fieldIterator@{ field ->
+                    if(field.fieldType == FieldType.INFO) {
+                        if (i == currentCount) {
+                            tempFields.add(field)
+                            flag = true
+                        }
+                        if(i > currentCount && flag.not()) return@fieldIterator
+                        if(i > currentCount && flag) {
+                            unmergedLessonFields.add(tempFields.toMutableList())
+                            tempFields.clear()
+                            flag = false
+                            return@fieldIterator
+                        }
+                        i += 1
+                    } else {
+                        tempFields.add(field)
+                    }
+                }
+                if(flag) {
+                    unmergedLessonFields.add(tempFields.toMutableList())
+                    tempFields.clear()
+                    flag = false
+                }
+                currentCount += 1
+            }
+            if(tempFields.isNotEmpty()) {
+                unmergedLessonFields.add(tempFields)
+            }
+        }
+        return unmergedLessonFields
+    }
+
+    private fun clearIncorrectLessonFields(allLessonFields: List<List<LessonField>>): List<List<LessonField>> {
+        val lessons = allLessonFields.map { it.toMutableList() }.toMutableList()
+        if(allLessonFields.size > 1 && allLessonFields.any { lessonFields ->
+                lessonFields.all { it.fieldType == FieldType.SUBJECT }
+            }) {
+            allLessonFields.forEachIndexed { index, lessonFields ->
+                if(index != 0) {
+                    if (lessonFields.all { it.fieldType == FieldType.SUBJECT }) {
+                        lessonFields.forEach {
+                            lessons[index - 1].add(
+                                it.copy(
+                                    fieldType = FieldType.ADDITIONAL
+                                )
+                            )
+                        }
+                        lessons.remove(lessonFields)
+                    }
+                }
+            }
+        }
+        return lessons
+    }
+
+    private fun buildLesson(
+        fields: List<LessonField>,
+        cell: CellInfo,
+        isSessionWeek: Boolean,
+        serviceLessonInfo: ServiceLessonInfo,
+        additionalLessonInfo: AdditionalLessonInfo,
+    ): Lesson {
+        val subject = fields.first { it.fieldType == FieldType.SUBJECT }.value.trim()
         val lessonType = getLessonType(
             isSessionWeek = isSessionWeek,
+            isUnderlined = cell.isUnderlined,
             subject = subject,
-            lessonInfo = lecturer,
-            isUnderlined = isUnderlined
+            lessonInfo = additionalLessonInfo.lecturer,
         )
-        subject = lessonType.reformatSubject(subject)
         return Lesson(
             subject = subject,
-            course = course,
-            programme = programme,
-            group = group,
-            subGroup = subGroup,
-            date = date,
-            startTimeStr = startTimeStr,
-            endTimeStr = endTimeStr,
-            startTime = startTime,
-            endTime = endTime,
+            lessonType = lessonType,
+            building = additionalLessonInfo.building,
+            office =  additionalLessonInfo.office,
+            lecturer = additionalLessonInfo.lecturer,
+            subGroup = additionalLessonInfo.subGroup,
+            group =  serviceLessonInfo.group,
+            course = serviceLessonInfo.course,
+            date = serviceLessonInfo.date,
+            programme = serviceLessonInfo.programme,
+            startTime = serviceLessonInfo.startTime,
+            startTimeStr = serviceLessonInfo.startTimeStr,
+            endTime = serviceLessonInfo.endTime,
+            endTimeStr = serviceLessonInfo.endTimeStr,
+        )
+    }
+
+    private fun getAdditionalLessonInfo(fields: List<LessonField>): AdditionalLessonInfo {
+        var lecturer: String? = null
+        var office: String? = null
+        var building: Int? = null
+        var subgroup: Int? = null
+        val links = mutableListOf<String>()
+        val additionalInfo = mutableListOf<String>()
+        fields
+            .filter { it.fieldType != FieldType.SUBJECT }
+            .forEach { field ->
+                if(field.fieldType == FieldType.LINK) {
+                    links.add(field.value)
+                } else if(field.fieldType == FieldType.INFO) {
+                    val additionalInfoRegexGroups = ADDITIONAL_INFO_REGEX.find(field.value)?.groups
+                    if(additionalInfoRegexGroups != null && additionalInfoRegexGroups.isEmpty().not()) {
+                        lecturer = getLecturer(additionalInfoRegexGroups[1]?.value?.trim())?.replace("  ", " ")
+                        val placeInfoLine = additionalInfoRegexGroups[2]?.value ?: return@forEach
+                        val placeInfoMatches = PLACE_INFO_REGEX.findAll(placeInfoLine).toList()
+                        office = placeInfoMatches.getOrNull(0)?.value?.trim()
+                        building = placeInfoMatches.getOrNull(1)?.value?.toIntOrNull()
+                        subgroup = placeInfoMatches.getOrNull(2)?.value?.toIntOrNull()
+                    }
+                } else if(field.fieldType == FieldType.ADDITIONAL) {
+                    additionalInfo.add(field.value)
+                }
+            }
+        return AdditionalLessonInfo(
             lecturer = lecturer,
             office = office,
             building = building,
-            lessonType = lessonType,
-            link = link,
+            subGroup = subgroup,
+            additionalInfo = additionalInfo,
+            links = links,
         )
-    }
-
-    fun getSubGroup(matchResult: Sequence<MatchResult>?): String? {
-        if (matchResult == null) return null
-        if (matchResult.count() < 3) {
-            return null
-        }
-        return matchResult.elementAt(2).groups.get(2)?.value
     }
 
     private fun getLessonType(
@@ -481,7 +478,7 @@ class ScheduleRepositoryImpl(
         return LessonType.SEMINAR
     }
 
-    private fun getWeekInfo(weekInfoStr: String): Triple<Int?, LocalDate?, LocalDate?> {
+    private fun getWeekInfo(weekInfoStr: String): ScheduleInfo {
         val weekInfoRegex = Regex("\\D*(\\d*).+\\s+(\\d+\\.\\d+\\.\\d+)\\s.+\\s(\\d+\\.\\d+\\.\\d+)")
         val weekInfoMatches = weekInfoRegex.findAll(weekInfoStr)
         val weekInfoGroups = weekInfoMatches.elementAt(0).groups
@@ -489,7 +486,18 @@ class ScheduleRepositoryImpl(
         val datePattern = DateTimeFormatter.ofPattern("dd.MM.yyyy")
         val weekStart = LocalDate.parse(weekInfoGroups.get(2)?.value, datePattern)
         val weekEnd = LocalDate.parse(weekInfoGroups.get(3)?.value, datePattern)
-        return Triple(weekNumber, weekStart, weekEnd)
+        var scheduleType = ScheduleType.COMMON_WEEK_SCHEDULE
+        if(weekNumber == null) {
+            scheduleType = ScheduleType.SESSION_WEEK_SCHEDULE
+        } else if(weekEnd.toEpochDay() - weekStart.toEpochDay() > 7) {
+            scheduleType = ScheduleType.QUARTER_SCHEDULE
+        }
+        return ScheduleInfo(
+            weekNumber = weekNumber,
+            weekStartDate = weekStart,
+            weekEndDate = weekEnd,
+            scheduleType = scheduleType,
+        )
     }
 
     private fun getLecturer(str: String?): String? {
@@ -497,4 +505,55 @@ class ScheduleRepositoryImpl(
         if (str.isEmpty()) return null
         return str
     }
+    companion object {
+        private val LESSON_BUILDING_INFO_REGEX = Regex("[^МКД|ДОЦ]\\(.+\\[\\d*\\].*\\)")
+        private val LINK_REGEX = Regex("^((((https?|ftps?|gopher|telnet|nntp)://)|(mailto:|news:))" +
+                "(%[0-9A-Fa-f]{2}|[-()_.!~*';/?:@&=+\$,A-Za-z0-9])+)" +
+                "([).!';/?:,][[:blank:]])?\$")
+        private val ADDITIONAL_INFO_REGEX = Regex("([^\\/]*)\\((.*)\\)")
+        private val PLACE_INFO_REGEX = Regex("\\A[.[^\\[]]+|\\d+")
+    }
+
+    internal data class ScheduleInfo(
+        val weekNumber: Int?,
+        val weekStartDate: LocalDate?,
+        val weekEndDate: LocalDate?,
+        val scheduleType: ScheduleType,
+    )
+
+    internal enum class FieldType {
+        SUBJECT,
+        INFO,
+        LINK,
+        ADDITIONAL,
+    }
+    internal data class LessonField(
+        val value: String,
+        val fieldType: FieldType
+    )
+
+    internal data class CellInfo(
+        val value: String,
+        val isUnderlined: Boolean,
+    )
+
+    internal data class ServiceLessonInfo(
+        val course: Int,
+        val programme: String,
+        val group: String,
+        val date: LocalDate,
+        val startTimeStr: String,
+        val endTimeStr: String,
+        val startTime: LocalDateTime,
+        val endTime: LocalDateTime,
+    )
+
+    internal data class AdditionalLessonInfo(
+        val lecturer: String?,
+        val office: String?,
+        val building: Int?,
+        val subGroup: Int?,
+        val links: List<String> = listOf(),
+        val additionalInfo: List<String> = listOf(),
+    )
 }
