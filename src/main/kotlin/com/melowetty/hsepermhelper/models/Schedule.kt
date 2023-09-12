@@ -1,6 +1,7 @@
 import com.fasterxml.jackson.annotation.JsonFormat
 import com.fasterxml.jackson.annotation.JsonGetter
 import com.melowetty.hsepermhelper.models.Lesson
+import com.melowetty.hsepermhelper.models.ScheduleType
 import com.melowetty.hsepermhelper.utils.DateUtils
 import io.swagger.v3.oas.annotations.media.Schema
 import java.time.LocalDate
@@ -17,8 +18,8 @@ data class Schedule(
     @JsonFormat(pattern = DateUtils.DATE_PATTERN)
     @Schema(description = "Дата конца недели", example = "10.09.2023", type = "string")
     val weekEnd: LocalDate,
-    @Schema(description = "Указатель на является ли неделя сессионной", example = "false")
-    val isSession: Boolean = false,
+    @Schema(description = "Тип расписания")
+    val scheduleType: ScheduleType,
 ) {
     @JsonGetter("lessons")
     fun getFormattedLessons(): Set<Map.Entry<String, List<Lesson>>> {
