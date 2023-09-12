@@ -38,7 +38,7 @@ data class Lesson(
     @Schema(description = "Ссылка на пару (null - если ссылки нет)")
     val link: String? = null,
     @Schema(description = "Дополнительные ссылки на пару (null - если нет)")
-    val additionalLinks: List<String>? = null,
+    val additionalInfo: List<String>? = null,
     @Schema(description = "Тип лекции", example = "SEMINAR")
     val lessonType: LessonType,
 ) {
@@ -67,9 +67,9 @@ data class Lesson(
         if(isOnline()) {
             if (link != null) {
                 descriptionLines.add("Ссылка на пару: $link")
-                if (additionalLinks?.isNotEmpty() == true) {
+                if (additionalInfo?.isNotEmpty() == true) {
                     descriptionLines.add("Дополнительные ссылки на пару: ")
-                    additionalLinks.forEach { descriptionLines.add(it) }
+                    additionalInfo.forEach { descriptionLines.add(it) }
                 }
             }
             else {

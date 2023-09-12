@@ -7,6 +7,7 @@ import com.melowetty.hsepermhelper.events.ScheduleFilesChangedEvent
 import com.melowetty.hsepermhelper.exceptions.ScheduleNotFoundException
 import com.melowetty.hsepermhelper.models.Lesson
 import com.melowetty.hsepermhelper.models.LessonType
+import com.melowetty.hsepermhelper.models.ScheduleType
 import com.melowetty.hsepermhelper.repository.ScheduleRepository
 import com.melowetty.hsepermhelper.service.ScheduleFilesService
 import org.apache.poi.ss.usermodel.*
@@ -141,16 +142,12 @@ class ScheduleRepositoryImpl(
         try {
             val workbook = getWorkbook(inputStream)
             val lessonsList = mutableListOf<Lesson>()
-            val (weekNum, weekStart, weekEnd) = getWeekInfo(getValue(
+            val scheduleInfo = getWeekInfo(getValue(
                 workbook.getSheetAt(1),
                 workbook.getSheetAt(1).getRow(1).getCell(3))
             )
-            if (weekStart == null || weekEnd == null) {
+            if (scheduleInfo.weekStartDate == null || scheduleInfo.weekEndDate == null) {
                 return null
-            }
-            var isSession = false
-            if(weekNum == null) {
-                isSession = true
             }
             for (i in 0 until workbook.numberOfSheets) {
                 val sheet = workbook.getSheetAt(i)
@@ -197,7 +194,7 @@ class ScheduleRepositoryImpl(
                                 val isUnderlined = font.underline != Font.U_NONE
                                 try {
                                     val lessons = getLesson(
-                                        isSessionWeek = isSession,
+                                        isSessionWeek = scheduleInfo.scheduleType == ScheduleType.SESSION_WEEK_SCHEDULE,
                                         cell = CellInfo(
                                             value = cellValue,
                                             isUnderlined = isUnderlined,
@@ -227,13 +224,14 @@ class ScheduleRepositoryImpl(
                 }
             }
             return Schedule(
-                weekNumber = weekNum,
-                weekStart = weekStart,
-                weekEnd = weekEnd,
+                weekNumber = scheduleInfo.weekNumber,
+                weekStart = scheduleInfo.weekStartDate,
+                weekEnd = scheduleInfo.weekEndDate,
                 lessons = lessonsList.groupBy {
                     it.date
                 },
-                isSession = isSession,
+                scheduleType = scheduleInfo.scheduleType,
+
             )
         } catch (exception: Exception) {
             exception.printStackTrace()
@@ -480,7 +478,7 @@ class ScheduleRepositoryImpl(
         return LessonType.SEMINAR
     }
 
-    private fun getWeekInfo(weekInfoStr: String): Triple<Int?, LocalDate?, LocalDate?> {
+    private fun getWeekInfo(weekInfoStr: String): ScheduleInfo {
         val weekInfoRegex = Regex("\\D*(\\d*).+\\s+(\\d+\\.\\d+\\.\\d+)\\s.+\\s(\\d+\\.\\d+\\.\\d+)")
         val weekInfoMatches = weekInfoRegex.findAll(weekInfoStr)
         val weekInfoGroups = weekInfoMatches.elementAt(0).groups
@@ -488,7 +486,18 @@ class ScheduleRepositoryImpl(
         val datePattern = DateTimeFormatter.ofPattern("dd.MM.yyyy")
         val weekStart = LocalDate.parse(weekInfoGroups.get(2)?.value, datePattern)
         val weekEnd = LocalDate.parse(weekInfoGroups.get(3)?.value, datePattern)
-        return Triple(weekNumber, weekStart, weekEnd)
+        var scheduleType = ScheduleType.COMMON_WEEK_SCHEDULE
+        if(weekNumber == null) {
+            scheduleType = ScheduleType.SESSION_WEEK_SCHEDULE
+        } else if(weekEnd.toEpochDay() - weekStart.toEpochDay() > 7) {
+            scheduleType = ScheduleType.QUARTER_SCHEDULE
+        }
+        return ScheduleInfo(
+            weekNumber = weekNumber,
+            weekStartDate = weekStart,
+            weekEndDate = weekEnd,
+            scheduleType = scheduleType,
+        )
     }
 
     private fun getLecturer(str: String?): String? {
@@ -504,6 +513,13 @@ class ScheduleRepositoryImpl(
         private val ADDITIONAL_INFO_REGEX = Regex("([^\\/]*)\\((.*)\\)")
         private val PLACE_INFO_REGEX = Regex("\\A[.[^\\[]]+|\\d+")
     }
+
+    internal data class ScheduleInfo(
+        val weekNumber: Int?,
+        val weekStartDate: LocalDate?,
+        val weekEndDate: LocalDate?,
+        val scheduleType: ScheduleType,
+    )
 
     internal enum class FieldType {
         SUBJECT,
