@@ -14,6 +14,6 @@ data class SettingsDto(
     @Schema(description = "Учебная подгруппа пользователя", example = "5")
     val subGroup: Int = 0,
 
-    @Schema(description = "Включать ли расписание на модуль в общее расписание")
+    @Schema(description = "Включать ли расписание на модуль в общее расписание", example = "false")
     val includeQuarterSchedule: Boolean = false,
 )

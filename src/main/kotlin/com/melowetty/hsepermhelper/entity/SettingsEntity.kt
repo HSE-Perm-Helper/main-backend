@@ -17,5 +17,5 @@ data class SettingsEntity(
     val subGroup: Int = 0,
 
     @Column(name = "include_quarter_schedule")
-    val includeQuarterSchedule: Boolean = false,
+    val includeQuarterSchedule: Boolean? = false,
 )

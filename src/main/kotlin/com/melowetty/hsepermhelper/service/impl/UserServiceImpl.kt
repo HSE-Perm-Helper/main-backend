@@ -118,6 +118,7 @@ class UserServiceImpl(
             id = id,
             group = group,
             subGroup = subGroup,
+            includeQuarterSchedule = includeQuarterSchedule,
         )
     }
 
@@ -126,6 +127,7 @@ class UserServiceImpl(
             id = id,
             group = group,
             subGroup = subGroup,
+            includeQuarterSchedule = includeQuarterSchedule != null && includeQuarterSchedule,
         )
     }
 }
