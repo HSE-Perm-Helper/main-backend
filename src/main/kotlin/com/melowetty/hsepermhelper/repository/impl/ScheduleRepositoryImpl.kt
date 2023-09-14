@@ -208,7 +208,7 @@ class ScheduleRepositoryImpl(
                                         val startLocalDateTime = LocalDateTime.of(date, startLocalTime)
                                         val endLocalDateTime = LocalDateTime.of(date, endLocalTime)
                                         val lessons = getLesson(
-                                            isSessionWeek = scheduleInfo.scheduleType == ScheduleType.SESSION_WEEK_SCHEDULE,
+                                            scheduleInfo = scheduleInfo,
                                             cell = CellInfo(
                                                 value = cellValue,
                                                 isUnderlined = isUnderlined,
@@ -268,7 +268,7 @@ class ScheduleRepositoryImpl(
     }
 
     private fun getLesson(
-        isSessionWeek: Boolean,
+        scheduleInfo: ScheduleInfo,
         serviceLessonInfo: ServiceLessonInfo,
         cell: CellInfo
     ): List<Lesson> {
@@ -282,10 +282,10 @@ class ScheduleRepositoryImpl(
             val additionalLessonInfo = getAdditionalLessonInfo(it)
             buildLesson(
                 fields = it,
-                isSessionWeek = isSessionWeek,
                 serviceLessonInfo = serviceLessonInfo,
                 additionalLessonInfo = additionalLessonInfo,
                 cell = cell,
+                scheduleInfo = scheduleInfo,
             )
         }
         return builtLessons
@@ -403,13 +403,13 @@ class ScheduleRepositoryImpl(
     private fun buildLesson(
         fields: List<LessonField>,
         cell: CellInfo,
-        isSessionWeek: Boolean,
+        scheduleInfo: ScheduleInfo,
         serviceLessonInfo: ServiceLessonInfo,
         additionalLessonInfo: AdditionalLessonInfo,
     ): Lesson {
         val subject = fields.first { it.fieldType == FieldType.SUBJECT }.value.trim()
         val lessonType = getLessonType(
-            isSessionWeek = isSessionWeek,
+            isSessionWeek = scheduleInfo.scheduleType == ScheduleType.SESSION_WEEK_SCHEDULE,
             isUnderlined = cell.isUnderlined,
             subject = subject,
             lessonInfo = additionalLessonInfo.lecturer,
@@ -429,6 +429,7 @@ class ScheduleRepositoryImpl(
             startTimeStr = serviceLessonInfo.startTimeStr,
             endTime = serviceLessonInfo.endTime,
             endTimeStr = serviceLessonInfo.endTimeStr,
+            parentScheduleType = scheduleInfo.scheduleType,
         )
     }
 
