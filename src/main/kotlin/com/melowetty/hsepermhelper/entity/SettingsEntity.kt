@@ -18,4 +18,10 @@ data class SettingsEntity(
 
     @Column(name = "include_quarter_schedule")
     val includeQuarterSchedule: Boolean? = false,
+
+    @Column(name = "include_common_english")
+    val includeCommonEnglish: Boolean? = false,
+
+    @Column(name = "include_common_minor")
+    val includeCommonMinor: Boolean? = true,
 )

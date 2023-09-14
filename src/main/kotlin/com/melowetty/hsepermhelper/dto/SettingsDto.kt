@@ -16,4 +16,10 @@ data class SettingsDto(
 
     @Schema(description = "Включать ли расписание на модуль в общее расписание", example = "false")
     val includeQuarterSchedule: Boolean = false,
+
+    @Schema(description = "Включать ли общие пары английского в общее расписание", example = "false")
+    val includeCommonEnglish: Boolean = false,
+
+    @Schema(description = "Включать ли общие пары майнора в общее расписание", example = "true")
+    val includeCommonMinor: Boolean? = true,
 )
