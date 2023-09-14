@@ -79,7 +79,7 @@ data class Lesson(
             }
         } else {
             if (building == null && office == null) {
-                if(lessonType == LessonType.MINOR) {
+                if(lessonType == LessonType.COMMON_MINOR) {
                     descriptionLines.add("Информацию о времени и ссылке на майнор узнайте " +
                             "подробнее в HSE App X или в системе РУЗ")
                 }

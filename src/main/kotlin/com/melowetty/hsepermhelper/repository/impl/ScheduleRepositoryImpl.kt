@@ -481,10 +481,10 @@ class ScheduleRepositoryImpl(
         if (pureSubject.contains("независимый экзамен")) return LessonType.INDEPENDENT_EXAM
         if (pureSubject.contains("экзамен")) return LessonType.EXAM
         if (pureSubject.contains("зачёт") || pureSubject.contains("зачет")) return LessonType.TEST
-        if (pureSubject.contains("английский язык")) return LessonType.ENGLISH
+        if (pureSubject.contains("английский язык")) return LessonType.COMMON_ENGLISH
         if (pureSubject.contains("майнор")) {
             if (isSessionWeek) return LessonType.EXAM
-            return LessonType.MINOR
+            return LessonType.COMMON_MINOR
         }
         if (pureSubject == "практика") return LessonType.PRACTICE
         if (pureLessonInfo?.contains("мкд") == true) return LessonType.ICC
