@@ -41,7 +41,7 @@ data class Lesson(
     val additionalInfo: List<String>? = null,
     @Schema(description = "Тип лекции", example = "SEMINAR")
     val lessonType: LessonType,
-) {
+) : Comparable<Lesson> {
     /**
      * Returns lesson will be in online mode
      *
@@ -104,5 +104,9 @@ data class Lesson(
             office
         }
         else "кабинет $office"
+    }
+
+    override fun compareTo(other: Lesson): Int {
+        return date.compareTo(other.date)
     }
 }

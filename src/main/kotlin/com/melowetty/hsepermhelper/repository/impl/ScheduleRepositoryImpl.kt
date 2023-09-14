@@ -15,6 +15,7 @@ import org.springframework.context.ApplicationEventPublisher
 import org.springframework.context.event.EventListener
 import org.springframework.stereotype.Component
 import java.io.InputStream
+import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
@@ -167,19 +168,29 @@ class ScheduleRepositoryImpl(
                     for(rowNum in 3 until sheet.lastRowNum) {
                         val row = sheet.getRow(rowNum)
                         val unparsedDate = getValue(sheet, row.getCell(0)).split("\n")
-                        if (unparsedDate.size < 2) break
-                        val date = LocalDate.parse(unparsedDate[1], DateTimeFormatter.ofPattern("dd.MM.yyyy"))
+                        val dates = mutableListOf<LocalDate>()
+                        if (unparsedDate.size < 2) {
+                            if(scheduleInfo.scheduleType != ScheduleType.QUARTER_SCHEDULE) break
+                            val day = getDayOfWeek(unparsedDate[0]) ?: continue
+                            var dateIteration = scheduleInfo.weekStartDate.plusDays(
+                                day.ordinal.toLong() - scheduleInfo.weekStartDate.dayOfWeek.ordinal
+                            )
+                            while(dateIteration.isAfter(scheduleInfo.weekEndDate).not()) {
+                                dates.add(dateIteration)
+                                dateIteration = dateIteration.plusDays(7)
+                            }
+                        } else {
+                            dates.add(LocalDate.parse(unparsedDate[1], DateTimeFormatter.ofPattern("dd.MM.yyyy")))
+                        }
                         val time = getValue(sheet, row.getCell(1)).split("\n")[2]
                         val timeRegex = Regex("[0-9]+:[0-9]+")
                         val timeRegexMatches = timeRegex.findAll(time)
                         val startTime = timeRegexMatches.elementAt(0).value
                         val splitStartTime = startTime.split(":")
                         val startLocalTime = LocalTime.of(splitStartTime[0].toInt(), splitStartTime[1].toInt())
-                        val startLocalDateTime = LocalDateTime.of(date, startLocalTime)
                         val endTime = timeRegexMatches.elementAt(1).value
                         val splitEndTime = endTime.split(":")
                         val endLocalTime = LocalTime.of(splitEndTime[0].toInt(), splitEndTime[1].toInt())
-                        val endLocalDateTime = LocalDateTime.of(date, endLocalTime)
                         run line@ {
                             for (cellNum in 2 until row.physicalNumberOfCells) {
                                 val cell = row.getCell(cellNum)
@@ -193,25 +204,29 @@ class ScheduleRepositoryImpl(
                                 val font = workbook.getFontAt(cell.cellStyle.fontIndex)
                                 val isUnderlined = font.underline != Font.U_NONE
                                 try {
-                                    val lessons = getLesson(
-                                        isSessionWeek = scheduleInfo.scheduleType == ScheduleType.SESSION_WEEK_SCHEDULE,
-                                        cell = CellInfo(
-                                            value = cellValue,
-                                            isUnderlined = isUnderlined,
-                                        ),
-                                        serviceLessonInfo = ServiceLessonInfo(
-                                            course = course,
-                                            programme = programme,
-                                            group = group,
-                                            date = date,
-                                            startTimeStr = startTime,
-                                            endTimeStr = endTime,
-                                            startTime = startLocalDateTime,
-                                            endTime = endLocalDateTime,
+                                    for (date in dates) {
+                                        val startLocalDateTime = LocalDateTime.of(date, startLocalTime)
+                                        val endLocalDateTime = LocalDateTime.of(date, endLocalTime)
+                                        val lessons = getLesson(
+                                            isSessionWeek = scheduleInfo.scheduleType == ScheduleType.SESSION_WEEK_SCHEDULE,
+                                            cell = CellInfo(
+                                                value = cellValue,
+                                                isUnderlined = isUnderlined,
+                                            ),
+                                            serviceLessonInfo = ServiceLessonInfo(
+                                                course = course,
+                                                programme = programme,
+                                                group = group,
+                                                date = date,
+                                                startTimeStr = startTime,
+                                                endTimeStr = endTime,
+                                                startTime = startLocalDateTime,
+                                                endTime = endLocalDateTime,
+                                            )
                                         )
-                                    )
-                                    for (lesson in lessons) {
-                                        lessonsList.add(lesson)
+                                        for (lesson in lessons) {
+                                            lessonsList.add(lesson)
+                                        }
                                     }
                                 } catch (e: Exception) {
                                     println("Произошла ошибка во время обработки пары!")
@@ -223,11 +238,13 @@ class ScheduleRepositoryImpl(
                     }
                 }
             }
+            lessonsList.sort()
             return Schedule(
                 weekNumber = scheduleInfo.weekNumber,
                 weekStart = scheduleInfo.weekStartDate,
                 weekEnd = scheduleInfo.weekEndDate,
-                lessons = lessonsList.groupBy {
+                lessons = lessonsList
+                    .groupBy {
                     it.date
                 },
                 scheduleType = scheduleInfo.scheduleType,
@@ -262,7 +279,7 @@ class ScheduleRepositoryImpl(
         val unmergedLessons = unmergeLessonFields(rawLessons)
         val lessons = clearIncorrectLessonFields(unmergedLessons)
         val builtLessons = lessons.map {
-            val additionalLessonInfo = getAdditionalLessonInfo(fields)
+            val additionalLessonInfo = getAdditionalLessonInfo(it)
             buildLesson(
                 fields = it,
                 isSessionWeek = isSessionWeek,
@@ -505,6 +522,20 @@ class ScheduleRepositoryImpl(
         if (str.isEmpty()) return null
         return str
     }
+
+    private fun getDayOfWeek(str: String): DayOfWeek? {
+        return when(str.lowercase()) {
+            "понедельник" -> DayOfWeek.MONDAY
+            "вторник" -> DayOfWeek.TUESDAY
+            "среда" -> DayOfWeek.WEDNESDAY
+            "четверг" -> DayOfWeek.THURSDAY
+            "пятница" -> DayOfWeek.FRIDAY
+            "суббота" -> DayOfWeek.SATURDAY
+            "воскресенье" -> DayOfWeek.SUNDAY
+            else -> null
+        }
+    }
+
     companion object {
         private val LESSON_BUILDING_INFO_REGEX = Regex("[^МКД|ДОЦ]\\(.+\\[\\d*\\].*\\)")
         private val LINK_REGEX = Regex("^((((https?|ftps?|gopher|telnet|nntp)://)|(mailto:|news:))" +
