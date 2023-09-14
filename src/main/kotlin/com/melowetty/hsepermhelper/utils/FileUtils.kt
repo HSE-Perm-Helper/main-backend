@@ -72,7 +72,6 @@ class FileUtils {
             calendar.add(RefreshInterval(null, Duration.ofHours(1)))
             schedules.forEach { schedule ->
                 schedule.lessons.flatMap { it.value }.forEach lessonsForeach@{
-                    if(it.lessonType == LessonType.ENGLISH) return@lessonsForeach
                     calendar.add(it.toVEvent())
                 }
             }

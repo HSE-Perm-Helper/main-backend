@@ -43,7 +43,7 @@ class FilesRepositoryImpl(
 
             val directoryPath = fileStorageLocation.resolve(path)
             if(Files.exists(directoryPath).not()) {
-                Files.createDirectory(fileStorageLocation.resolve(path))
+                Files.createDirectories(directoryPath)
             }
             Files.copy(resource.inputStream, targetLocation, StandardCopyOption.REPLACE_EXISTING)
             path.fileName.name

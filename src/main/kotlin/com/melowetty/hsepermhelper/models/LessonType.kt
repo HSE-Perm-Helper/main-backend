@@ -31,7 +31,9 @@ enum class LessonType(val type: String, private val scheduleFilePattern: String)
             else subject
         }
     },
+    COMMON_MINOR("Майнор", "{type}"),
     MINOR("Майнор", "{type}"),
+    COMMON_ENGLISH("Английский", "{type}"),
     ENGLISH("Английский", "{type}"),
     STATEMENT("Ведомость", "{type}: {subject}"),
     ICC("МКД", "{type}: {subject}"),

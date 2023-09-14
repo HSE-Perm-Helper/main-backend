@@ -41,7 +41,9 @@ data class Lesson(
     val additionalInfo: List<String>? = null,
     @Schema(description = "Тип лекции", example = "SEMINAR")
     val lessonType: LessonType,
-) {
+    @Schema(description = "Тип расписания-родителя", example = "COMMON_WEEK_SCHEDULE")
+    val parentScheduleType: ScheduleType,
+) : Comparable<Lesson> {
     /**
      * Returns lesson will be in online mode
      *
@@ -77,7 +79,7 @@ data class Lesson(
             }
         } else {
             if (building == null && office == null) {
-                if(lessonType == LessonType.MINOR) {
+                if(lessonType == LessonType.COMMON_MINOR) {
                     descriptionLines.add("Информацию о времени и ссылке на майнор узнайте " +
                             "подробнее в HSE App X или в системе РУЗ")
                 }
@@ -104,5 +106,9 @@ data class Lesson(
             office
         }
         else "кабинет $office"
+    }
+
+    override fun compareTo(other: Lesson): Int {
+        return date.compareTo(other.date)
     }
 }

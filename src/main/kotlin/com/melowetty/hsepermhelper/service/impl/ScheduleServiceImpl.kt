@@ -7,7 +7,9 @@ import com.melowetty.hsepermhelper.events.ScheduleChangedEvent
 import com.melowetty.hsepermhelper.events.UsersChangedEvent
 import com.melowetty.hsepermhelper.exceptions.ScheduleNotFoundException
 import com.melowetty.hsepermhelper.models.Lesson
+import com.melowetty.hsepermhelper.models.LessonType
 import com.melowetty.hsepermhelper.models.ScheduleFileLinks
+import com.melowetty.hsepermhelper.models.ScheduleType
 import com.melowetty.hsepermhelper.repository.ScheduleRepository
 import com.melowetty.hsepermhelper.service.ScheduleService
 import com.melowetty.hsepermhelper.service.UserFilesService
@@ -31,11 +33,25 @@ class ScheduleServiceImpl(
     }
     private fun filterSchedules(schedules: List<Schedule>, user: UserDto): List<Schedule> {
         val filteredSchedules = mutableListOf<Schedule>()
-        schedules.forEach { schedule ->
+        schedules
+            .filter {
+                if(user.settings?.includeQuarterSchedule?.not() == true) {
+                    it.scheduleType != ScheduleType.QUARTER_SCHEDULE
+                }
+                else
+                    true
+            }
+            .forEach { schedule ->
             val filteredLessons = schedule.lessons.flatMap { it.value }.filter { lesson: Lesson ->
                 if (lesson.subGroup != null) lesson.group == user.settings?.group
                         && lesson.subGroup == user.settings.subGroup
                 else lesson.group == user.settings?.group
+            }.filter {
+                if (it.lessonType != LessonType.COMMON_ENGLISH) true
+                else user.settings?.includeCommonEnglish == true
+            }.filter {
+                if (it.lessonType != LessonType.COMMON_MINOR) true
+                else user.settings?.includeCommonMinor == true
             }
             val groupedLessons = filteredLessons.groupBy { it.date }
             filteredSchedules.add(
@@ -105,8 +121,13 @@ class ScheduleServiceImpl(
     }
 
     final override fun refreshScheduleFiles() {
-        userService.getAllUsers().forEach {
-            refreshScheduleFile(user = it)
+        try {
+            userService.getAllUsers().forEach {
+                refreshScheduleFile(user = it)
+            }
+        } catch (e: Exception) {
+            println("Произошла ошибка с обновлением расписаний пользователей!")
+            e.printStackTrace()
         }
     }
 
