@@ -41,6 +41,8 @@ data class Lesson(
     val additionalInfo: List<String>? = null,
     @Schema(description = "Тип лекции", example = "SEMINAR")
     val lessonType: LessonType,
+    @Schema(description = "Тип расписания-родителя", example = "COMMON_WEEK_SCHEDULE")
+    val parentScheduleType: ScheduleType,
 ) : Comparable<Lesson> {
     /**
      * Returns lesson will be in online mode
