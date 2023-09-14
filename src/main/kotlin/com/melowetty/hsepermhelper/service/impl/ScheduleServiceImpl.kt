@@ -121,8 +121,13 @@ class ScheduleServiceImpl(
     }
 
     final override fun refreshScheduleFiles() {
-        userService.getAllUsers().forEach {
-            refreshScheduleFile(user = it)
+        try {
+            userService.getAllUsers().forEach {
+                refreshScheduleFile(user = it)
+            }
+        } catch (e: Exception) {
+            println("Произошла ошибка с обновлением расписаний пользователей!")
+            e.printStackTrace()
         }
     }
 
