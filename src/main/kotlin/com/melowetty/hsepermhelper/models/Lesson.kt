@@ -8,6 +8,9 @@ import com.melowetty.hsepermhelper.utils.EmojiCode
 import io.swagger.v3.oas.annotations.media.Schema
 import net.fortuna.ical4j.model.component.VEvent
 import net.fortuna.ical4j.model.property.Description
+import net.fortuna.ical4j.model.property.Uid
+import net.fortuna.ical4j.util.RandomUidGenerator
+import net.fortuna.ical4j.util.UidGenerator
 import java.time.LocalDate
 import java.time.LocalDateTime
 
@@ -35,9 +38,9 @@ data class Lesson(
     val office: String?,
     @Schema(description = "Корпус (если 0 - пара дистанционная)", example = "2", nullable = true)
     val building: Int?,
-    @Schema(description = "Ссылка на пару (null - если ссылки нет)")
-    val link: String? = null,
-    @Schema(description = "Дополнительные ссылки на пару (null - если нет)")
+    @Schema(description = "Ссылки на пару (null - если ссылок нет)")
+    val links: List<String>? = null,
+    @Schema(description = "Дополнительная информация о паре (null - если информации нет)")
     val additionalInfo: List<String>? = null,
     @Schema(description = "Тип лекции", example = "SEMINAR")
     val lessonType: LessonType,
@@ -60,18 +63,21 @@ data class Lesson(
      * @return converted lesson to VEvent object
      */
     fun toVEvent(): VEvent {
+        val quarterScheduleSymbol =
+            if(parentScheduleType == ScheduleType.QUARTER_SCHEDULE) "*" else ""
         val distantSymbol = if(isOnline()) EmojiCode.DISTANT_LESSON_SYMBOL else ""
-        val event = VEvent(startTime, endTime, "${distantSymbol}${lessonType.toEventSubject(subject)}")
+        val event = VEvent(startTime, endTime,
+            "${distantSymbol}${lessonType.toEventSubject(subject)}${quarterScheduleSymbol}")
         val descriptionLines: MutableList<String> = mutableListOf()
         if (lecturer != null) {
             descriptionLines.add("Преподаватель: $lecturer")
         }
         if(isOnline()) {
-            if (link != null) {
-                descriptionLines.add("Ссылка на пару: $link")
-                if (additionalInfo?.isNotEmpty() == true) {
+            if (!links.isNullOrEmpty()) {
+                descriptionLines.add("Ссылка на пару: ${links[0]}")
+                if (links.size > 1) {
                     descriptionLines.add("Дополнительные ссылки на пару: ")
-                    additionalInfo.forEach { descriptionLines.add(it) }
+                    links.subList(1, links.size).forEach { descriptionLines.add(it) }
                 }
             }
             else {
@@ -91,6 +97,12 @@ data class Lesson(
                 descriptionLines.add("Место: $building корпус - ${getOfficeStr()}")
             }
         }
+        if(parentScheduleType == ScheduleType.QUARTER_SCHEDULE) {
+            descriptionLines.add("\n" +
+                    "* - пара взята из расписания на модуль, фактическое расписание " +
+                    "может отличаться от этого")
+        }
+        event.add(Uid(RandomUidGenerator().generateUid().value))
         event.add(
             Description(
                 descriptionLines.joinToString("\n")
@@ -110,5 +122,43 @@ data class Lesson(
 
     override fun compareTo(other: Lesson): Int {
         return date.compareTo(other.date)
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as Lesson
+
+        if (subject != other.subject) return false
+        if (course != other.course) return false
+        if (programme != other.programme) return false
+        if (group != other.group) return false
+        if (subGroup != other.subGroup) return false
+        if (date != other.date) return false
+        if (startTimeStr != other.startTimeStr) return false
+        if (endTimeStr != other.endTimeStr) return false
+        if (startTime != other.startTime) return false
+        if (endTime != other.endTime) return false
+        if (lecturer != other.lecturer) return false
+        if (lessonType != other.lessonType) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = subject.hashCode()
+        result = 31 * result + course
+        result = 31 * result + programme.hashCode()
+        result = 31 * result + group.hashCode()
+        result = 31 * result + (subGroup ?: 0)
+        result = 31 * result + date.hashCode()
+        result = 31 * result + startTimeStr.hashCode()
+        result = 31 * result + endTimeStr.hashCode()
+        result = 31 * result + startTime.hashCode()
+        result = 31 * result + endTime.hashCode()
+        result = 31 * result + (lecturer?.hashCode() ?: 0)
+        result = 31 * result + lessonType.hashCode()
+        return result
     }
 }

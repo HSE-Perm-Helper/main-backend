@@ -176,6 +176,10 @@ class ScheduleRepositoryImpl(
                                 day.ordinal.toLong() - scheduleInfo.weekStartDate.dayOfWeek.ordinal
                             )
                             while(dateIteration.isAfter(scheduleInfo.weekEndDate).not()) {
+                                if (dateIteration.isBefore(LocalDate.now())) {
+                                    dateIteration = dateIteration.plusDays(7)
+                                    continue
+                                }
                                 dates.add(dateIteration)
                                 dateIteration = dateIteration.plusDays(7)
                             }
@@ -430,6 +434,8 @@ class ScheduleRepositoryImpl(
             endTime = serviceLessonInfo.endTime,
             endTimeStr = serviceLessonInfo.endTimeStr,
             parentScheduleType = scheduleInfo.scheduleType,
+            links = additionalLessonInfo.links,
+            additionalInfo = additionalLessonInfo.additionalInfo,
         )
     }
 
@@ -464,8 +470,8 @@ class ScheduleRepositoryImpl(
             office = office,
             building = building,
             subGroup = subgroup,
-            additionalInfo = additionalInfo,
-            links = links,
+            additionalInfo = if (additionalInfo.isEmpty()) null else additionalInfo,
+            links = if (links.isEmpty()) null else links,
         )
     }
 
@@ -539,9 +545,7 @@ class ScheduleRepositoryImpl(
 
     companion object {
         private val LESSON_BUILDING_INFO_REGEX = Regex("[^МКД|ДОЦ]\\(.+\\[\\d*\\].*\\)")
-        private val LINK_REGEX = Regex("^((((https?|ftps?|gopher|telnet|nntp)://)|(mailto:|news:))" +
-                "(%[0-9A-Fa-f]{2}|[-()_.!~*';/?:@&=+\$,A-Za-z0-9])+)" +
-                "([).!';/?:,][[:blank:]])?\$")
+        private val LINK_REGEX = Regex("https?:\\/\\/(www\\.)?[-a-zA-Z0-9@:%._\\+~#=]{1,256}\\.[a-zA-Z0-9()]{1,6}\\b([-a-zA-Z0-9()@:%_\\+.~#?&//=]*)")
         private val ADDITIONAL_INFO_REGEX = Regex("([^\\/]*)\\((.*)\\)")
         private val PLACE_INFO_REGEX = Regex("\\A[.[^\\[]]+|\\d+")
     }
@@ -585,7 +589,7 @@ class ScheduleRepositoryImpl(
         val office: String?,
         val building: Int?,
         val subGroup: Int?,
-        val links: List<String> = listOf(),
-        val additionalInfo: List<String> = listOf(),
+        val links: List<String>?,
+        val additionalInfo: List<String>?,
     )
 }
