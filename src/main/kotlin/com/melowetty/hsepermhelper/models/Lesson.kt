@@ -35,9 +35,9 @@ data class Lesson(
     val office: String?,
     @Schema(description = "Корпус (если 0 - пара дистанционная)", example = "2", nullable = true)
     val building: Int?,
-    @Schema(description = "Ссылка на пару (null - если ссылки нет)")
-    val link: String? = null,
-    @Schema(description = "Дополнительные ссылки на пару (null - если нет)")
+    @Schema(description = "Ссылки на пару (null - если ссылок нет)")
+    val links: List<String>? = null,
+    @Schema(description = "Дополнительная информация о паре (null - если информации нет)")
     val additionalInfo: List<String>? = null,
     @Schema(description = "Тип лекции", example = "SEMINAR")
     val lessonType: LessonType,
@@ -70,11 +70,11 @@ data class Lesson(
             descriptionLines.add("Преподаватель: $lecturer")
         }
         if(isOnline()) {
-            if (link != null) {
-                descriptionLines.add("Ссылка на пару: $link")
-                if (additionalInfo?.isNotEmpty() == true) {
+            if (links != null) {
+                descriptionLines.add("Ссылка на пару: ${links[0]}")
+                if (links.size > 1) {
                     descriptionLines.add("Дополнительные ссылки на пару: ")
-                    additionalInfo.forEach { descriptionLines.add(it) }
+                    links.subList(1, links.size).forEach { descriptionLines.add(it) }
                 }
             }
             else {

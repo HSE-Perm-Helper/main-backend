@@ -430,6 +430,8 @@ class ScheduleRepositoryImpl(
             endTime = serviceLessonInfo.endTime,
             endTimeStr = serviceLessonInfo.endTimeStr,
             parentScheduleType = scheduleInfo.scheduleType,
+            links = additionalLessonInfo.links,
+            additionalInfo = additionalLessonInfo.additionalInfo,
         )
     }
 
