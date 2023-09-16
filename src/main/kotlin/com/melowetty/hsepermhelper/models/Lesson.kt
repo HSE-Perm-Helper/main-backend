@@ -8,6 +8,9 @@ import com.melowetty.hsepermhelper.utils.EmojiCode
 import io.swagger.v3.oas.annotations.media.Schema
 import net.fortuna.ical4j.model.component.VEvent
 import net.fortuna.ical4j.model.property.Description
+import net.fortuna.ical4j.model.property.Uid
+import net.fortuna.ical4j.util.RandomUidGenerator
+import net.fortuna.ical4j.util.UidGenerator
 import java.time.LocalDate
 import java.time.LocalDateTime
 
@@ -99,6 +102,7 @@ data class Lesson(
                     "* - пара взята из расписания на модуль, фактическое расписание " +
                     "может отличаться от этого")
         }
+        event.add(Uid(RandomUidGenerator().generateUid().value))
         event.add(
             Description(
                 descriptionLines.joinToString("\n")
