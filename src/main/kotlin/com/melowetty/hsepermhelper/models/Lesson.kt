@@ -60,8 +60,11 @@ data class Lesson(
      * @return converted lesson to VEvent object
      */
     fun toVEvent(): VEvent {
+        val quarterScheduleSymbol =
+            if(parentScheduleType == ScheduleType.QUARTER_SCHEDULE) "*" else ""
         val distantSymbol = if(isOnline()) EmojiCode.DISTANT_LESSON_SYMBOL else ""
-        val event = VEvent(startTime, endTime, "${distantSymbol}${lessonType.toEventSubject(subject)}")
+        val event = VEvent(startTime, endTime,
+            "${distantSymbol}${lessonType.toEventSubject(subject)}${quarterScheduleSymbol}")
         val descriptionLines: MutableList<String> = mutableListOf()
         if (lecturer != null) {
             descriptionLines.add("Преподаватель: $lecturer")
@@ -90,6 +93,11 @@ data class Lesson(
             else {
                 descriptionLines.add("Место: $building корпус - ${getOfficeStr()}")
             }
+        }
+        if(parentScheduleType == ScheduleType.QUARTER_SCHEDULE) {
+            descriptionLines.add("\n" +
+                    "* - пара взята из расписания на модуль, фактическое расписание " +
+                    "может отличаться от этого")
         }
         event.add(
             Description(
