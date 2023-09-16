@@ -176,6 +176,10 @@ class ScheduleRepositoryImpl(
                                 day.ordinal.toLong() - scheduleInfo.weekStartDate.dayOfWeek.ordinal
                             )
                             while(dateIteration.isAfter(scheduleInfo.weekEndDate).not()) {
+                                if (dateIteration.isBefore(LocalDate.now())) {
+                                    dateIteration = dateIteration.plusDays(7)
+                                    continue
+                                }
                                 dates.add(dateIteration)
                                 dateIteration = dateIteration.plusDays(7)
                             }
