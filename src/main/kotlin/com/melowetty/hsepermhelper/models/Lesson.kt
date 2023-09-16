@@ -73,7 +73,7 @@ data class Lesson(
             descriptionLines.add("Преподаватель: $lecturer")
         }
         if(isOnline()) {
-            if (links != null) {
+            if (!links.isNullOrEmpty()) {
                 descriptionLines.add("Ссылка на пару: ${links[0]}")
                 if (links.size > 1) {
                     descriptionLines.add("Дополнительные ссылки на пару: ")
