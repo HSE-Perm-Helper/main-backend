@@ -1,6 +1,7 @@
 package com.melowetty.hsepermhelper.utils
 
 import Schedule
+import com.melowetty.hsepermhelper.models.Lesson
 import com.melowetty.hsepermhelper.models.LessonType
 import jakarta.servlet.http.HttpServletRequest
 import net.fortuna.ical4j.model.Calendar
@@ -70,11 +71,18 @@ class FileUtils {
             calendar.add(XProperty("X-APPLE-CALENDAR-COLOR", "#0047BB"))
 
             calendar.add(RefreshInterval(null, Duration.ofHours(1)))
+            val allLessons = mutableListOf<Lesson>()
             schedules.forEach { schedule ->
-                schedule.lessons.flatMap { it.value }.forEach lessonsForeach@{
-                    calendar.add(it.toVEvent())
+                schedule.lessons
+                    .flatMap { it.value }
+                    .forEach lessonsForeach@ {
+                        allLessons.add(it)
                 }
             }
+            LessonUtils.clearRepeats(allLessons.sorted())
+                .forEach {
+                    calendar.add(it.toVEvent())
+                }
             val calendarByte = calendar.toString().toByteArray()
             return ByteArrayResource(calendarByte)
         }
