@@ -21,5 +21,8 @@ data class SettingsDto(
     val includeCommonEnglish: Boolean = false,
 
     @Schema(description = "Включать ли общие пары майнора в общее расписание", example = "true")
-    val includeCommonMinor: Boolean? = true,
+    val includeCommonMinor: Boolean = true,
+
+    @Schema(description = "Включен ли удаленный календарь", example = "false")
+    val isEnabledRemoteCalendar: Boolean = false,
 )

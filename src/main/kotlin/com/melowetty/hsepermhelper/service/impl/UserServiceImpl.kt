@@ -121,6 +121,7 @@ class UserServiceImpl(
             includeQuarterSchedule = includeQuarterSchedule,
             includeCommonEnglish = includeCommonEnglish,
             includeCommonMinor = includeCommonMinor,
+            isEnabledRemoteCalendar = isEnabledRemoteCalendar,
         )
     }
 
@@ -132,6 +133,7 @@ class UserServiceImpl(
             includeQuarterSchedule = includeQuarterSchedule != null && includeQuarterSchedule,
             includeCommonEnglish = includeCommonEnglish != null && includeCommonEnglish,
             includeCommonMinor = includeCommonMinor != null && includeCommonMinor,
+            isEnabledRemoteCalendar = isEnabledRemoteCalendar != null && isEnabledRemoteCalendar,
         )
     }
 }
