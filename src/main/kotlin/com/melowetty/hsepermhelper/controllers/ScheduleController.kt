@@ -3,7 +3,9 @@ package com.melowetty.hsepermhelper.controllers
 import Schedule
 import com.melowetty.hsepermhelper.models.Response
 import com.melowetty.hsepermhelper.models.ScheduleFileLinks
+import com.melowetty.hsepermhelper.models.UserEventType
 import com.melowetty.hsepermhelper.service.ScheduleService
+import com.melowetty.hsepermhelper.service.UserEventService
 import com.melowetty.hsepermhelper.utils.UrlUtils
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.Parameter
@@ -21,6 +23,7 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 class ScheduleController(
     private val scheduleService: ScheduleService,
+    private val userEventService: UserEventService,
 ) {
     @SecurityRequirement(name = "X-Secret-Key")
     @Operation(
@@ -36,6 +39,7 @@ class ScheduleController(
         @PathVariable("telegramId")
         telegramId: Long,
     ): Response<List<Schedule>> {
+        userEventService.addUserEvent(telegramId, UserEventType.GET_SCHEDULE)
         return Response(scheduleService.getUserSchedulesByTelegramId(telegramId))
     }
 
