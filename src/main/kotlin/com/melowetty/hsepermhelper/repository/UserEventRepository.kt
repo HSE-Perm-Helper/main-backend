@@ -8,6 +8,6 @@ import org.springframework.stereotype.Repository
 
 @Repository
 interface UserEventRepository: CrudRepository<UserEventEntity, Long> {
-    fun findByTargetUser(user: UserEntity)
-    fun findByTargetUserAndUserEventType(user: UserEntity, eventType: UserEventType)
+    fun findByTargetUser(user: UserEntity): List<UserEventEntity>
+    fun findByTargetUserAndUserEventType(user: UserEntity, eventType: UserEventType): List<UserEventEntity>
 }
