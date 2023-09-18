@@ -91,6 +91,34 @@ class ScheduleServiceImpl(
 
     @EventListener
     fun handleScheduleChanging(event: ScheduleChangedEvent) {
+        val editedSchedules = event.changes.getOrDefault(EventType.EDITED, null)
+        if(editedSchedules != null) {
+            val changedForUserIds = mutableListOf<Long>()
+            editedSchedules.forEach {
+                val groupedAfter = it.after!!.lessons.values.flatten().groupBy { it.group }
+                it.before!!.lessons.values.flatten().groupBy { it.group }.forEach { groupEntry ->
+                    val groupMatch = groupedAfter.getOrDefault(groupEntry.key, null)
+                    if(groupMatch != null) {
+                        val subGroupGrouping = groupMatch.groupBy { it.subGroup }
+                        groupEntry.value.groupBy { it.subGroup }.forEach subGroupForeach@ { subGroupEntry ->
+                            val subGroupMatch = subGroupGrouping.getOrDefault(subGroupEntry.key, null)
+                            if(subGroupMatch != null) {
+                                if(subGroupMatch == subGroupEntry.value) {
+                                    return@subGroupForeach
+                                } else {
+                                    changedForUserIds.addAll(userService.getAllUsers(groupEntry.key, subGroupEntry.key ?: 0).map { it.telegramId })
+                                }
+                            } else {
+                                changedForUserIds.addAll(userService.getAllUsers(groupEntry.key, subGroupEntry.key ?: 0).map { it.telegramId })
+                            }
+                        }
+                    } else {
+                        changedForUserIds.addAll(userService.getAllUsers(groupEntry.key, 0).map { it.telegramId })
+                    }
+                }
+            }
+            changedForUserIds.distinct()
+        }
         refreshScheduleFiles()
     }
 
