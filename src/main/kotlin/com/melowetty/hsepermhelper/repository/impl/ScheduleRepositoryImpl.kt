@@ -49,7 +49,7 @@ class ScheduleRepositoryImpl(
         val mappedSchedules = schedules.map { it.weekStart }
         for (newSchedule in newSchedules) {
             val existsSchedule = schedules.find { it.weekStart == newSchedule.weekStart }
-            if(existsSchedule != null && existsSchedule.lessons.equals(newSchedule).not()) {
+            if(existsSchedule != null && existsSchedule.lessons != newSchedule.lessons) {
                 val editedSchedules: MutableList<ChangedSchedule> = changes.getOrDefault(EventType.EDITED, listOf()).toMutableList()
                 editedSchedules.add(
                     ChangedSchedule(
