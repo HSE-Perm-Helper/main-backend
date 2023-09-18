@@ -8,12 +8,12 @@ import java.time.LocalDateTime
 data class UserEventEntity(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val id: Long,
+    val id: Long = 1,
 
     @Column(name = "date")
     val date: LocalDateTime = LocalDateTime.now(),
 
-    @ManyToOne(cascade = [CascadeType.DETACH])
+    @ManyToOne(cascade = [CascadeType.REMOVE])
     @JoinColumn(name = "user_id")
     val targetUser: UserEntity,
 
