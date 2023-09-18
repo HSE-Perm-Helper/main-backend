@@ -122,7 +122,10 @@ class ScheduleServiceImpl(
 
     final override fun refreshScheduleFiles() {
         try {
-            userService.getAllUsers().forEach {
+            userService.getAllUsers()
+                .filter {
+                    it.settings?.isEnabledRemoteCalendar == true
+                }.forEach {
                 refreshScheduleFile(user = it)
             }
         } catch (e: Exception) {

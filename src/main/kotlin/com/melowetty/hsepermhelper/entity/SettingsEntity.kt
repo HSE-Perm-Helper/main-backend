@@ -24,4 +24,7 @@ data class SettingsEntity(
 
     @Column(name = "include_common_minor")
     val includeCommonMinor: Boolean? = true,
+
+    @Column(name = "is_enabled_remote_calendar")
+    val isEnabledRemoteCalendar: Boolean? = false,
 )

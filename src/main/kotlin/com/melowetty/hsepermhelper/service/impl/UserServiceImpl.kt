@@ -96,42 +96,45 @@ class UserServiceImpl(
     override fun getAllUsers(): List<UserDto> {
         return userRepository.findAll().map { it.toDto() }
     }
+    companion object {
+        fun UserEntity.toDto(): UserDto {
+            return UserDto(
+                id = id,
+                telegramId = telegramId,
+                settings = settings?.toDto(),
+            )
+        }
 
-    fun UserEntity.toDto(): UserDto {
-        return UserDto(
-            id = id,
-            telegramId = telegramId,
-            settings = settings?.toDto(),
-        )
-    }
+        fun UserDto.toEntity(): UserEntity {
+            return UserEntity(
+                id = id,
+                telegramId = telegramId,
+                settings = settings?.toEntity(),
+            )
+        }
 
-    fun UserDto.toEntity(): UserEntity {
-        return UserEntity(
-            id = id,
-            telegramId = telegramId,
-            settings = settings?.toEntity(),
-        )
-    }
+        fun SettingsDto.toEntity(): SettingsEntity {
+            return SettingsEntity(
+                id = id,
+                group = group,
+                subGroup = subGroup,
+                includeQuarterSchedule = includeQuarterSchedule,
+                includeCommonEnglish = includeCommonEnglish,
+                includeCommonMinor = includeCommonMinor,
+                isEnabledRemoteCalendar = isEnabledRemoteCalendar,
+            )
+        }
 
-    fun SettingsDto.toEntity(): SettingsEntity {
-        return SettingsEntity(
-            id = id,
-            group = group,
-            subGroup = subGroup,
-            includeQuarterSchedule = includeQuarterSchedule,
-            includeCommonEnglish = includeCommonEnglish,
-            includeCommonMinor = includeCommonMinor,
-        )
-    }
-
-    fun SettingsEntity.toDto(): SettingsDto {
-        return SettingsDto(
-            id = id,
-            group = group,
-            subGroup = subGroup,
-            includeQuarterSchedule = includeQuarterSchedule != null && includeQuarterSchedule,
-            includeCommonEnglish = includeCommonEnglish != null && includeCommonEnglish,
-            includeCommonMinor = includeCommonMinor != null && includeCommonMinor,
-        )
+        fun SettingsEntity.toDto(): SettingsDto {
+            return SettingsDto(
+                id = id,
+                group = group,
+                subGroup = subGroup,
+                includeQuarterSchedule = includeQuarterSchedule != null && includeQuarterSchedule,
+                includeCommonEnglish = includeCommonEnglish != null && includeCommonEnglish,
+                includeCommonMinor = includeCommonMinor != null && includeCommonMinor,
+                isEnabledRemoteCalendar = isEnabledRemoteCalendar != null && isEnabledRemoteCalendar,
+            )
+        }
     }
 }
