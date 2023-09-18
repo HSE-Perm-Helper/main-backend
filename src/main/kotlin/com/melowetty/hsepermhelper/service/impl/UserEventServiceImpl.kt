@@ -4,7 +4,9 @@ import com.melowetty.hsepermhelper.dto.UserDto
 import com.melowetty.hsepermhelper.dto.UserEventDto
 import com.melowetty.hsepermhelper.models.UserEventType
 import com.melowetty.hsepermhelper.service.UserEventService
+import org.springframework.stereotype.Service
 
+@Service
 class UserEventServiceImpl: UserEventService {
     override fun addUserEvent(user: UserDto, eventType: UserEventType) {
         TODO("Not yet implemented")
