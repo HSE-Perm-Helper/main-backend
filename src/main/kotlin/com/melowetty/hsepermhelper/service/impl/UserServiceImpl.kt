@@ -96,6 +96,11 @@ class UserServiceImpl(
     override fun getAllUsers(): List<UserDto> {
         return userRepository.findAll().map { it.toDto() }
     }
+
+    override fun getAllUsers(group: String, subGroup: Int): List<UserDto> {
+        return userRepository.findAllBySettingsGroupAndSettingsSubGroup(group, subGroup).map { it.toDto() }
+    }
+
     companion object {
         fun UserEntity.toDto(): UserDto {
             return UserDto(

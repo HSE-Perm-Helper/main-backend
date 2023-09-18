@@ -9,4 +9,5 @@ import java.util.*
 interface UserRepository: CrudRepository<UserEntity, UUID> {
     fun findByTelegramId(telegramId: Long): Optional<UserEntity>
     fun existsByTelegramId(telegramId: Long): Boolean
+    fun findAllBySettingsGroupAndSettingsSubGroup(group: String, subGroup: Int): List<UserEntity>
 }
