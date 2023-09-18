@@ -6,6 +6,14 @@ import com.melowetty.hsepermhelper.models.UserEventType
 
 interface UserEventService {
     /**
+     * Add user event by telegram Id
+     *
+     * @param telegramId target user telegram id
+     * @param eventType type of event
+     */
+    fun addUserEvent(telegramId: Long, eventType: UserEventType)
+
+    /**
      * Add user event to db
      *
      * @param user target user

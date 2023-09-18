@@ -8,6 +8,10 @@ import org.springframework.stereotype.Service
 
 @Service
 class UserEventServiceImpl: UserEventService {
+    override fun addUserEvent(telegramId: Long, eventType: UserEventType) {
+        TODO("Not yet implemented")
+    }
+
     override fun addUserEvent(user: UserDto, eventType: UserEventType) {
         TODO("Not yet implemented")
     }
