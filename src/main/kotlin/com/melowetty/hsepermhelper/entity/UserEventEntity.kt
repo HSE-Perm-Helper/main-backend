@@ -7,8 +7,8 @@ import java.time.LocalDateTime
 @Entity
 data class UserEventEntity(
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val id: Long = 1,
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    val id: Long? = null,
 
     @Column(name = "date")
     val date: LocalDateTime = LocalDateTime.now(),

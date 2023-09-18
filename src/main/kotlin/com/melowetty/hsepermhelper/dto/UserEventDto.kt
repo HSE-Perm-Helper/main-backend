@@ -6,7 +6,7 @@ import java.time.LocalDateTime
 
 data class UserEventDto(
     @Schema(description = "ID ивента")
-    val id: Long = 1,
+    val id: Long? = null,
 
     @Schema(description = "Время и дата выполнения ивента")
     val date: LocalDateTime = LocalDateTime.now(),
