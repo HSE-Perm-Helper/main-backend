@@ -13,12 +13,16 @@ class EventServiceImpl(
         return eventRepository.getAllEvents()
     }
 
-    override fun deleteEvent(id: Long): Boolean {
-        return eventRepository.deleteEvent(id)
+    override fun addEvent(event: PublicEvent) {
+        eventRepository.addEvent(event)
     }
 
-    override fun deleteEvents(ids: List<Long>): Boolean {
-        return eventRepository.deleteEvents(ids)
+    override fun deleteFirstEvent(): Boolean {
+        return eventRepository.deleteFirstEvent()
+    }
+
+    override fun deleteLastEvent(): Boolean {
+        return eventRepository.deleteLastEvent()
     }
 
     override fun clearEvents() {
