@@ -1,7 +1,10 @@
 package com.melowetty.hsepermhelper.service.impl
 
 import Schedule
+import Schedule.Companion.toScheduleInfo
 import com.melowetty.hsepermhelper.dto.UserDto
+import com.melowetty.hsepermhelper.events.ScheduleAddedEvent
+import com.melowetty.hsepermhelper.events.ScheduleChangedForUserEvent
 import com.melowetty.hsepermhelper.events.common.EventType
 import com.melowetty.hsepermhelper.events.internal.ScheduleChangedEvent
 import com.melowetty.hsepermhelper.events.internal.UsersChangedEvent
@@ -15,6 +18,7 @@ import com.melowetty.hsepermhelper.service.ScheduleService
 import com.melowetty.hsepermhelper.service.UserFilesService
 import com.melowetty.hsepermhelper.service.UserService
 import com.melowetty.hsepermhelper.utils.FileUtils
+import org.springframework.context.ApplicationEventPublisher
 import org.springframework.context.event.EventListener
 import org.springframework.core.env.Environment
 import org.springframework.core.io.Resource
@@ -23,6 +27,7 @@ import java.util.*
 
 @Service
 class ScheduleServiceImpl(
+    private val eventPublisher: ApplicationEventPublisher,
     private val scheduleRepository: ScheduleRepository,
     private val userService: UserService,
     private val userFilesService: UserFilesService,
@@ -92,6 +97,13 @@ class ScheduleServiceImpl(
     @EventListener
     fun handleScheduleChanging(event: ScheduleChangedEvent) {
         val editedSchedules = event.changes.getOrDefault(EventType.EDITED, null)
+        val addedSchedules = event.changes.getOrDefault(EventType.ADDED, null)
+        addedSchedules?.forEach {
+            val scheduleAddedEvent = ScheduleAddedEvent(
+                targetSchedule = it.after!!.toScheduleInfo()
+            )
+            eventPublisher.publishEvent(scheduleAddedEvent)
+        }
         if(editedSchedules != null) {
             val changedForUserIds = mutableListOf<Long>()
             editedSchedules.forEach {
@@ -118,6 +130,12 @@ class ScheduleServiceImpl(
                 }
             }
             changedForUserIds.distinct()
+            if(changedForUserIds.isNotEmpty()) {
+                val scheduleChangedEvent = ScheduleChangedForUserEvent(
+                    users = changedForUserIds
+                )
+                eventPublisher.publishEvent(scheduleChangedEvent)
+            }
         }
         refreshScheduleFiles()
     }
