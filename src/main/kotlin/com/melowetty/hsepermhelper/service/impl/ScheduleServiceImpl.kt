@@ -14,6 +14,7 @@ import com.melowetty.hsepermhelper.models.LessonType
 import com.melowetty.hsepermhelper.models.ScheduleFileLinks
 import com.melowetty.hsepermhelper.models.ScheduleType
 import com.melowetty.hsepermhelper.repository.ScheduleRepository
+import com.melowetty.hsepermhelper.service.EventService
 import com.melowetty.hsepermhelper.service.ScheduleService
 import com.melowetty.hsepermhelper.service.UserFilesService
 import com.melowetty.hsepermhelper.service.UserService
@@ -27,10 +28,10 @@ import java.util.*
 
 @Service
 class ScheduleServiceImpl(
-    private val eventPublisher: ApplicationEventPublisher,
     private val scheduleRepository: ScheduleRepository,
     private val userService: UserService,
     private val userFilesService: UserFilesService,
+    private val eventService: EventService,
     private val env: Environment
 ): ScheduleService {
     init {
@@ -102,7 +103,7 @@ class ScheduleServiceImpl(
             val scheduleAddedEvent = ScheduleAddedEvent(
                 targetSchedule = it.after!!.toScheduleInfo()
             )
-            eventPublisher.publishEvent(scheduleAddedEvent)
+            eventService.addEvent(scheduleAddedEvent)
         }
         if(editedSchedules != null) {
             val changedForUserIds = mutableListOf<Long>()
@@ -134,7 +135,7 @@ class ScheduleServiceImpl(
                 val scheduleChangedEvent = ScheduleChangedForUserEvent(
                     users = changedForUserIds
                 )
-                eventPublisher.publishEvent(scheduleChangedEvent)
+                eventService.addEvent(scheduleChangedEvent)
             }
         }
         refreshScheduleFiles()
