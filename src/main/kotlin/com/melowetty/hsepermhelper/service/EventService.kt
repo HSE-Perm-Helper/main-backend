@@ -2,7 +2,7 @@ package com.melowetty.hsepermhelper.service;
 
 import com.melowetty.hsepermhelper.events.PublicEvent
 
-public interface EventService {
+interface EventService {
     /**
      * Get all events as list
      *
