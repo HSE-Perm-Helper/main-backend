@@ -3,20 +3,27 @@ package com.melowetty.hsepermhelper.repository.impl
 import com.melowetty.hsepermhelper.events.PublicEvent
 import com.melowetty.hsepermhelper.repository.EventRepository
 import org.springframework.stereotype.Repository
+import java.util.*
 
 @Repository
 class EventRepositoryImpl: EventRepository {
-    private val events = mutableMapOf <Long, PublicEvent>()
+    private val events = LinkedList<PublicEvent>()
     override fun getAllEvents(): List<PublicEvent> {
-        return events.values.toList()
+        return events.toList()
     }
 
-    override fun deleteEvent(id: Long): Boolean {
-        return events.remove(id) != null
+    override fun addEvent(event: PublicEvent) {
+        events.add(event)
     }
 
-    override fun deleteEvents(ids: List<Long>): Boolean {
-        return ids.map { deleteEvent(it) }.all { it }
+    override fun deleteFirstEvent(): Boolean {
+        if (events.size == 0) return false
+        return events.removeFirst() != null
+    }
+
+    override fun deleteLastEvent(): Boolean {
+        if (events.size == 0) return false
+        return events.removeLast() != null
     }
 
     override fun clearEvents() {

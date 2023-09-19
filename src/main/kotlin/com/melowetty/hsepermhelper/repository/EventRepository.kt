@@ -11,22 +11,27 @@ interface EventRepository {
     fun getAllEvents(): List<PublicEvent>
 
     /**
-     * Delete event by id
-     * Returns true if event is deleted or false if event is not deleted
+     * Add event
      *
-     * @param id event id
-     * @return if event is deleted true or false
+     * @param event
      */
-    fun deleteEvent(id: Long): Boolean
+    fun addEvent(event: PublicEvent)
 
     /**
-     * Delete some events by list of ids
-     * Returns false if any event is not deleted
+     * Delete first event
+     * Returns true if event is deleted or false if event is not deleted
      *
-     * @param ids list of event ids
-     * @return return true if all events is deleted or false
+     * @return if event is deleted true or false
      */
-    fun deleteEvents(ids: List<Long>): Boolean
+    fun deleteFirstEvent(): Boolean
+
+    /**
+     * Delete last event
+     * Returns true if event is deleted or false if event is not deleted
+     *
+     * @return if event is deleted true or false
+     */
+    fun deleteLastEvent(): Boolean
 
     /**
      * Clears all events
