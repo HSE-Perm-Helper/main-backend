@@ -1,6 +1,6 @@
 package com.melowetty.hsepermhelper.service;
 
-import com.melowetty.hsepermhelper.events.PublicEvent
+import com.melowetty.hsepermhelper.events.common.PublicEvent
 
 interface EventService {
     /**

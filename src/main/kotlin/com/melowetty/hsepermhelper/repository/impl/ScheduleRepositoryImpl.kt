@@ -1,9 +1,9 @@
 package com.melowetty.hsepermhelper.repository.impl
 
 import Schedule
-import com.melowetty.hsepermhelper.events.EventType
-import com.melowetty.hsepermhelper.events.ScheduleChangedEvent
-import com.melowetty.hsepermhelper.events.ScheduleFilesChangedEvent
+import com.melowetty.hsepermhelper.events.common.EventType
+import com.melowetty.hsepermhelper.events.internal.ScheduleChangedEvent
+import com.melowetty.hsepermhelper.events.internal.ScheduleFilesChangedEvent
 import com.melowetty.hsepermhelper.exceptions.ScheduleNotFoundException
 import com.melowetty.hsepermhelper.models.ChangedSchedule
 import com.melowetty.hsepermhelper.models.Lesson

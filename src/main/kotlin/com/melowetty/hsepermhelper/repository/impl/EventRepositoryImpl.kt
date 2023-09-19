@@ -1,6 +1,6 @@
 package com.melowetty.hsepermhelper.repository.impl
 
-import com.melowetty.hsepermhelper.events.PublicEvent
+import com.melowetty.hsepermhelper.events.common.PublicEvent
 import com.melowetty.hsepermhelper.repository.EventRepository
 import org.springframework.stereotype.Repository
 import java.util.*

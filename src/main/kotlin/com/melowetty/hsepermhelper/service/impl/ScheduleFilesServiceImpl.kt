@@ -1,6 +1,6 @@
 package com.melowetty.hsepermhelper.service.impl
 
-import com.melowetty.hsepermhelper.events.ScheduleFilesChangedEvent
+import com.melowetty.hsepermhelper.events.internal.ScheduleFilesChangedEvent
 import com.melowetty.hsepermhelper.models.ScheduleFile
 import com.melowetty.hsepermhelper.repository.ScheduleFilesRepository
 import com.melowetty.hsepermhelper.service.ScheduleFilesService
