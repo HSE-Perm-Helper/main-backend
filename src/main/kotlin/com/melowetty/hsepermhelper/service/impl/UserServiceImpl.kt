@@ -4,8 +4,8 @@ import com.melowetty.hsepermhelper.dto.SettingsDto
 import com.melowetty.hsepermhelper.dto.UserDto
 import com.melowetty.hsepermhelper.entity.SettingsEntity
 import com.melowetty.hsepermhelper.entity.UserEntity
-import com.melowetty.hsepermhelper.events.EventType
-import com.melowetty.hsepermhelper.events.UsersChangedEvent
+import com.melowetty.hsepermhelper.events.common.EventType
+import com.melowetty.hsepermhelper.events.internal.UsersChangedEvent
 import com.melowetty.hsepermhelper.exceptions.UserIsExistsException
 import com.melowetty.hsepermhelper.exceptions.UserNotFoundException
 import com.melowetty.hsepermhelper.repository.UserRepository
@@ -96,6 +96,11 @@ class UserServiceImpl(
     override fun getAllUsers(): List<UserDto> {
         return userRepository.findAll().map { it.toDto() }
     }
+
+    override fun getAllUsers(group: String, subGroup: Int): List<UserDto> {
+        return userRepository.findAllBySettingsGroupAndSettingsSubGroup(group, subGroup).map { it.toDto() }
+    }
+
     companion object {
         fun UserEntity.toDto(): UserDto {
             return UserDto(

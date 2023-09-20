@@ -1,6 +1,7 @@
 import com.fasterxml.jackson.annotation.JsonFormat
 import com.fasterxml.jackson.annotation.JsonGetter
 import com.melowetty.hsepermhelper.models.Lesson
+import com.melowetty.hsepermhelper.models.ScheduleInfo
 import com.melowetty.hsepermhelper.models.ScheduleType
 import com.melowetty.hsepermhelper.utils.DateUtils
 import io.swagger.v3.oas.annotations.media.Schema
@@ -24,5 +25,15 @@ data class Schedule(
     @JsonGetter("lessons")
     fun getFormattedLessons(): Set<Map.Entry<String, List<Lesson>>> {
         return lessons.mapKeys { it.key.format(DateTimeFormatter.ofPattern(DateUtils.DATE_PATTERN)) }.entries
+    }
+    companion object {
+        fun Schedule.toScheduleInfo(): ScheduleInfo {
+            return ScheduleInfo(
+                weekNumber = weekNumber,
+                weekStart = weekStart,
+                weekEnd = weekEnd,
+                scheduleType = scheduleType,
+            )
+        }
     }
 }

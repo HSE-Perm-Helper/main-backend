@@ -1,16 +1,17 @@
 package com.melowetty.hsepermhelper.service.impl
 
 import Schedule
+import Schedule.Companion.toScheduleInfo
 import com.melowetty.hsepermhelper.dto.UserDto
-import com.melowetty.hsepermhelper.events.EventType
-import com.melowetty.hsepermhelper.events.ScheduleChangedEvent
-import com.melowetty.hsepermhelper.events.UsersChangedEvent
+import com.melowetty.hsepermhelper.events.ScheduleAddedEvent
+import com.melowetty.hsepermhelper.events.ScheduleChangedForUserEvent
+import com.melowetty.hsepermhelper.events.common.EventType
+import com.melowetty.hsepermhelper.events.internal.ScheduleChangedEvent
+import com.melowetty.hsepermhelper.events.internal.UsersChangedEvent
 import com.melowetty.hsepermhelper.exceptions.ScheduleNotFoundException
-import com.melowetty.hsepermhelper.models.Lesson
-import com.melowetty.hsepermhelper.models.LessonType
-import com.melowetty.hsepermhelper.models.ScheduleFileLinks
-import com.melowetty.hsepermhelper.models.ScheduleType
+import com.melowetty.hsepermhelper.models.*
 import com.melowetty.hsepermhelper.repository.ScheduleRepository
+import com.melowetty.hsepermhelper.service.EventService
 import com.melowetty.hsepermhelper.service.ScheduleService
 import com.melowetty.hsepermhelper.service.UserFilesService
 import com.melowetty.hsepermhelper.service.UserService
@@ -26,6 +27,7 @@ class ScheduleServiceImpl(
     private val scheduleRepository: ScheduleRepository,
     private val userService: UserService,
     private val userFilesService: UserFilesService,
+    private val eventService: EventService,
     private val env: Environment
 ): ScheduleService {
     init {
@@ -91,7 +93,65 @@ class ScheduleServiceImpl(
 
     @EventListener
     fun handleScheduleChanging(event: ScheduleChangedEvent) {
+        val editedSchedules = event.changes.getOrDefault(EventType.EDITED, null)
+        val addedSchedules = event.changes.getOrDefault(EventType.ADDED, null)
+        addedSchedules?.forEach {
+            val scheduleAddedEvent = ScheduleAddedEvent(
+                targetSchedule = it.after!!.toScheduleInfo()
+            )
+            eventService.addEvent(scheduleAddedEvent)
+        }
+        if(editedSchedules != null) {
+            val changes = mutableMapOf<ScheduleInfo, List<Long>>()
+            editedSchedules.forEach {
+                val groupedAfter = it.after!!.lessons.values.flatten().groupBy { it.group }
+                it.before!!.lessons.values.flatten().groupBy { it.group }.forEach { groupEntry ->
+                    val groupMatch = groupedAfter.getOrDefault(groupEntry.key, null)
+                    if(groupMatch != null) {
+                        val subGroupGrouping = groupMatch.groupBy { it.subGroup }
+                        groupEntry.value.groupBy { it.subGroup }.forEach subGroupForeach@ { subGroupEntry ->
+                            val subGroupMatch = subGroupGrouping.getOrDefault(subGroupEntry.key, null)
+                            if(subGroupMatch != null) {
+                                if(subGroupMatch == subGroupEntry.value) {
+                                    return@subGroupForeach
+                                } else {
+                                    addScheduleChanges(changes, it.after.toScheduleInfo(), groupEntry.key, subGroupEntry.key)
+                                }
+                            } else {
+                                addScheduleChanges(changes, it.after.toScheduleInfo(), groupEntry.key, subGroupEntry.key)
+                            }
+                        }
+                    } else {
+                        addScheduleChanges(changes, it.after.toScheduleInfo(), groupEntry.key, 0)
+                    }
+                }
+            }
+            if(changes.isNotEmpty()) {
+                for (pair in changes) {
+                    if(pair.value.isEmpty()) continue
+                    val scheduleChangedEvent = ScheduleChangedForUserEvent(
+                        targetSchedule = pair.key,
+                        users = pair.value.distinct()
+                    )
+                    eventService.addEvent(scheduleChangedEvent)
+                }
+            }
+        }
         refreshScheduleFiles()
+    }
+
+    private fun addScheduleChanges(changes: MutableMap<ScheduleInfo, List<Long>>,
+                                   scheduleInfo: ScheduleInfo,
+                                   group: String,
+                                   subGroup: Int?) {
+        val users = changes.getOrDefault(scheduleInfo, listOf()).toMutableList()
+        if(scheduleInfo.scheduleType == ScheduleType.QUARTER_SCHEDULE) {
+            users.addAll(userService.getAllUsers(group, subGroup ?: 0).filter { it.settings?.includeQuarterSchedule == true }.map { it.telegramId })
+        }
+        else {
+            users.addAll(userService.getAllUsers(group, subGroup ?: 0).map { it.telegramId })
+        }
+        changes[scheduleInfo] = users
     }
 
     override fun getScheduleFileByTelegramId(baseUrl: String, telegramId: Long): ScheduleFileLinks {

@@ -64,4 +64,13 @@ interface UserService {
      * @return new user object
      */
     fun updateUserSettings(telegramId: Long, settings: SettingsDto): UserDto
+
+    /**
+     * Get all users by group and subgroup
+     *
+     * @param group user group
+     * @param subGroup user subgroup
+     * @return filtered user by group and subgroup
+     */
+    fun getAllUsers(group: String, subGroup: Int): List<UserDto>
 }
