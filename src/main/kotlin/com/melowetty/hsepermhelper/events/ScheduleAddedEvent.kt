@@ -4,7 +4,7 @@ import com.melowetty.hsepermhelper.events.common.PublicEvent
 import com.melowetty.hsepermhelper.models.ScheduleInfo
 import io.swagger.v3.oas.annotations.media.Schema
 
-class ScheduleAddedEvent(
+data class ScheduleAddedEvent(
     @Schema(description = "Расписание, которое было добавлено")
-    targetSchedule: ScheduleInfo
+    val targetSchedule: ScheduleInfo
 ): PublicEvent()

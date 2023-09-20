@@ -6,7 +6,7 @@ import com.melowetty.hsepermhelper.utils.DateUtils
 import io.swagger.v3.oas.annotations.media.Schema
 import java.time.LocalDateTime
 
-open class PublicEvent {
+abstract class PublicEvent {
     @JsonProperty("createdTime")
     @Schema(description = "Дата создания ивента")
     @JsonFormat(pattern = DateUtils.DATE_TIME_PATTERN)
