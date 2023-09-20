@@ -128,6 +128,7 @@ class ScheduleServiceImpl(
             }
             if(changes.isNotEmpty()) {
                 for (pair in changes) {
+                    if(pair.value.isEmpty()) continue
                     val scheduleChangedEvent = ScheduleChangedForUserEvent(
                         targetSchedule = pair.key,
                         users = pair.value.distinct()
