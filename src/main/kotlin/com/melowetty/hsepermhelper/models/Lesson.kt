@@ -97,6 +97,10 @@ data class Lesson(
                 descriptionLines.add("Место: $building корпус - ${getOfficeStr()}")
             }
         }
+        if (additionalInfo?.isNotEmpty() == true) {
+            descriptionLines.add("\n" +
+                    "Дополнительная информация: ${additionalInfo.joinToString("\n")}")
+        }
         if(parentScheduleType == ScheduleType.QUARTER_SCHEDULE) {
             descriptionLines.add("\n" +
                     "* - пара взята из расписания на модуль, фактическое расписание " +
