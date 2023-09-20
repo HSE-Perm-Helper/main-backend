@@ -39,3 +39,5 @@ out/
 ### Custom ##
 /secret_key.txt
 /uploads
+src/main/resources/prod-env.properties
+src/main/resources/dev-env.properties

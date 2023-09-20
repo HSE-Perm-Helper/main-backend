@@ -1,8 +1,8 @@
 package com.melowetty.hsepermhelper.service.impl
 
 import com.melowetty.hsepermhelper.dto.UserDto
-import com.melowetty.hsepermhelper.events.EventType
-import com.melowetty.hsepermhelper.events.UsersChangedEvent
+import com.melowetty.hsepermhelper.events.common.EventType
+import com.melowetty.hsepermhelper.events.internal.UsersChangedEvent
 import com.melowetty.hsepermhelper.service.FileStorageService
 import com.melowetty.hsepermhelper.service.UserFilesService
 import org.springframework.context.event.EventListener

@@ -4,8 +4,8 @@ import com.melowetty.hsepermhelper.dto.SettingsDto
 import com.melowetty.hsepermhelper.dto.UserDto
 import com.melowetty.hsepermhelper.entity.SettingsEntity
 import com.melowetty.hsepermhelper.entity.UserEntity
-import com.melowetty.hsepermhelper.events.EventType
-import com.melowetty.hsepermhelper.events.UsersChangedEvent
+import com.melowetty.hsepermhelper.events.common.EventType
+import com.melowetty.hsepermhelper.events.internal.UsersChangedEvent
 import com.melowetty.hsepermhelper.exceptions.UserIsExistsException
 import com.melowetty.hsepermhelper.exceptions.UserNotFoundException
 import com.melowetty.hsepermhelper.repository.UserRepository
@@ -97,41 +97,49 @@ class UserServiceImpl(
         return userRepository.findAll().map { it.toDto() }
     }
 
-    fun UserEntity.toDto(): UserDto {
-        return UserDto(
-            id = id,
-            telegramId = telegramId,
-            settings = settings?.toDto(),
-        )
+    override fun getAllUsers(group: String, subGroup: Int): List<UserDto> {
+        return userRepository.findAllBySettingsGroupAndSettingsSubGroup(group, subGroup).map { it.toDto() }
     }
 
-    fun UserDto.toEntity(): UserEntity {
-        return UserEntity(
-            id = id,
-            telegramId = telegramId,
-            settings = settings?.toEntity(),
-        )
-    }
+    companion object {
+        fun UserEntity.toDto(): UserDto {
+            return UserDto(
+                id = id,
+                telegramId = telegramId,
+                settings = settings?.toDto(),
+            )
+        }
 
-    fun SettingsDto.toEntity(): SettingsEntity {
-        return SettingsEntity(
-            id = id,
-            group = group,
-            subGroup = subGroup,
-            includeQuarterSchedule = includeQuarterSchedule,
-            includeCommonEnglish = includeCommonEnglish,
-            includeCommonMinor = includeCommonMinor,
-        )
-    }
+        fun UserDto.toEntity(): UserEntity {
+            return UserEntity(
+                id = id,
+                telegramId = telegramId,
+                settings = settings?.toEntity(),
+            )
+        }
 
-    fun SettingsEntity.toDto(): SettingsDto {
-        return SettingsDto(
-            id = id,
-            group = group,
-            subGroup = subGroup,
-            includeQuarterSchedule = includeQuarterSchedule != null && includeQuarterSchedule,
-            includeCommonEnglish = includeCommonEnglish != null && includeCommonEnglish,
-            includeCommonMinor = includeCommonMinor != null && includeCommonMinor,
-        )
+        fun SettingsDto.toEntity(): SettingsEntity {
+            return SettingsEntity(
+                id = id,
+                group = group,
+                subGroup = subGroup,
+                includeQuarterSchedule = includeQuarterSchedule,
+                includeCommonEnglish = includeCommonEnglish,
+                includeCommonMinor = includeCommonMinor,
+                isEnabledRemoteCalendar = isEnabledRemoteCalendar,
+            )
+        }
+
+        fun SettingsEntity.toDto(): SettingsDto {
+            return SettingsDto(
+                id = id,
+                group = group,
+                subGroup = subGroup,
+                includeQuarterSchedule = includeQuarterSchedule != null && includeQuarterSchedule,
+                includeCommonEnglish = includeCommonEnglish != null && includeCommonEnglish,
+                includeCommonMinor = includeCommonMinor != null && includeCommonMinor,
+                isEnabledRemoteCalendar = isEnabledRemoteCalendar != null && isEnabledRemoteCalendar,
+            )
+        }
     }
 }
