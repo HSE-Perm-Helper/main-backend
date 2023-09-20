@@ -157,6 +157,14 @@ class ScheduleServiceImpl(
     override fun getScheduleFileByTelegramId(baseUrl: String, telegramId: Long): ScheduleFileLinks {
         if (getUserSchedulesByTelegramId(telegramId).isEmpty()) throw ScheduleNotFoundException("Расписание для пользователя не найдено!")
         val user = userService.getByTelegramId(telegramId)
+        if(user.settings?.isEnabledRemoteCalendar == false) {
+            userService.updateUserSettings(
+                telegramId,
+                settings = user.settings.copy(
+                    isEnabledRemoteCalendar = true,
+                )
+            )
+        }
         val link = "${baseUrl}${env.getProperty("server.servlet.context-path")}/files/user_files/${user.id}/${SCHEDULE_FILE}"
         return ScheduleFileLinks(
             linkForDownload = link,
@@ -195,6 +203,7 @@ class ScheduleServiceImpl(
     }
 
     override fun refreshScheduleFile(user: UserDto) {
+        if(user.settings?.isEnabledRemoteCalendar == false) return
         userFilesService.storeFile(user, getScheduleResource(user.id), SCHEDULE_FILE)
     }
 
