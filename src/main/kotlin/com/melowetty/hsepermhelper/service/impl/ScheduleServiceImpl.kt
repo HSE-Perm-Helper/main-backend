@@ -9,17 +9,13 @@ import com.melowetty.hsepermhelper.events.common.EventType
 import com.melowetty.hsepermhelper.events.internal.ScheduleChangedEvent
 import com.melowetty.hsepermhelper.events.internal.UsersChangedEvent
 import com.melowetty.hsepermhelper.exceptions.ScheduleNotFoundException
-import com.melowetty.hsepermhelper.models.Lesson
-import com.melowetty.hsepermhelper.models.LessonType
-import com.melowetty.hsepermhelper.models.ScheduleFileLinks
-import com.melowetty.hsepermhelper.models.ScheduleType
+import com.melowetty.hsepermhelper.models.*
 import com.melowetty.hsepermhelper.repository.ScheduleRepository
 import com.melowetty.hsepermhelper.service.EventService
 import com.melowetty.hsepermhelper.service.ScheduleService
 import com.melowetty.hsepermhelper.service.UserFilesService
 import com.melowetty.hsepermhelper.service.UserService
 import com.melowetty.hsepermhelper.utils.FileUtils
-import org.springframework.context.ApplicationEventPublisher
 import org.springframework.context.event.EventListener
 import org.springframework.core.env.Environment
 import org.springframework.core.io.Resource
@@ -106,7 +102,7 @@ class ScheduleServiceImpl(
             eventService.addEvent(scheduleAddedEvent)
         }
         if(editedSchedules != null) {
-            val changedForUserIds = mutableListOf<Long>()
+            val changes = mutableMapOf<ScheduleInfo, List<Long>>()
             editedSchedules.forEach {
                 val groupedAfter = it.after!!.lessons.values.flatten().groupBy { it.group }
                 it.before!!.lessons.values.flatten().groupBy { it.group }.forEach { groupEntry ->
@@ -119,26 +115,42 @@ class ScheduleServiceImpl(
                                 if(subGroupMatch == subGroupEntry.value) {
                                     return@subGroupForeach
                                 } else {
-                                    changedForUserIds.addAll(userService.getAllUsers(groupEntry.key, subGroupEntry.key ?: 0).map { it.telegramId })
+                                    addScheduleChanges(changes, it.after.toScheduleInfo(), groupEntry.key, subGroupEntry.key)
                                 }
                             } else {
-                                changedForUserIds.addAll(userService.getAllUsers(groupEntry.key, subGroupEntry.key ?: 0).map { it.telegramId })
+                                addScheduleChanges(changes, it.after.toScheduleInfo(), groupEntry.key, subGroupEntry.key)
                             }
                         }
                     } else {
-                        changedForUserIds.addAll(userService.getAllUsers(groupEntry.key, 0).map { it.telegramId })
+                        addScheduleChanges(changes, it.after.toScheduleInfo(), groupEntry.key, 0)
                     }
                 }
             }
-            changedForUserIds.distinct()
-            if(changedForUserIds.isNotEmpty()) {
-                val scheduleChangedEvent = ScheduleChangedForUserEvent(
-                    users = changedForUserIds
-                )
-                eventService.addEvent(scheduleChangedEvent)
+            if(changes.isNotEmpty()) {
+                for (pair in changes) {
+                    val scheduleChangedEvent = ScheduleChangedForUserEvent(
+                        targetSchedule = pair.key,
+                        users = pair.value.distinct()
+                    )
+                    eventService.addEvent(scheduleChangedEvent)
+                }
             }
         }
         refreshScheduleFiles()
+    }
+
+    private fun addScheduleChanges(changes: MutableMap<ScheduleInfo, List<Long>>,
+                                   scheduleInfo: ScheduleInfo,
+                                   group: String,
+                                   subGroup: Int?) {
+        val users = changes.getOrDefault(scheduleInfo, listOf()).toMutableList()
+        if(scheduleInfo.scheduleType == ScheduleType.QUARTER_SCHEDULE) {
+            users.addAll(userService.getAllUsers(group, subGroup ?: 0).filter { it.settings?.includeQuarterSchedule == true }.map { it.telegramId })
+        }
+        else {
+            users.addAll(userService.getAllUsers(group, subGroup ?: 0).map { it.telegramId })
+        }
+        changes[scheduleInfo] = users
     }
 
     override fun getScheduleFileByTelegramId(baseUrl: String, telegramId: Long): ScheduleFileLinks {
