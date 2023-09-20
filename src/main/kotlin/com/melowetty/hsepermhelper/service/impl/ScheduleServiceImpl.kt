@@ -160,7 +160,7 @@ class ScheduleServiceImpl(
         val link = "${baseUrl}${env.getProperty("server.servlet.context-path")}/files/user_files/${user.id}/${SCHEDULE_FILE}"
         return ScheduleFileLinks(
             linkForDownload = link,
-            linkForRemoteCalendar = "webcal://${link}"
+            linkForRemoteCalendar = link
         )
     }
 
