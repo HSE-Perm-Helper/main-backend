@@ -195,9 +195,10 @@ class ScheduleRepositoryImpl(
                         } else {
                             dates.add(LocalDate.parse(unparsedDate[1], DateTimeFormatter.ofPattern("dd.MM.yyyy")))
                         }
-                        val time = getValue(sheet, row.getCell(1)).split("\n")[2]
+                        val timeCell = getValue(sheet, row.getCell(1)).split("\n").filter { it.isNotEmpty() }
+                        if(timeCell.size < 2) continue
                         val timeRegex = Regex("[0-9]+:[0-9]+")
-                        val timeRegexMatches = timeRegex.findAll(time)
+                        val timeRegexMatches = timeRegex.findAll(timeCell[1])
                         val startTime = timeRegexMatches.elementAt(0).value
                         val splitStartTime = startTime.split(":")
                         val startLocalTime = LocalTime.of(splitStartTime[0].toInt(), splitStartTime[1].toInt())
