@@ -5,6 +5,8 @@ import com.melowetty.hsepermhelper.models.Lesson
 import com.melowetty.hsepermhelper.models.LessonType
 import jakarta.servlet.http.HttpServletRequest
 import net.fortuna.ical4j.model.Calendar
+import net.fortuna.ical4j.model.TimeZoneRegistryFactory
+import net.fortuna.ical4j.model.component.VTimeZone
 import net.fortuna.ical4j.model.property.*
 import org.springframework.core.io.ByteArrayResource
 import org.springframework.core.io.Resource
@@ -64,6 +66,13 @@ class FileUtils {
             val description = "Расписание пар в НИУ ВШЭ - Пермь by HSE Perm Schedule Bot"
             calendar.add(Description(description))
             calendar.add(XProperty("X-WR-CALDESC", description))
+
+            val vTimeZone = TimeZoneRegistryFactory
+                .getInstance()
+                .createRegistry()
+                .getTimeZone("Asia/Yekaterinburg")
+                .vTimeZone
+            calendar.add(vTimeZone)
 
             val color = Color()
             color.value = "0:71:187"
