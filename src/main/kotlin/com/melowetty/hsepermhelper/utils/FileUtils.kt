@@ -80,18 +80,9 @@ class FileUtils {
             calendar.add(XProperty("X-APPLE-CALENDAR-COLOR", "#0047BB"))
 
             calendar.add(RefreshInterval(null, Duration.ofHours(1)))
-            val allLessons = mutableListOf<Lesson>()
-            schedules.forEach { schedule ->
-                schedule.lessons
-                    .flatMap { it.value }
-                    .forEach lessonsForeach@ {
-                        allLessons.add(it)
-                }
-            }
-            LessonUtils.clearRepeats(allLessons.sorted())
-                .forEach {
-                    calendar.add(it.toVEvent())
-                }
+            val allLessons = LessonUtils.mergeSchedules(schedules)
+            allLessons.forEach { calendar.add(it.toVEvent()) }
+
             val calendarByte = calendar.toString().toByteArray()
             return ByteArrayResource(calendarByte)
         }
