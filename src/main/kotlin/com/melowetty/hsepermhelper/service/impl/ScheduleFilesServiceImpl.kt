@@ -43,7 +43,7 @@ class ScheduleFilesServiceImpl(
         return scheduleFiles
     }
 
-    @Scheduled(fixedRate = 1000 * 60 * 5)
+    @Scheduled(fixedRate = 1000 * 60 * 5, initialDelay = 1000 * 60 * 10)
     private fun autoFetchingSchedules() {
         println("Cron task: fetching schedule")
         fetchScheduleFiles()
