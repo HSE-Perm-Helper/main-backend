@@ -30,9 +30,6 @@ class ScheduleServiceImpl(
     private val eventService: EventService,
     private val env: Environment
 ): ScheduleService {
-    init {
-        refreshScheduleFiles()
-    }
     private fun filterSchedules(schedules: List<Schedule>, user: UserDto): List<Schedule> {
         val filteredSchedules = mutableListOf<Schedule>()
         schedules
