@@ -394,17 +394,22 @@ class ScheduleRepositoryImpl(
     private fun clearIncorrectLessonFields(allLessonFields: List<List<LessonField>>): List<List<LessonField>> {
         val lessons = allLessonFields.map { it.toMutableList() }.toMutableList()
         if(allLessonFields.size > 1 && allLessonFields.any { lessonFields ->
-                lessonFields.all { it.fieldType == FieldType.SUBJECT }
+                lessonFields.all { it.fieldType != FieldType.INFO }
             }) {
             allLessonFields.forEachIndexed { index, lessonFields ->
                 if(index != 0) {
-                    if (lessonFields.all { it.fieldType == FieldType.SUBJECT }) {
+                    if (lessonFields.all { it.fieldType != FieldType.INFO }) {
                         lessonFields.forEach {
-                            lessons[index - 1].add(
-                                it.copy(
-                                    fieldType = FieldType.ADDITIONAL
+                            if (it.fieldType == FieldType.SUBJECT) {
+                                lessons[index - 1].add(
+                                    it.copy(
+                                        fieldType = FieldType.ADDITIONAL
+                                    )
                                 )
-                            )
+                            }
+                            else {
+                                lessons[index - 1].add(it)
+                            }
                         }
                         lessons.remove(lessonFields)
                     }
