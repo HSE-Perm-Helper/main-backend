@@ -515,7 +515,7 @@ class ScheduleRepositoryImpl(
             return LessonType.COMMON_MINOR
         }
         if (pureSubject == "практика") return LessonType.PRACTICE
-        if (pureLessonInfo?.contains("мкд") == true) return LessonType.ICC
+        if (pureLessonInfo?.contains("мкд") == true || pureLessonInfo?.contains("мдк") == true) return LessonType.ICC
         if (pureSubject.contains("лекция") || pureSubject.contains("лекции")) return LessonType.LECTURE
         if (pureSubject.contains("семинар") || pureSubject.contains("семинары")) return LessonType.SEMINAR
         if (pureSubject.contains("доц по выбору")) return LessonType.UNDEFINED_AED
