@@ -29,4 +29,11 @@ class EventServiceImpl(
         return eventRepository.clearEvents()
     }
 
+    override fun deleteEvents(events: List<PublicEvent>) {
+        eventRepository.deleteEvents(events)
+    }
+
+    override fun deleteEvent(event: PublicEvent) {
+        deleteEvents(listOf(event))
+    }
 }

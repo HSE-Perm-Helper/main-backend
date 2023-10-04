@@ -38,4 +38,18 @@ interface EventService {
      *
      */
     fun clearEvents()
+
+    /**
+     * Delete specific events
+     *
+     * @param events list of events for deleting
+     */
+    fun deleteEvents(events: List<PublicEvent>)
+
+    /**
+     * Delete specific event
+     *
+     * @param event event for deleting
+     */
+    fun deleteEvent(event: PublicEvent)
 }
