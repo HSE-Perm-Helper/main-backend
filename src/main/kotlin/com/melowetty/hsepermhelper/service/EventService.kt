@@ -1,6 +1,7 @@
 package com.melowetty.hsepermhelper.service;
 
 import com.melowetty.hsepermhelper.events.common.PublicEvent
+import com.melowetty.hsepermhelper.events.common.PublicEventDto
 
 interface EventService {
     /**
@@ -44,12 +45,12 @@ interface EventService {
      *
      * @param events list of events for deleting
      */
-    fun deleteEvents(events: List<PublicEvent>)
+    fun deleteEvents(events: List<PublicEventDto>)
 
     /**
      * Delete specific event
      *
      * @param event event for deleting
      */
-    fun deleteEvent(event: PublicEvent)
+    fun deleteEvent(event: PublicEventDto)
 }
