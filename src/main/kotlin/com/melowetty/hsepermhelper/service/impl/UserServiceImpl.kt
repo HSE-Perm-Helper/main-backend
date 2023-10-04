@@ -127,6 +127,8 @@ class UserServiceImpl(
                 includeCommonEnglish = includeCommonEnglish,
                 includeCommonMinor = includeCommonMinor,
                 isEnabledRemoteCalendar = isEnabledRemoteCalendar,
+                isEnabledNewCommonScheduleNotifications = isEnabledNewCommonScheduleNotifications,
+                isEnabledNewQuarterScheduleNotifications = isEnabledNewQuarterScheduleNotifications,
             )
         }
 
@@ -139,6 +141,8 @@ class UserServiceImpl(
                 includeCommonEnglish = includeCommonEnglish != null && includeCommonEnglish,
                 includeCommonMinor = includeCommonMinor != null && includeCommonMinor,
                 isEnabledRemoteCalendar = isEnabledRemoteCalendar != null && isEnabledRemoteCalendar,
+                isEnabledNewCommonScheduleNotifications = isEnabledNewCommonScheduleNotifications != null && isEnabledNewCommonScheduleNotifications,
+                isEnabledNewQuarterScheduleNotifications = isEnabledNewQuarterScheduleNotifications != null && isEnabledNewQuarterScheduleNotifications,
             )
         }
     }

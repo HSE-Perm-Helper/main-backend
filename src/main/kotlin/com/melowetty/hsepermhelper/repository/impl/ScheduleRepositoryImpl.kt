@@ -394,17 +394,22 @@ class ScheduleRepositoryImpl(
     private fun clearIncorrectLessonFields(allLessonFields: List<List<LessonField>>): List<List<LessonField>> {
         val lessons = allLessonFields.map { it.toMutableList() }.toMutableList()
         if(allLessonFields.size > 1 && allLessonFields.any { lessonFields ->
-                lessonFields.all { it.fieldType == FieldType.SUBJECT }
+                lessonFields.all { it.fieldType != FieldType.INFO }
             }) {
             allLessonFields.forEachIndexed { index, lessonFields ->
                 if(index != 0) {
-                    if (lessonFields.all { it.fieldType == FieldType.SUBJECT }) {
+                    if (lessonFields.all { it.fieldType != FieldType.INFO }) {
                         lessonFields.forEach {
-                            lessons[index - 1].add(
-                                it.copy(
-                                    fieldType = FieldType.ADDITIONAL
+                            if (it.fieldType == FieldType.SUBJECT) {
+                                lessons[index - 1].add(
+                                    it.copy(
+                                        fieldType = FieldType.ADDITIONAL
+                                    )
                                 )
-                            )
+                            }
+                            else {
+                                lessons[index - 1].add(it)
+                            }
                         }
                         lessons.remove(lessonFields)
                     }
@@ -462,14 +467,21 @@ class ScheduleRepositoryImpl(
                 if(field.fieldType == FieldType.LINK) {
                     links.add(field.value)
                 } else if(field.fieldType == FieldType.INFO) {
-                    val additionalInfoRegexGroups = ADDITIONAL_INFO_REGEX.find(field.value)?.groups
-                    if(additionalInfoRegexGroups != null && additionalInfoRegexGroups.isEmpty().not()) {
-                        lecturer = getLecturer(additionalInfoRegexGroups[1]?.value?.trim())?.replace("  ", " ")
-                        val placeInfoLine = additionalInfoRegexGroups[2]?.value ?: return@forEach
-                        val placeInfoMatches = PLACE_INFO_REGEX.findAll(placeInfoLine).toList()
-                        office = placeInfoMatches.getOrNull(0)?.value?.trim()
-                        building = placeInfoMatches.getOrNull(1)?.value?.toIntOrNull()
-                        subgroup = placeInfoMatches.getOrNull(2)?.value?.toIntOrNull()
+                    val additionalInfoMatch = ADDITIONAL_INFO_REGEX.find(field.value)
+                    if(additionalInfoMatch != null) {
+                        val line = field.value.substring(0, additionalInfoMatch.range.first) + field.value.substring(additionalInfoMatch.range.last + 1)
+                        if(line.isNotEmpty()) {
+                            additionalInfo.add(line)
+                        }
+                        val additionalInfoRegexGroups = additionalInfoMatch.groups
+                        if (additionalInfoRegexGroups.isEmpty().not()) {
+                            lecturer = getLecturer(additionalInfoRegexGroups[1]?.value?.trim())?.replace("  ", " ")
+                            val placeInfoLine = additionalInfoRegexGroups[2]?.value ?: return@forEach
+                            val placeInfoMatches = PLACE_INFO_REGEX.findAll(placeInfoLine).toList()
+                            office = placeInfoMatches.getOrNull(0)?.value?.trim()
+                            building = placeInfoMatches.getOrNull(1)?.value?.toIntOrNull()
+                            subgroup = placeInfoMatches.getOrNull(2)?.value?.toIntOrNull()
+                        }
                     }
                 } else if(field.fieldType == FieldType.ADDITIONAL) {
                     additionalInfo.add(field.value)
@@ -503,7 +515,7 @@ class ScheduleRepositoryImpl(
             return LessonType.COMMON_MINOR
         }
         if (pureSubject == "практика") return LessonType.PRACTICE
-        if (pureLessonInfo?.contains("мкд") == true) return LessonType.ICC
+        if (pureLessonInfo?.contains("мкд") == true || pureLessonInfo?.contains("мдк") == true) return LessonType.ICC
         if (pureSubject.contains("лекция") || pureSubject.contains("лекции")) return LessonType.LECTURE
         if (pureSubject.contains("семинар") || pureSubject.contains("семинары")) return LessonType.SEMINAR
         if (pureSubject.contains("доц по выбору")) return LessonType.UNDEFINED_AED

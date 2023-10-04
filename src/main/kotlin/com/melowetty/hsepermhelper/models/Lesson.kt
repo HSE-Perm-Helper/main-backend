@@ -54,6 +54,7 @@ data class Lesson(
      */
     fun isOnline(): Boolean {
         if(building == null && office == null) return false
+        if(links?.isNotEmpty() == true) return true
         return (building == null || building == 0) && lessonType != LessonType.ENGLISH
     }
 
