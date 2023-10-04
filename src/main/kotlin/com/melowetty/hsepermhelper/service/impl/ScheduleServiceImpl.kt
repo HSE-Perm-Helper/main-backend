@@ -95,11 +95,25 @@ class ScheduleServiceImpl(
     fun handleScheduleChanging(event: ScheduleChangedEvent) {
         val editedSchedules = event.changes.getOrDefault(EventType.EDITED, null)
         val addedSchedules = event.changes.getOrDefault(EventType.ADDED, null)
-        addedSchedules?.forEach {
-            val scheduleAddedEvent = ScheduleAddedEvent(
-                targetSchedule = it.after!!.toScheduleInfo()
-            )
-            eventService.addEvent(scheduleAddedEvent)
+        addedSchedules?.forEach { addedSchedule ->
+            if(addedSchedule.after != null) {
+                val schedule = addedSchedule.after
+                val users = mutableListOf<Long>()
+                if(schedule.scheduleType == ScheduleType.QUARTER_SCHEDULE) {
+                    users.addAll(userService.getAllUsers()
+                        .filter { it.settings?.isEnabledNewQuarterScheduleNotifications == true }
+                        .map { it.telegramId })
+                } else {
+                    users.addAll(userService.getAllUsers()
+                        .filter { it.settings?.isEnabledNewCommonScheduleNotifications == true }
+                        .map { it.telegramId })
+                }
+                val scheduleAddedEvent = ScheduleAddedEvent(
+                    targetSchedule = schedule.toScheduleInfo(),
+                    users = users,
+                )
+                eventService.addEvent(scheduleAddedEvent)
+            }
         }
         if(editedSchedules != null) {
             val changes = mutableMapOf<ScheduleInfo, List<Long>>()
