@@ -22,9 +22,15 @@ data class SettingsEntity(
     @Column(name = "include_common_english")
     val includeCommonEnglish: Boolean? = false,
 
-    @Column(name = "include_common_minor")
+    @Column(name = "include_common_minor", columnDefinition="BOOLEAN DEFAULT true")
     val includeCommonMinor: Boolean? = true,
 
     @Column(name = "is_enabled_remote_calendar")
     val isEnabledRemoteCalendar: Boolean? = false,
+
+    @Column(name = "is_enabled_new_common_schedule_notification", columnDefinition="BOOLEAN DEFAULT true")
+    val isEnabledNewCommonScheduleNotifications: Boolean? = true,
+
+    @Column(name = "is_enabled_new_quarter_schedule_notification")
+    val isEnabledNewQuarterScheduleNotifications: Boolean? = false,
 )
