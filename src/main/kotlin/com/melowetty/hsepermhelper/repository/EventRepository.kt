@@ -38,4 +38,11 @@ interface EventRepository {
      *
      */
     fun clearEvents()
+
+    /**
+     * Delete specific events
+     *
+     * @param events list of events for deleting
+     */
+    fun deleteEvents(events: List<PublicEvent>)
 }

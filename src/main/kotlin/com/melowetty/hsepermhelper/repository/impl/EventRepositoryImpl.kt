@@ -30,4 +30,8 @@ class EventRepositoryImpl: EventRepository {
         events.clear()
     }
 
+    override fun deleteEvents(events: List<PublicEvent>) {
+        this.events.removeAll(events)
+    }
+
 }
