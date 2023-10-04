@@ -7,4 +7,8 @@ import io.swagger.v3.oas.annotations.media.Schema
 data class ScheduleAddedEvent(
     @Schema(description = "Расписание, которое было добавлено")
     val targetSchedule: ScheduleInfo
-): PublicEvent()
+): PublicEvent() {
+    override fun hashCode(): Int {
+        return super.hashCode() + targetSchedule.hashCode() * 16
+    }
+}
