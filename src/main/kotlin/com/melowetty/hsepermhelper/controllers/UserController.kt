@@ -113,7 +113,7 @@ class UserController(
         telegramId: Long,
         @RequestBody
         @Parameter(description = "Новые настройки пользователя")
-        settings: SettingsDto,
+        settings: Map<String, Any>,
     ): Response<UserDto> {
         val user = userService.updateUserSettings(telegramId, settings)
         return Response(user)

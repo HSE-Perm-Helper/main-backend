@@ -12,6 +12,7 @@ import com.melowetty.hsepermhelper.repository.UserRepository
 import com.melowetty.hsepermhelper.service.UserService
 import org.springframework.context.ApplicationEventPublisher
 import org.springframework.stereotype.Service
+import org.springframework.util.ReflectionUtils
 import java.util.*
 
 @Service
@@ -91,6 +92,24 @@ class UserServiceImpl(
         )
         eventPublisher.publishEvent(event)
         return newUser
+    }
+
+    override fun updateUserSettings(telegramId: Long, settings: Map<String, Any>): UserDto {
+        val user = getByTelegramId(telegramId)
+        val userSettings = user.settings?.copy()
+        if(userSettings != null) {
+            val newSettings = settings.toMutableMap()
+            newSettings.remove("id")
+            newSettings.forEach { t, u ->
+                val field = ReflectionUtils.findField(SettingsDto::class.java, t)
+                if (field != null) {
+                    field.trySetAccessible()
+                    ReflectionUtils.setField(field, userSettings, u)
+                }
+            }
+            return updateUserSettings(telegramId, userSettings)
+        }
+        return user
     }
 
     override fun getAllUsers(): List<UserDto> {
