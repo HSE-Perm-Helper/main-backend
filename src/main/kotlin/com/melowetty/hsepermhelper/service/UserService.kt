@@ -66,6 +66,15 @@ interface UserService {
     fun updateUserSettings(telegramId: Long, settings: SettingsDto): UserDto
 
     /**
+     * Update user settings by patch method
+     *
+     * @param telegramId user telegram id
+     * @param settings new user settings
+     * @return new user object
+     */
+    fun updateUserSettings(telegramId: Long, settings: Map<String, Any>): UserDto
+
+    /**
      * Get all users by group and subgroup
      *
      * @param group user group
