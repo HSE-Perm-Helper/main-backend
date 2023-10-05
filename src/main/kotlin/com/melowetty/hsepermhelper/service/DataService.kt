@@ -1,17 +1,28 @@
 package com.melowetty.hsepermhelper.service
 
+import Schedule
+import com.melowetty.hsepermhelper.models.ScheduleInfo
+import java.time.LocalDateTime
+
 interface DataService {
     /**
-     * Get last schedules hashcode, which were fetched
+     * Get last schedules, which were fetched
      *
-     * @return list of saved schedules hashcode
+     * @return list of saved schedules
      */
-    fun getSavedSchedulesHashcode(): List<String>
+    fun getSavedSchedules(): List<ScheduleInfo>
 
     /**
-     * Save schedules hash code
+     * Save schedules info
      *
-     * @param hashcode schedules hashcode
+     * @param schedules schedules, which must be saved
      */
-    fun saveSchedulesHashcode(hashcode: List<String>)
+    fun saveSchedules(schedules: List<Schedule>)
+
+    /**
+     * Get last start time of server
+     *
+     * @return start time of server
+     */
+    fun getStartTime(): LocalDateTime
 }
