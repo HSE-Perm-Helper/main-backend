@@ -10,7 +10,6 @@ import net.fortuna.ical4j.model.component.VEvent
 import net.fortuna.ical4j.model.property.Description
 import net.fortuna.ical4j.model.property.Uid
 import net.fortuna.ical4j.util.RandomUidGenerator
-import net.fortuna.ical4j.util.UidGenerator
 import java.time.LocalDate
 import java.time.LocalDateTime
 

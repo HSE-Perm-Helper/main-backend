@@ -15,7 +15,7 @@ interface ScheduleRepository {
      *
      * @return new list of schedules
      */
-    fun fetchSchedules(): List<Schedule>
+    fun fetchSchedules(firstLaunch: Boolean = false, publishEvents: Boolean = true): List<Schedule>
 
     /**
      * Gets available courses

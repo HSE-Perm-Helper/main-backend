@@ -1,7 +1,6 @@
 package com.melowetty.hsepermhelper.utils
 
 import Schedule
-import Schedule.Companion.toScheduleInfo
 import com.melowetty.hsepermhelper.models.Lesson
 import com.melowetty.hsepermhelper.models.ScheduleType
 
