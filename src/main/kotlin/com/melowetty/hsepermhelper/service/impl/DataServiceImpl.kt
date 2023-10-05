@@ -1,14 +1,11 @@
 package com.melowetty.hsepermhelper.service.impl
 
-import Schedule
 import com.melowetty.hsepermhelper.entity.DataEntity
-import com.melowetty.hsepermhelper.models.ScheduleInfo
-import com.melowetty.hsepermhelper.models.ScheduleType
 import com.melowetty.hsepermhelper.repository.DataRepository
 import com.melowetty.hsepermhelper.service.DataService
 import com.melowetty.hsepermhelper.utils.DateUtils
+import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Service
-import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
@@ -16,37 +13,11 @@ import java.time.format.DateTimeFormatter
 class DataServiceImpl(
     private val dataRepository: DataRepository,
 ) : DataService {
-    val startDate: LocalDateTime = getStartTimeFromRepository()
+    private val startDate: LocalDateTime = getStartTimeFromRepository()
+    private val lastDate: LocalDateTime = getLastTimeFromRepository()
     init {
         saveStartTime()
-    }
-    override fun getSavedSchedules(): List<ScheduleInfo> {
-        val savedSchedulesKey = dataRepository.findById(SAVED_SCHEDULES_KEY)
-        if(savedSchedulesKey.isEmpty.not()) {
-            return savedSchedulesKey.get().value.split(SAVED_SCHEDULES_DELIMITER)
-                .map {
-                    val (weekNumber, scheduleType, weekStart, weekEnd, hashcode) = it.split("|")
-                    ScheduleInfo(
-                        weekNumber = weekNumber.toIntOrNull(),
-                        scheduleType = ScheduleType.valueOf(scheduleType),
-                        weekStart = LocalDate.parse(weekStart),
-                        weekEnd = LocalDate.parse(weekEnd),
-                    )
-                }
-        }
-        return listOf()
-    }
-
-    private fun saveSchedulesHashcode(hashcode: List<String>) {
-        dataRepository.save(dataRepository.findById(SAVED_SCHEDULES_KEY).get()
-            .copy(value = hashcode.joinToString(separator = SAVED_SCHEDULES_DELIMITER))
-        )
-    }
-
-    override fun saveSchedules(schedules: List<Schedule>) {
-        saveSchedulesHashcode(
-            schedules.map { "${it.weekNumber ?: ""}|${it.scheduleType.name}|${it.weekStart}|${it.weekEnd}|${it.hashCode()}" }
-        )
+        saveLastTime()
     }
 
     private fun saveStartTime() {
@@ -58,8 +29,22 @@ class DataServiceImpl(
         )
     }
 
+    @Scheduled(fixedRate = 1000 * 60 * 30)
+    private fun saveLastTime() {
+        dataRepository.save(
+            DataEntity(
+                key = SAVED_LAST_TIME_KEY,
+                value = LocalDateTime.now().format(DateTimeFormatter.ofPattern(DateUtils.DATE_TIME_PATTERN))
+            )
+        )
+    }
+
     override fun getStartTime(): LocalDateTime {
         return startDate
+    }
+
+    override fun getLastTime(): LocalDateTime {
+        return lastDate
     }
 
     private fun getStartTimeFromRepository(): LocalDateTime {
@@ -73,9 +58,19 @@ class DataServiceImpl(
         }
     }
 
+    private fun getLastTimeFromRepository(): LocalDateTime {
+        val lastTime = dataRepository.findById(SAVED_LAST_TIME_KEY)
+        if(lastTime.isEmpty) return LocalDateTime.now()
+        else return try {
+            LocalDateTime.from(DateTimeFormatter.ofPattern(DateUtils.DATE_TIME_PATTERN).parse(lastTime.get().value))
+        } catch (e: Exception) {
+            e.printStackTrace()
+            LocalDateTime.now()
+        }
+    }
+
     companion object {
-        private const val SAVED_SCHEDULES_KEY = "saved_schedules"
-        private const val SAVED_SCHEDULES_DELIMITER = ","
         private const val SAVED_START_TIME_KEY = "start_time"
+        private const val SAVED_LAST_TIME_KEY = "last_time"
     }
 }
