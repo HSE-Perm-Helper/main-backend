@@ -1,12 +1,9 @@
 package com.melowetty.hsepermhelper.utils
 
 import Schedule
-import com.melowetty.hsepermhelper.models.Lesson
-import com.melowetty.hsepermhelper.models.LessonType
 import jakarta.servlet.http.HttpServletRequest
 import net.fortuna.ical4j.model.Calendar
 import net.fortuna.ical4j.model.TimeZoneRegistryFactory
-import net.fortuna.ical4j.model.component.VTimeZone
 import net.fortuna.ical4j.model.property.*
 import org.springframework.core.io.ByteArrayResource
 import org.springframework.core.io.Resource
