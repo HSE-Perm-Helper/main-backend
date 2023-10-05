@@ -26,6 +26,16 @@ data class Schedule(
     fun getFormattedLessons(): Set<Map.Entry<String, List<Lesson>>> {
         return lessons.mapKeys { it.key.format(DateTimeFormatter.ofPattern(DateUtils.DATE_PATTERN)) }.entries
     }
+
+    override fun hashCode(): Int {
+        var result = weekNumber ?: 0
+        result = 31 * result + lessons.hashCode()
+        result = 31 * result + weekStart.hashCode()
+        result = 31 * result + weekEnd.hashCode()
+        result = 31 * result + scheduleType.hashCode()
+        return result
+    }
+
     companion object {
         fun Schedule.toScheduleInfo(): ScheduleInfo {
             return ScheduleInfo(
