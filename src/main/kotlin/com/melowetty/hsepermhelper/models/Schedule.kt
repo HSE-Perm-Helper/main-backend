@@ -43,6 +43,7 @@ data class Schedule(
                 weekStart = weekStart,
                 weekEnd = weekEnd,
                 scheduleType = scheduleType,
+                hashcode = hashCode()
             )
         }
     }
