@@ -10,7 +10,7 @@ interface ScheduleFilesService {
      *
      * @return list of schedule files
      */
-    fun fetchScheduleFiles(): List<ScheduleFile>
+    fun fetchScheduleFiles(callEvents: Boolean = true): List<ScheduleFile>
 
     /**
      * Get schedule files from memory without fetching new files

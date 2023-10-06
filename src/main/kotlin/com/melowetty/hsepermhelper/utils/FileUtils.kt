@@ -1,10 +1,9 @@
 package com.melowetty.hsepermhelper.utils
 
 import Schedule
-import com.melowetty.hsepermhelper.models.Lesson
-import com.melowetty.hsepermhelper.models.LessonType
 import jakarta.servlet.http.HttpServletRequest
 import net.fortuna.ical4j.model.Calendar
+import net.fortuna.ical4j.model.TimeZoneRegistryFactory
 import net.fortuna.ical4j.model.property.*
 import org.springframework.core.io.ByteArrayResource
 import org.springframework.core.io.Resource
@@ -65,24 +64,22 @@ class FileUtils {
             calendar.add(Description(description))
             calendar.add(XProperty("X-WR-CALDESC", description))
 
+            val vTimeZone = TimeZoneRegistryFactory
+                .getInstance()
+                .createRegistry()
+                .getTimeZone("Asia/Yekaterinburg")
+                .vTimeZone
+            calendar.add(vTimeZone)
+
             val color = Color()
             color.value = "0:71:187"
             calendar.add(color)
             calendar.add(XProperty("X-APPLE-CALENDAR-COLOR", "#0047BB"))
 
             calendar.add(RefreshInterval(null, Duration.ofHours(1)))
-            val allLessons = mutableListOf<Lesson>()
-            schedules.forEach { schedule ->
-                schedule.lessons
-                    .flatMap { it.value }
-                    .forEach lessonsForeach@ {
-                        allLessons.add(it)
-                }
-            }
-            LessonUtils.clearRepeats(allLessons.sorted())
-                .forEach {
-                    calendar.add(it.toVEvent())
-                }
+            val allLessons = LessonUtils.mergeSchedules(schedules)
+            allLessons.forEach { calendar.add(it.toVEvent()) }
+
             val calendarByte = calendar.toString().toByteArray()
             return ByteArrayResource(calendarByte)
         }

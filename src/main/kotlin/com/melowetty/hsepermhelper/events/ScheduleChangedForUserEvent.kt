@@ -9,4 +9,8 @@ data class ScheduleChangedForUserEvent(
     val targetSchedule: ScheduleInfo,
     @Schema(description = "Список Telegram ID, которым требуется выслать оповещение о изменении в расписании")
     val users: List<Long>,
-): PublicEvent()
+): PublicEvent() {
+    override fun hashCode(): Int {
+        return super.hashCode() + targetSchedule.hashCode() * 33 + users.hashCode() * 17
+    }
+}

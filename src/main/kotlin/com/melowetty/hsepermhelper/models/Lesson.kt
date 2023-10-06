@@ -10,7 +10,6 @@ import net.fortuna.ical4j.model.component.VEvent
 import net.fortuna.ical4j.model.property.Description
 import net.fortuna.ical4j.model.property.Uid
 import net.fortuna.ical4j.util.RandomUidGenerator
-import net.fortuna.ical4j.util.UidGenerator
 import java.time.LocalDate
 import java.time.LocalDateTime
 
@@ -54,6 +53,7 @@ data class Lesson(
      */
     fun isOnline(): Boolean {
         if(building == null && office == null) return false
+        if(links?.isNotEmpty() == true) return true
         return (building == null || building == 0) && lessonType != LessonType.ENGLISH
     }
 

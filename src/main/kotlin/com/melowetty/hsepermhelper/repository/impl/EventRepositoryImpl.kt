@@ -1,6 +1,7 @@
 package com.melowetty.hsepermhelper.repository.impl
 
 import com.melowetty.hsepermhelper.events.common.PublicEvent
+import com.melowetty.hsepermhelper.events.common.PublicEventDto
 import com.melowetty.hsepermhelper.repository.EventRepository
 import org.springframework.stereotype.Repository
 import java.util.*
@@ -28,6 +29,14 @@ class EventRepositoryImpl: EventRepository {
 
     override fun clearEvents() {
         events.clear()
+    }
+
+    override fun deleteEvents(events: List<PublicEventDto>) {
+        this.events.removeAll { event ->
+            events.find {
+                it.hashcode == event.hashCode()
+            } != null
+        }
     }
 
 }

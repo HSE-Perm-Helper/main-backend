@@ -15,7 +15,7 @@ class ScheduleFilesServiceImpl(
     private val repository: ScheduleFilesRepository
 ): ScheduleFilesService {
     private var scheduleFiles: List<ScheduleFile> = listOf()
-    final override fun fetchScheduleFiles(): List<ScheduleFile> {
+    final override fun fetchScheduleFiles(callEvents: Boolean): List<ScheduleFile> {
         val newScheduleFiles = repository.fetchScheduleFilesAsInputStream().map { ScheduleFile(file = it) }
         var event: ScheduleFilesChangedEvent? = null
         if (newScheduleFiles.size != scheduleFiles.size) {
@@ -33,7 +33,7 @@ class ScheduleFilesServiceImpl(
             }
         }
         scheduleFiles = newScheduleFiles
-        if (event != null) {
+        if (event != null && callEvents) {
             eventPublisher.publishEvent(event)
         }
         return scheduleFiles
@@ -43,7 +43,7 @@ class ScheduleFilesServiceImpl(
         return scheduleFiles
     }
 
-    @Scheduled(fixedRate = 1000 * 60 * 5)
+    @Scheduled(fixedRate = 1000 * 60 * 5, initialDelay = 1000 * 60 * 5)
     private fun autoFetchingSchedules() {
         println("Cron task: fetching schedule")
         fetchScheduleFiles()

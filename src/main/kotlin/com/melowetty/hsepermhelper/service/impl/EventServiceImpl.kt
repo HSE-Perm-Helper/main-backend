@@ -1,6 +1,7 @@
 package com.melowetty.hsepermhelper.service.impl
 
 import com.melowetty.hsepermhelper.events.common.PublicEvent
+import com.melowetty.hsepermhelper.events.common.PublicEventDto
 import com.melowetty.hsepermhelper.repository.EventRepository
 import com.melowetty.hsepermhelper.service.EventService
 import org.springframework.stereotype.Service
@@ -29,4 +30,11 @@ class EventServiceImpl(
         return eventRepository.clearEvents()
     }
 
+    override fun deleteEvents(events: List<PublicEventDto>) {
+        eventRepository.deleteEvents(events)
+    }
+
+    override fun deleteEvent(event: PublicEventDto) {
+        deleteEvents(listOf(event))
+    }
 }

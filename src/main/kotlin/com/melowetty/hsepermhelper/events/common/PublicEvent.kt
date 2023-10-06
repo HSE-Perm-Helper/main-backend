@@ -6,7 +6,7 @@ import com.melowetty.hsepermhelper.utils.DateUtils
 import io.swagger.v3.oas.annotations.media.Schema
 import java.time.LocalDateTime
 
-abstract class PublicEvent {
+open class PublicEvent {
     @JsonProperty("createdTime")
     @Schema(description = "Дата создания ивента")
     @JsonFormat(pattern = DateUtils.DATE_TIME_PATTERN)
@@ -18,5 +18,10 @@ abstract class PublicEvent {
             .split(Regex("(?=\\p{Upper})"))
             .filter { it.isNotEmpty() }
             .joinToString("_") { it.uppercase() }
+    }
+
+    @JsonProperty("hashcode")
+    override fun hashCode(): Int {
+        return date.hashCode() + javaClass.simpleName.hashCode()
     }
 }
