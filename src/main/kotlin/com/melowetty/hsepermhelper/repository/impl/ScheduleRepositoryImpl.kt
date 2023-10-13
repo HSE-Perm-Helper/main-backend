@@ -178,7 +178,7 @@ class ScheduleRepositoryImpl(
             val workbook = getWorkbook(inputStream)
             val lessonsList = mutableListOf<Lesson>()
             val scheduleInfo = getWeekInfo(getValue(
-                workbook.getSheetAt(1),
+                workbook.getSheetAt(2),
                 workbook.getSheetAt(1).getRow(1).getCell(3))
             )
             if (scheduleInfo.weekStartDate == null || scheduleInfo.weekEndDate == null) {
