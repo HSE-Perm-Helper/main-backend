@@ -15,5 +15,5 @@ data class UserEntity(
 
     @OneToOne(cascade = [CascadeType.ALL])
     @JoinColumn(name = "user_id")
-    val settings: SettingsEntity? = null,
+    val settings: SettingsEntity
 )
