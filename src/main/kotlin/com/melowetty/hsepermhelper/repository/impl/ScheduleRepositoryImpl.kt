@@ -178,7 +178,7 @@ class ScheduleRepositoryImpl(
             val workbook = getWorkbook(inputStream)
             val lessonsList = mutableListOf<Lesson>()
             val scheduleInfo = getWeekInfo(getValue(
-                workbook.getSheetAt(1),
+                workbook.getSheetAt(2),
                 workbook.getSheetAt(1).getRow(1).getCell(3))
             )
             if (scheduleInfo.weekStartDate == null || scheduleInfo.weekEndDate == null) {
@@ -311,6 +311,7 @@ class ScheduleRepositoryImpl(
         serviceLessonInfo: ServiceLessonInfo,
         cell: CellInfo
     ): List<Lesson> {
+        if(cell.value.lowercase().contains("сессия")) return listOf()
         val splitCell = cell.value.split("\n").toMutableList()
         splitCell.removeAll(listOf(""))
         val fields = getFieldsByType(splitCell)
@@ -457,6 +458,7 @@ class ScheduleRepositoryImpl(
             isUnderlined = cell.isUnderlined,
             subject = subject,
             lessonInfo = additionalLessonInfo.lecturer,
+            isHaveBuildingInfo = fields.find { it.fieldType == FieldType.INFO } != null
         )
         return Lesson(
             subject = subject,
@@ -527,6 +529,7 @@ class ScheduleRepositoryImpl(
         subject: String,
         lessonInfo: String? = "",
         isUnderlined: Boolean,
+        isHaveBuildingInfo: Boolean,
     ): LessonType {
         val pureSubject = subject.lowercase()
         val pureLessonInfo = lessonInfo?.lowercase()
@@ -545,6 +548,7 @@ class ScheduleRepositoryImpl(
         if (pureSubject.contains("семинар") || pureSubject.contains("семинары")) return LessonType.SEMINAR
         if (pureSubject.contains("доц по выбору")) return LessonType.UNDEFINED_AED
         if (pureSubject.contains("доц")) return LessonType.AED
+        if (isHaveBuildingInfo.not()) return LessonType.EVENT
         if (isUnderlined) return LessonType.LECTURE
         return LessonType.SEMINAR
     }
