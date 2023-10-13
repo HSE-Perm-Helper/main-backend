@@ -94,22 +94,19 @@ class UserServiceImpl(
         return newUser
     }
 
-    override fun updateUserSettings(telegramId: Long, settings: Map<String, Any>): UserDto {
+    override fun updateUserSettings(telegramId: Long, settings: Map<String, Any?>): UserDto {
         val user = getByTelegramId(telegramId)
-        val userSettings = user.settings?.copy()
-        if(userSettings != null) {
-            val newSettings = settings.toMutableMap()
-            newSettings.remove("id")
-            newSettings.forEach { t, u ->
-                val field = ReflectionUtils.findField(SettingsDto::class.java, t)
-                if (field != null) {
-                    field.trySetAccessible()
-                    ReflectionUtils.setField(field, userSettings, u)
-                }
+        val userSettings = user.settings.copy()
+        val newSettings = settings.toMutableMap()
+        newSettings.remove("id")
+        newSettings.forEach { t, u ->
+            val field = ReflectionUtils.findField(SettingsDto::class.java, t)
+            if (field != null) {
+                field.trySetAccessible()
+                ReflectionUtils.setField(field, userSettings, u)
             }
-            return updateUserSettings(telegramId, userSettings)
         }
-        return user
+        return updateUserSettings(telegramId, userSettings)
     }
 
     override fun getAllUsers(): List<UserDto> {
@@ -125,7 +122,7 @@ class UserServiceImpl(
             return UserDto(
                 id = id,
                 telegramId = telegramId,
-                settings = settings?.toDto(),
+                settings = settings.toDto(),
             )
         }
 
@@ -133,7 +130,7 @@ class UserServiceImpl(
             return UserEntity(
                 id = id,
                 telegramId = telegramId,
-                settings = settings?.toEntity(),
+                settings = settings.toEntity(),
             )
         }
 

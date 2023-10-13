@@ -34,7 +34,7 @@ class ScheduleServiceImpl(
         val filteredSchedules = mutableListOf<Schedule>()
         schedules
             .filter {
-                if(user.settings?.includeQuarterSchedule?.not() == true) {
+                if(user.settings.includeQuarterSchedule.not()) {
                     it.scheduleType != ScheduleType.QUARTER_SCHEDULE
                 }
                 else
@@ -42,15 +42,15 @@ class ScheduleServiceImpl(
             }
             .forEach { schedule ->
             val filteredLessons = schedule.lessons.flatMap { it.value }.filter { lesson: Lesson ->
-                if (lesson.subGroup != null) lesson.group == user.settings?.group
+                if (lesson.subGroup != null) lesson.group == user.settings.group
                         && lesson.subGroup == user.settings.subGroup
-                else lesson.group == user.settings?.group
+                else lesson.group == user.settings.group
             }.filter {
                 if (it.lessonType != LessonType.COMMON_ENGLISH) true
-                else user.settings?.includeCommonEnglish == true
+                else user.settings.includeCommonEnglish
             }.filter {
                 if (it.lessonType != LessonType.COMMON_MINOR) true
-                else user.settings?.includeCommonMinor == true
+                else user.settings.includeCommonMinor
             }
             val groupedLessons = filteredLessons.groupBy { it.date }
             filteredSchedules.add(
@@ -98,11 +98,11 @@ class ScheduleServiceImpl(
                 val users = mutableListOf<Long>()
                 if(schedule.scheduleType == ScheduleType.QUARTER_SCHEDULE) {
                     users.addAll(userService.getAllUsers()
-                        .filter { it.settings?.isEnabledNewQuarterScheduleNotifications == true }
+                        .filter { it.settings.isEnabledNewQuarterScheduleNotifications }
                         .map { it.telegramId })
                 } else {
                     users.addAll(userService.getAllUsers()
-                        .filter { it.settings?.isEnabledNewCommonScheduleNotifications == true }
+                        .filter { it.settings.isEnabledNewCommonScheduleNotifications }
                         .map { it.telegramId })
                 }
                 val scheduleAddedEvent = ScheduleAddedEvent(
@@ -157,7 +157,7 @@ class ScheduleServiceImpl(
                                    subGroup: Int?) {
         val users = changes.getOrDefault(scheduleInfo, listOf()).toMutableList()
         if(scheduleInfo.scheduleType == ScheduleType.QUARTER_SCHEDULE) {
-            users.addAll(userService.getAllUsers(group, subGroup ?: 0).filter { it.settings?.includeQuarterSchedule == true }.map { it.telegramId })
+            users.addAll(userService.getAllUsers(group, subGroup ?: 0).filter { it.settings.includeQuarterSchedule }.map { it.telegramId })
         }
         else {
             users.addAll(userService.getAllUsers(group, subGroup ?: 0).map { it.telegramId })
@@ -168,7 +168,7 @@ class ScheduleServiceImpl(
     override fun getScheduleFileByTelegramId(baseUrl: String, telegramId: Long): ScheduleFileLinks {
         if (getUserSchedulesByTelegramId(telegramId).isEmpty()) throw ScheduleNotFoundException("Расписание для пользователя не найдено!")
         val user = userService.getByTelegramId(telegramId)
-        if(user.settings?.isEnabledRemoteCalendar == false) {
+        if(!user.settings.isEnabledRemoteCalendar) {
             userService.updateUserSettings(
                 telegramId,
                 settings = user.settings.copy(
@@ -203,7 +203,7 @@ class ScheduleServiceImpl(
         try {
             userService.getAllUsers()
                 .filter {
-                    it.settings?.isEnabledRemoteCalendar == true
+                    it.settings.isEnabledRemoteCalendar
                 }.forEach {
                 refreshScheduleFile(user = it)
             }
@@ -214,7 +214,7 @@ class ScheduleServiceImpl(
     }
 
     override fun refreshScheduleFile(user: UserDto) {
-        if(user.settings?.isEnabledRemoteCalendar == false) return
+        if(!user.settings.isEnabledRemoteCalendar) return
         userFilesService.storeFile(user, getScheduleResource(user.id), SCHEDULE_FILE)
     }
 

@@ -72,7 +72,7 @@ interface UserService {
      * @param settings new user settings
      * @return new user object
      */
-    fun updateUserSettings(telegramId: Long, settings: Map<String, Any>): UserDto
+    fun updateUserSettings(telegramId: Long, settings: Map<String, Any?>): UserDto
 
     /**
      * Get all users by group and subgroup
