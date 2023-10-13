@@ -153,12 +153,12 @@ class UserServiceImpl(
                 id = id,
                 group = group,
                 subGroup = subGroup,
-                includeQuarterSchedule = includeQuarterSchedule != null && includeQuarterSchedule,
-                includeCommonEnglish = includeCommonEnglish != null && includeCommonEnglish,
-                includeCommonMinor = includeCommonMinor != null && includeCommonMinor,
-                isEnabledRemoteCalendar = isEnabledRemoteCalendar != null && isEnabledRemoteCalendar,
-                isEnabledNewCommonScheduleNotifications = isEnabledNewCommonScheduleNotifications != null && isEnabledNewCommonScheduleNotifications,
-                isEnabledNewQuarterScheduleNotifications = isEnabledNewQuarterScheduleNotifications != null && isEnabledNewQuarterScheduleNotifications,
+                includeQuarterSchedule = includeQuarterSchedule,
+                includeCommonEnglish = includeCommonEnglish,
+                includeCommonMinor = includeCommonMinor,
+                isEnabledRemoteCalendar = isEnabledRemoteCalendar,
+                isEnabledNewCommonScheduleNotifications = isEnabledNewCommonScheduleNotifications,
+                isEnabledNewQuarterScheduleNotifications = isEnabledNewQuarterScheduleNotifications,
             )
         }
     }
