@@ -45,7 +45,8 @@ enum class LessonType(val type: String, private val scheduleFilePattern: String)
                 .replace("]", "")
                 .trim()
         }
-    };
+    },
+    EVENT("Мероприятие", "{type}: {subject}");
     fun toEventSubject(subject: String): String {
         return scheduleFilePattern
             .replace("{type}", type)
