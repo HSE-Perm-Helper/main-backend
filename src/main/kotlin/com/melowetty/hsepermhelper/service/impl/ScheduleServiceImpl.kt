@@ -41,25 +41,29 @@ class ScheduleServiceImpl(
                     true
             }
             .forEach { schedule ->
-            val filteredLessons = schedule.lessons.flatMap { it.value }.filter { lesson: Lesson ->
-                if (lesson.subGroup != null) lesson.group == user.settings.group
-                        && lesson.subGroup == user.settings.subGroup
-                else lesson.group == user.settings.group
-            }.filter {
-                if (it.lessonType != LessonType.COMMON_ENGLISH) true
-                else user.settings.includeCommonEnglish
-            }.filter {
-                if (it.lessonType != LessonType.COMMON_MINOR) true
-                else user.settings.includeCommonMinor
-            }
-            val groupedLessons = filteredLessons.groupBy { it.date }
             filteredSchedules.add(
-                schedule.copy(
-                    lessons = groupedLessons
-                )
+                filterSchedule(schedule, user)
             )
         }
         return filteredSchedules
+    }
+
+    private fun filterSchedule(schedule: Schedule, user: UserDto): Schedule {
+        val filteredLessons = schedule.lessons.flatMap { it.value }.filter { lesson: Lesson ->
+            if (lesson.subGroup != null) lesson.group == user.settings.group
+                    && lesson.subGroup == user.settings.subGroup
+            else lesson.group == user.settings.group
+        }.filter {
+            if (it.lessonType != LessonType.COMMON_ENGLISH) true
+            else user.settings.includeCommonEnglish
+        }.filter {
+            if (it.lessonType != LessonType.COMMON_MINOR) true
+            else user.settings.includeCommonMinor
+        }
+        val groupedLessons = filteredLessons.groupBy { it.date }
+        return schedule.copy(
+            lessons = groupedLessons
+        )
     }
 
     override fun getUserSchedulesByTelegramId(telegramId: Long): List<Schedule> {
@@ -112,57 +116,31 @@ class ScheduleServiceImpl(
                 eventService.addEvent(scheduleAddedEvent)
             }
         }
-        if(editedSchedules != null) {
-            val changes = mutableMapOf<ScheduleInfo, List<Long>>()
-            editedSchedules.forEach {
-                val groupedAfter = it.after!!.lessons.values.flatten().groupBy { it.group }
-                it.before!!.lessons.values.flatten().groupBy { it.group }.forEach { groupEntry ->
-                    val groupMatch = groupedAfter.getOrDefault(groupEntry.key, null)
-                    if(groupMatch != null) {
-                        val subGroupGrouping = groupMatch.groupBy { it.subGroup }
-                        groupEntry.value.groupBy { it.subGroup }.forEach subGroupForeach@ { subGroupEntry ->
-                            val subGroupMatch = subGroupGrouping.getOrDefault(subGroupEntry.key, null)
-                            if(subGroupMatch != null) {
-                                if(subGroupMatch == subGroupEntry.value) {
-                                    return@subGroupForeach
-                                } else {
-                                    addScheduleChanges(changes, it.after.toScheduleInfo(), groupEntry.key, subGroupEntry.key)
-                                }
-                            } else {
-                                addScheduleChanges(changes, it.after.toScheduleInfo(), groupEntry.key, subGroupEntry.key)
-                            }
-                        }
-                    } else {
-                        addScheduleChanges(changes, it.after.toScheduleInfo(), groupEntry.key, 0)
+        editedSchedules?.forEach {
+            if (it.before != null && it.after != null) {
+                val users = mutableSetOf<Long>()
+                userService.getAllUsers()
+                    .filter { user ->
+                        (it.after.scheduleType == ScheduleType.QUARTER_SCHEDULE && user.settings.includeQuarterSchedule) ||
+                                it.after.scheduleType != ScheduleType.QUARTER_SCHEDULE
                     }
-                }
-            }
-            if(changes.isNotEmpty()) {
-                for (pair in changes) {
-                    if(pair.value.isEmpty()) continue
+                    .distinctBy { it.settings }.forEach { user ->
+                        val before = filterSchedule(it.before, user)
+                        val after = filterSchedule(it.after, user)
+                        if (before.lessons != after.lessons) {
+                            users.add(user.telegramId)
+                        }
+                    }
+                if (users.isNotEmpty()) {
                     val scheduleChangedEvent = ScheduleChangedForUserEvent(
-                        targetSchedule = pair.key,
-                        users = pair.value.distinct()
+                        targetSchedule = it.after.toScheduleInfo(),
+                        users = users.toList()
                     )
                     eventService.addEvent(scheduleChangedEvent)
                 }
             }
         }
         refreshScheduleFiles()
-    }
-
-    private fun addScheduleChanges(changes: MutableMap<ScheduleInfo, List<Long>>,
-                                   scheduleInfo: ScheduleInfo,
-                                   group: String,
-                                   subGroup: Int?) {
-        val users = changes.getOrDefault(scheduleInfo, listOf()).toMutableList()
-        if(scheduleInfo.scheduleType == ScheduleType.QUARTER_SCHEDULE) {
-            users.addAll(userService.getAllUsers(group, subGroup ?: 0).filter { it.settings.includeQuarterSchedule }.map { it.telegramId })
-        }
-        else {
-            users.addAll(userService.getAllUsers(group, subGroup ?: 0).map { it.telegramId })
-        }
-        changes[scheduleInfo] = users
     }
 
     override fun getScheduleFileByTelegramId(baseUrl: String, telegramId: Long): ScheduleFileLinks {

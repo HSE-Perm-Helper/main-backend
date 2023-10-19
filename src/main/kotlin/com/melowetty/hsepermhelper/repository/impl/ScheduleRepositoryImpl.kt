@@ -461,7 +461,7 @@ class ScheduleRepositoryImpl(
             isHaveBuildingInfo = fields.find { it.fieldType == FieldType.INFO } != null
         )
         return Lesson(
-            subject = subject,
+            subject = lessonType.reformatSubject(subject),
             lessonType = lessonType,
             building = additionalLessonInfo.building,
             office =  additionalLessonInfo.office,

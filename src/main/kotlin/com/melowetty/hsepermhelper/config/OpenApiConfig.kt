@@ -11,7 +11,7 @@ import io.swagger.v3.oas.annotations.servers.Server
 @OpenAPIDefinition(
     info = Info(
         title = "HSE Perm Schedule API",
-        description = "Melowetty", version = "1.01.1-beta",
+        description = "Melowetty", version = "1.01.2-beta",
         contact = Contact(
             name = "Denis Malinin",
             email = "melowetty@mail.ru",
