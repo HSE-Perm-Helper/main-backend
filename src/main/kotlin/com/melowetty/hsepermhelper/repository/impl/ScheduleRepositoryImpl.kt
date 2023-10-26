@@ -193,9 +193,11 @@ class ScheduleRepositoryImpl(
                 for (cellNum in 2 until sheet.getRow(2).physicalNumberOfCells) {
                     val group = getValue(sheet, sheet.getRow(2).getCell(cellNum))
                     if (group != "") {
-                        groups[cellNum] = group
-                        val programme = getProgramme(group)
-                        programs[cellNum] = programme
+                        if (groups.containsValue(group).not()) {
+                            groups[cellNum] = group
+                            val programme = getProgramme(group)
+                            programs[cellNum] = programme
+                        }
                     }
                 }
                 run schedule@ {
