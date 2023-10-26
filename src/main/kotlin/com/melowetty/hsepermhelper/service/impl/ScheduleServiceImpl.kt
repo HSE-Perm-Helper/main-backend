@@ -128,7 +128,7 @@ class ScheduleServiceImpl(
                         val before = filterSchedule(it.before, user)
                         val after = filterSchedule(it.after, user)
                         if (before.lessons != after.lessons) {
-                            users.add(user.telegramId)
+                            users.addAll(userService.getAllUsers().filter { it.settings == user.settings }.map { it.telegramId })
                         }
                     }
                 if (users.isNotEmpty()) {
