@@ -49,7 +49,7 @@ class ScheduleServiceImpl(
     }
 
     private fun filterSchedule(schedule: Schedule, user: UserDto): Schedule {
-        val filteredLessons = schedule.lessons.flatMap { it.value }.filter { lesson: Lesson ->
+        val filteredLessons = schedule.lessons.filter { lesson: Lesson ->
             if (lesson.subGroup != null) lesson.group == user.settings.group
                     && lesson.subGroup == user.settings.subGroup
             else lesson.group == user.settings.group
@@ -60,9 +60,8 @@ class ScheduleServiceImpl(
             if (it.lessonType != LessonType.COMMON_MINOR) true
             else user.settings.includeCommonMinor
         }
-        val groupedLessons = filteredLessons.groupBy { it.date }
         return schedule.copy(
-            lessons = groupedLessons
+            lessons = filteredLessons
         )
     }
 
