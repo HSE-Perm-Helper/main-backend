@@ -460,7 +460,8 @@ class ScheduleRepositoryImpl(
             isUnderlined = cell.isUnderlined,
             subject = subject,
             lessonInfo = additionalLessonInfo.lecturer,
-            isHaveBuildingInfo = fields.find { it.fieldType == FieldType.INFO } != null
+            isHaveBuildingInfo = fields.find { it.fieldType == FieldType.INFO } != null,
+            additionalInfo = additionalLessonInfo.additionalInfo
         )
         return Lesson(
             subject = lessonType.reformatSubject(subject),
@@ -530,26 +531,28 @@ class ScheduleRepositoryImpl(
         isSessionWeek: Boolean,
         subject: String,
         lessonInfo: String? = "",
+        additionalInfo: List<String>? = null,
         isUnderlined: Boolean,
         isHaveBuildingInfo: Boolean,
     ): LessonType {
         val pureSubject = subject.lowercase()
         val pureLessonInfo = lessonInfo?.lowercase()
-        if (pureSubject.contains("(ведомост")) return LessonType.STATEMENT
-        if (pureSubject.contains("независимый экзамен")) return LessonType.INDEPENDENT_EXAM
-        if (pureSubject.contains("экзамен")) return LessonType.EXAM
-        if (pureSubject.contains("зачёт") || pureSubject.contains("зачет")) return LessonType.TEST
-        if (pureSubject.contains("английский язык")) return LessonType.COMMON_ENGLISH
-        if (pureSubject.contains("майнор")) {
+        val pureFullLessonInfo = pureSubject + " " + (additionalInfo?.joinToString { it.lowercase() } ?: "") + " " + (pureLessonInfo ?: "")
+        if (pureFullLessonInfo.contains("ведомост")) return LessonType.STATEMENT
+        if (pureFullLessonInfo.contains("независимый экзамен")) return LessonType.INDEPENDENT_EXAM
+        if (pureFullLessonInfo.contains("экзамен")) return LessonType.EXAM
+        if (pureFullLessonInfo.contains("зачёт") || pureSubject.contains("зачет")) return LessonType.TEST
+        if (pureFullLessonInfo.contains("английский язык")) return LessonType.COMMON_ENGLISH
+        if (pureFullLessonInfo.contains("майнор")) {
             if (isSessionWeek) return LessonType.EXAM
             return LessonType.COMMON_MINOR
         }
         if (pureSubject == "практика") return LessonType.PRACTICE
-        if (pureLessonInfo?.contains("мкд") == true || pureLessonInfo?.contains("мдк") == true) return LessonType.ICC
-        if (pureSubject.contains("лекция") || pureSubject.contains("лекции")) return LessonType.LECTURE
-        if (pureSubject.contains("семинар") || pureSubject.contains("семинары")) return LessonType.SEMINAR
-        if (pureSubject.contains("доц по выбору")) return LessonType.UNDEFINED_AED
-        if (pureSubject.contains("доц")) return LessonType.AED
+        if (pureFullLessonInfo.contains("мкд") || pureFullLessonInfo.contains("мдк")) return LessonType.ICC
+        if (pureFullLessonInfo.contains("лекция") || pureSubject.contains("лекции")) return LessonType.LECTURE
+        if (pureFullLessonInfo.contains("семинар") || pureSubject.contains("семинары")) return LessonType.SEMINAR
+        if (pureFullLessonInfo.contains("доц по выбору")) return LessonType.UNDEFINED_AED
+        if (pureFullLessonInfo.contains("доц")) return LessonType.AED
         if (isHaveBuildingInfo.not()) return LessonType.EVENT
         if (isUnderlined) return LessonType.LECTURE
         return LessonType.SEMINAR
@@ -597,7 +600,7 @@ class ScheduleRepositoryImpl(
     }
 
     companion object {
-        private val LESSON_BUILDING_INFO_REGEX = Regex("[^МКД|ДОЦ]\\(.+\\[\\d*\\].*\\)")
+        private val LESSON_BUILDING_INFO_REGEX = Regex("\\(.*\\[\\d*\\].*\\)")
         private val LINK_REGEX = Regex("https?:\\/\\/(www\\.)?[-a-zA-Z0-9@:%._\\+~#=]{1,256}\\.[a-zA-Z0-9()]{1,6}\\b([-a-zA-Z0-9()@:%_\\+.~#?&//=]*)")
         private val ADDITIONAL_INFO_REGEX = Regex("([^\\/]*)\\((.*)\\)")
         private val PLACE_INFO_REGEX = Regex("\\A[.[^\\[]]+|\\d+")
