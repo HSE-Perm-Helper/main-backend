@@ -123,11 +123,14 @@ class ScheduleServiceImpl(
                         (it.after.scheduleType == ScheduleType.QUARTER_SCHEDULE && user.settings.includeQuarterSchedule) ||
                                 it.after.scheduleType != ScheduleType.QUARTER_SCHEDULE
                     }
-                    .distinctBy { it.settings }.forEach { user ->
+                    .distinctBy { "${it.settings.group} ${it.settings.subGroup}" }.forEach { user ->
                         val before = filterSchedule(it.before, user)
                         val after = filterSchedule(it.after, user)
-                        if (before.lessons != after.lessons) {
-                            users.addAll(userService.getAllUsers().filter { it.settings == user.settings }.map { it.telegramId })
+                        if (before.lessons.toHashSet() != after.lessons.toHashSet()) {
+                            users.addAll(userService.getAllUsers().filter {
+                                it.settings.group == user.settings.group
+                                    && it.settings.subGroup == user.settings.subGroup }
+                                .map { it.telegramId })
                         }
                     }
                 if (users.isNotEmpty()) {
