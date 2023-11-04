@@ -148,7 +148,12 @@ data class Lesson(
         if (startTime != other.startTime) return false
         if (endTime != other.endTime) return false
         if (lecturer != other.lecturer) return false
+        if (office != other.office) return false
+        if (building != other.building) return false
+        if (links != other.links) return false
+        if (additionalInfo != other.additionalInfo) return false
         if (lessonType != other.lessonType) return false
+        if (parentScheduleType != other.parentScheduleType) return false
 
         return true
     }
@@ -165,7 +170,12 @@ data class Lesson(
         result = 31 * result + startTime.hashCode()
         result = 31 * result + endTime.hashCode()
         result = 31 * result + (lecturer?.hashCode() ?: 0)
+        result = 31 * result + (building?.hashCode() ?: 0)
+        result = 31 * result + (office?.hashCode() ?: 0)
+        result = 31 * result + (links?.hashCode() ?: 0)
+        result = 31 * result + (additionalInfo?.hashCode() ?: 0)
         result = 31 * result + lessonType.hashCode()
+        result = 31 * result + parentScheduleType.hashCode()
         return result
     }
 }

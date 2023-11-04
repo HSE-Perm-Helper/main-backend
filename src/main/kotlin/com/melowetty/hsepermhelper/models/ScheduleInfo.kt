@@ -27,6 +27,7 @@ data class ScheduleInfo (
             weekStart = weekStart,
             weekEnd = weekEnd,
             scheduleType = scheduleType,
+            lessons = listOf()
         )
     }
 }
