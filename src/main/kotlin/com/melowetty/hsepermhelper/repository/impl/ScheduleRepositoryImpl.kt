@@ -108,9 +108,8 @@ class ScheduleRepositoryImpl(
 
     override fun getAvailableCourses(): List<Int> {
         if(schedules.isEmpty()) throw ScheduleNotFoundException("Расписание не найдено!")
-        val courses = schedules.flatMap { it.lessons.values }
+        val courses = schedules.flatMap { it.lessons }
             .asSequence()
-            .flatten()
             .map { it.course }
             .toSortedSet()
             .toList()
@@ -120,9 +119,8 @@ class ScheduleRepositoryImpl(
 
     override fun getAvailablePrograms(course: Int): List<String> {
         if(schedules.isEmpty()) throw ScheduleNotFoundException("Расписание не найдено!")
-        val programs = schedules.flatMap { it.lessons.values }
+        val programs = schedules.flatMap { it.lessons }
             .asSequence()
-            .flatten()
             .filter { it.course == course }
             .map { it.programme }
             .toSortedSet()
@@ -133,9 +131,8 @@ class ScheduleRepositoryImpl(
 
     override fun getAvailableGroups(course: Int, program: String): List<String> {
         if(schedules.isEmpty()) throw ScheduleNotFoundException("Расписание не найдено!")
-        val groups = schedules.flatMap { it.lessons.values }
+        val groups = schedules.flatMap { it.lessons }
             .asSequence()
-            .flatten()
             .filter { it.course == course && it.programme == program }
             .map { it.group }
             .toSortedSet()
@@ -284,10 +281,7 @@ class ScheduleRepositoryImpl(
                 weekNumber = scheduleInfo.weekNumber,
                 weekStart = scheduleInfo.weekStartDate,
                 weekEnd = scheduleInfo.weekEndDate,
-                lessons = lessonsList
-                    .groupBy {
-                    it.date
-                },
+                lessons = lessonsList,
                 scheduleType = scheduleInfo.scheduleType,
 
             )
@@ -559,7 +553,7 @@ class ScheduleRepositoryImpl(
         val weekInfoRegex = Regex("\\D*(\\d*).+\\s+(\\d+\\.\\d+\\.\\d+)\\s.+\\s(\\d+\\.\\d+\\.\\d+)")
         val weekInfoMatches = weekInfoRegex.findAll(weekInfoStr)
         val weekInfoGroups = weekInfoMatches.elementAt(0).groups
-        val weekNumber = (weekInfoGroups.get(1)?.value?.strip())?.toIntOrNull()
+        val weekNumber = (weekInfoGroups.get(1)?.value?.trim())?.toIntOrNull()
         val datePattern = DateTimeFormatter.ofPattern("dd.MM.yyyy")
         val weekStart = LocalDate.parse(weekInfoGroups.get(2)?.value, datePattern)
         val weekEnd = LocalDate.parse(weekInfoGroups.get(3)?.value, datePattern)

@@ -12,7 +12,7 @@ import java.time.format.DateTimeFormatter
 data class Schedule(
     @Schema(description = "Номер недели", example = "6", nullable = true)
     val weekNumber: Int?,
-    val lessons: Map<LocalDate, List<Lesson>> = mapOf(),
+    val lessons: List<Lesson>,
     @JsonFormat(pattern = DateUtils.DATE_PATTERN)
     @Schema(description = "Дата начала недели", example = "03.09.2023", type = "string")
     val weekStart: LocalDate,
@@ -24,7 +24,7 @@ data class Schedule(
 ) {
     @JsonGetter("lessons")
     fun getFormattedLessons(): Set<Map.Entry<String, List<Lesson>>> {
-        return lessons.mapKeys { it.key.format(DateTimeFormatter.ofPattern(DateUtils.DATE_PATTERN)) }.entries
+        return lessons.sortedBy { it.date }.groupBy { it.date }.mapKeys { it.key.format(DateTimeFormatter.ofPattern(DateUtils.DATE_PATTERN)) }.entries
     }
 
     override fun hashCode(): Int {
