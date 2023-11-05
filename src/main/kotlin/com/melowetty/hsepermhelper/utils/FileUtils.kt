@@ -1,6 +1,6 @@
 package com.melowetty.hsepermhelper.utils
 
-import Schedule
+import com.melowetty.hsepermhelper.models.v2.ScheduleV2
 import jakarta.servlet.http.HttpServletRequest
 import net.fortuna.ical4j.model.Calendar
 import net.fortuna.ical4j.model.TimeZoneRegistryFactory
@@ -50,7 +50,7 @@ class FileUtils {
          * @param schedules list of schedules, whose will be converted
          * @return calendar file as resource
          */
-        fun convertSchedulesToCalendarFile(schedules: List<Schedule>): Resource {
+        fun convertSchedulesToCalendarFile(schedules: List<ScheduleV2>): Resource {
             val calendar = Calendar().withDefaults().fluentTarget
             calendar.add(ProdId("-//HSE Perm Schedule Bot//Расписание пар 1.0//RU"))
 

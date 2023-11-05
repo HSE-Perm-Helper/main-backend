@@ -1,6 +1,6 @@
 package com.melowetty.hsepermhelper.repository
 
-import Schedule
+import com.melowetty.hsepermhelper.models.v2.ScheduleV2
 
 interface ScheduleRepository {
     /**
@@ -8,14 +8,14 @@ interface ScheduleRepository {
      *
      * @return list of schedules
      */
-    fun getSchedules(): List<Schedule>
+    fun getSchedules(): List<ScheduleV2>
 
     /**
      * Fetch schedules from list of files in schedule files
      *
      * @return new list of schedules
      */
-    fun fetchSchedules(firstLaunch: Boolean = false, publishEvents: Boolean = true): List<Schedule>
+    fun fetchSchedules(firstLaunch: Boolean = false, publishEvents: Boolean = true): List<ScheduleV2>
 
     /**
      * Gets available courses
