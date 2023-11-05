@@ -22,9 +22,10 @@ class LessonTest {
             endTimeStr = "9:40",
             startTime = LocalDateTime.of(2023, 10, 24, 8, 10),
             endTime = LocalDateTime.of(2023, 10, 24, 9, 40),
-            building = 2,
+            places = listOf(
+                LessonPlace(building = 2, office = null)
+            ),
             lecturer = null,
-            office = null,
             lessonType = LessonType.SEMINAR,
             parentScheduleType = ScheduleType.QUARTER_SCHEDULE
         )
@@ -39,9 +40,10 @@ class LessonTest {
             endTimeStr = "9:40",
             startTime = LocalDateTime.of(2023, 10, 24, 8, 10),
             endTime = LocalDateTime.of(2023, 10, 24, 9, 40),
-            building = 2,
+            places = listOf(
+                LessonPlace(building = 2, office = null)
+            ),
             lecturer = null,
-            office = null,
             lessonType = LessonType.SEMINAR,
             parentScheduleType = ScheduleType.QUARTER_SCHEDULE
         )
@@ -56,9 +58,10 @@ class LessonTest {
             endTimeStr = "9:40",
             startTime = LocalDateTime.of(2023, 10, 24, 8, 10),
             endTime = LocalDateTime.of(2023, 10, 24, 9, 40),
-            building = 3,
+            places = listOf(
+                LessonPlace(building = 3, office = null)
+            ),
             lecturer = null,
-            office = null,
             lessonType = LessonType.SEMINAR,
             parentScheduleType = ScheduleType.QUARTER_SCHEDULE
         )
@@ -81,9 +84,10 @@ class LessonTest {
             endTimeStr = "9:40",
             startTime = LocalDateTime.of(2023, 10, 24, 8, 10),
             endTime = LocalDateTime.of(2023, 10, 24, 9, 40),
-            building = 2,
+            places = listOf(
+                LessonPlace(building = 2, office = null)
+            ),
             lecturer = null,
-            office = null,
             lessonType = LessonType.SEMINAR,
             parentScheduleType = ScheduleType.QUARTER_SCHEDULE
         )
@@ -98,9 +102,10 @@ class LessonTest {
             endTimeStr = "9:40",
             startTime = LocalDateTime.of(2023, 10, 24, 8, 10),
             endTime = LocalDateTime.of(2023, 10, 24, 9, 40),
-            building = 3,
+            places = listOf(
+                LessonPlace(building = 3, office = null)
+            ),
             lecturer = null,
-            office = null,
             lessonType = LessonType.SEMINAR,
             parentScheduleType = ScheduleType.QUARTER_SCHEDULE
         )
@@ -115,9 +120,10 @@ class LessonTest {
             endTimeStr = "9:40",
             startTime = LocalDateTime.of(2023, 10, 24, 8, 10),
             endTime = LocalDateTime.of(2023, 10, 24, 9, 40),
-            building = 3,
+            places = listOf(
+                LessonPlace(building = 3, office = "501")
+            ),
             lecturer = null,
-            office = "501",
             lessonType = LessonType.SEMINAR,
             parentScheduleType = ScheduleType.QUARTER_SCHEDULE
         )
@@ -140,9 +146,10 @@ class LessonTest {
             endTimeStr = "9:40",
             startTime = LocalDateTime.of(2023, 10, 24, 8, 10),
             endTime = LocalDateTime.of(2023, 10, 24, 9, 40),
-            building = 2,
+            places = listOf(
+                LessonPlace(building = 2, office = null)
+            ),
             lecturer = null,
-            office = null,
             lessonType = LessonType.SEMINAR,
             parentScheduleType = ScheduleType.QUARTER_SCHEDULE
         )
@@ -157,9 +164,10 @@ class LessonTest {
             endTimeStr = "9:40",
             startTime = LocalDateTime.of(2023, 10, 24, 8, 10),
             endTime = LocalDateTime.of(2023, 10, 24, 9, 40),
-            building = 3,
+            places = listOf(
+                LessonPlace(building = 3, office = null)
+            ),
             lecturer = null,
-            office = null,
             lessonType = LessonType.SEMINAR,
             parentScheduleType = ScheduleType.QUARTER_SCHEDULE
         )
@@ -174,9 +182,10 @@ class LessonTest {
             endTimeStr = "9:40",
             startTime = LocalDateTime.of(2023, 10, 24, 8, 10),
             endTime = LocalDateTime.of(2023, 10, 24, 9, 40),
-            building = 3,
+            places = listOf(
+                LessonPlace(building = 3, office = "501")
+            ),
             lecturer = null,
-            office = "501",
             lessonType = LessonType.SEMINAR,
             parentScheduleType = ScheduleType.QUARTER_SCHEDULE
         )
@@ -191,9 +200,10 @@ class LessonTest {
             endTimeStr = "9:40",
             startTime = LocalDateTime.of(2023, 10, 24, 8, 10),
             endTime = LocalDateTime.of(2023, 10, 24, 9, 40),
-            building = 3,
+            places = listOf(
+                LessonPlace(building = 3, office = "502")
+            ),
             lecturer = null,
-            office = "502",
             lessonType = LessonType.SEMINAR,
             parentScheduleType = ScheduleType.QUARTER_SCHEDULE
         )

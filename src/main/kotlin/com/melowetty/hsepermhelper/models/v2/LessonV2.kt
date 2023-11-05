@@ -148,7 +148,7 @@ data class LessonV2(
         if (startTime != other.startTime) return false
         if (endTime != other.endTime) return false
         if (lecturer != other.lecturer) return false
-        if (places == other.places) return false
+        if (places != other.places) return false
         if (links != other.links) return false
         if (additionalInfo != other.additionalInfo) return false
         if (lessonType != other.lessonType) return false
