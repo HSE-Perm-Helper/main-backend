@@ -1,6 +1,6 @@
 package com.melowetty.hsepermhelper.service
 
-import Schedule
+import com.melowetty.hsepermhelper.models.v2.ScheduleV2
 import com.melowetty.hsepermhelper.dto.UserDto
 import com.melowetty.hsepermhelper.models.ScheduleFileLinks
 import org.springframework.core.io.Resource
@@ -13,7 +13,7 @@ interface ScheduleService {
      * @param telegramId user telegram id
      * @return all user schedules
      */
-    fun getUserSchedulesByTelegramId(telegramId: Long): List<Schedule>
+    fun getUserSchedulesByTelegramId(telegramId: Long): List<ScheduleV2>
 
     /**
      * Get all schedules for user by id
@@ -21,7 +21,7 @@ interface ScheduleService {
      * @param id user id
      * @return ll user schedules
      */
-    fun getUserSchedulesById(id: UUID): List<Schedule>
+    fun getUserSchedulesById(id: UUID): List<ScheduleV2>
 
     /**
      * Returns resource file for mobile calendar of schedule for user
