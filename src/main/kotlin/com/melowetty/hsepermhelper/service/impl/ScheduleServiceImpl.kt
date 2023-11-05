@@ -49,7 +49,7 @@ class ScheduleServiceImpl(
     }
 
     private fun filterSchedule(schedule: Schedule, user: UserDto): Schedule {
-        val filteredLessons = schedule.lessons.flatMap { it.value }.filter { lesson: Lesson ->
+        val filteredLessons = schedule.lessons.filter { lesson: Lesson ->
             if (lesson.subGroup != null) lesson.group == user.settings.group
                     && lesson.subGroup == user.settings.subGroup
             else lesson.group == user.settings.group
@@ -60,9 +60,8 @@ class ScheduleServiceImpl(
             if (it.lessonType != LessonType.COMMON_MINOR) true
             else user.settings.includeCommonMinor
         }
-        val groupedLessons = filteredLessons.groupBy { it.date }
         return schedule.copy(
-            lessons = groupedLessons
+            lessons = filteredLessons
         )
     }
 
@@ -124,11 +123,14 @@ class ScheduleServiceImpl(
                         (it.after.scheduleType == ScheduleType.QUARTER_SCHEDULE && user.settings.includeQuarterSchedule) ||
                                 it.after.scheduleType != ScheduleType.QUARTER_SCHEDULE
                     }
-                    .distinctBy { it.settings }.forEach { user ->
+                    .distinctBy { "${it.settings.group} ${it.settings.subGroup}" }.forEach { user ->
                         val before = filterSchedule(it.before, user)
                         val after = filterSchedule(it.after, user)
-                        if (before.lessons != after.lessons) {
-                            users.addAll(userService.getAllUsers().filter { it.settings == user.settings }.map { it.telegramId })
+                        if (before.lessons.toHashSet() != after.lessons.toHashSet()) {
+                            users.addAll(userService.getAllUsers().filter {
+                                it.settings.group == user.settings.group
+                                    && it.settings.subGroup == user.settings.subGroup }
+                                .map { it.telegramId })
                         }
                     }
                 if (users.isNotEmpty()) {

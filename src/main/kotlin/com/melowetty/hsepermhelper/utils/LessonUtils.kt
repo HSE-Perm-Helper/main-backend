@@ -20,7 +20,7 @@ class LessonUtils {
             }.flatten().filter { it.lessons.isNotEmpty() }.groupBy { it.weekStart }.forEach { _, groupedSchedules ->
                 val foundSchedule = groupedSchedules.maxByOrNull { it.scheduleType.priority }
                 if(foundSchedule != null) {
-                    lessons.addAll(foundSchedule.lessons.values.flatten())
+                    lessons.addAll(foundSchedule.lessons)
                 }
             }
             return lessons
@@ -28,7 +28,7 @@ class LessonUtils {
 
         private fun unpackQuarterSchedule(schedule: Schedule): List<Schedule> {
             val schedules = mutableListOf<Schedule>()
-            val lessons = schedule.lessons.flatMap { it.value }
+            val lessons = schedule.lessons
             var weekStart = schedule.weekStart.minusDays(schedule.weekStart.dayOfWeek.ordinal.toLong())
             var weekEnd = weekStart.plusDays(6)
             while (weekStart.isBefore(schedule.weekEnd)) {
@@ -38,7 +38,7 @@ class LessonUtils {
                     lessons = lessons.filter { lesson ->
                         lesson.date.isBefore(weekEnd) && lesson.date.isAfter(weekStart)
                                 || lesson.date == weekStart || lesson.date == weekEnd
-                    }.groupBy { it.date }
+                    }
                 )
                 schedules.add(newSchedule)
                 weekStart = weekStart.plusDays(7)
