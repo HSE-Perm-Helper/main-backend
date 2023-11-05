@@ -1,18 +1,20 @@
+package com.melowetty.hsepermhelper.models.v2
+
 import com.fasterxml.jackson.annotation.JsonFormat
 import com.fasterxml.jackson.annotation.JsonGetter
-import com.melowetty.hsepermhelper.models.Lesson
 import com.melowetty.hsepermhelper.models.ScheduleInfo
 import com.melowetty.hsepermhelper.models.ScheduleType
+import com.melowetty.hsepermhelper.models.v1.ScheduleV1
 import com.melowetty.hsepermhelper.utils.DateUtils
 import io.swagger.v3.oas.annotations.media.Schema
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
 @Schema(description = "Расписание занятий")
-data class Schedule(
+data class ScheduleV2(
     @Schema(description = "Номер недели", example = "6", nullable = true)
     val weekNumber: Int?,
-    val lessons: List<Lesson>,
+    val lessons: List<LessonV2>,
     @JsonFormat(pattern = DateUtils.DATE_PATTERN)
     @Schema(description = "Дата начала недели", example = "03.09.2023", type = "string")
     val weekStart: LocalDate,
@@ -23,7 +25,7 @@ data class Schedule(
     val scheduleType: ScheduleType,
 ) {
     @JsonGetter("lessons")
-    fun getFormattedLessons(): Set<Map.Entry<String, List<Lesson>>> {
+    fun getFormattedLessons(): Set<Map.Entry<String, List<LessonV2>>> {
         return lessons.sortedBy { it.date }.groupBy { it.date }.mapKeys { it.key.format(DateTimeFormatter.ofPattern(DateUtils.DATE_PATTERN)) }.entries
     }
 
@@ -36,8 +38,18 @@ data class Schedule(
         return result
     }
 
+    public fun toV1(): ScheduleV1 {
+        return ScheduleV1(
+            weekNumber = weekNumber,
+            lessons = lessons.map { it.toV1() },
+            weekStart = weekStart,
+            weekEnd = weekEnd,
+            scheduleType = scheduleType,
+        )
+    }
+
     companion object {
-        fun Schedule.toScheduleInfo(): ScheduleInfo {
+        fun ScheduleV2.toScheduleInfo(): ScheduleInfo {
             return ScheduleInfo(
                 weekNumber = weekNumber,
                 weekStart = weekStart,

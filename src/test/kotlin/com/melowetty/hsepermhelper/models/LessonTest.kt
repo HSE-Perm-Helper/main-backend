@@ -1,5 +1,6 @@
 package com.melowetty.hsepermhelper.models
 
+import com.melowetty.hsepermhelper.models.v2.LessonV2
 import org.junit.jupiter.api.Test
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.util.Assert
@@ -10,7 +11,7 @@ import java.time.LocalDateTime
 class LessonTest {
     @Test
     fun `lesson hashcode equals test and equals test`() {
-        val expected = Lesson(
+        val expected = LessonV2(
             subject = "Программирование",
             course = 1,
             programme = "РИС",
@@ -21,13 +22,14 @@ class LessonTest {
             endTimeStr = "9:40",
             startTime = LocalDateTime.of(2023, 10, 24, 8, 10),
             endTime = LocalDateTime.of(2023, 10, 24, 9, 40),
-            building = 2,
+            places = listOf(
+                LessonPlace(building = 2, office = null)
+            ),
             lecturer = null,
-            office = null,
             lessonType = LessonType.SEMINAR,
             parentScheduleType = ScheduleType.QUARTER_SCHEDULE
         )
-        val actual = Lesson(
+        val actual = LessonV2(
             subject = "Программирование",
             course = 1,
             programme = "РИС",
@@ -38,13 +40,14 @@ class LessonTest {
             endTimeStr = "9:40",
             startTime = LocalDateTime.of(2023, 10, 24, 8, 10),
             endTime = LocalDateTime.of(2023, 10, 24, 9, 40),
-            building = 2,
+            places = listOf(
+                LessonPlace(building = 2, office = null)
+            ),
             lecturer = null,
-            office = null,
             lessonType = LessonType.SEMINAR,
             parentScheduleType = ScheduleType.QUARTER_SCHEDULE
         )
-        val notEqual = Lesson(
+        val notEqual = LessonV2(
             subject = "Программирование",
             course = 1,
             programme = "РИС",
@@ -55,9 +58,10 @@ class LessonTest {
             endTimeStr = "9:40",
             startTime = LocalDateTime.of(2023, 10, 24, 8, 10),
             endTime = LocalDateTime.of(2023, 10, 24, 9, 40),
-            building = 3,
+            places = listOf(
+                LessonPlace(building = 3, office = null)
+            ),
             lecturer = null,
-            office = null,
             lessonType = LessonType.SEMINAR,
             parentScheduleType = ScheduleType.QUARTER_SCHEDULE
         )
@@ -69,7 +73,7 @@ class LessonTest {
 
     @Test
     fun `lesson hashcode not equals test and not equals lessons test`() {
-        val expected = Lesson(
+        val expected = LessonV2(
             subject = "Программирование",
             course = 1,
             programme = "РИС",
@@ -80,13 +84,14 @@ class LessonTest {
             endTimeStr = "9:40",
             startTime = LocalDateTime.of(2023, 10, 24, 8, 10),
             endTime = LocalDateTime.of(2023, 10, 24, 9, 40),
-            building = 2,
+            places = listOf(
+                LessonPlace(building = 2, office = null)
+            ),
             lecturer = null,
-            office = null,
             lessonType = LessonType.SEMINAR,
             parentScheduleType = ScheduleType.QUARTER_SCHEDULE
         )
-        val firstActual = Lesson(
+        val firstActual = LessonV2(
             subject = "Программирование",
             course = 1,
             programme = "РИС",
@@ -97,13 +102,14 @@ class LessonTest {
             endTimeStr = "9:40",
             startTime = LocalDateTime.of(2023, 10, 24, 8, 10),
             endTime = LocalDateTime.of(2023, 10, 24, 9, 40),
-            building = 3,
+            places = listOf(
+                LessonPlace(building = 3, office = null)
+            ),
             lecturer = null,
-            office = null,
             lessonType = LessonType.SEMINAR,
             parentScheduleType = ScheduleType.QUARTER_SCHEDULE
         )
-        val secondActual = Lesson(
+        val secondActual = LessonV2(
             subject = "Программирование",
             course = 1,
             programme = "РИС",
@@ -114,9 +120,10 @@ class LessonTest {
             endTimeStr = "9:40",
             startTime = LocalDateTime.of(2023, 10, 24, 8, 10),
             endTime = LocalDateTime.of(2023, 10, 24, 9, 40),
-            building = 3,
+            places = listOf(
+                LessonPlace(building = 3, office = "501")
+            ),
             lecturer = null,
-            office = "501",
             lessonType = LessonType.SEMINAR,
             parentScheduleType = ScheduleType.QUARTER_SCHEDULE
         )
@@ -128,7 +135,7 @@ class LessonTest {
 
     @Test
     fun `lessons list equal test`() {
-        val firstLesson = Lesson(
+        val firstLesson = LessonV2(
             subject = "Программирование",
             course = 1,
             programme = "РИС",
@@ -139,13 +146,14 @@ class LessonTest {
             endTimeStr = "9:40",
             startTime = LocalDateTime.of(2023, 10, 24, 8, 10),
             endTime = LocalDateTime.of(2023, 10, 24, 9, 40),
-            building = 2,
+            places = listOf(
+                LessonPlace(building = 2, office = null)
+            ),
             lecturer = null,
-            office = null,
             lessonType = LessonType.SEMINAR,
             parentScheduleType = ScheduleType.QUARTER_SCHEDULE
         )
-        val secondLesson = Lesson(
+        val secondLesson = LessonV2(
             subject = "Программирование",
             course = 1,
             programme = "РИС",
@@ -156,13 +164,14 @@ class LessonTest {
             endTimeStr = "9:40",
             startTime = LocalDateTime.of(2023, 10, 24, 8, 10),
             endTime = LocalDateTime.of(2023, 10, 24, 9, 40),
-            building = 3,
+            places = listOf(
+                LessonPlace(building = 3, office = null)
+            ),
             lecturer = null,
-            office = null,
             lessonType = LessonType.SEMINAR,
             parentScheduleType = ScheduleType.QUARTER_SCHEDULE
         )
-        val thirdLesson = Lesson(
+        val thirdLesson = LessonV2(
             subject = "Программирование",
             course = 1,
             programme = "РИС",
@@ -173,13 +182,14 @@ class LessonTest {
             endTimeStr = "9:40",
             startTime = LocalDateTime.of(2023, 10, 24, 8, 10),
             endTime = LocalDateTime.of(2023, 10, 24, 9, 40),
-            building = 3,
+            places = listOf(
+                LessonPlace(building = 3, office = "501")
+            ),
             lecturer = null,
-            office = "501",
             lessonType = LessonType.SEMINAR,
             parentScheduleType = ScheduleType.QUARTER_SCHEDULE
         )
-        val fourthLesson = Lesson(
+        val fourthLesson = LessonV2(
             subject = "Программирование",
             course = 1,
             programme = "РИС",
@@ -190,9 +200,10 @@ class LessonTest {
             endTimeStr = "9:40",
             startTime = LocalDateTime.of(2023, 10, 24, 8, 10),
             endTime = LocalDateTime.of(2023, 10, 24, 9, 40),
-            building = 3,
+            places = listOf(
+                LessonPlace(building = 3, office = "502")
+            ),
             lecturer = null,
-            office = "502",
             lessonType = LessonType.SEMINAR,
             parentScheduleType = ScheduleType.QUARTER_SCHEDULE
         )

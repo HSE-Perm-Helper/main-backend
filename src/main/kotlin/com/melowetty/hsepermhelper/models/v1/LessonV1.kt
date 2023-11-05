@@ -1,8 +1,11 @@
-package com.melowetty.hsepermhelper.models
+package com.melowetty.hsepermhelper.models.v1
 
 import com.fasterxml.jackson.annotation.JsonFormat
 import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonProperty
+import com.melowetty.hsepermhelper.models.LessonType
+import com.melowetty.hsepermhelper.models.v2.LessonV2
+import com.melowetty.hsepermhelper.models.ScheduleType
 import com.melowetty.hsepermhelper.utils.DateUtils
 import com.melowetty.hsepermhelper.utils.EmojiCode
 import io.swagger.v3.oas.annotations.media.Schema
@@ -13,7 +16,7 @@ import net.fortuna.ical4j.util.RandomUidGenerator
 import java.time.LocalDate
 import java.time.LocalDateTime
 
-data class Lesson(
+data class LessonV1(
     @Schema(description = "Учебный предмет", example = "Программирование")
     val subject: String,
     @JsonIgnore val course: Int,
@@ -45,7 +48,7 @@ data class Lesson(
     val lessonType: LessonType,
     @Schema(description = "Тип расписания-родителя", example = "COMMON_WEEK_SCHEDULE")
     val parentScheduleType: ScheduleType,
-) : Comparable<Lesson> {
+) : Comparable<LessonV2> {
     /**
      * Returns lesson will be in online mode
      *
@@ -127,7 +130,7 @@ data class Lesson(
         else "кабинет $office"
     }
 
-    override fun compareTo(other: Lesson): Int {
+    override fun compareTo(other: LessonV2): Int {
         return date.compareTo(other.date)
     }
 
@@ -135,7 +138,7 @@ data class Lesson(
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
 
-        other as Lesson
+        other as LessonV1
 
         if (subject != other.subject) return false
         if (course != other.course) return false

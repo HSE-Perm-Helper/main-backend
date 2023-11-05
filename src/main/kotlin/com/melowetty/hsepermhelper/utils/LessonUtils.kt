@@ -1,7 +1,7 @@
 package com.melowetty.hsepermhelper.utils
 
-import Schedule
-import com.melowetty.hsepermhelper.models.Lesson
+import com.melowetty.hsepermhelper.models.v2.ScheduleV2
+import com.melowetty.hsepermhelper.models.v2.LessonV2
 import com.melowetty.hsepermhelper.models.ScheduleType
 
 class LessonUtils {
@@ -12,8 +12,8 @@ class LessonUtils {
          * @param schedules list of schedules
          * @return list of lessons from schedules
          */
-        fun mergeSchedules(schedules: List<Schedule>): List<Lesson> {
-            val lessons = mutableListOf<Lesson>()
+        fun mergeSchedules(schedules: List<ScheduleV2>): List<LessonV2> {
+            val lessons = mutableListOf<LessonV2>()
             schedules.asSequence().map {
                 if(it.scheduleType == ScheduleType.QUARTER_SCHEDULE) unpackQuarterSchedule(it)
                 else listOf(it)
@@ -26,8 +26,8 @@ class LessonUtils {
             return lessons
         }
 
-        private fun unpackQuarterSchedule(schedule: Schedule): List<Schedule> {
-            val schedules = mutableListOf<Schedule>()
+        private fun unpackQuarterSchedule(schedule: ScheduleV2): List<ScheduleV2> {
+            val schedules = mutableListOf<ScheduleV2>()
             val lessons = schedule.lessons
             var weekStart = schedule.weekStart.minusDays(schedule.weekStart.dayOfWeek.ordinal.toLong())
             var weekEnd = weekStart.plusDays(6)
