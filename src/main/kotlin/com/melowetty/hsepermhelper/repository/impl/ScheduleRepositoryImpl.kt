@@ -562,7 +562,7 @@ class ScheduleRepositoryImpl(
                 offices.clear()
             } else {
                 if (match.trim().length in 1..2) {
-                    val subgroup = match.toIntOrNull()
+                    val subgroup = match.trim().toIntOrNull()
                     if (subgroup != null) {
                         subgroups.add(subgroup)
                     } else {
