@@ -1,1 +1,1 @@
-rootProject.name = "HsePemHelper"
+rootProject.name = "HsePermHelper"
