@@ -1,0 +1,21 @@
+version: '3.8'
+services:
+  hse-perm-helper-backend:
+    image: melowetty/hse-perm-helper-backend
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - ./build:/home/gradle/project/build
+      - ./uploads:/home/gradle/project/build/uploads
+    ports:
+      - "8080:8080"
+    env_file: ./.env
+    environment:
+      - SPRING_PROFILES_ACTIVE=$ACTIVE_PROFILE
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://$DB_HOST/$DB_NAME
+      - SPRING_DATASOURCE_USERNAME=$DB_USERNAME
+      - SPRING_DATASOURCE_PASSWORD=$DB_PASSWORD
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+      - APP_SECURITY_PRIVATE-KEY=$PRIVATE_KEY
+    restart: always
