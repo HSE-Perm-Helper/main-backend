@@ -2,6 +2,8 @@ version: '3.8'
 services:
   hse-perm-helper-backend:
     image: melowetty/hse-perm-helper-backend
+    depends_on:
+      - postgresdb
     build:
       context: .
       dockerfile: Dockerfile
@@ -9,13 +11,25 @@ services:
       - ./build:/home/gradle/project/build
       - ./uploads:/home/gradle/project/build/uploads
     ports:
-      - "8080:8080"
+      - $SPRING_LOCAL_PORT:$SPRING_DOCKER_PORT
     env_file: ./.env
     environment:
       - SPRING_PROFILES_ACTIVE=$ACTIVE_PROFILE
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://$DB_HOST/$DB_NAME
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgresdb:$POSTGRESDB_DOCKER_PORT/$DB_NAME
       - SPRING_DATASOURCE_USERNAME=$DB_USERNAME
       - SPRING_DATASOURCE_PASSWORD=$DB_PASSWORD
       - SPRING_JPA_HIBERNATE_DDL_AUTO=update
       - APP_SECURITY_PRIVATE-KEY=$PRIVATE_KEY
     restart: always
+  postgresdb:
+      image: postgres
+      restart: unless-stopped
+      env_file: ./.env
+      environment:
+        - POSTGRES_USER=$DB_USERNAME
+        - POSTGRES_PASSWORD=$DB_PASSWORD
+        - POSTGRES_DB=$DB_NAME
+      ports:
+        - $POSTGRESDB_LOCAL_PORT:$POSTGRESDB_DOCKER_PORT
+      volumes:
+        - db:/var/lib/postgres
