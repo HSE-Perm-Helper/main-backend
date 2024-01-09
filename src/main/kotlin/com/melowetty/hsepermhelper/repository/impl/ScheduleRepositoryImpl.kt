@@ -70,9 +70,9 @@ class ScheduleRepositoryImpl(
 
     private fun getChangesAndPublishEvents(oldSchedules: List<ScheduleV2>, newSchedules: List<ScheduleV2>, publishEvents: Boolean = true) {
         val changes = mutableMapOf<EventType, List<ChangedSchedule>>()
-        val mappedSchedules = oldSchedules.map { it.weekStart }
+        val mappedSchedules = oldSchedules.map { Pair(it.weekStart, it.weekEnd) }
         for (newSchedule in newSchedules) {
-            val existsSchedule = oldSchedules.find { it.weekStart == newSchedule.weekStart }
+            val existsSchedule = oldSchedules.find { it.weekStart == newSchedule.weekStart  && it.weekEnd == newSchedule.weekEnd}
             if(existsSchedule != null && existsSchedule.hashCode() != newSchedule.hashCode()) {
                 val editedSchedules: MutableList<ChangedSchedule> = changes.getOrDefault(EventType.EDITED, listOf()).toMutableList()
                 editedSchedules.add(
@@ -83,7 +83,7 @@ class ScheduleRepositoryImpl(
                 )
                 changes[EventType.EDITED] = editedSchedules
             }
-            else if(mappedSchedules.contains(newSchedule.weekStart).not()) {
+            else if(mappedSchedules.contains(Pair(newSchedule.weekStart, newSchedule.weekEnd)).not()) {
                 val addedSchedules: MutableList<ChangedSchedule> = changes.getOrDefault(EventType.ADDED, listOf()).toMutableList()
                 addedSchedules.add(ChangedSchedule(
                     before = null,
