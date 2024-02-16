@@ -596,6 +596,7 @@ class ScheduleRepositoryImpl(
         val pureFullLessonInfo = pureSubject + " " + (additionalInfo?.joinToString { it.lowercase() } ?: "") + " " + (pureLessonInfo ?: "")
         if (pureFullLessonInfo.contains("ведомост")) return LessonType.STATEMENT
         if (pureFullLessonInfo.contains("независимый экзамен")) return LessonType.INDEPENDENT_EXAM
+        if (pureFullLessonInfo.contains("консультация")) return LessonType.CONSULT
         if (pureFullLessonInfo.contains("экзамен")) return LessonType.EXAM
         if (pureFullLessonInfo.contains("зачёт") || pureSubject.contains("зачет")) return LessonType.TEST
         if (pureFullLessonInfo.contains("английский язык")) return LessonType.COMMON_ENGLISH
