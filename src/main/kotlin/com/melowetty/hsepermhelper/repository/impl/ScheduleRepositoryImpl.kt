@@ -1,12 +1,12 @@
 package com.melowetty.hsepermhelper.repository.impl
 
-import com.melowetty.hsepermhelper.models.v2.ScheduleV2
+import com.melowetty.hsepermhelper.models.Schedule
 import com.melowetty.hsepermhelper.events.common.EventType
 import com.melowetty.hsepermhelper.events.internal.ScheduleChangedEvent
 import com.melowetty.hsepermhelper.events.internal.ScheduleFilesChangedEvent
 import com.melowetty.hsepermhelper.exceptions.ScheduleNotFoundException
 import com.melowetty.hsepermhelper.models.*
-import com.melowetty.hsepermhelper.models.v2.LessonV2
+import com.melowetty.hsepermhelper.models.Lesson
 import com.melowetty.hsepermhelper.repository.ScheduleRepository
 import com.melowetty.hsepermhelper.service.DataService
 import com.melowetty.hsepermhelper.service.ScheduleFilesService
@@ -29,7 +29,7 @@ class ScheduleRepositoryImpl(
     private val dataService: DataService,
     private val scheduleFilesService: ScheduleFilesService
 ): ScheduleRepository {
-    private var schedules = mutableListOf<ScheduleV2>()
+    private var schedules = mutableListOf<Schedule>()
 
     @EventListener(ApplicationReadyEvent::class)
     fun firstScheduleFetching() {
@@ -38,7 +38,7 @@ class ScheduleRepositoryImpl(
         fetchSchedules(firstLaunch = true, difference > 12)
     }
 
-    override fun getSchedules(): List<ScheduleV2> {
+    override fun getSchedules(): List<Schedule> {
         return schedules
     }
 
@@ -47,8 +47,8 @@ class ScheduleRepositoryImpl(
         fetchSchedules()
     }
 
-    override fun fetchSchedules(firstLaunch: Boolean, publishEvents: Boolean): List<ScheduleV2> {
-        val newSchedules = mutableListOf<ScheduleV2>()
+    override fun fetchSchedules(firstLaunch: Boolean, publishEvents: Boolean): List<Schedule> {
+        val newSchedules = mutableListOf<Schedule>()
         if(firstLaunch) {
             scheduleFilesService.fetchScheduleFiles(callEvents = false)
                 .forEach {
@@ -68,7 +68,7 @@ class ScheduleRepositoryImpl(
         return schedules
     }
 
-    private fun getChangesAndPublishEvents(oldSchedules: List<ScheduleV2>, newSchedules: List<ScheduleV2>, publishEvents: Boolean = true) {
+    private fun getChangesAndPublishEvents(oldSchedules: List<Schedule>, newSchedules: List<Schedule>, publishEvents: Boolean = true) {
         val changes = mutableMapOf<EventType, List<ChangedSchedule>>()
         val mappedSchedules = oldSchedules.map { Pair(it.weekStart, it.weekEnd) }
         for (newSchedule in newSchedules) {
@@ -168,10 +168,10 @@ class ScheduleRepositoryImpl(
         return (courseRegex.find(sheetName)?.value ?: "0").toInt()
     }
 
-    private fun parseSchedule(inputStream: InputStream): ScheduleV2? {
+    private fun parseSchedule(inputStream: InputStream): Schedule? {
         try {
             val workbook = getWorkbook(inputStream)
-            val lessonsList = mutableListOf<LessonV2>()
+            val lessonsList = mutableListOf<Lesson>()
             val scheduleInfo = getWeekInfo(getValue(
                 workbook.getSheetAt(2),
                 workbook.getSheetAt(1).getRow(1).getCell(3))
@@ -195,13 +195,23 @@ class ScheduleRepositoryImpl(
                         }
                     }
                 }
+                var prevDay: String = ""
                 run schedule@ {
                     for(rowNum in 3 until sheet.lastRowNum) {
                         val row = sheet.getRow(rowNum)
-                        val unparsedDate = getValue(sheet, row.getCell(0)).split("\n")
+                        var unparsedDate = getValue(sheet, row.getCell(0)).split("\n")
                         val dates = mutableListOf<LocalDate>()
+                        val timeCell = getValue(sheet, row.getCell(1)).split("\n").filter { it.isNotEmpty() }
+                        if(timeCell.size < 2) continue
                         if (unparsedDate.size < 2) {
-                            if(scheduleInfo.scheduleType != ScheduleType.QUARTER_SCHEDULE) break
+                            if(scheduleInfo.scheduleType != ScheduleType.QUARTER_SCHEDULE) {
+                                if(prevDay.isNotEmpty()) {
+                                    unparsedDate = prevDay.split("\n")
+                                }
+                                else {
+                                    break
+                                }
+                            }
                             val day = getDayOfWeek(unparsedDate[0]) ?: continue
                             var dateIteration = scheduleInfo.weekStartDate.plusDays(
                                 day.ordinal.toLong() - scheduleInfo.weekStartDate.dayOfWeek.ordinal
@@ -217,8 +227,7 @@ class ScheduleRepositoryImpl(
                         } else {
                             dates.add(LocalDate.parse(unparsedDate[1], DateTimeFormatter.ofPattern("dd.MM.yyyy")))
                         }
-                        val timeCell = getValue(sheet, row.getCell(1)).split("\n").filter { it.isNotEmpty() }
-                        if(timeCell.size < 2) continue
+                        prevDay = getValue(sheet, row.getCell(1))
                         val timeRegex = Regex("[0-9]+:[0-9]+")
                         val timeRegexMatches = timeRegex.findAll(timeCell[1])
                         val startTime = timeRegexMatches.elementAt(0).value
@@ -275,7 +284,7 @@ class ScheduleRepositoryImpl(
                 }
             }
             lessonsList.sort()
-            return ScheduleV2(
+            return Schedule(
                 weekNumber = scheduleInfo.weekNumber,
                 weekStart = scheduleInfo.weekStartDate,
                 weekEnd = scheduleInfo.weekEndDate,
@@ -304,22 +313,32 @@ class ScheduleRepositoryImpl(
         scheduleInfo: ParsedScheduleInfo,
         serviceLessonInfo: ServiceLessonInfo,
         cell: CellInfo
-    ): List<LessonV2> {
+    ): List<Lesson> {
         if(cell.value.lowercase().contains("сессия")) return listOf()
         val splitCell = cell.value.split("\n").toMutableList()
         splitCell.removeAll(listOf(""))
-        val fields = getFieldsByType(splitCell)
-        val rawLessons = getRawLessons(fields)
+        val fieldsByType = getFieldsByType(splitCell)
+        val rawLessons = getRawLessons(fieldsByType)
         val unmergedLessons = unmergeLessonFields(rawLessons)
         val lessons = clearIncorrectLessonFields(unmergedLessons)
         val checkedLessons = checkLessons(lessons)
-        val builtLessons = mutableListOf<LessonV2>()
+        val builtLessons = mutableListOf<Lesson>()
         checkedLessons.forEach {
-            val additionalLessonInfo = getAdditionalLessonInfo(it)
+            val fields = it.toMutableList()
+            val foundSubject = fields.find { it.fieldType == FieldType.SUBJECT }
+            val subject: String
+            if(foundSubject == null) {
+                val link = fields.find { it.fieldType == FieldType.INFO }
+                if(link == null) return@forEach
+                subject = link.value.replace(LESSON_BUILDING_INFO_REGEX, "").trim()
+                fields.add(0, LessonField(subject, FieldType.SUBJECT))
+                link.value = link.value.replace(subject, "").trim()
+            }
+            val additionalLessonInfo = getAdditionalLessonInfo(fields)
             if (additionalLessonInfo.subGroups.isNotEmpty()) {
                 additionalLessonInfo.subGroups.forEach { subGroup ->
                     builtLessons.add(buildLesson(
-                        fields = it,
+                        fields = fields,
                         serviceLessonInfo = serviceLessonInfo,
                         additionalLessonInfo = additionalLessonInfo,
                         cell = cell,
@@ -330,7 +349,7 @@ class ScheduleRepositoryImpl(
             }
             else {
                 builtLessons.add(buildLesson(
-                    fields = it,
+                    fields = fields,
                     serviceLessonInfo = serviceLessonInfo,
                     additionalLessonInfo = additionalLessonInfo,
                     cell = cell,
@@ -482,8 +501,8 @@ class ScheduleRepositoryImpl(
         serviceLessonInfo: ServiceLessonInfo,
         additionalLessonInfo: AdditionalLessonInfo,
         subGroup: Int?
-    ): LessonV2 {
-        val subject = fields.first { it.fieldType == FieldType.SUBJECT }.value.trim()
+    ): Lesson {
+        val subject = fields.first { it.fieldType == FieldType.SUBJECT }.value
         val lessonType = getLessonType(
             isSessionWeek = scheduleInfo.scheduleType == ScheduleType.SESSION_WEEK_SCHEDULE,
             isUnderlined = cell.isUnderlined,
@@ -492,7 +511,7 @@ class ScheduleRepositoryImpl(
             isHaveBuildingInfo = fields.find { it.fieldType == FieldType.INFO } != null,
             additionalInfo = additionalLessonInfo.additionalInfo
         )
-        return LessonV2(
+        return Lesson(
             subject = lessonType.reformatSubject(subject),
             lessonType = lessonType,
             places = additionalLessonInfo.places,
@@ -678,7 +697,7 @@ class ScheduleRepositoryImpl(
         ADDITIONAL,
     }
     internal data class LessonField(
-        val value: String,
+        var value: String,
         val fieldType: FieldType
     )
 

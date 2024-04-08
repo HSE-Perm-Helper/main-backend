@@ -1,11 +1,8 @@
-package com.melowetty.hsepermhelper.models.v1
+package com.melowetty.hsepermhelper.models
 
 import com.fasterxml.jackson.annotation.JsonFormat
 import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonProperty
-import com.melowetty.hsepermhelper.models.LessonType
-import com.melowetty.hsepermhelper.models.v2.LessonV2
-import com.melowetty.hsepermhelper.models.ScheduleType
 import com.melowetty.hsepermhelper.utils.DateUtils
 import com.melowetty.hsepermhelper.utils.EmojiCode
 import io.swagger.v3.oas.annotations.media.Schema
@@ -16,7 +13,7 @@ import net.fortuna.ical4j.util.RandomUidGenerator
 import java.time.LocalDate
 import java.time.LocalDateTime
 
-data class LessonV1(
+data class Lesson(
     @Schema(description = "Учебный предмет", example = "Программирование")
     val subject: String,
     @JsonIgnore val course: Int,
@@ -36,10 +33,8 @@ data class LessonV1(
     @JsonIgnore val endTime: LocalDateTime,
     @Schema(description = "Преподаватель", example = "Викентьева О.Л.", nullable = true)
     val lecturer: String?,
-    @Schema(description = "Кабинет", example = "121", nullable = true)
-    val office: String?,
-    @Schema(description = "Корпус (если 0 - пара дистанционная)", example = "2", nullable = true)
-    val building: Int?,
+    @Schema(description = "Место проведения", nullable = true)
+    val places: List<LessonPlace>? = null,
     @Schema(description = "Ссылки на пару (null - если ссылок нет)")
     val links: List<String>? = null,
     @Schema(description = "Дополнительная информация о паре (null - если информации нет)")
@@ -48,16 +43,16 @@ data class LessonV1(
     val lessonType: LessonType,
     @Schema(description = "Тип расписания-родителя", example = "COMMON_WEEK_SCHEDULE")
     val parentScheduleType: ScheduleType,
-) : Comparable<LessonV2> {
+) : Comparable<Lesson> {
     /**
      * Returns lesson will be in online mode
      *
      * @return true if lesson is online else false
      */
     fun isOnline(): Boolean {
-        if(building == null && office == null) return false
+        if(places == null) return false
         if(links?.isNotEmpty() == true) return true
-        return (building == null || building == 0) && lessonType != LessonType.ENGLISH
+        return (places.all { it.building == null } || places.all { it.building == 0 }) && lessonType != LessonType.ENGLISH
     }
 
     /**
@@ -90,7 +85,7 @@ data class LessonV1(
                 descriptionLines.add("Место: онлайн")
             }
         } else {
-            if (building == null && office == null) {
+            if (places == null) {
                 if(lessonType == LessonType.COMMON_MINOR) {
                     descriptionLines.add("Информацию о времени и ссылке на майнор узнайте " +
                             "подробнее в HSE App X или в системе РУЗ")
@@ -100,7 +95,14 @@ data class LessonV1(
                 }
             }
             else {
-                descriptionLines.add("Место: $building корпус - ${getOfficeStr()}")
+                if (places.size > 1) {
+                    descriptionLines.add("Место:")
+                    places.forEach { descriptionLines.add("${it.office} - ${it.building} корпус") }
+                } else if (places.size == 1) {
+                    descriptionLines.add("Место: ${places.first().office} - ${places.first().building} корпус")
+                } else {
+                    descriptionLines.add("Место: не указано")
+                }
             }
         }
         if (additionalInfo?.isNotEmpty() == true) {
@@ -121,16 +123,7 @@ data class LessonV1(
         return event
     }
 
-    private fun getOfficeStr(): String? {
-        if(office == null) return null
-        return if(office.toIntOrNull() == null) {
-            if (office.contains(",")) return "кабинеты $office"
-            office
-        }
-        else "кабинет $office"
-    }
-
-    override fun compareTo(other: LessonV2): Int {
+    override fun compareTo(other: Lesson): Int {
         return date.compareTo(other.date)
     }
 
@@ -138,7 +131,7 @@ data class LessonV1(
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
 
-        other as LessonV1
+        other as Lesson
 
         if (subject != other.subject) return false
         if (course != other.course) return false
@@ -151,8 +144,7 @@ data class LessonV1(
         if (startTime != other.startTime) return false
         if (endTime != other.endTime) return false
         if (lecturer != other.lecturer) return false
-        if (office != other.office) return false
-        if (building != other.building) return false
+        if (places != other.places) return false
         if (links != other.links) return false
         if (additionalInfo != other.additionalInfo) return false
         if (lessonType != other.lessonType) return false
@@ -173,8 +165,7 @@ data class LessonV1(
         result = 31 * result + startTime.hashCode()
         result = 31 * result + endTime.hashCode()
         result = 31 * result + (lecturer?.hashCode() ?: 0)
-        result = 31 * result + (building?.hashCode() ?: 0)
-        result = 31 * result + (office?.hashCode() ?: 0)
+        result = 31 * result + (places?.hashCode() ?: 0)
         result = 31 * result + (links?.hashCode() ?: 0)
         result = 31 * result + (additionalInfo?.hashCode() ?: 0)
         result = 31 * result + lessonType.hashCode()

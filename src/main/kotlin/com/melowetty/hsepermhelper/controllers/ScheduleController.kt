@@ -1,10 +1,9 @@
 package com.melowetty.hsepermhelper.controllers
 
-import com.melowetty.hsepermhelper.models.v1.ScheduleV1
-import com.melowetty.hsepermhelper.models.v2.ScheduleV2
 import com.melowetty.hsepermhelper.models.Response
 import com.melowetty.hsepermhelper.models.ScheduleFileLinks
 import com.melowetty.hsepermhelper.models.UserEventType
+import com.melowetty.hsepermhelper.models.Schedule
 import com.melowetty.hsepermhelper.service.ScheduleService
 import com.melowetty.hsepermhelper.service.UserEventService
 import com.melowetty.hsepermhelper.utils.UrlUtils
@@ -32,34 +31,14 @@ class ScheduleController(
         description = "Позволяет получить расписания пользователя по его Telegram ID"
     )
     @GetMapping(
-        "schedule/{telegramId}",
-        produces = [MediaType.APPLICATION_JSON_VALUE]
-    )
-    fun getScheduleV1(
-        @Parameter(description = "Telegram ID пользователя")
-        @PathVariable("telegramId")
-        telegramId: Long,
-    ): Response<List<ScheduleV1>> {
-        userEventService.addUserEvent(telegramId, UserEventType.GET_SCHEDULE)
-        return Response(scheduleService.getUserSchedulesByTelegramId(telegramId).map {
-            it.toV1()
-        })
-    }
-
-    @SecurityRequirement(name = "X-Secret-Key")
-    @Operation(
-        summary = "Получение расписания пользователя",
-        description = "Позволяет получить расписания пользователя по его Telegram ID"
-    )
-    @GetMapping(
         "v2/schedule/{telegramId}",
         produces = [MediaType.APPLICATION_JSON_VALUE]
     )
-    fun getScheduleV2(
+    fun getSchedule(
         @Parameter(description = "Telegram ID пользователя")
         @PathVariable("telegramId")
         telegramId: Long,
-    ): Response<List<ScheduleV2>> {
+    ): Response<List<Schedule>> {
         userEventService.addUserEvent(telegramId, UserEventType.GET_SCHEDULE)
         return Response(scheduleService.getUserSchedulesByTelegramId(telegramId))
     }

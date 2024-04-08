@@ -1,7 +1,7 @@
 package com.melowetty.hsepermhelper.service.impl
 
-import com.melowetty.hsepermhelper.models.v2.ScheduleV2
-import com.melowetty.hsepermhelper.models.v2.ScheduleV2.Companion.toScheduleInfo
+import com.melowetty.hsepermhelper.models.Schedule
+import com.melowetty.hsepermhelper.models.Schedule.Companion.toScheduleInfo
 import com.melowetty.hsepermhelper.dto.UserDto
 import com.melowetty.hsepermhelper.events.ScheduleAddedEvent
 import com.melowetty.hsepermhelper.events.ScheduleChangedForUserEvent
@@ -10,7 +10,7 @@ import com.melowetty.hsepermhelper.events.internal.ScheduleChangedEvent
 import com.melowetty.hsepermhelper.events.internal.UsersChangedEvent
 import com.melowetty.hsepermhelper.exceptions.ScheduleNotFoundException
 import com.melowetty.hsepermhelper.models.*
-import com.melowetty.hsepermhelper.models.v2.LessonV2
+import com.melowetty.hsepermhelper.models.Lesson
 import com.melowetty.hsepermhelper.repository.ScheduleRepository
 import com.melowetty.hsepermhelper.service.EventService
 import com.melowetty.hsepermhelper.service.ScheduleService
@@ -31,8 +31,8 @@ class ScheduleServiceImpl(
     private val eventService: EventService,
     private val env: Environment
 ): ScheduleService {
-    private fun filterSchedules(schedules: List<ScheduleV2>, user: UserDto): List<ScheduleV2> {
-        val filteredSchedules = mutableListOf<ScheduleV2>()
+    private fun filterSchedules(schedules: List<Schedule>, user: UserDto): List<Schedule> {
+        val filteredSchedules = mutableListOf<Schedule>()
         schedules
             .filter {
                 if(user.settings.includeQuarterSchedule.not()) {
@@ -49,8 +49,8 @@ class ScheduleServiceImpl(
         return filteredSchedules
     }
 
-    private fun filterSchedule(schedule: ScheduleV2, user: UserDto): ScheduleV2 {
-        val filteredLessons = schedule.lessons.filter { lesson: LessonV2 ->
+    private fun filterSchedule(schedule: Schedule, user: UserDto): Schedule {
+        val filteredLessons = schedule.lessons.filter { lesson: Lesson ->
             if (lesson.subGroup != null) lesson.group == user.settings.group
                     && lesson.subGroup == user.settings.subGroup
             else lesson.group == user.settings.group
@@ -66,12 +66,12 @@ class ScheduleServiceImpl(
         )
     }
 
-    override fun getUserSchedulesByTelegramId(telegramId: Long): List<ScheduleV2> {
+    override fun getUserSchedulesByTelegramId(telegramId: Long): List<Schedule> {
         val user = userService.getByTelegramId(telegramId)
         return filterSchedules(scheduleRepository.getSchedules(), user)
     }
 
-    override fun getUserSchedulesById(id: UUID): List<ScheduleV2> {
+    override fun getUserSchedulesById(id: UUID): List<Schedule> {
         val user = userService.getById(id)
         return filterSchedules(scheduleRepository.getSchedules(), user)
     }

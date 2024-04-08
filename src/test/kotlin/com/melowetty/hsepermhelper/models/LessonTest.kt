@@ -1,6 +1,5 @@
 package com.melowetty.hsepermhelper.models
 
-import com.melowetty.hsepermhelper.models.v2.LessonV2
 import org.junit.jupiter.api.Test
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.util.Assert
@@ -11,7 +10,7 @@ import java.time.LocalDateTime
 class LessonTest {
     @Test
     fun `lesson hashcode equals test and equals test`() {
-        val expected = LessonV2(
+        val expected = Lesson(
             subject = "Программирование",
             course = 1,
             programme = "РИС",
@@ -29,7 +28,7 @@ class LessonTest {
             lessonType = LessonType.SEMINAR,
             parentScheduleType = ScheduleType.QUARTER_SCHEDULE
         )
-        val actual = LessonV2(
+        val actual = Lesson(
             subject = "Программирование",
             course = 1,
             programme = "РИС",
@@ -47,7 +46,7 @@ class LessonTest {
             lessonType = LessonType.SEMINAR,
             parentScheduleType = ScheduleType.QUARTER_SCHEDULE
         )
-        val notEqual = LessonV2(
+        val notEqual = Lesson(
             subject = "Программирование",
             course = 1,
             programme = "РИС",
@@ -73,7 +72,7 @@ class LessonTest {
 
     @Test
     fun `lesson hashcode not equals test and not equals lessons test`() {
-        val expected = LessonV2(
+        val expected = Lesson(
             subject = "Программирование",
             course = 1,
             programme = "РИС",
@@ -91,7 +90,7 @@ class LessonTest {
             lessonType = LessonType.SEMINAR,
             parentScheduleType = ScheduleType.QUARTER_SCHEDULE
         )
-        val firstActual = LessonV2(
+        val firstActual = Lesson(
             subject = "Программирование",
             course = 1,
             programme = "РИС",
@@ -109,7 +108,7 @@ class LessonTest {
             lessonType = LessonType.SEMINAR,
             parentScheduleType = ScheduleType.QUARTER_SCHEDULE
         )
-        val secondActual = LessonV2(
+        val secondActual = Lesson(
             subject = "Программирование",
             course = 1,
             programme = "РИС",
@@ -135,7 +134,7 @@ class LessonTest {
 
     @Test
     fun `lessons list equal test`() {
-        val firstLesson = LessonV2(
+        val firstLesson = Lesson(
             subject = "Программирование",
             course = 1,
             programme = "РИС",
@@ -153,7 +152,7 @@ class LessonTest {
             lessonType = LessonType.SEMINAR,
             parentScheduleType = ScheduleType.QUARTER_SCHEDULE
         )
-        val secondLesson = LessonV2(
+        val secondLesson = Lesson(
             subject = "Программирование",
             course = 1,
             programme = "РИС",
@@ -171,7 +170,7 @@ class LessonTest {
             lessonType = LessonType.SEMINAR,
             parentScheduleType = ScheduleType.QUARTER_SCHEDULE
         )
-        val thirdLesson = LessonV2(
+        val thirdLesson = Lesson(
             subject = "Программирование",
             course = 1,
             programme = "РИС",
@@ -189,7 +188,7 @@ class LessonTest {
             lessonType = LessonType.SEMINAR,
             parentScheduleType = ScheduleType.QUARTER_SCHEDULE
         )
-        val fourthLesson = LessonV2(
+        val fourthLesson = Lesson(
             subject = "Программирование",
             course = 1,
             programme = "РИС",
