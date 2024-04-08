@@ -1,12 +1,12 @@
 package com.melowetty.hsepermhelper.repository.impl
 
-import com.melowetty.hsepermhelper.models.v2.ScheduleV2
+import com.melowetty.hsepermhelper.models.Schedule
 import com.melowetty.hsepermhelper.events.common.EventType
 import com.melowetty.hsepermhelper.events.internal.ScheduleChangedEvent
 import com.melowetty.hsepermhelper.events.internal.ScheduleFilesChangedEvent
 import com.melowetty.hsepermhelper.exceptions.ScheduleNotFoundException
 import com.melowetty.hsepermhelper.models.*
-import com.melowetty.hsepermhelper.models.v2.LessonV2
+import com.melowetty.hsepermhelper.models.Lesson
 import com.melowetty.hsepermhelper.repository.ScheduleRepository
 import com.melowetty.hsepermhelper.service.DataService
 import com.melowetty.hsepermhelper.service.ScheduleFilesService
@@ -29,7 +29,7 @@ class ScheduleRepositoryImpl(
     private val dataService: DataService,
     private val scheduleFilesService: ScheduleFilesService
 ): ScheduleRepository {
-    private var schedules = mutableListOf<ScheduleV2>()
+    private var schedules = mutableListOf<Schedule>()
 
     @EventListener(ApplicationReadyEvent::class)
     fun firstScheduleFetching() {
@@ -38,7 +38,7 @@ class ScheduleRepositoryImpl(
         fetchSchedules(firstLaunch = true, difference > 12)
     }
 
-    override fun getSchedules(): List<ScheduleV2> {
+    override fun getSchedules(): List<Schedule> {
         return schedules
     }
 
@@ -47,8 +47,8 @@ class ScheduleRepositoryImpl(
         fetchSchedules()
     }
 
-    override fun fetchSchedules(firstLaunch: Boolean, publishEvents: Boolean): List<ScheduleV2> {
-        val newSchedules = mutableListOf<ScheduleV2>()
+    override fun fetchSchedules(firstLaunch: Boolean, publishEvents: Boolean): List<Schedule> {
+        val newSchedules = mutableListOf<Schedule>()
         if(firstLaunch) {
             scheduleFilesService.fetchScheduleFiles(callEvents = false)
                 .forEach {
@@ -68,7 +68,7 @@ class ScheduleRepositoryImpl(
         return schedules
     }
 
-    private fun getChangesAndPublishEvents(oldSchedules: List<ScheduleV2>, newSchedules: List<ScheduleV2>, publishEvents: Boolean = true) {
+    private fun getChangesAndPublishEvents(oldSchedules: List<Schedule>, newSchedules: List<Schedule>, publishEvents: Boolean = true) {
         val changes = mutableMapOf<EventType, List<ChangedSchedule>>()
         val mappedSchedules = oldSchedules.map { Pair(it.weekStart, it.weekEnd) }
         for (newSchedule in newSchedules) {
@@ -168,10 +168,10 @@ class ScheduleRepositoryImpl(
         return (courseRegex.find(sheetName)?.value ?: "0").toInt()
     }
 
-    private fun parseSchedule(inputStream: InputStream): ScheduleV2? {
+    private fun parseSchedule(inputStream: InputStream): Schedule? {
         try {
             val workbook = getWorkbook(inputStream)
-            val lessonsList = mutableListOf<LessonV2>()
+            val lessonsList = mutableListOf<Lesson>()
             val scheduleInfo = getWeekInfo(getValue(
                 workbook.getSheetAt(2),
                 workbook.getSheetAt(1).getRow(1).getCell(3))
@@ -275,7 +275,7 @@ class ScheduleRepositoryImpl(
                 }
             }
             lessonsList.sort()
-            return ScheduleV2(
+            return Schedule(
                 weekNumber = scheduleInfo.weekNumber,
                 weekStart = scheduleInfo.weekStartDate,
                 weekEnd = scheduleInfo.weekEndDate,
@@ -304,7 +304,7 @@ class ScheduleRepositoryImpl(
         scheduleInfo: ParsedScheduleInfo,
         serviceLessonInfo: ServiceLessonInfo,
         cell: CellInfo
-    ): List<LessonV2> {
+    ): List<Lesson> {
         if(cell.value.lowercase().contains("сессия")) return listOf()
         val splitCell = cell.value.split("\n").toMutableList()
         splitCell.removeAll(listOf(""))
@@ -313,7 +313,7 @@ class ScheduleRepositoryImpl(
         val unmergedLessons = unmergeLessonFields(rawLessons)
         val lessons = clearIncorrectLessonFields(unmergedLessons)
         val checkedLessons = checkLessons(lessons)
-        val builtLessons = mutableListOf<LessonV2>()
+        val builtLessons = mutableListOf<Lesson>()
         checkedLessons.forEach {
             val additionalLessonInfo = getAdditionalLessonInfo(it)
             if (additionalLessonInfo.subGroups.isNotEmpty()) {
@@ -482,7 +482,7 @@ class ScheduleRepositoryImpl(
         serviceLessonInfo: ServiceLessonInfo,
         additionalLessonInfo: AdditionalLessonInfo,
         subGroup: Int?
-    ): LessonV2 {
+    ): Lesson {
         val subject = fields.first { it.fieldType == FieldType.SUBJECT }.value.trim()
         val lessonType = getLessonType(
             isSessionWeek = scheduleInfo.scheduleType == ScheduleType.SESSION_WEEK_SCHEDULE,
@@ -492,7 +492,7 @@ class ScheduleRepositoryImpl(
             isHaveBuildingInfo = fields.find { it.fieldType == FieldType.INFO } != null,
             additionalInfo = additionalLessonInfo.additionalInfo
         )
-        return LessonV2(
+        return Lesson(
             subject = lessonType.reformatSubject(subject),
             lessonType = lessonType,
             places = additionalLessonInfo.places,

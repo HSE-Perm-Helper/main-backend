@@ -1,6 +1,5 @@
 package com.melowetty.hsepermhelper.models
 
-import com.melowetty.hsepermhelper.models.v2.ScheduleV2
 import com.fasterxml.jackson.annotation.JsonFormat
 import com.melowetty.hsepermhelper.utils.DateUtils
 import io.swagger.v3.oas.annotations.media.Schema
@@ -21,8 +20,8 @@ data class ScheduleInfo (
     @Schema(description = "Хэшкод расписания")
     val hashcode: Int,
 ) {
-    fun toSchedule(): ScheduleV2 {
-        return ScheduleV2(
+    fun toSchedule(): Schedule {
+        return Schedule(
             weekNumber = weekNumber,
             weekStart = weekStart,
             weekEnd = weekEnd,
