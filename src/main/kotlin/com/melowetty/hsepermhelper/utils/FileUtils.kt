@@ -2,8 +2,8 @@ package com.melowetty.hsepermhelper.utils
 
 import com.melowetty.hsepermhelper.models.Schedule
 import jakarta.servlet.http.HttpServletRequest
-import net.fortuna.ical4j.model.Calendar
-import net.fortuna.ical4j.model.TimeZoneRegistryFactory
+import net.fortuna.ical4j.model.*
+import net.fortuna.ical4j.model.parameter.Value
 import net.fortuna.ical4j.model.property.*
 import org.springframework.core.io.ByteArrayResource
 import org.springframework.core.io.Resource
@@ -26,8 +26,8 @@ class FileUtils {
          */
         fun getFileDownloadResponse(resource: Resource, fileName: String): ResponseEntity<Resource> {
             val header = HttpHeaders()
-            header.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=${fileName}")
-            header.add("Cache-Control", "no-cache, no-store, must-revalidate")
+            //header.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=${fileName}")
+            header.add("Cache-Control", "public,max-age=0,must-revalidate")
             header.add("Pragma", "no-cache")
             header.add("Expires", "0")
             if(fileName.endsWith(".ics")) {
@@ -76,7 +76,7 @@ class FileUtils {
             calendar.add(color)
             calendar.add(XProperty("X-APPLE-CALENDAR-COLOR", "#0047BB"))
 
-            calendar.add(RefreshInterval(null, Duration.ofHours(1)))
+            calendar.add(RefreshInterval(ParameterList(listOf(Value.DURATION)), Duration.ofHours(1)))
             val allLessons = LessonUtils.mergeSchedules(schedules)
             allLessons.forEach { calendar.add(it.toVEvent()) }
 
