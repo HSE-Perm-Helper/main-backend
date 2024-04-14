@@ -1,31 +1,22 @@
 package com.melowetty.hsepermhelper.controllers
 
-import com.melowetty.hsepermhelper.dto.SettingsDto
 import com.melowetty.hsepermhelper.dto.UserDto
 import com.melowetty.hsepermhelper.models.Response
-import com.melowetty.hsepermhelper.service.UserFilesService
 import com.melowetty.hsepermhelper.service.UserService
-import com.melowetty.hsepermhelper.utils.FileUtils
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.Parameter
 import io.swagger.v3.oas.annotations.security.SecurityRequirement
 import io.swagger.v3.oas.annotations.tags.Tag
-import jakarta.servlet.http.HttpServletRequest
-import org.springframework.core.io.Resource
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
-import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import java.util.*
-import kotlin.io.path.Path
-import kotlin.io.path.name
 
 @Tag(name = "Пользователи", description = "Взаимодействие с пользователями")
 @RestController
 @RequestMapping()
 class UserController(
     private val userService: UserService,
-    private val userFilesService: UserFilesService,
 ) {
     @SecurityRequirement(name = "X-Secret-Key")
     @Operation(
@@ -163,24 +154,5 @@ class UserController(
     ): Response<UserDto> {
         val user = userService.updateUser(userDto)
         return Response(user)
-    }
-
-    @SecurityRequirement(name = "X-Secret-Key")
-    @Operation(
-        summary = "Файлы пользователя",
-        description = "Позволяет получить файлы пользователя по пути"
-    )
-    @GetMapping("user/{id}/files/**")
-    fun getUserFile(
-        @Parameter(description = "ID пользователя")
-        @PathVariable("id")
-        id: UUID,
-        request: HttpServletRequest
-    ): ResponseEntity<Resource> {
-        val path = FileUtils.extractFilePath(request)
-        val filePath = Path(path)
-        val user = userService.getById(id)
-        val resource = userFilesService.getUserFile(user, filePath)
-        return FileUtils.getFileDownloadResponse(resource, filePath.fileName.name)
     }
 }

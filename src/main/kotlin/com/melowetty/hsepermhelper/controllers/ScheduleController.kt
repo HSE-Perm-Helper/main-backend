@@ -45,24 +45,6 @@ class ScheduleController(
 
     @SecurityRequirement(name = "X-Secret-Key")
     @Operation(
-        summary = "Получение всех расписаний пользователя в виде файла типа ICS",
-        description = "Позволяет получить все расписания пользователя в виде файла типа ICS по его Telegram ID"
-    )
-    @GetMapping(
-        "schedule/{telegramId}/download",
-        produces = [MediaType.APPLICATION_JSON_VALUE]
-    )
-    fun getScheduleFile(
-        @Parameter(description = "Telegram ID пользователя")
-        @PathVariable telegramId: Long,
-        request: HttpServletRequest
-    ): Response<ScheduleFileLinks> {
-        val baseUrl = UrlUtils.getBaseUrl(request)
-        return Response(scheduleService.getScheduleFileByTelegramId(baseUrl, telegramId))
-    }
-
-    @SecurityRequirement(name = "X-Secret-Key")
-    @Operation(
         summary = "Получение доступных для выбора курсов",
         description = "Позволяет получить доступные для выбора курсы для регистрации или изменения данных"
     )
