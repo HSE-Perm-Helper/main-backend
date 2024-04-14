@@ -1,7 +1,7 @@
 package com.melowetty.hsepermhelper.models
 
-enum class LessonType(val type: String, private val scheduleFilePattern: String) {
-    LECTURE("Лекция", "{type}: {subject}") {
+enum class LessonType(val type: String) {
+    LECTURE("Лекция") {
         override fun reformatSubject(subject: String): String {
             return subject
                 .replace("(лекция)", "")
@@ -9,36 +9,36 @@ enum class LessonType(val type: String, private val scheduleFilePattern: String)
                 .trim()
         }
     },
-    SEMINAR("Семинар", "{type}: {subject}") {
+    SEMINAR("Семинар") {
         override fun reformatSubject(subject: String): String {
             return subject.replace("(семинар)", "").trim()
         }
     },
-    EXAM("Экзамен", "{type}: {subject}") {
+    EXAM("Экзамен") {
         override fun reformatSubject(subject: String): String {
             return subject.replace("ЭКЗАМЕН", "").trim()
         }
     },
-    INDEPENDENT_EXAM("Независимый экзамен", "{subject}"),
-    TEST("Зачёт", "{type}: {subject}") {
+    INDEPENDENT_EXAM("Независимый экзамен"),
+    TEST("Зачёт") {
         override fun reformatSubject(subject: String): String {
             return subject.replace("ЗАЧЕТ", "").trim()
         }
     },
-    PRACTICE("Практика", "{type}: {subject}") {
+    PRACTICE("Практика") {
         override fun reformatSubject(subject: String): String {
             return if (subject == "ПРАКТИКА") ""
             else subject
         }
     },
-    COMMON_MINOR("Майнор", "{type}"),
-    MINOR("Майнор", "{type}"),
-    COMMON_ENGLISH("Английский", "{type}"),
-    ENGLISH("Английский", "{type}"),
-    STATEMENT("Ведомость", "{type}: {subject}"),
-    ICC("МКД", "{type}: {subject}"),
-    UNDEFINED_AED("ДОЦ по выбору", "{subject}"),
-    AED("ДОЦ", "{subject}") {
+    COMMON_MINOR("Майнор"),
+    MINOR("Майнор"),
+    COMMON_ENGLISH("Английский"),
+    ENGLISH("Английский"),
+    STATEMENT("Ведомость"),
+    ICC("МКД"),
+    UNDEFINED_AED("ДОЦ по выбору"),
+    AED("ДОЦ") {
         override fun reformatSubject(subject: String): String {
             return subject
                 .replace("[", "")
@@ -46,13 +46,8 @@ enum class LessonType(val type: String, private val scheduleFilePattern: String)
                 .trim()
         }
     },
-    CONSULT("Консультация", "{subject}"),
-    EVENT("Мероприятие", "{type}: {subject}");
-    fun toEventSubject(subject: String): String {
-        return scheduleFilePattern
-            .replace("{type}", type)
-            .replace("{subject}", subject)
-    }
+    CONSULT("Консультация"),
+    EVENT("Мероприятие");
     public open fun reformatSubject(subject: String): String {
         return subject
     }
