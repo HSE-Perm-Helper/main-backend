@@ -2,6 +2,7 @@ package com.melowetty.hsepermhelper.controllers
 
 import com.melowetty.hsepermhelper.models.Response
 import com.melowetty.hsepermhelper.models.Schedule
+import com.melowetty.hsepermhelper.models.ScheduleV3
 import com.melowetty.hsepermhelper.models.UserEventType
 import com.melowetty.hsepermhelper.service.ScheduleService
 import com.melowetty.hsepermhelper.service.UserEventService
@@ -38,6 +39,26 @@ class ScheduleController(
     ): Response<List<Schedule>> {
         userEventService.addUserEvent(telegramId, UserEventType.GET_SCHEDULE)
         return Response(scheduleService.getUserSchedulesByTelegramId(telegramId))
+    }
+
+    @SecurityRequirement(name = "X-Secret-Key")
+    @Operation(
+        summary = "Получение расписания пользователя",
+        description = "Позволяет получить расписания пользователя по его Telegram ID"
+    )
+    @GetMapping(
+        "v3/schedule/{telegramId}",
+        produces = [MediaType.APPLICATION_JSON_VALUE]
+    )
+    fun getScheduleV3(
+        @Parameter(description = "Telegram ID пользователя")
+        @PathVariable("telegramId")
+        telegramId: Long,
+    ): Response<List<ScheduleV3>> {
+        userEventService.addUserEvent(telegramId, UserEventType.GET_SCHEDULE)
+        val schedule = scheduleService.getUserSchedulesByTelegramId(telegramId)
+        val scheduleV3 = schedule.map { ScheduleV3(it.weekNumber, it.lessons, it.weekStart, it.weekEnd, it.scheduleType) }
+        return Response(scheduleV3)
     }
 
     @SecurityRequirement(name = "X-Secret-Key")
