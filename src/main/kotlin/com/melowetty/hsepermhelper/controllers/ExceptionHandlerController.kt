@@ -137,20 +137,6 @@ class ExceptionHandlerController(
         return ResponseEntity(response, HttpStatus.BAD_REQUEST)
     }
 
-    @ExceptionHandler(FileNotFoundException::class)
-    fun handleFileNotFoundException(exception: FileNotFoundException): ResponseEntity<Any> {
-        var response: Any = ErrorResponse(
-            message = exception.message ?: "Файл не найден!",
-            code = exception.javaClass.simpleName,
-            status = HttpStatus.NOT_FOUND.value()
-        )
-        if (isDebug) {
-            exception.printStackTrace()
-            response = (response as ErrorResponse).toDebugResponse(exception)
-        }
-        return ResponseEntity(response, HttpStatus.NOT_FOUND)
-    }
-
     @ExceptionHandler(UserIsExistsException::class)
     fun handleUserIsExistsException(exception: UserIsExistsException): ResponseEntity<Any> {
         if (isDebug) {
