@@ -1,9 +1,6 @@
 package com.melowetty.hsepermhelper.service
 
 import com.melowetty.hsepermhelper.models.Schedule
-import com.melowetty.hsepermhelper.dto.UserDto
-import com.melowetty.hsepermhelper.models.ScheduleFileLinks
-import org.springframework.core.io.Resource
 import java.util.*
 
 interface ScheduleService {
