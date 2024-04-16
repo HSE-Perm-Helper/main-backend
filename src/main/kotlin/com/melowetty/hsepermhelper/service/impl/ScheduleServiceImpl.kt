@@ -1,8 +1,6 @@
 package com.melowetty.hsepermhelper.service.impl
 
 import com.melowetty.hsepermhelper.dto.UserDto
-import com.melowetty.hsepermhelper.events.ScheduleAddedEvent
-import com.melowetty.hsepermhelper.events.ScheduleChangedForUserEvent
 import com.melowetty.hsepermhelper.events.common.EventType
 import com.melowetty.hsepermhelper.events.internal.ScheduleChangedEvent
 import com.melowetty.hsepermhelper.models.Lesson
@@ -10,8 +8,10 @@ import com.melowetty.hsepermhelper.models.LessonType
 import com.melowetty.hsepermhelper.models.Schedule
 import com.melowetty.hsepermhelper.models.Schedule.Companion.toScheduleInfo
 import com.melowetty.hsepermhelper.models.ScheduleType
+import com.melowetty.hsepermhelper.notification.ScheduleAddedNotification
+import com.melowetty.hsepermhelper.notification.ScheduleChangedForUserNotification
 import com.melowetty.hsepermhelper.repository.ScheduleRepository
-import com.melowetty.hsepermhelper.service.EventService
+import com.melowetty.hsepermhelper.service.NotificationService
 import com.melowetty.hsepermhelper.service.ScheduleService
 import com.melowetty.hsepermhelper.service.UserService
 import org.springframework.context.event.EventListener
@@ -23,7 +23,7 @@ import java.util.*
 class ScheduleServiceImpl(
     private val scheduleRepository: ScheduleRepository,
     private val userService: UserService,
-    private val eventService: EventService,
+    private val notificationService: NotificationService,
     private val env: Environment
 ): ScheduleService {
     private fun filterSchedules(schedules: List<Schedule>, user: UserDto): List<Schedule> {
@@ -88,11 +88,11 @@ class ScheduleServiceImpl(
                         .filter { it.settings.isEnabledNewCommonScheduleNotifications }
                         .map { it.telegramId })
                 }
-                val scheduleAddedEvent = ScheduleAddedEvent(
+                val scheduleAddedNotification = ScheduleAddedNotification(
                     targetSchedule = schedule.toScheduleInfo(),
                     users = users,
                 )
-                eventService.addEvent(scheduleAddedEvent)
+                notificationService.addNotification(scheduleAddedNotification)
             }
         }
         editedSchedules?.forEach {
@@ -114,11 +114,11 @@ class ScheduleServiceImpl(
                         }
                     }
                 if (users.isNotEmpty()) {
-                    val scheduleChangedEvent = ScheduleChangedForUserEvent(
+                    val scheduleChangedEvent = ScheduleChangedForUserNotification(
                         targetSchedule = it.after.toScheduleInfo(),
                         users = users.toList()
                     )
-                    eventService.addEvent(scheduleChangedEvent)
+                    notificationService.addNotification(scheduleChangedEvent)
                 }
             }
         }

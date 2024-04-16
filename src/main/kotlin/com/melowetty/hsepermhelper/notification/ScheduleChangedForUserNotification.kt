@@ -1,15 +1,22 @@
-package com.melowetty.hsepermhelper.events
+package com.melowetty.hsepermhelper.notification
 
-import com.melowetty.hsepermhelper.events.common.PublicEvent
 import com.melowetty.hsepermhelper.models.ScheduleInfo
 import io.swagger.v3.oas.annotations.media.Schema
 
-data class ScheduleChangedForUserEvent(
+data class ScheduleChangedForUserNotification(
     @Schema(description = "Информация о расписании, в котором произошло изменение")
     val targetSchedule: ScheduleInfo,
     @Schema(description = "Список Telegram ID, которым требуется выслать оповещение о изменении в расписании")
     val users: List<Long>,
-): PublicEvent() {
+): Notification() {
+    override fun getEventType(): String {
+        return "SCHEDULE_CHANGED_FOR_USER_EVENT"
+    }
+
+    override fun getNotificationType(): String {
+        return "SCHEDULE_CHANGED_FOR_USER"
+    }
+
     override fun hashCode(): Int {
         return super.hashCode() + targetSchedule.hashCode() * 33 + users.hashCode() * 17
     }
