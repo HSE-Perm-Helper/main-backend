@@ -1,4 +1,4 @@
-package com.melowetty.hsepermhelper.events.common
+package com.melowetty.hsepermhelper.events
 
 enum class EventType {
     ADDED,

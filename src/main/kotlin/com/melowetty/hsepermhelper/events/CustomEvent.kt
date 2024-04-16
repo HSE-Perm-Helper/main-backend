@@ -1,4 +1,4 @@
-package com.melowetty.hsepermhelper.events.common
+package com.melowetty.hsepermhelper.events
 
 open class CustomEvent<T>(
     val source: T,
