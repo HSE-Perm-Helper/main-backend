@@ -1,12 +1,10 @@
 package com.melowetty.hsepermhelper.repository.impl
 
-import com.melowetty.hsepermhelper.models.Schedule
-import com.melowetty.hsepermhelper.events.common.EventType
-import com.melowetty.hsepermhelper.events.internal.ScheduleChangedEvent
-import com.melowetty.hsepermhelper.events.internal.ScheduleFilesChangedEvent
+import com.melowetty.hsepermhelper.events.EventType
+import com.melowetty.hsepermhelper.events.ScheduleChangedEvent
+import com.melowetty.hsepermhelper.events.ScheduleFilesChangedEvent
 import com.melowetty.hsepermhelper.exceptions.ScheduleNotFoundException
 import com.melowetty.hsepermhelper.models.*
-import com.melowetty.hsepermhelper.models.Lesson
 import com.melowetty.hsepermhelper.repository.ScheduleRepository
 import com.melowetty.hsepermhelper.service.DataService
 import com.melowetty.hsepermhelper.service.ScheduleFilesService
@@ -19,7 +17,6 @@ import java.io.InputStream
 import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.LocalDateTime
-import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
 
@@ -70,9 +67,9 @@ class ScheduleRepositoryImpl(
 
     private fun getChangesAndPublishEvents(oldSchedules: List<Schedule>, newSchedules: List<Schedule>, publishEvents: Boolean = true) {
         val changes = mutableMapOf<EventType, List<ChangedSchedule>>()
-        val mappedSchedules = oldSchedules.map { Pair(it.weekStart, it.weekEnd) }
+        val mappedSchedules = oldSchedules.map { Pair(it.start, it.end) }
         for (newSchedule in newSchedules) {
-            val existsSchedule = oldSchedules.find { it.weekStart == newSchedule.weekStart  && it.weekEnd == newSchedule.weekEnd}
+            val existsSchedule = oldSchedules.find { it.start == newSchedule.start  && it.end == newSchedule.end}
             if(existsSchedule != null && existsSchedule.hashCode() != newSchedule.hashCode()) {
                 val editedSchedules: MutableList<ChangedSchedule> = changes.getOrDefault(EventType.EDITED, listOf()).toMutableList()
                 editedSchedules.add(
@@ -83,7 +80,7 @@ class ScheduleRepositoryImpl(
                 )
                 changes[EventType.EDITED] = editedSchedules
             }
-            else if(mappedSchedules.contains(Pair(newSchedule.weekStart, newSchedule.weekEnd)).not()) {
+            else if(mappedSchedules.contains(Pair(newSchedule.start, newSchedule.end)).not()) {
                 val addedSchedules: MutableList<ChangedSchedule> = changes.getOrDefault(EventType.ADDED, listOf()).toMutableList()
                 addedSchedules.add(ChangedSchedule(
                     before = null,
@@ -94,7 +91,7 @@ class ScheduleRepositoryImpl(
         }
         val deletedSchedules = oldSchedules
             .filter { schedule ->
-                newSchedules.map { it.weekStart }.contains(schedule.weekStart).not()
+                newSchedules.map { it.start }.contains(schedule.start).not()
             }
         changes[EventType.DELETED] = deletedSchedules.map { ChangedSchedule(before = it, after = null) }
         val event = ScheduleChangedEvent(
@@ -200,9 +197,13 @@ class ScheduleRepositoryImpl(
                     for(rowNum in 3 until sheet.lastRowNum) {
                         val row = sheet.getRow(rowNum)
                         var unparsedDate = getValue(sheet, row.getCell(0)).split("\n")
-                        val dates = mutableListOf<LocalDate>()
+                        var lessonTime: LessonTime
                         val timeCell = getValue(sheet, row.getCell(1)).split("\n").filter { it.isNotEmpty() }
                         if(timeCell.size < 2) continue
+                        val timeRegex = Regex("[0-9]+:[0-9]+")
+                        val timeRegexMatches = timeRegex.findAll(timeCell[1])
+                        val startTime = timeRegexMatches.elementAt(0).value
+                        val endTime = timeRegexMatches.elementAt(1).value
                         if (unparsedDate.size < 2) {
                             if(scheduleInfo.scheduleType != ScheduleType.QUARTER_SCHEDULE) {
                                 if(prevDay.isNotEmpty()) {
@@ -213,29 +214,12 @@ class ScheduleRepositoryImpl(
                                 }
                             }
                             val day = getDayOfWeek(unparsedDate[0]) ?: continue
-                            var dateIteration = scheduleInfo.weekStartDate.plusDays(
-                                day.ordinal.toLong() - scheduleInfo.weekStartDate.dayOfWeek.ordinal
-                            )
-                            while(dateIteration.isAfter(scheduleInfo.weekEndDate).not()) {
-                                if (dateIteration.isBefore(LocalDate.now())) {
-                                    dateIteration = dateIteration.plusDays(7)
-                                    continue
-                                }
-                                dates.add(dateIteration)
-                                dateIteration = dateIteration.plusDays(7)
-                            }
+                            lessonTime = CycleTime(day, startTime, endTime)
                         } else {
-                            dates.add(LocalDate.parse(unparsedDate[1], DateTimeFormatter.ofPattern("dd.MM.yyyy")))
+                            val date = LocalDate.parse(unparsedDate[1], DateTimeFormatter.ofPattern("dd.MM.yyyy"))
+                            lessonTime = ScheduledTime(date, startTime, endTime)
                         }
                         prevDay = getValue(sheet, row.getCell(1))
-                        val timeRegex = Regex("[0-9]+:[0-9]+")
-                        val timeRegexMatches = timeRegex.findAll(timeCell[1])
-                        val startTime = timeRegexMatches.elementAt(0).value
-                        val splitStartTime = startTime.split(":")
-                        val startLocalTime = LocalTime.of(splitStartTime[0].toInt(), splitStartTime[1].toInt())
-                        val endTime = timeRegexMatches.elementAt(1).value
-                        val splitEndTime = endTime.split(":")
-                        val endLocalTime = LocalTime.of(splitEndTime[0].toInt(), splitEndTime[1].toInt())
                         run line@ {
                             for (cellNum in 2 until row.physicalNumberOfCells) {
                                 val cell = row.getCell(cellNum)
@@ -249,30 +233,20 @@ class ScheduleRepositoryImpl(
                                 val font = workbook.getFontAt(cell.cellStyle.fontIndex)
                                 val isUnderlined = font.underline != Font.U_NONE
                                 try {
-                                    for (date in dates) {
-                                        val startLocalDateTime = LocalDateTime.of(date, startLocalTime)
-                                        val endLocalDateTime = LocalDateTime.of(date, endLocalTime)
-                                        val lessons = getLesson(
-                                            scheduleInfo = scheduleInfo,
-                                            cell = CellInfo(
-                                                value = cellValue,
-                                                isUnderlined = isUnderlined,
-                                            ),
-                                            serviceLessonInfo = ServiceLessonInfo(
-                                                course = course,
-                                                programme = programme,
-                                                group = group,
-                                                date = date,
-                                                startTimeStr = startTime,
-                                                endTimeStr = endTime,
-                                                startTime = startLocalDateTime,
-                                                endTime = endLocalDateTime,
-                                            )
+                                    val lessons = getLesson(
+                                        scheduleInfo = scheduleInfo,
+                                        cell = CellInfo(
+                                            value = cellValue,
+                                            isUnderlined = isUnderlined,
+                                        ),
+                                        serviceLessonInfo = ServiceLessonInfo(
+                                            course = course,
+                                            programme = programme,
+                                            group = group,
+                                            time = lessonTime
                                         )
-                                        for (lesson in lessons) {
-                                            lessonsList.add(lesson)
-                                        }
-                                    }
+                                    )
+                                    lessonsList.addAll(lessons)
                                 } catch (e: Exception) {
                                     println("Произошла ошибка во время обработки пары!")
                                     println("cell: ${cellValue}")
@@ -283,11 +257,11 @@ class ScheduleRepositoryImpl(
                     }
                 }
             }
-            lessonsList.sort()
+            lessonsList.sortBy { it.time }
             return Schedule(
-                weekNumber = scheduleInfo.weekNumber,
-                weekStart = scheduleInfo.weekStartDate,
-                weekEnd = scheduleInfo.weekEndDate,
+                number = scheduleInfo.weekNumber,
+                start = scheduleInfo.weekStartDate,
+                end = scheduleInfo.weekEndDate,
                 lessons = lessonsList,
                 scheduleType = scheduleInfo.scheduleType,
 
@@ -519,12 +493,8 @@ class ScheduleRepositoryImpl(
             subGroup = subGroup,
             group =  serviceLessonInfo.group,
             course = serviceLessonInfo.course,
-            date = serviceLessonInfo.date,
+            time = serviceLessonInfo.time,
             programme = serviceLessonInfo.programme,
-            startTime = serviceLessonInfo.startTime,
-            startTimeStr = serviceLessonInfo.startTimeStr,
-            endTime = serviceLessonInfo.endTime,
-            endTimeStr = serviceLessonInfo.endTimeStr,
             parentScheduleType = scheduleInfo.scheduleType,
             links = additionalLessonInfo.links,
             additionalInfo = additionalLessonInfo.additionalInfo,
@@ -710,11 +680,7 @@ class ScheduleRepositoryImpl(
         val course: Int,
         val programme: String,
         val group: String,
-        val date: LocalDate,
-        val startTimeStr: String,
-        val endTimeStr: String,
-        val startTime: LocalDateTime,
-        val endTime: LocalDateTime,
+        val time: LessonTime,
     )
 
     internal data class AdditionalLessonInfo(

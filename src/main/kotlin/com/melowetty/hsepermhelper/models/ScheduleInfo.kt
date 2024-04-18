@@ -7,26 +7,19 @@ import java.time.LocalDate
 
 @Schema(description = "Информация о расписании")
 data class ScheduleInfo (
-    @Schema(description = "Номер недели", example = "6", nullable = true)
-    val weekNumber: Int?,
+    val number: Int?,
     @JsonFormat(pattern = DateUtils.DATE_PATTERN)
-    @Schema(description = "Дата начала недели", example = "03.09.2023", type = "string")
-    val weekStart: LocalDate,
+    val start: LocalDate,
     @JsonFormat(pattern = DateUtils.DATE_PATTERN)
-    @Schema(description = "Дата конца недели", example = "10.09.2023", type = "string")
-    val weekEnd: LocalDate,
-    @Schema(description = "Тип расписания")
+    val end: LocalDate,
     val scheduleType: ScheduleType,
-    @Schema(description = "Хэшкод расписания")
-    val hashcode: Int,
 ) {
-    fun toSchedule(): Schedule {
-        return Schedule(
-            weekNumber = weekNumber,
-            weekStart = weekStart,
-            weekEnd = weekEnd,
+    fun toScheduleInfoV2(): ScheduleInfoV2 {
+        return ScheduleInfoV2(
+            weekNumber = number,
+            weekStart = start,
+            weekEnd = end,
             scheduleType = scheduleType,
-            lessons = listOf()
         )
     }
 }

@@ -1,7 +1,5 @@
-package com.melowetty.hsepermhelper.events.internal
+package com.melowetty.hsepermhelper.events
 
-import com.melowetty.hsepermhelper.events.common.CustomEvent
-import com.melowetty.hsepermhelper.events.common.EventType
 import com.melowetty.hsepermhelper.models.ScheduleFile
 
 class ScheduleFilesChangedEvent(

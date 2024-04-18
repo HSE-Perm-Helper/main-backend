@@ -1,22 +1,20 @@
 package com.melowetty.hsepermhelper.controllers
 
-import com.melowetty.hsepermhelper.models.Response
-import com.melowetty.hsepermhelper.models.ScheduleFileLinks
-import com.melowetty.hsepermhelper.models.UserEventType
-import com.melowetty.hsepermhelper.models.Schedule
+import com.melowetty.hsepermhelper.models.*
 import com.melowetty.hsepermhelper.service.ScheduleService
 import com.melowetty.hsepermhelper.service.UserEventService
-import com.melowetty.hsepermhelper.utils.UrlUtils
+import com.melowetty.hsepermhelper.utils.DateUtils
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.Parameter
 import io.swagger.v3.oas.annotations.security.SecurityRequirement
 import io.swagger.v3.oas.annotations.tags.Tag
-import jakarta.servlet.http.HttpServletRequest
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 
 
 @Tag(name = "Расписание", description = "Взаимодействие с расписанием")
@@ -34,31 +32,71 @@ class ScheduleController(
         "v2/schedule/{telegramId}",
         produces = [MediaType.APPLICATION_JSON_VALUE]
     )
-    fun getSchedule(
+    fun getScheduleV2(
+        @Parameter(description = "Telegram ID пользователя")
+        @PathVariable("telegramId")
+        telegramId: Long,
+    ): Response<List<ScheduleV2>> {
+        userEventService.addUserEvent(telegramId, UserEventType.GET_SCHEDULE)
+        val schedules = scheduleService.getUserSchedulesByTelegramId(telegramId).filter { it.scheduleType != ScheduleType.QUARTER_SCHEDULE }.map { it.toScheduleV2() }
+        return Response(schedules)
+    }
+
+    @SecurityRequirement(name = "X-Secret-Key")
+    @Operation(
+        summary = "Получение всех доступных расписаний",
+        description = "Позволяет получить данные о расписаниях"
+    )
+    @GetMapping(
+        "v3/schedules",
+        produces = [MediaType.APPLICATION_JSON_VALUE]
+    )
+    fun getSchedules(
+    ): Response<List<ScheduleInfo>> {
+        val schedules = scheduleService.getAvailableSchedules()
+        return Response(schedules)
+    }
+
+    @SecurityRequirement(name = "X-Secret-Key")
+    @Operation(
+        summary = "Получение расписания пользователя",
+        description = "Позволяет получить расписания пользователя по его Telegram ID"
+    )
+    @GetMapping(
+        "v3/schedule/{telegramId}",
+        produces = [MediaType.APPLICATION_JSON_VALUE]
+    )
+    fun getScheduleV3(
+        @Parameter(description = "Telegram ID пользователя")
+        @PathVariable("telegramId")
+        telegramId: Long,
+        @RequestParam("start") start: String,
+        @RequestParam("end") end: String
+    ): Response<Schedule> {
+        val startDate = LocalDate.parse(start, DateTimeFormatter.ofPattern(DateUtils.DATE_PATTERN))
+        val endDate = LocalDate.parse(end, DateTimeFormatter.ofPattern(DateUtils.DATE_PATTERN))
+        userEventService.addUserEvent(telegramId, UserEventType.GET_SCHEDULE)
+        val schedule = scheduleService.getUserScheduleByTelegramId(telegramId, startDate, endDate)
+        return Response(schedule)
+    }
+
+    @SecurityRequirement(name = "X-Secret-Key")
+    @Operation(
+        summary = "Получение расписания пользователя",
+        description = "Позволяет получить расписания пользователя по его Telegram ID"
+    )
+    @GetMapping(
+        "v3/schedules/{telegramId}",
+        produces = [MediaType.APPLICATION_JSON_VALUE]
+    )
+    fun getUserSchedulesV3(
         @Parameter(description = "Telegram ID пользователя")
         @PathVariable("telegramId")
         telegramId: Long,
     ): Response<List<Schedule>> {
         userEventService.addUserEvent(telegramId, UserEventType.GET_SCHEDULE)
-        return Response(scheduleService.getUserSchedulesByTelegramId(telegramId))
-    }
-
-    @SecurityRequirement(name = "X-Secret-Key")
-    @Operation(
-        summary = "Получение всех расписаний пользователя в виде файла типа ICS",
-        description = "Позволяет получить все расписания пользователя в виде файла типа ICS по его Telegram ID"
-    )
-    @GetMapping(
-        "schedule/{telegramId}/download",
-        produces = [MediaType.APPLICATION_JSON_VALUE]
-    )
-    fun getScheduleFile(
-        @Parameter(description = "Telegram ID пользователя")
-        @PathVariable telegramId: Long,
-        request: HttpServletRequest
-    ): Response<ScheduleFileLinks> {
-        val baseUrl = UrlUtils.getBaseUrl(request)
-        return Response(scheduleService.getScheduleFileByTelegramId(baseUrl, telegramId))
+        val schedule = scheduleService.getUserSchedulesByTelegramId(telegramId)
+        return Response(schedule)
     }
 
     @SecurityRequirement(name = "X-Secret-Key")
