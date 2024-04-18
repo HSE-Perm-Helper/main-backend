@@ -9,8 +9,8 @@ data class CycleTime(
     ): LessonTime(startTime, endTime) {
     override fun compareTo(other: LessonTime): Int {
         if(other is CycleTime) {
-            return compareBy(CycleTime::dayOfWeek, CycleTime::startTime, CycleTime::endTime).compare(this, other)
+            return compareBy(CycleTime::dayOfWeek, CycleTime::startLocaltime, CycleTime::endLocaltime).compare(this, other)
         }
-        return compareBy(LessonTime::startTime, LessonTime::endTime).compare(this, other)
+        return compareBy(LessonTime::startLocaltime, LessonTime::endLocaltime).compare(this, other)
     }
 }

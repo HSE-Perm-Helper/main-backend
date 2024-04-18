@@ -12,7 +12,7 @@ data class ScheduledTime(
 ): LessonTime(startTime, endTime) {
     override fun compareTo(other: LessonTime): Int {
         if(other is ScheduledTime) {
-            return compareBy(ScheduledTime::date, ScheduledTime::startTime, ScheduledTime::endTime).compare(this, other)
+            return compareBy(ScheduledTime::date, ScheduledTime::startLocaltime, ScheduledTime::endLocaltime).compare(this, other)
         }
         return compareBy(LessonTime::startTime, LessonTime::endTime).compare(this, other)
     }
