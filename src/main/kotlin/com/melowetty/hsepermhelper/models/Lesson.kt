@@ -2,11 +2,8 @@ package com.melowetty.hsepermhelper.models
 
 import com.fasterxml.jackson.annotation.JsonFormat
 import com.fasterxml.jackson.annotation.JsonIgnore
-import com.fasterxml.jackson.annotation.JsonProperty
 import com.melowetty.hsepermhelper.utils.DateUtils
 import io.swagger.v3.oas.annotations.media.Schema
-import java.time.LocalDate
-import java.time.LocalDateTime
 
 data class Lesson(
     @Schema(description = "Учебный предмет", example = "Программирование")
@@ -16,16 +13,8 @@ data class Lesson(
     @JsonIgnore val group: String,
     @JsonIgnore val subGroup: Int?,
     @JsonFormat(pattern = DateUtils.DATE_PATTERN)
-    @Schema(description = "Дата пары", example = "03.09.2023", type = "string")
-    val date: LocalDate,
-    @Schema(description = "Время начала пары", example = "8:10")
-    @JsonProperty("startTime")
-    val startTimeStr: String,
-    @Schema(description = "Время окончания пары", example = "9:30")
-    @JsonProperty("endTime")
-    val endTimeStr: String,
-    @JsonIgnore val startTime: LocalDateTime,
-    @JsonIgnore val endTime: LocalDateTime,
+    @Schema(description = "Время проведения пары", example = "03.09.2023", type = "string")
+    val time: LessonTime,
     @Schema(description = "Преподаватель", example = "Викентьева О.Л.", nullable = true)
     val lecturer: String?,
     @Schema(description = "Место проведения", nullable = true)
@@ -38,7 +27,7 @@ data class Lesson(
     val lessonType: LessonType,
     @Schema(description = "Тип расписания-родителя", example = "COMMON_WEEK_SCHEDULE")
     val parentScheduleType: ScheduleType,
-) : Comparable<Lesson> {
+): Comparable<Lesson> {
     /**
      * Returns lesson will be in online mode
      *
@@ -50,8 +39,24 @@ data class Lesson(
         return (places.all { it.building == null } || places.all { it.building == 0 }) && lessonType != LessonType.ENGLISH
     }
 
+    fun toLessonV2(): LessonV2 {
+        return LessonV2(
+            subject = subject,
+            date = (time as ScheduledTime).date,
+            isOnline = isOnline(),
+            startTimeStr = time.startTime,
+            endTimeStr = time.endTime,
+            lecturer = lecturer,
+            places = places,
+            links = links,
+            additionalInfo = additionalInfo,
+            parentScheduleType = parentScheduleType,
+            lessonType = lessonType,
+        )
+    }
+
     override fun compareTo(other: Lesson): Int {
-        return date.compareTo(other.date)
+        return time.compareTo(other.time)
     }
 
     override fun equals(other: Any?): Boolean {
@@ -65,11 +70,7 @@ data class Lesson(
         if (programme != other.programme) return false
         if (group != other.group) return false
         if (subGroup != other.subGroup) return false
-        if (date != other.date) return false
-        if (startTimeStr != other.startTimeStr) return false
-        if (endTimeStr != other.endTimeStr) return false
-        if (startTime != other.startTime) return false
-        if (endTime != other.endTime) return false
+        if (time != other.time) return false
         if (lecturer != other.lecturer) return false
         if (places != other.places) return false
         if (links != other.links) return false
@@ -86,11 +87,7 @@ data class Lesson(
         result = 31 * result + programme.hashCode()
         result = 31 * result + group.hashCode()
         result = 31 * result + (subGroup ?: 0)
-        result = 31 * result + date.hashCode()
-        result = 31 * result + startTimeStr.hashCode()
-        result = 31 * result + endTimeStr.hashCode()
-        result = 31 * result + startTime.hashCode()
-        result = 31 * result + endTime.hashCode()
+        result = 31 * result + time.hashCode()
         result = 31 * result + (lecturer?.hashCode() ?: 0)
         result = 31 * result + (places?.hashCode() ?: 0)
         result = 31 * result + (links?.hashCode() ?: 0)

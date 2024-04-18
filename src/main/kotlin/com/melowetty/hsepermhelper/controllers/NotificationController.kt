@@ -25,7 +25,7 @@ class NotificationController(
         produces = [MediaType.APPLICATION_JSON_VALUE]
     )
     fun getEvents(): Response<List<Notification>> {
-        return Response(notificationService.getAllNotifications())
+        return Response(notificationService.getAllNotifications().map { it.toV2() })
     }
 
 

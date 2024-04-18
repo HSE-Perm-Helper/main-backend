@@ -6,7 +6,6 @@ import org.springframework.util.Assert
 import java.time.LocalDate
 import java.time.LocalDateTime
 
-@SpringBootTest
 class LessonTest {
     @Test
     fun `lesson hashcode equals test and equals test`() {
@@ -16,11 +15,11 @@ class LessonTest {
             programme = "РИС",
             group = "РИС-22-3",
             subGroup = 5,
-            date = LocalDate.of(2023, 10, 24),
-            startTimeStr = "8:10",
-            endTimeStr = "9:40",
-            startTime = LocalDateTime.of(2023, 10, 24, 8, 10),
-            endTime = LocalDateTime.of(2023, 10, 24, 9, 40),
+            time = ScheduledTime(
+                date = LocalDate.of(2023, 10, 24),
+                startTime = "8:10",
+                endTime = "9:40",
+            ),
             places = listOf(
                 LessonPlace(building = 2, office = null)
             ),
@@ -34,11 +33,11 @@ class LessonTest {
             programme = "РИС",
             group = "РИС-22-3",
             subGroup = 5,
-            date = LocalDate.of(2023, 10, 24),
-            startTimeStr = "8:10",
-            endTimeStr = "9:40",
-            startTime = LocalDateTime.of(2023, 10, 24, 8, 10),
-            endTime = LocalDateTime.of(2023, 10, 24, 9, 40),
+            time = ScheduledTime(
+                date = LocalDate.of(2023, 10, 24),
+                startTime = "8:10",
+                endTime = "9:40",
+            ),
             places = listOf(
                 LessonPlace(building = 2, office = null)
             ),
@@ -52,11 +51,11 @@ class LessonTest {
             programme = "РИС",
             group = "РИС-22-3",
             subGroup = 5,
-            date = LocalDate.of(2023, 10, 24),
-            startTimeStr = "8:10",
-            endTimeStr = "9:40",
-            startTime = LocalDateTime.of(2023, 10, 24, 8, 10),
-            endTime = LocalDateTime.of(2023, 10, 24, 9, 40),
+            time = ScheduledTime(
+                date = LocalDate.of(2023, 10, 24),
+                startTime = "8:10",
+                endTime = "9:40",
+            ),
             places = listOf(
                 LessonPlace(building = 3, office = null)
             ),
@@ -78,11 +77,11 @@ class LessonTest {
             programme = "РИС",
             group = "РИС-22-3",
             subGroup = 5,
-            date = LocalDate.of(2023, 10, 24),
-            startTimeStr = "8:10",
-            endTimeStr = "9:40",
-            startTime = LocalDateTime.of(2023, 10, 24, 8, 10),
-            endTime = LocalDateTime.of(2023, 10, 24, 9, 40),
+            time = ScheduledTime(
+                date = LocalDate.of(2023, 10, 24),
+                startTime = "8:10",
+                endTime = "9:40",
+            ),
             places = listOf(
                 LessonPlace(building = 2, office = null)
             ),
@@ -96,11 +95,11 @@ class LessonTest {
             programme = "РИС",
             group = "РИС-22-3",
             subGroup = 5,
-            date = LocalDate.of(2023, 10, 24),
-            startTimeStr = "8:10",
-            endTimeStr = "9:40",
-            startTime = LocalDateTime.of(2023, 10, 24, 8, 10),
-            endTime = LocalDateTime.of(2023, 10, 24, 9, 40),
+            time = ScheduledTime(
+                date = LocalDate.of(2023, 10, 24),
+                startTime = "8:10",
+                endTime = "9:40",
+            ),
             places = listOf(
                 LessonPlace(building = 3, office = null)
             ),
@@ -114,11 +113,11 @@ class LessonTest {
             programme = "РИС",
             group = "РИС-22-3",
             subGroup = 5,
-            date = LocalDate.of(2023, 10, 24),
-            startTimeStr = "8:10",
-            endTimeStr = "9:40",
-            startTime = LocalDateTime.of(2023, 10, 24, 8, 10),
-            endTime = LocalDateTime.of(2023, 10, 24, 9, 40),
+            time = ScheduledTime(
+                date = LocalDate.of(2023, 10, 24),
+                startTime = "8:10",
+                endTime = "9:40",
+            ),
             places = listOf(
                 LessonPlace(building = 3, office = "501")
             ),
@@ -140,11 +139,11 @@ class LessonTest {
             programme = "РИС",
             group = "РИС-22-3",
             subGroup = 5,
-            date = LocalDate.of(2023, 10, 24),
-            startTimeStr = "8:10",
-            endTimeStr = "9:40",
-            startTime = LocalDateTime.of(2023, 10, 24, 8, 10),
-            endTime = LocalDateTime.of(2023, 10, 24, 9, 40),
+            time = ScheduledTime(
+                date = LocalDate.of(2023, 10, 24),
+                startTime = "8:10",
+                endTime = "9:40",
+            ),
             places = listOf(
                 LessonPlace(building = 2, office = null)
             ),
@@ -158,11 +157,11 @@ class LessonTest {
             programme = "РИС",
             group = "РИС-22-3",
             subGroup = 5,
-            date = LocalDate.of(2023, 10, 24),
-            startTimeStr = "8:10",
-            endTimeStr = "9:40",
-            startTime = LocalDateTime.of(2023, 10, 24, 8, 10),
-            endTime = LocalDateTime.of(2023, 10, 24, 9, 40),
+            time = ScheduledTime(
+                date = LocalDate.of(2023, 10, 24),
+                startTime = "8:10",
+                endTime = "9:40",
+            ),
             places = listOf(
                 LessonPlace(building = 3, office = null)
             ),
@@ -176,11 +175,11 @@ class LessonTest {
             programme = "РИС",
             group = "РИС-22-3",
             subGroup = 5,
-            date = LocalDate.of(2023, 10, 24),
-            startTimeStr = "8:10",
-            endTimeStr = "9:40",
-            startTime = LocalDateTime.of(2023, 10, 24, 8, 10),
-            endTime = LocalDateTime.of(2023, 10, 24, 9, 40),
+            time = ScheduledTime(
+                date = LocalDate.of(2023, 10, 24),
+                startTime = "8:10",
+                endTime = "9:40",
+            ),
             places = listOf(
                 LessonPlace(building = 3, office = "501")
             ),
@@ -194,11 +193,11 @@ class LessonTest {
             programme = "РИС",
             group = "РИС-22-3",
             subGroup = 5,
-            date = LocalDate.of(2023, 10, 24),
-            startTimeStr = "8:10",
-            endTimeStr = "9:40",
-            startTime = LocalDateTime.of(2023, 10, 24, 8, 10),
-            endTime = LocalDateTime.of(2023, 10, 24, 9, 40),
+            time = ScheduledTime(
+                date = LocalDate.of(2023, 10, 24),
+                startTime = "8:10",
+                endTime = "9:40",
+            ),
             places = listOf(
                 LessonPlace(building = 3, office = "502")
             ),

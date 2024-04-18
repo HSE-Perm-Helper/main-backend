@@ -1,11 +1,11 @@
 package com.melowetty.hsepermhelper.notification
 
-import com.melowetty.hsepermhelper.models.ScheduleInfo
+import com.melowetty.hsepermhelper.models.ScheduleInfoV2
 import io.swagger.v3.oas.annotations.media.Schema
 
-data class ScheduleAddedNotification(
+data class ScheduleAddedNotificationV2(
     @Schema(description = "Расписание, которое было добавлено")
-    val targetSchedule: ScheduleInfo,
+    val targetSchedule: ScheduleInfoV2,
     @Schema(description = "Список Telegram ID, которым требуется выслать оповещение о новом расписании")
     val users: List<Long>,
 ): Notification() {
@@ -22,17 +22,15 @@ data class ScheduleAddedNotification(
     }
 
     override fun toV2(): Notification {
-        return ScheduleAddedNotificationV2(
-            targetSchedule = targetSchedule.toScheduleInfoV2(),
-            users = users,
-        )
+        TODO("Not yet implemented")
     }
+
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
 
-        other as ScheduleAddedNotification
+        other as ScheduleAddedNotificationV2
 
         if (targetSchedule != other.targetSchedule) return false
         if (users != other.users) return false

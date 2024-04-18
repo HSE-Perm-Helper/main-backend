@@ -25,4 +25,6 @@ abstract class Notification {
     override fun hashCode(): Int {
         return date.hashCode() + javaClass.simpleName.hashCode()
     }
+
+    abstract fun toV2(): Notification
 }

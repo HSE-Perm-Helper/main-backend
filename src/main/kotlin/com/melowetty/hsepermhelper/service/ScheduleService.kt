@@ -1,6 +1,8 @@
 package com.melowetty.hsepermhelper.service
 
 import com.melowetty.hsepermhelper.models.Schedule
+import com.melowetty.hsepermhelper.models.ScheduleInfo
+import java.time.LocalDate
 import java.util.*
 
 interface ScheduleService {
@@ -11,6 +13,24 @@ interface ScheduleService {
      * @return all user schedules
      */
     fun getUserSchedulesByTelegramId(telegramId: Long): List<Schedule>
+
+    /**
+     * Get all schedules info
+     *
+     * @return all schedules
+     */
+    fun getAvailableSchedules(): List<ScheduleInfo>
+
+    /**
+     * Get user schedule by telegram id and by start and end dates
+     *
+     * @param telegramId user telegram id
+     * @param start start of schedule
+     * @param end end of schedule
+     *
+     * @return user schedule filtered by start and end dates
+     */
+    fun getUserScheduleByTelegramId(telegramId: Long, start: LocalDate, end: LocalDate): Schedule
 
     /**
      * Get all schedules for user by id
