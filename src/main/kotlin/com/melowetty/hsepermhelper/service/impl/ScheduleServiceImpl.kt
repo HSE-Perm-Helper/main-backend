@@ -53,7 +53,7 @@ class ScheduleServiceImpl(
             else user.settings.includeCommonMinor
         }
         return schedule.copy(
-            lessons = filteredLessons
+            lessons = filteredLessons.sortedBy { it.time }
         )
     }
 
