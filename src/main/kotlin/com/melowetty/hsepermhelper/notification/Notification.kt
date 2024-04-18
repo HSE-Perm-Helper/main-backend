@@ -13,18 +13,8 @@ abstract class Notification {
     @Schema(description = "Дата создания уведомления")
     @JsonFormat(pattern = DateUtils.DATE_TIME_PATTERN)
     val date = LocalDateTime.now()
-    @JsonProperty("eventType")
-    @Schema(description = "Тип ивента")
-    abstract fun getEventType(): String
 
     @JsonProperty("notificationType")
     @Schema(description = "Тип уведомления")
     abstract fun getNotificationType(): String
-
-    @JsonProperty("hashcode")
-    override fun hashCode(): Int {
-        return date.hashCode() + javaClass.simpleName.hashCode()
-    }
-
-    abstract fun toV2(): Notification
 }
