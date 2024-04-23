@@ -478,7 +478,7 @@ class ScheduleRepositoryImpl(
     ): Lesson {
         val subject = fields.first { it.fieldType == FieldType.SUBJECT }.value
         val lessonType = getLessonType(
-            isSessionWeek = scheduleInfo.scheduleType == ScheduleType.SESSION_WEEK_SCHEDULE,
+            isSessionWeek = scheduleInfo.scheduleType == ScheduleType.SESSION_SCHEDULE,
             isUnderlined = cell.isUnderlined,
             subject = subject,
             lessonInfo = additionalLessonInfo.lecturer,
@@ -612,9 +612,9 @@ class ScheduleRepositoryImpl(
         val datePattern = DateTimeFormatter.ofPattern("dd.MM.yyyy")
         val weekStart = LocalDate.parse(weekInfoGroups.get(2)?.value, datePattern)
         val weekEnd = LocalDate.parse(weekInfoGroups.get(3)?.value, datePattern)
-        var scheduleType = ScheduleType.COMMON_WEEK_SCHEDULE
+        var scheduleType = ScheduleType.WEEK_SCHEDULE
         if(weekNumber == null) {
-            scheduleType = ScheduleType.SESSION_WEEK_SCHEDULE
+            scheduleType = ScheduleType.SESSION_SCHEDULE
         } else if(weekEnd.toEpochDay() - weekStart.toEpochDay() > 7) {
             scheduleType = ScheduleType.QUARTER_SCHEDULE
         }
