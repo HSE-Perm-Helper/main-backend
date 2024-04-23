@@ -25,7 +25,7 @@ data class Lesson(
     val additionalInfo: List<String>? = null,
     @Schema(description = "Тип лекции", example = "SEMINAR")
     val lessonType: LessonType,
-    @Schema(description = "Тип расписания-родителя", example = "COMMON_WEEK_SCHEDULE")
+    @Schema(description = "Тип расписания-родителя", example = "WEEK_SCHEDULE")
     val parentScheduleType: ScheduleType,
 ): Comparable<Lesson> {
     /**
@@ -37,22 +37,6 @@ data class Lesson(
         if(places == null) return false
         if(links?.isNotEmpty() == true) return true
         return (places.all { it.building == null } || places.all { it.building == 0 }) && lessonType != LessonType.ENGLISH
-    }
-
-    fun toLessonV2(): LessonV2 {
-        return LessonV2(
-            subject = subject,
-            date = (time as ScheduledTime).date,
-            isOnline = isOnline(),
-            startTimeStr = time.startTime,
-            endTimeStr = time.endTime,
-            lecturer = lecturer,
-            places = places,
-            links = links,
-            additionalInfo = additionalInfo,
-            parentScheduleType = parentScheduleType,
-            lessonType = lessonType,
-        )
     }
 
     override fun compareTo(other: Lesson): Int {

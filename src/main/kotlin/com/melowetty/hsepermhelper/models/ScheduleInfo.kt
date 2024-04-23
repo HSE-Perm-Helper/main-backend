@@ -13,13 +13,4 @@ data class ScheduleInfo (
     @JsonFormat(pattern = DateUtils.DATE_PATTERN)
     val end: LocalDate,
     val scheduleType: ScheduleType,
-) {
-    fun toScheduleInfoV2(): ScheduleInfoV2 {
-        return ScheduleInfoV2(
-            weekNumber = number,
-            weekStart = start,
-            weekEnd = end,
-            scheduleType = scheduleType,
-        )
-    }
-}
+)

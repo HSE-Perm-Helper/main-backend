@@ -25,25 +25,6 @@ class ScheduleController(
 ) {
     @SecurityRequirement(name = "X-Secret-Key")
     @Operation(
-        summary = "Получение расписания пользователя",
-        description = "Позволяет получить расписания пользователя по его Telegram ID"
-    )
-    @GetMapping(
-        "v2/schedule/{telegramId}",
-        produces = [MediaType.APPLICATION_JSON_VALUE]
-    )
-    fun getScheduleV2(
-        @Parameter(description = "Telegram ID пользователя")
-        @PathVariable("telegramId")
-        telegramId: Long,
-    ): Response<List<ScheduleV2>> {
-        userEventService.addUserEvent(telegramId, UserEventType.GET_SCHEDULE)
-        val schedules = scheduleService.getUserSchedulesByTelegramId(telegramId).filter { it.scheduleType != ScheduleType.QUARTER_SCHEDULE }.map { it.toScheduleV2() }
-        return Response(schedules)
-    }
-
-    @SecurityRequirement(name = "X-Secret-Key")
-    @Operation(
         summary = "Получение всех доступных расписаний",
         description = "Позволяет получить данные о расписаниях"
     )

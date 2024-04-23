@@ -14,22 +14,15 @@ data class SettingsDto(
     @Schema(description = "Учебная подгруппа пользователя", example = "5")
     val subGroup: Int = 0,
 
-    @Schema(description = "Включать ли расписание на модуль в общее расписание", example = "false")
-    val includeQuarterSchedule: Boolean = false,
-
     @Schema(description = "Включать ли общие пары английского в общее расписание", example = "false")
     val includeCommonEnglish: Boolean = false,
 
     @Schema(description = "Включать ли общие пары майнора в общее расписание", example = "true")
     val includeCommonMinor: Boolean = true,
 
-    @JsonIgnore
-    @Schema(description = "Включен ли удаленный календарь", example = "false")
-    val isEnabledRemoteCalendar: Boolean = false,
-
     @Schema(description = "Включены ли уведомления о новом расписании", example = "true")
-    val isEnabledNewCommonScheduleNotifications: Boolean = true,
+    val isEnabledNewScheduleNotifications: Boolean = true,
 
-    @Schema(description = "Включены ли уведомления о новом расписании на модуль", example = "false")
-    val isEnabledNewQuarterScheduleNotifications: Boolean = false,
+    @Schema(description = "Включены ли уведомления о изменении расписания", example = "true")
+    val isEnabledChangedScheduleNotifications: Boolean = true,
 )

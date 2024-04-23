@@ -43,16 +43,6 @@ data class Schedule(
         return true
     }
 
-    fun toScheduleV2(): ScheduleV2 {
-        return ScheduleV2(
-            weekNumber = number,
-            lessons = lessons.map { it.toLessonV2() },
-            weekStart = start,
-            weekEnd = end,
-            scheduleType = scheduleType,
-        )
-    }
-
     fun toScheduleInfo(): ScheduleInfo {
         return ScheduleInfo(
             number = number,
