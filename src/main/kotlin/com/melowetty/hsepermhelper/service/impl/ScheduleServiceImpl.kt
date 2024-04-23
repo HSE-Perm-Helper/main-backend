@@ -23,19 +23,8 @@ class ScheduleServiceImpl(
     private val notificationService: NotificationService
 ): ScheduleService {
     private fun filterSchedules(schedules: List<Schedule>, user: UserDto): List<Schedule> {
-        val filteredSchedules = mutableListOf<Schedule>()
-        schedules
-            .filter {
-                if(user.settings.includeQuarterSchedule.not()) {
-                    it.scheduleType != ScheduleType.QUARTER_SCHEDULE
-                }
-                else
-                    true
-            }
-            .forEach { schedule ->
-            filteredSchedules.add(
+        val filteredSchedules = schedules.map { schedule ->
                 filterSchedule(schedule, user)
-            )
         }
         return filteredSchedules
     }
@@ -86,15 +75,9 @@ class ScheduleServiceImpl(
             if(addedSchedule.after != null) {
                 val schedule = addedSchedule.after
                 val users = mutableListOf<Long>()
-                if(schedule.scheduleType == ScheduleType.QUARTER_SCHEDULE) {
-                    users.addAll(userService.getAllUsers()
-                        .filter { it.settings.isEnabledNewQuarterScheduleNotifications }
-                        .map { it.telegramId })
-                } else {
-                    users.addAll(userService.getAllUsers()
-                        .filter { it.settings.isEnabledNewCommonScheduleNotifications }
-                        .map { it.telegramId })
-                }
+                users.addAll(userService.getAllUsers()
+                    .filter { it.settings.isEnabledNewScheduleNotifications }
+                    .map { it.telegramId })
                 val scheduleAddedNotification = ScheduleAddedNotification(
                     targetSchedule = schedule.toScheduleInfo(),
                     users = users,
@@ -107,8 +90,7 @@ class ScheduleServiceImpl(
                 val users = mutableSetOf<Long>()
                 userService.getAllUsers()
                     .filter { user ->
-                        (it.after.scheduleType == ScheduleType.QUARTER_SCHEDULE && user.settings.includeQuarterSchedule) ||
-                                it.after.scheduleType != ScheduleType.QUARTER_SCHEDULE
+                        user.settings.isEnabledChangedScheduleNotifications
                     }
                     .distinctBy { "${it.settings.group} ${it.settings.subGroup}" }.forEach { user ->
                         val before = filterSchedule(it.before, user)
