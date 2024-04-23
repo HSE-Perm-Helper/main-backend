@@ -39,22 +39,6 @@ data class Lesson(
         return (places.all { it.building == null } || places.all { it.building == 0 }) && lessonType != LessonType.ENGLISH
     }
 
-    fun toLessonV2(): LessonV2 {
-        return LessonV2(
-            subject = subject,
-            date = (time as ScheduledTime).date,
-            isOnline = isOnline(),
-            startTimeStr = time.startTime,
-            endTimeStr = time.endTime,
-            lecturer = lecturer,
-            places = places,
-            links = links,
-            additionalInfo = additionalInfo,
-            parentScheduleType = parentScheduleType,
-            lessonType = lessonType,
-        )
-    }
-
     override fun compareTo(other: Lesson): Int {
         return time.compareTo(other.time)
     }

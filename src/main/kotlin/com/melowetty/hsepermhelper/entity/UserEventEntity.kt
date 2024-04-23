@@ -2,6 +2,8 @@ package com.melowetty.hsepermhelper.entity
 
 import com.melowetty.hsepermhelper.models.UserEventType
 import jakarta.persistence.*
+import org.hibernate.annotations.OnDelete
+import org.hibernate.annotations.OnDeleteAction
 import java.time.LocalDateTime
 
 @Entity
@@ -13,7 +15,8 @@ data class UserEventEntity(
     @Column(name = "date")
     val date: LocalDateTime = LocalDateTime.now(),
 
-    @ManyToOne(cascade = [CascadeType.REMOVE])
+    @ManyToOne
+    @OnDelete(action = OnDeleteAction.SET_NULL)
     @JoinColumn(name = "user_id")
     val targetUser: UserEntity,
 
