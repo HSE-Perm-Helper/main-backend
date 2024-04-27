@@ -4,7 +4,10 @@ import com.melowetty.hsepermhelper.dto.UserDto
 import com.melowetty.hsepermhelper.events.EventType
 import com.melowetty.hsepermhelper.events.ScheduleChangedEvent
 import com.melowetty.hsepermhelper.exceptions.ScheduleNotFoundException
-import com.melowetty.hsepermhelper.models.*
+import com.melowetty.hsepermhelper.models.Lesson
+import com.melowetty.hsepermhelper.models.LessonType
+import com.melowetty.hsepermhelper.models.Schedule
+import com.melowetty.hsepermhelper.models.ScheduleInfo
 import com.melowetty.hsepermhelper.notification.ScheduleAddedNotification
 import com.melowetty.hsepermhelper.notification.ScheduleChangedForUserNotification
 import com.melowetty.hsepermhelper.repository.ScheduleRepository

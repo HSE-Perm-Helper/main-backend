@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.bind.annotation.RestControllerAdvice
 import org.springframework.web.servlet.NoHandlerFoundException
-import java.io.FileNotFoundException
 import java.lang.Boolean.parseBoolean
 
 @RestControllerAdvice
