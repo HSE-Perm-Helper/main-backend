@@ -12,7 +12,7 @@ abstract class Notification {
     @JsonProperty("createdTime")
     @Schema(description = "Дата создания уведомления")
     @JsonFormat(pattern = DateUtils.DATE_TIME_PATTERN)
-    val date = LocalDateTime.now()
+    val date: LocalDateTime = LocalDateTime.now()
 
     @JsonProperty("notificationType")
     @Schema(description = "Тип уведомления")
