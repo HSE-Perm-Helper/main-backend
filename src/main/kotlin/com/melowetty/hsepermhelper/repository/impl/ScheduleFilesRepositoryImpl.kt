@@ -9,8 +9,11 @@ import java.net.URL
 
 @Component
 class ScheduleFilesRepositoryImpl: ScheduleFilesRepository {
+    init {
+        fetchScheduleFilesAsInputStream()
+    }
     private var scheduleFiles: List<InputStream> = listOf()
-    private fun fetchScheduleFilesAsInputStream() {
+    final override fun fetchScheduleFilesAsInputStream() {
         val response = Jsoup.connect(SCHEDULE_BASE_URL).get()
         val elements = response.select(".content__inner.post__text p")
         val files = mutableListOf<InputStream>()
@@ -36,11 +39,6 @@ class ScheduleFilesRepositoryImpl: ScheduleFilesRepository {
             e.printStackTrace()
             null
         }
-    }
-
-    @Scheduled(fixedRate = 1000 * 60 * 5, initialDelay = 1000 * 60 * 5)
-    private fun autoFetchingSchedules() {
-        fetchScheduleFilesAsInputStream()
     }
 
     override fun getScheduleFiles(): List<InputStream> {

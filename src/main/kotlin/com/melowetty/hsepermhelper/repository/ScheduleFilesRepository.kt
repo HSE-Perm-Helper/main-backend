@@ -10,4 +10,6 @@ interface ScheduleFilesRepository {
      * @return list of schedule files as input stream
      */
     fun getScheduleFiles(): List<InputStream>
+
+    fun fetchScheduleFilesAsInputStream()
 }
