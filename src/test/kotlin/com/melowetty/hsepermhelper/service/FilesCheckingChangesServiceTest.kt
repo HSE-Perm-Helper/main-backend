@@ -20,7 +20,8 @@ class FilesCheckingChangesServiceTest {
     fun `test when no files before and no files after`() {
         val expected = FilesChanging(
             addedOrChanged = listOf(),
-            withoutChanges = listOf()
+            withoutChanges = listOf(),
+            deleted = listOf()
         )
         val actual = filesCheckingChangesService.getChanges(before = listOf(), after = listOf())
         assertEquals(expected, actual)
@@ -34,7 +35,8 @@ class FilesCheckingChangesServiceTest {
         val secondScheduleAfter = readFile("schedule_2_after_changed.xls")
         val expected = FilesChanging(
             addedOrChanged = listOf(secondScheduleAfter),
-            withoutChanges = listOf(firstScheduleAfter)
+            withoutChanges = listOf(firstScheduleAfter),
+            deleted = listOf(secondScheduleBefore)
         )
         val actual = filesCheckingChangesService.getChanges(
             before = listOf(firstScheduleBefore, secondScheduleBefore),
