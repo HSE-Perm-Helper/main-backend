@@ -2,7 +2,6 @@ package com.melowetty.hsepermhelper.repository.impl
 
 import com.melowetty.hsepermhelper.events.EventType
 import com.melowetty.hsepermhelper.events.ScheduleChangedEvent
-import com.melowetty.hsepermhelper.events.ScheduleFilesChangedEvent
 import com.melowetty.hsepermhelper.exceptions.ScheduleNotFoundException
 import com.melowetty.hsepermhelper.models.*
 import com.melowetty.hsepermhelper.repository.ScheduleRepository
@@ -40,23 +39,23 @@ class ScheduleRepositoryImpl(
     }
 
     @EventListener
-    fun handleScheduleFilesUpdate(event: ScheduleFilesChangedEvent) {
+    fun handleScheduleFilesUpdate(event: FilesChanging) {
         fetchSchedules()
     }
 
     override fun fetchSchedules(firstLaunch: Boolean, publishEvents: Boolean): List<Schedule> {
         val newSchedules = mutableListOf<Schedule>()
         if(firstLaunch) {
-            scheduleFilesService.fetchScheduleFiles(callEvents = false)
+            scheduleFilesService.getScheduleFiles()
                 .forEach {
-                    val schedule = parseSchedule(it.file)
+                    val schedule = parseSchedule(it.inputStream)
                     if(schedule != null) newSchedules.add(schedule)
                 }
         }
         else {
             scheduleFilesService.getScheduleFiles()
                 .forEach {
-                    val schedule = parseSchedule(it.file)
+                    val schedule = parseSchedule(it.inputStream)
                     if(schedule != null) newSchedules.add(schedule)
                 }
         }
