@@ -42,16 +42,4 @@ class ScheduleFilesServiceImpl(
     override fun getScheduleFiles(): List<ScheduleFile> {
         return scheduleFiles
     }
-
-    @Scheduled(fixedRate = 1000 * 60 * 5, initialDelay = 1000 * 60 * 5)
-    private fun autoFetchingSchedules() {
-        println("Cron task: fetching schedule")
-        fetchScheduleFiles()
-        println("[Fetching schedule] Schedules fetching is done")
-    }
-
-    @EventListener
-    fun handleScheduleFilesChanging(event: ScheduleFilesChangedEvent) {
-        println("[Fetching schedule] Schedules are changed")
-    }
 }
