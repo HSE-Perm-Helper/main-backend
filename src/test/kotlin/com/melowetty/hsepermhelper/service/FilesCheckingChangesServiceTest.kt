@@ -2,18 +2,21 @@ package com.melowetty.hsepermhelper.service
 
 import com.melowetty.hsepermhelper.models.File
 import com.melowetty.hsepermhelper.models.FilesChanging
+import com.melowetty.hsepermhelper.service.impl.FilesCheckingChangesByHashcodeService
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
+import java.nio.file.Files
+import java.nio.file.Path
 
-@SpringBootTest
+@SpringBootTest(classes = [FilesCheckingChangesByHashcodeService::class])
 class FilesCheckingChangesServiceTest {
     @Autowired
     lateinit var filesCheckingChangesService: FilesCheckingChangesService
 
     private fun readFile(file: String): File {
-        return File(inputStream = this.javaClass.getResourceAsStream(file)!!)
+        return File(inputStream = Files.newInputStream(Path.of("src/test/resources/$file")))
     }
 
     @Test
