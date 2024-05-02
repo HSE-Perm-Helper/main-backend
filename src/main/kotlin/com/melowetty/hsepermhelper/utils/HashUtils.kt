@@ -9,7 +9,9 @@ class HashUtils {
             val digest = MessageDigest.getInstance("SHA-256")
             val hexArray = "0123456789ABCDEF"
             val bytes = digest.digest(inputStream.readAllBytes())
-            inputStream.reset()
+            if(inputStream.markSupported()) {
+                inputStream.reset()
+            }
             val hash = StringBuilder(bytes.size * 2)
             bytes.forEach {
                 val i = it.toInt()
