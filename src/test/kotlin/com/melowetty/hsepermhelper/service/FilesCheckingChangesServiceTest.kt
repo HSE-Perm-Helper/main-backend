@@ -1,23 +1,17 @@
 package com.melowetty.hsepermhelper.service
 
-import com.melowetty.hsepermhelper.models.File
 import com.melowetty.hsepermhelper.models.FilesChanging
 import com.melowetty.hsepermhelper.service.impl.FilesCheckingChangesByHashcodeService
+import com.melowetty.hsepermhelper.utils.TestUtils
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
-import java.nio.file.Files
-import java.nio.file.Path
 
 @SpringBootTest(classes = [FilesCheckingChangesByHashcodeService::class])
 class FilesCheckingChangesServiceTest {
     @Autowired
     lateinit var filesCheckingChangesService: FilesCheckingChangesService
-
-    private fun readFile(file: String): File {
-        return File(inputStream = Files.newInputStream(Path.of("src/test/resources/$file")))
-    }
 
     @Test
     fun `test when no files before and no files after`() {
@@ -32,10 +26,10 @@ class FilesCheckingChangesServiceTest {
 
     @Test
     fun `test when before was two files and after one of it was changed`() {
-        val firstScheduleBefore = readFile("schedule_1_before.xls")
-        val secondScheduleBefore = readFile("schedule_2_before.xls")
-        val firstScheduleAfter = readFile("schedule_1_after_no_changes.xls")
-        val secondScheduleAfter = readFile("schedule_2_after_changed.xls")
+        val firstScheduleBefore = TestUtils.readFile("schedule_1_before.xls")
+        val secondScheduleBefore = TestUtils.readFile("schedule_2_before.xls")
+        val firstScheduleAfter = TestUtils.readFile("schedule_1_after_no_changes.xls")
+        val secondScheduleAfter = TestUtils.readFile("schedule_2_after_changed.xls")
         val expected = FilesChanging(
             addedOrChanged = listOf(secondScheduleAfter),
             withoutChanges = listOf(firstScheduleAfter),
