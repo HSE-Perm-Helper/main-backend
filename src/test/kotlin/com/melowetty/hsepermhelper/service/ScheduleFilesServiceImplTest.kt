@@ -37,8 +37,8 @@ class ScheduleFilesServiceImplTest {
 
     @Test
     fun `test get common list of schedule files`() {
-        val firstFile = TestUtils.readFileAsInputStream("service/schedule_1.xls")
-        val secondFile = TestUtils.readFileAsInputStream("service/schedule_2.xls")
+        val firstFile = TestUtils.readFileAsInputStream("service/schedule-files/schedule_1.xls")
+        val secondFile = TestUtils.readFileAsInputStream("service/schedule-files/schedule_2.xls")
         Mockito.`when`(scheduleFilesRepositoryMock.getScheduleFiles()).thenReturn(
             listOf(
                 firstFile,
