@@ -9,7 +9,7 @@ interface ScheduleFilesRepository {
      *
      * @return list of schedule files as input stream
      */
-    fun getScheduleFiles(): List<InputStream>
+    fun getScheduleFilesAsByteArray(): List<ByteArray>
 
-    fun fetchScheduleFilesAsInputStream()
+    fun fetchScheduleFiles()
 }

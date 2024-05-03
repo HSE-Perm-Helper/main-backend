@@ -17,7 +17,7 @@ class ScheduleFilesServiceImpl(
     @Scheduled(fixedRate = 1000 * 60 * 5, initialDelay = 1000 * 60 * 5)
     private fun autoFetchingSchedules() {
         val before = getScheduleFiles()
-        repository.fetchScheduleFilesAsInputStream()
+        repository.fetchScheduleFiles()
         val after = getScheduleFiles()
         val changes = filesCheckingChangesService.getChanges(before = before, after = after)
         if(changes.addedOrChanged.isNotEmpty() || changes.deleted.isNotEmpty()) {
@@ -26,6 +26,6 @@ class ScheduleFilesServiceImpl(
     }
 
     override fun getScheduleFiles(): List<File> {
-        return repository.getScheduleFiles().map { File(inputStream = it) }
+        return repository.getScheduleFilesAsByteArray().map { File(data = it) }
     }
 }

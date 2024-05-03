@@ -48,14 +48,14 @@ class ScheduleRepositoryImpl(
         if(firstLaunch) {
             scheduleFilesService.getScheduleFiles()
                 .forEach {
-                    val schedule = parseSchedule(it.inputStream)
+                    val schedule = parseSchedule(it.toInputStream())
                     if(schedule != null) newSchedules.add(schedule)
                 }
         }
         else {
             scheduleFilesService.getScheduleFiles()
                 .forEach {
-                    val schedule = parseSchedule(it.inputStream)
+                    val schedule = parseSchedule(it.toInputStream())
                     if(schedule != null) newSchedules.add(schedule)
                 }
         }

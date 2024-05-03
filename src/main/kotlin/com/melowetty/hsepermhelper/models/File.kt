@@ -1,11 +1,12 @@
 package com.melowetty.hsepermhelper.models
 
 import com.melowetty.hsepermhelper.utils.HashUtils
+import java.io.ByteArrayInputStream
 import java.io.InputStream
 
 data class File(
-    val inputStream: InputStream,
-    val hashCode: String = HashUtils.getHash(inputStream),
+    val data: ByteArray,
+    val hashCode: String = HashUtils.getHash(data),
 ) {
     override fun hashCode(): Int {
         return hashCode.hashCode()
@@ -18,5 +19,9 @@ data class File(
         other as File
 
         return hashCode == other.hashCode
+    }
+
+    fun toInputStream(): InputStream {
+        return ByteArrayInputStream(data)
     }
 }

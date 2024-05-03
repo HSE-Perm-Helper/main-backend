@@ -8,7 +8,7 @@ import java.nio.file.Path
 class TestUtils {
     companion object {
         fun readFile(file: String): File {
-            return File(inputStream = readFileAsInputStream(file))
+            return File(data = readFileAsInputStream(file).readAllBytes())
         }
 
         fun readFileAsInputStream(file: String): InputStream {
