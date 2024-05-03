@@ -26,10 +26,10 @@ class FilesCheckingChangesServiceTest {
 
     @Test
     fun `test when before was two files and after one of it was changed`() {
-        val firstScheduleBefore = TestUtils.readFile("service/schedule_1_before.xls")
-        val secondScheduleBefore = TestUtils.readFile("service/schedule_2_before.xls")
-        val firstScheduleAfter = TestUtils.readFile("service/schedule_1_after_no_changes.xls")
-        val secondScheduleAfter = TestUtils.readFile("service/schedule_2_after_changed.xls")
+        val firstScheduleBefore = TestUtils.readFile("service/files-checking-changes/schedule_1_before.xls")
+        val secondScheduleBefore = TestUtils.readFile("service/files-checking-changes/schedule_2_before.xls")
+        val firstScheduleAfter = TestUtils.readFile("service/files-checking-changes/schedule_1_after_no_changes.xls")
+        val secondScheduleAfter = TestUtils.readFile("service/files-checking-changes/schedule_2_after_changed.xls")
         val expected = FilesChanging(
             addedOrChanged = listOf(secondScheduleAfter),
             withoutChanges = listOf(firstScheduleAfter),
