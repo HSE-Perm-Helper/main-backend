@@ -24,4 +24,8 @@ data class File(
     fun toInputStream(): InputStream {
         return ByteArrayInputStream(data)
     }
+
+    override fun toString(): String {
+        return "File(hashCode='$hashCode')"
+    }
 }
