@@ -15,7 +15,7 @@ class ScheduleFilesServiceImpl(
     private val repository: ScheduleFilesRepository
 ): ScheduleFilesService {
     @Scheduled(fixedRate = 1000 * 60 * 5, initialDelay = 1000 * 60 * 5)
-    private fun autoFetchingSchedules() {
+    protected fun fetchScheduleFilesAndPublishEvents() {
         val before = getScheduleFiles()
         repository.fetchScheduleFiles()
         val after = getScheduleFiles()
