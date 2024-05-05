@@ -2,13 +2,18 @@ package com.melowetty.hsepermhelper.repository.impl
 
 import com.melowetty.hsepermhelper.repository.ScheduleFilesRepository
 import org.jsoup.Jsoup
+import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component
 import java.io.InputStream
 import java.net.URL
 
 @Component
 class ScheduleFilesRepositoryImpl: ScheduleFilesRepository {
-    override fun fetchScheduleFilesAsInputStream(): List<InputStream> {
+    init {
+        fetchScheduleFiles()
+    }
+    private var scheduleFiles: List<ByteArray> = listOf()
+    final override fun fetchScheduleFiles() {
         val response = Jsoup.connect(SCHEDULE_BASE_URL).get()
         val elements = response.select(".content__inner.post__text p")
         val files = mutableListOf<InputStream>()
@@ -23,8 +28,9 @@ class ScheduleFilesRepositoryImpl: ScheduleFilesRepository {
             val inputStream = downloadFileAsInputStream(path = link)
             if (inputStream != null) files.add(inputStream)
         }
-        return files
+        scheduleFiles = files.map { it.readAllBytes() }
     }
+
     private fun downloadFileAsInputStream(path: String): InputStream? {
         return try {
             val urlParts = path.split("/data")
@@ -34,6 +40,11 @@ class ScheduleFilesRepositoryImpl: ScheduleFilesRepository {
             null
         }
     }
+
+    override fun getScheduleFilesAsByteArray(): List<ByteArray> {
+        return scheduleFiles
+    }
+
     companion object {
         const val SCHEDULE_BASE_URL = "http://students.perm.hse.ru/timetable"
         const val SCHEDULE_BASE_DOWNLOAD_URL = "http://students.perm.hse.ru"
