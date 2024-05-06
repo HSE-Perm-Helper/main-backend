@@ -6,6 +6,7 @@ plugins {
     kotlin("jvm") version "1.8.22"
     kotlin("plugin.spring") version "1.8.22"
     kotlin("plugin.jpa") version "1.8.22"
+    id("jacoco")
 }
 group = "com.melowetty"
 version = "1.02.0-beta"
@@ -63,4 +64,24 @@ tasks.jar {
 
 tasks.bootJar {
     archiveFileName.set("app-standalone.jar")
+}
+
+tasks.test {
+    testLogging {
+        events("passed", "failed", "skipped")
+    }
+    finalizedBy(tasks.jacocoTestReport)
+}
+
+jacoco {
+    toolVersion = "0.8.9"
+}
+
+tasks.jacocoTestReport {
+    dependsOn(tasks.test) // tests are required to run before generating the report
+    reports {
+        xml.required.set(false)
+        csv.required.set(true)
+        html.outputLocation.set(layout.buildDirectory.dir("jacocoHtml"))
+    }
 }
