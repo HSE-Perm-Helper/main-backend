@@ -23,9 +23,8 @@ class NotificationServiceImpl(
     }
 
     override fun deleteNotifications(notifications: List<NotificationData>) {
-        notifications.forEach { 
-            if(it.id != null) notificationRepository.deleteNotificationById(it.id)
-            else notificationRepository.deleteNotificationByHashcode(it.hashcode)
+        notifications.forEach {
+            notificationRepository.deleteNotificationById(it.id)
         }
     }
 }
