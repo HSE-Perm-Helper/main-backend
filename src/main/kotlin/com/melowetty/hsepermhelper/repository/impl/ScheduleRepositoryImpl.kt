@@ -7,6 +7,7 @@ import com.melowetty.hsepermhelper.models.*
 import com.melowetty.hsepermhelper.repository.ScheduleRepository
 import com.melowetty.hsepermhelper.service.DataService
 import com.melowetty.hsepermhelper.service.ScheduleFilesService
+import com.melowetty.hsepermhelper.utils.ScheduleUtils
 import org.apache.poi.ss.usermodel.*
 import org.springframework.boot.context.event.ApplicationReadyEvent
 import org.springframework.context.ApplicationEventPublisher
@@ -25,7 +26,7 @@ class ScheduleRepositoryImpl(
     private val dataService: DataService,
     private val scheduleFilesService: ScheduleFilesService
 ): ScheduleRepository {
-    private var schedules = mutableListOf<Schedule>()
+    private var schedules = listOf<Schedule>()
 
     @EventListener(ApplicationReadyEvent::class)
     fun firstScheduleFetching() {
@@ -60,7 +61,7 @@ class ScheduleRepositoryImpl(
                 }
         }
         getChangesAndPublishEvents(schedules, newSchedules, publishEvents)
-        schedules = newSchedules
+        schedules = ScheduleUtils.normalizeSchedules(newSchedules)
         return schedules
     }
 
