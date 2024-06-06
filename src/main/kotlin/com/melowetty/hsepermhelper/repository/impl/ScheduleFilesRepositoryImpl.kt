@@ -9,10 +9,10 @@ import java.net.URL
 
 @Component
 class ScheduleFilesRepositoryImpl: ScheduleFilesRepository {
+    private var scheduleFiles: List<ByteArray> = listOf()
     init {
         fetchScheduleFiles()
     }
-    private var scheduleFiles: List<ByteArray> = listOf()
     final override fun fetchScheduleFiles() {
         val response = Jsoup.connect(SCHEDULE_BASE_URL).get()
         val elements = response.select(".content__inner.post__text p")
