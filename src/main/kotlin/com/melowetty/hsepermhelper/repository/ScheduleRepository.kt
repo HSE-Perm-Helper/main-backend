@@ -11,13 +11,6 @@ interface ScheduleRepository {
     fun getSchedules(): List<Schedule>
 
     /**
-     * Fetch schedules from list of files in schedule files
-     *
-     * @return new list of schedules
-     */
-    fun fetchSchedules(publishEvents: Boolean = true): List<Schedule>
-
-    /**
      * Gets available courses
      *
      * @throws ScheduleNotFoundException throws when schedule not found

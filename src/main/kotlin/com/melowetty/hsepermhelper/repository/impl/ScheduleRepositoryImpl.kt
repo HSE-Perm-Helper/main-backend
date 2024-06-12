@@ -5,8 +5,8 @@ import com.melowetty.hsepermhelper.event.ScheduleChangedEvent
 import com.melowetty.hsepermhelper.exception.ScheduleNotFoundException
 import com.melowetty.hsepermhelper.model.*
 import com.melowetty.hsepermhelper.repository.ScheduleRepository
-import com.melowetty.hsepermhelper.service.DataService
 import com.melowetty.hsepermhelper.service.ScheduleFilesService
+import com.melowetty.hsepermhelper.service.SchedulesCheckingChangesService
 import com.melowetty.hsepermhelper.util.ScheduleUtils
 import org.apache.poi.ss.usermodel.*
 import org.springframework.boot.context.event.ApplicationReadyEvent
@@ -16,23 +16,19 @@ import org.springframework.stereotype.Component
 import java.io.InputStream
 import java.time.DayOfWeek
 import java.time.LocalDate
-import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
-import java.time.temporal.ChronoUnit
 
 @Component
 class ScheduleRepositoryImpl(
     private val eventPublisher: ApplicationEventPublisher,
-    private val dataService: DataService,
-    private val scheduleFilesService: ScheduleFilesService
+    private val scheduleFilesService: ScheduleFilesService,
+    private val schedulesCheckingChangesService: SchedulesCheckingChangesService
 ): ScheduleRepository {
     private var schedules = listOf<Schedule>()
 
     @EventListener(ApplicationReadyEvent::class)
     fun firstScheduleFetching() {
-        val lastActualTime = dataService.getLastTime()
-        val difference = ChronoUnit.HOURS.between(LocalDateTime.now(), lastActualTime)
-        fetchSchedules(difference > 12)
+        fetchSchedules()
     }
 
     override fun getSchedules(): List<Schedule> {
@@ -41,54 +37,17 @@ class ScheduleRepositoryImpl(
 
     @EventListener
     fun handleScheduleFilesUpdate(event: FilesChanging) {
+        val prevSchedules = schedules
         fetchSchedules()
+        val newSchedules = schedules
+        val changes = schedulesCheckingChangesService.getChanges(prevSchedules, newSchedules)
     }
 
-    override fun fetchSchedules(publishEvents: Boolean): List<Schedule> {
+    private fun fetchSchedules() {
         val newSchedules = scheduleFilesService.getScheduleFiles().mapNotNull {
             parseSchedule(it.toInputStream())
         }
-        getChangesAndPublishEvents(schedules, newSchedules, publishEvents)
         schedules = ScheduleUtils.normalizeSchedules(newSchedules)
-        return schedules
-    }
-
-    private fun getChangesAndPublishEvents(oldSchedules: List<Schedule>, newSchedules: List<Schedule>, publishEvents: Boolean = true) {
-        val changes = mutableMapOf<EventType, List<ChangedSchedule>>()
-        val mappedSchedules = oldSchedules.map { Pair(it.start, it.end) }
-        for (newSchedule in newSchedules) {
-            val existsSchedule = oldSchedules.find { it.start == newSchedule.start  && it.end == newSchedule.end}
-            if(existsSchedule != null && existsSchedule.hashCode() != newSchedule.hashCode()) {
-                val editedSchedules: MutableList<ChangedSchedule> = changes.getOrDefault(EventType.EDITED, listOf()).toMutableList()
-                editedSchedules.add(
-                    ChangedSchedule(
-                        before = existsSchedule,
-                        after = newSchedule
-                    )
-                )
-                changes[EventType.EDITED] = editedSchedules
-            }
-            else if(mappedSchedules.contains(Pair(newSchedule.start, newSchedule.end)).not()) {
-                val addedSchedules: MutableList<ChangedSchedule> = changes.getOrDefault(EventType.ADDED, listOf()).toMutableList()
-                addedSchedules.add(
-                    ChangedSchedule(
-                    before = null,
-                    after = newSchedule,
-                )
-                )
-                changes[EventType.ADDED] = addedSchedules
-            }
-        }
-        val deletedSchedules = oldSchedules
-            .filter { schedule ->
-                newSchedules.map { it.start }.contains(schedule.start).not()
-            }
-        changes[EventType.DELETED] = deletedSchedules.map { ChangedSchedule(before = it, after = null) }
-        val event = ScheduleChangedEvent(
-            changes = changes
-        )
-        if(publishEvents)
-            eventPublisher.publishEvent(event)
     }
 
     override fun getAvailableCourses(): List<Int> {
