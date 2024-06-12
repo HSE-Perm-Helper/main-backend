@@ -9,13 +9,21 @@ import org.springframework.stereotype.Service
 @Service
 class SchedulesCheckingChangesServiceImpl: SchedulesCheckingChangesService {
     override fun getChanges(before: List<Schedule>, after: List<Schedule>): SchedulesChanging {
-        val deletedSchedules = before.filter { after.contains(it).not() }
-        val addedSchedules = after.filter { before.contains(it) }
+        val deletedSchedules = before.filter { schedule ->
+            after.find {
+                checkIsSimilarSchedule(it, schedule)
+        } == null }
+
+        val addedSchedules = after.filter { schedule ->
+            before.find {
+                checkIsSimilarSchedule(it, schedule)
+            } == null }
+
         val editedSchedules = mutableListOf<ScheduleDifference>()
 
         for (newSchedule in after) {
             val existsSchedule = before.find {
-                it.start == newSchedule.start  && it.end == newSchedule.end && it.scheduleType == newSchedule.scheduleType
+                checkIsSimilarSchedule(it, newSchedule)
             } ?: continue
             if(existsSchedule != newSchedule) {
                 editedSchedules.add(
@@ -29,7 +37,13 @@ class SchedulesCheckingChangesServiceImpl: SchedulesCheckingChangesService {
         return SchedulesChanging(
             added = addedSchedules,
             deleted = deletedSchedules,
-
+            changed = editedSchedules,
         )
+    }
+
+    private fun checkIsSimilarSchedule(firstSchedule: Schedule, secondSchedule: Schedule): Boolean {
+        return firstSchedule.start == secondSchedule.start
+                && firstSchedule.end == secondSchedule.end
+                && firstSchedule.scheduleType == secondSchedule.scheduleType
     }
 }
