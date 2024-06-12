@@ -32,7 +32,7 @@ class ScheduleRepositoryImpl(
     fun firstScheduleFetching() {
         val lastActualTime = dataService.getLastTime()
         val difference = ChronoUnit.HOURS.between(LocalDateTime.now(), lastActualTime)
-        fetchSchedules(firstLaunch = true, difference > 12)
+        fetchSchedules(difference > 12)
     }
 
     override fun getSchedules(): List<Schedule> {
@@ -44,21 +44,9 @@ class ScheduleRepositoryImpl(
         fetchSchedules()
     }
 
-    override fun fetchSchedules(firstLaunch: Boolean, publishEvents: Boolean): List<Schedule> {
-        val newSchedules = mutableListOf<Schedule>()
-        if(firstLaunch) {
-            scheduleFilesService.getScheduleFiles()
-                .forEach {
-                    val schedule = parseSchedule(it.toInputStream())
-                    if(schedule != null) newSchedules.add(schedule)
-                }
-        }
-        else {
-            scheduleFilesService.getScheduleFiles()
-                .forEach {
-                    val schedule = parseSchedule(it.toInputStream())
-                    if(schedule != null) newSchedules.add(schedule)
-                }
+    override fun fetchSchedules(publishEvents: Boolean): List<Schedule> {
+        val newSchedules = scheduleFilesService.getScheduleFiles().mapNotNull {
+            parseSchedule(it.toInputStream())
         }
         getChangesAndPublishEvents(schedules, newSchedules, publishEvents)
         schedules = ScheduleUtils.normalizeSchedules(newSchedules)
