@@ -5,7 +5,7 @@ import com.melowetty.hsepermhelper.exception.CustomException
 import com.melowetty.hsepermhelper.exception.PermissionDeniedException
 import com.melowetty.hsepermhelper.exception.UnauthorizedException
 import com.melowetty.hsepermhelper.model.ErrorResponse
-import com.melowetty.hsepermhelper.secrets.PrivateKeyManager
+import com.melowetty.hsepermhelper.security.PrivateKeyCheckManager
 import jakarta.servlet.FilterChain
 import jakarta.servlet.annotation.WebFilter
 import jakarta.servlet.http.HttpServletRequest
@@ -17,7 +17,7 @@ import org.springframework.web.filter.OncePerRequestFilter
 
 @WebFilter
 class SecurityFilter(
-    private val privateKeyManager: PrivateKeyManager,
+    private val privateKeyCheckManager: PrivateKeyCheckManager,
     private val env: Environment,
 ): OncePerRequestFilter() {
     override fun doFilterInternal(
@@ -26,11 +26,10 @@ class SecurityFilter(
         filterChain: FilterChain
     ) {
         try {
-            val privateKey = env.getProperty("app.security.private-key") ?: ""
-            if(privateKey.isNotEmpty()) {
+            if(privateKeyCheckManager.isEnabled()) {
                 val key = request.getHeader("X-Secret-Key")
                     ?: throw UnauthorizedException("Введите секретный ключ в заголовках запроса!")
-                val hasAccess: Boolean = privateKeyManager.checkKey(key)
+                val hasAccess: Boolean = privateKeyCheckManager.checkKey(key)
                 if (hasAccess) {
                     filterChain.doFilter(request, response)
                     return
