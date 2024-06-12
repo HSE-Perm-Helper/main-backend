@@ -1,10 +1,10 @@
 package com.melowetty.hsepermhelper.service
 
-import com.melowetty.hsepermhelper.models.File
-import com.melowetty.hsepermhelper.models.FilesChanging
+import com.melowetty.hsepermhelper.model.File
+import com.melowetty.hsepermhelper.model.FilesChanging
 import com.melowetty.hsepermhelper.repository.ScheduleFilesRepository
 import com.melowetty.hsepermhelper.service.impl.ScheduleFilesServiceImpl
-import com.melowetty.hsepermhelper.utils.TestUtils
+import com.melowetty.hsepermhelper.util.TestUtils
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith

@@ -2,7 +2,7 @@ package com.melowetty.hsepermhelper.service
 
 import com.melowetty.hsepermhelper.dto.UserDto
 import com.melowetty.hsepermhelper.dto.UserEventDto
-import com.melowetty.hsepermhelper.models.UserEventType
+import com.melowetty.hsepermhelper.model.UserEventType
 
 interface UserEventService {
     /**

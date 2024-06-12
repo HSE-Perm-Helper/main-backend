@@ -4,10 +4,10 @@ import com.melowetty.hsepermhelper.dto.SettingsDto
 import com.melowetty.hsepermhelper.dto.UserDto
 import com.melowetty.hsepermhelper.entity.SettingsEntity
 import com.melowetty.hsepermhelper.entity.UserEntity
-import com.melowetty.hsepermhelper.events.EventType
-import com.melowetty.hsepermhelper.events.UsersChangedEvent
-import com.melowetty.hsepermhelper.exceptions.UserIsExistsException
-import com.melowetty.hsepermhelper.exceptions.UserNotFoundException
+import com.melowetty.hsepermhelper.event.EventType
+import com.melowetty.hsepermhelper.event.UsersChangedEvent
+import com.melowetty.hsepermhelper.exception.UserIsExistsException
+import com.melowetty.hsepermhelper.exception.UserNotFoundException
 import com.melowetty.hsepermhelper.repository.UserRepository
 import com.melowetty.hsepermhelper.service.UserService
 import org.springframework.context.ApplicationEventPublisher

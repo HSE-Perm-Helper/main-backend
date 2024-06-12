@@ -1,13 +1,13 @@
 package com.melowetty.hsepermhelper.repository.impl
 
-import com.melowetty.hsepermhelper.events.EventType
-import com.melowetty.hsepermhelper.events.ScheduleChangedEvent
-import com.melowetty.hsepermhelper.exceptions.ScheduleNotFoundException
-import com.melowetty.hsepermhelper.models.*
+import com.melowetty.hsepermhelper.event.EventType
+import com.melowetty.hsepermhelper.event.ScheduleChangedEvent
+import com.melowetty.hsepermhelper.exception.ScheduleNotFoundException
+import com.melowetty.hsepermhelper.model.*
 import com.melowetty.hsepermhelper.repository.ScheduleRepository
 import com.melowetty.hsepermhelper.service.DataService
 import com.melowetty.hsepermhelper.service.ScheduleFilesService
-import com.melowetty.hsepermhelper.utils.ScheduleUtils
+import com.melowetty.hsepermhelper.util.ScheduleUtils
 import org.apache.poi.ss.usermodel.*
 import org.springframework.boot.context.event.ApplicationReadyEvent
 import org.springframework.context.ApplicationEventPublisher
@@ -70,10 +70,12 @@ class ScheduleRepositoryImpl(
             }
             else if(mappedSchedules.contains(Pair(newSchedule.start, newSchedule.end)).not()) {
                 val addedSchedules: MutableList<ChangedSchedule> = changes.getOrDefault(EventType.ADDED, listOf()).toMutableList()
-                addedSchedules.add(ChangedSchedule(
+                addedSchedules.add(
+                    ChangedSchedule(
                     before = null,
                     after = newSchedule,
-                ))
+                )
+                )
                 changes[EventType.ADDED] = addedSchedules
             }
         }
@@ -531,10 +533,12 @@ class ScheduleRepositoryImpl(
                 }
                 val building = match.getOrNull(1)?.value?.toIntOrNull()
                 offices.forEach {
-                    places.add(LessonPlace(
+                    places.add(
+                        LessonPlace(
                         office = it,
                         building = building
-                    ))
+                    )
+                    )
                 }
                 offices.clear()
             } else {

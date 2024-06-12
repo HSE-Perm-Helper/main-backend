@@ -1,7 +1,7 @@
 package com.melowetty.hsepermhelper.service.impl
 
-import com.melowetty.hsepermhelper.models.File
-import com.melowetty.hsepermhelper.models.FilesChanging
+import com.melowetty.hsepermhelper.model.File
+import com.melowetty.hsepermhelper.model.FilesChanging
 import com.melowetty.hsepermhelper.service.FilesCheckingChangesService
 import org.springframework.stereotype.Service
 

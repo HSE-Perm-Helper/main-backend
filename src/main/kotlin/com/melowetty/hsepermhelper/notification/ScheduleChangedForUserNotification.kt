@@ -1,6 +1,6 @@
 package com.melowetty.hsepermhelper.notification
 
-import com.melowetty.hsepermhelper.models.ScheduleInfo
+import com.melowetty.hsepermhelper.model.ScheduleInfo
 import io.swagger.v3.oas.annotations.media.Schema
 
 data class ScheduleChangedForUserNotification(

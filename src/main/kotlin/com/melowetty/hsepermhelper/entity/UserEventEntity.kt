@@ -1,6 +1,6 @@
 package com.melowetty.hsepermhelper.entity
 
-import com.melowetty.hsepermhelper.models.UserEventType
+import com.melowetty.hsepermhelper.model.UserEventType
 import jakarta.persistence.*
 import org.hibernate.annotations.OnDelete
 import org.hibernate.annotations.OnDeleteAction

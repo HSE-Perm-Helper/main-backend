@@ -1,6 +1,6 @@
 package com.melowetty.hsepermhelper.dto
 
-import com.melowetty.hsepermhelper.models.UserEventType
+import com.melowetty.hsepermhelper.model.UserEventType
 import io.swagger.v3.oas.annotations.media.Schema
 import java.time.LocalDateTime
 

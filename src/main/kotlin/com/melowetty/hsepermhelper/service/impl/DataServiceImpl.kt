@@ -3,7 +3,7 @@ package com.melowetty.hsepermhelper.service.impl
 import com.melowetty.hsepermhelper.entity.DataEntity
 import com.melowetty.hsepermhelper.repository.DataRepository
 import com.melowetty.hsepermhelper.service.DataService
-import com.melowetty.hsepermhelper.utils.DateUtils
+import com.melowetty.hsepermhelper.util.DateUtils
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Service
 import java.time.LocalDateTime

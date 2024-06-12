@@ -1,8 +1,8 @@
 package com.melowetty.hsepermhelper.service
 
-import com.melowetty.hsepermhelper.models.FilesChanging
+import com.melowetty.hsepermhelper.model.FilesChanging
 import com.melowetty.hsepermhelper.service.impl.FilesCheckingChangesByHashcodeService
-import com.melowetty.hsepermhelper.utils.TestUtils
+import com.melowetty.hsepermhelper.util.TestUtils
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
