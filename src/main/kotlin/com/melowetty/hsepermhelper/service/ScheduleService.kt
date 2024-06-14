@@ -1,7 +1,7 @@
 package com.melowetty.hsepermhelper.service
 
-import com.melowetty.hsepermhelper.models.Schedule
-import com.melowetty.hsepermhelper.models.ScheduleInfo
+import com.melowetty.hsepermhelper.model.Schedule
+import com.melowetty.hsepermhelper.model.ScheduleInfo
 import java.time.LocalDate
 import java.util.*
 

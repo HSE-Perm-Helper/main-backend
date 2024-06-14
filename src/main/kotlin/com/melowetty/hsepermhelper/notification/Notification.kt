@@ -2,7 +2,7 @@ package com.melowetty.hsepermhelper.notification
 
 import com.fasterxml.jackson.annotation.JsonFormat
 import com.fasterxml.jackson.annotation.JsonProperty
-import com.melowetty.hsepermhelper.utils.DateUtils
+import com.melowetty.hsepermhelper.util.DateUtils
 import io.swagger.v3.oas.annotations.media.Schema
 import java.time.LocalDateTime
 import java.util.*

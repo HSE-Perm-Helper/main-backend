@@ -2,7 +2,7 @@ package com.melowetty.hsepermhelper.repository
 
 import com.melowetty.hsepermhelper.entity.UserEntity
 import com.melowetty.hsepermhelper.entity.UserEventEntity
-import com.melowetty.hsepermhelper.models.UserEventType
+import com.melowetty.hsepermhelper.model.UserEventType
 import org.springframework.data.repository.CrudRepository
 import org.springframework.stereotype.Repository
 

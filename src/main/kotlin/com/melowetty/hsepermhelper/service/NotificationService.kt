@@ -1,6 +1,6 @@
 package com.melowetty.hsepermhelper.service;
 
-import com.melowetty.hsepermhelper.controllers.request.NotificationData
+import com.melowetty.hsepermhelper.controller.request.NotificationData
 import com.melowetty.hsepermhelper.notification.Notification
 
 interface NotificationService {
