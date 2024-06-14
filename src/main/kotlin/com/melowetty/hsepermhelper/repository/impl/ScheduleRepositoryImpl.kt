@@ -1,7 +1,5 @@
 package com.melowetty.hsepermhelper.repository.impl
 
-import com.melowetty.hsepermhelper.event.EventType
-import com.melowetty.hsepermhelper.event.ScheduleChangedEvent
 import com.melowetty.hsepermhelper.exception.ScheduleNotFoundException
 import com.melowetty.hsepermhelper.model.*
 import com.melowetty.hsepermhelper.repository.ScheduleRepository
@@ -41,6 +39,9 @@ class ScheduleRepositoryImpl(
         fetchSchedules()
         val newSchedules = schedules
         val changes = schedulesCheckingChangesService.getChanges(prevSchedules, newSchedules)
+        if(changes.changed.isNotEmpty() || changes.deleted.isNotEmpty() || changes.added.isNotEmpty()) {
+            eventPublisher.publishEvent(changes)
+        }
     }
 
     private fun fetchSchedules() {

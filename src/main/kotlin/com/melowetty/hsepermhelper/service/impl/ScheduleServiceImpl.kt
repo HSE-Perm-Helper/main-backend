@@ -1,13 +1,8 @@
 package com.melowetty.hsepermhelper.service.impl
 
 import com.melowetty.hsepermhelper.dto.UserDto
-import com.melowetty.hsepermhelper.event.EventType
-import com.melowetty.hsepermhelper.event.ScheduleChangedEvent
 import com.melowetty.hsepermhelper.exception.ScheduleNotFoundException
-import com.melowetty.hsepermhelper.model.Lesson
-import com.melowetty.hsepermhelper.model.LessonType
-import com.melowetty.hsepermhelper.model.Schedule
-import com.melowetty.hsepermhelper.model.ScheduleInfo
+import com.melowetty.hsepermhelper.model.*
 import com.melowetty.hsepermhelper.notification.ScheduleAddedNotification
 import com.melowetty.hsepermhelper.notification.ScheduleChangedForUserNotification
 import com.melowetty.hsepermhelper.repository.ScheduleRepository
@@ -71,47 +66,42 @@ class ScheduleServiceImpl(
     }
 
     @EventListener
-    fun handleScheduleChanging(event: ScheduleChangedEvent) {
-        val editedSchedules = event.changes.getOrDefault(EventType.EDITED, null)
-        val addedSchedules = event.changes.getOrDefault(EventType.ADDED, null)
-        addedSchedules?.forEach { addedSchedule ->
-            if(addedSchedule.after != null) {
-                val schedule = addedSchedule.after
-                val users = mutableListOf<Long>()
-                users.addAll(userService.getAllUsers()
-                    .filter { it.settings.isEnabledNewScheduleNotifications }
-                    .map { it.telegramId })
-                val scheduleAddedNotification = ScheduleAddedNotification(
-                    targetSchedule = schedule.toScheduleInfo(),
-                    users = users,
-                )
-                notificationService.addNotification(scheduleAddedNotification)
-            }
+    fun handleScheduleChanging(event: SchedulesChanging) {
+        val editedSchedules = event.changed
+        val addedSchedules = event.added
+        addedSchedules.forEach { schedule ->
+            val users = mutableListOf<Long>()
+            users.addAll(userService.getAllUsers()
+                .filter { it.settings.isEnabledNewScheduleNotifications }
+                .map { it.telegramId })
+            val scheduleAddedNotification = ScheduleAddedNotification(
+                targetSchedule = schedule.toScheduleInfo(),
+                users = users,
+            )
+            notificationService.addNotification(scheduleAddedNotification)
         }
-        editedSchedules?.forEach {
-            if (it.before != null && it.after != null) {
-                val users = mutableSetOf<Long>()
-                userService.getAllUsers()
-                    .filter { user ->
-                        user.settings.isEnabledChangedScheduleNotifications
-                    }
-                    .distinctBy { "${it.settings.group} ${it.settings.subGroup}" }.forEach { user ->
-                        val before = filterSchedule(it.before, user)
-                        val after = filterSchedule(it.after, user)
-                        if (before.lessons.toHashSet() != after.lessons.toHashSet()) {
-                            users.addAll(userService.getAllUsers().filter {
-                                it.settings.group == user.settings.group
-                                    && it.settings.subGroup == user.settings.subGroup }
-                                .map { it.telegramId })
-                        }
-                    }
-                if (users.isNotEmpty()) {
-                    val scheduleChangedEvent = ScheduleChangedForUserNotification(
-                        targetSchedule = it.after.toScheduleInfo(),
-                        users = users.toList()
-                    )
-                    notificationService.addNotification(scheduleChangedEvent)
+        editedSchedules.forEach {
+            val users = mutableSetOf<Long>()
+            userService.getAllUsers()
+                .filter { user ->
+                    user.settings.isEnabledChangedScheduleNotifications
                 }
+                .distinctBy { "${it.settings.group} ${it.settings.subGroup}" }.forEach { user ->
+                    val before = filterSchedule(it.before, user)
+                    val after = filterSchedule(it.after, user)
+                    if (before.lessons.toHashSet() != after.lessons.toHashSet()) {
+                        users.addAll(userService.getAllUsers().filter {
+                            it.settings.group == user.settings.group
+                                && it.settings.subGroup == user.settings.subGroup }
+                            .map { it.telegramId })
+                    }
+                }
+            if (users.isNotEmpty()) {
+                val scheduleChangedEvent = ScheduleChangedForUserNotification(
+                    targetSchedule = it.after.toScheduleInfo(),
+                    users = users.toList()
+                )
+                notificationService.addNotification(scheduleChangedEvent)
             }
         }
     }
