@@ -50,7 +50,8 @@ class ScheduleServiceImpl(
     }
 
     override fun getAvailableSchedules(): List<ScheduleInfo> {
-        return scheduleRepository.getSchedules().map { it.toScheduleInfo() }
+        val currentDate = LocalDate.now()
+        return scheduleRepository.getSchedules().filter { it.end.isAfter(currentDate) }.map { it.toScheduleInfo() }
     }
 
     override fun getUserScheduleByTelegramId(telegramId: Long, start: LocalDate, end: LocalDate): Schedule {
