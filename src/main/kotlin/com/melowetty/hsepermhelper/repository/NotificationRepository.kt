@@ -27,13 +27,6 @@ interface NotificationRepository {
     /**
      * Delete specific Notification
      *
-     * @param hashcode of Notification for deleting
-     */
-    fun deleteNotificationByHashcode(hashcode: Int)
-
-    /**
-     * Delete specific Notification
-     *
      * @param id of Notification for deleting
      */
     fun deleteNotificationById(id: UUID)

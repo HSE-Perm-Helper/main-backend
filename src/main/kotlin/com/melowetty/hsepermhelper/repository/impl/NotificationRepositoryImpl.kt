@@ -20,10 +20,6 @@ class NotificationRepositoryImpl: NotificationRepository {
         notifications.clear()
     }
 
-    override fun deleteNotificationByHashcode(hashcode: Int) {
-        notifications.removeIf { it.hashCode() == hashcode }
-    }
-
     override fun deleteNotificationById(id: UUID) {
         notifications.removeIf { it.id == id }
     }
