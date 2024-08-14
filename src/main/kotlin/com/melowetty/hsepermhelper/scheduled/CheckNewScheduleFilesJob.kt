@@ -1,6 +1,5 @@
 package com.melowetty.hsepermhelper.scheduled
 
-import com.melowetty.hsepermhelper.repository.ScheduleFilesRepository
 import com.melowetty.hsepermhelper.service.FilesCheckingChangesService
 import com.melowetty.hsepermhelper.service.ScheduleFilesService
 import org.slf4j.LoggerFactory
@@ -12,7 +11,6 @@ import org.springframework.stereotype.Component
 class CheckNewScheduleFilesJob(
     private val eventPublisher: ApplicationEventPublisher,
     private val filesCheckingChangesService: FilesCheckingChangesService,
-    private val repository: ScheduleFilesRepository,
     private val scheduleFilesService: ScheduleFilesService
 ) {
     private val logger = LoggerFactory.getLogger(javaClass)
@@ -21,7 +19,7 @@ class CheckNewScheduleFilesJob(
     fun fetchScheduleFilesAndPublishEvents() {
         logger.info("Fetching new schedule files")
         val before = scheduleFilesService.getScheduleFiles()
-        repository.fetchScheduleFiles()
+        scheduleFilesService.fetchScheduleFiles()
         val after = scheduleFilesService.getScheduleFiles()
         val changes = filesCheckingChangesService.getChanges(before = before, after = after)
         if(changes.addedOrChanged.isNotEmpty() || changes.deleted.isNotEmpty()) {

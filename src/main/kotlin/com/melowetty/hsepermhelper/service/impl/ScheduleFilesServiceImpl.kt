@@ -12,4 +12,8 @@ class ScheduleFilesServiceImpl(
     override fun getScheduleFiles(): List<File> {
         return repository.getScheduleFilesAsByteArray().map { File(data = it) }
     }
+
+    override fun fetchScheduleFiles() {
+        repository.fetchScheduleFiles()
+    }
 }
