@@ -1,5 +1,7 @@
 package com.melowetty.hsepermhelper.excel.impl
 
+import com.melowetty.hsepermhelper.annotation.Slf4j
+import com.melowetty.hsepermhelper.annotation.Slf4j.Companion.log
 import com.melowetty.hsepermhelper.excel.HseTimetableExcelParser
 import com.melowetty.hsepermhelper.excel.HseTimetableScheduleTypeChecker
 import com.melowetty.hsepermhelper.excel.HseTimetableSheetExcelParser
@@ -17,6 +19,7 @@ import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
 @Component
+@Slf4j
 class HseTimetableExcelParserImpl(
     private val sheetParser: HseTimetableSheetExcelParser,
     private val scheduleTypeChecker: HseTimetableScheduleTypeChecker
@@ -50,8 +53,8 @@ class HseTimetableExcelParserImpl(
                 scheduleType = scheduleInfo.type
             )
         } catch (exception: Exception) {
-            exception.printStackTrace()
-            println("Произошла ошибка во время обработки файла с расписанием!")
+            log.error("Произошла ошибка во время обработки файла с расписанием! " +
+                    "Stacktrace: ", exception)
             return null
         }
     }

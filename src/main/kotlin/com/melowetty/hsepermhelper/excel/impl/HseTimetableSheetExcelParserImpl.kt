@@ -1,5 +1,7 @@
 package com.melowetty.hsepermhelper.excel.impl
 
+import com.melowetty.hsepermhelper.annotation.Slf4j
+import com.melowetty.hsepermhelper.annotation.Slf4j.Companion.log
 import com.melowetty.hsepermhelper.excel.HseTimetableCellExcelParser
 import com.melowetty.hsepermhelper.excel.HseTimetableSheetExcelParser
 import com.melowetty.hsepermhelper.excel.model.CellInfo
@@ -17,6 +19,7 @@ import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
 @Component
+@Slf4j
 class HseTimetableSheetExcelParserImpl(
     private val cellParser: HseTimetableCellExcelParser
 ): HseTimetableSheetExcelParser {
@@ -84,9 +87,8 @@ class HseTimetableSheetExcelParserImpl(
                 lessons.addAll(parsedLessons)
 
             } catch (e: Exception) {
-                println("Произошла ошибка во время обработки пары!")
-                println("расписание: ${rowData.scheduleInfo}, sheet: ${row.sheet.sheetName}, cellAddress: ${cell.address}, value: $cellValue")
-                e.printStackTrace()
+                log.error("Произошла ошибка во время обработки пары!")
+                log.error("Расписание: ${rowData.scheduleInfo}, sheet: ${row.sheet.sheetName}, cellAddress: ${cell.address}, value: $cellValue, stacktrace: ", e)
             }
         }
 
