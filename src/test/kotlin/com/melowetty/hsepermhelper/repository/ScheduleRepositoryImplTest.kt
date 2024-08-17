@@ -1,5 +1,6 @@
 package com.melowetty.hsepermhelper.repository
 
+import com.melowetty.hsepermhelper.excel.HseTimetableExcelParser
 import com.melowetty.hsepermhelper.model.File
 import com.melowetty.hsepermhelper.model.FilesChanging
 import com.melowetty.hsepermhelper.model.ScheduleDifference
@@ -25,6 +26,9 @@ class ScheduleRepositoryImplTest {
     private lateinit var eventPublisherMock: ApplicationEventPublisher
     @Mock
     private lateinit var scheduleFilesServiceMock: ScheduleFilesService
+
+    @Mock
+    private lateinit var timetableExcelParser: HseTimetableExcelParser
 
     @Mock
     private lateinit var schedulesCheckingChangesServiceMock: SchedulesCheckingChangesService
