@@ -9,4 +9,6 @@ interface ScheduleFilesService {
      * @return list of schedule files from memory
      */
     fun getScheduleFiles(): List<File>
+
+    fun fetchScheduleFiles()
 }
