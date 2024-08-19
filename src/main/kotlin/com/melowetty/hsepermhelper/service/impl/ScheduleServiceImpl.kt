@@ -1,6 +1,6 @@
 package com.melowetty.hsepermhelper.service.impl
 
-import com.melowetty.hsepermhelper.dto.UserDto
+import com.melowetty.hsepermhelper.domain.dto.UserDto
 import com.melowetty.hsepermhelper.exception.ScheduleNotFoundException
 import com.melowetty.hsepermhelper.extension.ScheduleExtensions.Companion.toScheduleInfo
 import com.melowetty.hsepermhelper.model.*

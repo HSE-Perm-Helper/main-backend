@@ -1,7 +1,7 @@
 package com.melowetty.hsepermhelper.service.impl
 
-import com.melowetty.hsepermhelper.dto.SettingsDto
-import com.melowetty.hsepermhelper.dto.UserDto
+import com.melowetty.hsepermhelper.domain.dto.SettingsDto
+import com.melowetty.hsepermhelper.domain.dto.UserDto
 import com.melowetty.hsepermhelper.event.EventType
 import com.melowetty.hsepermhelper.event.UsersChangedEvent
 import com.melowetty.hsepermhelper.exception.UserIsExistsException

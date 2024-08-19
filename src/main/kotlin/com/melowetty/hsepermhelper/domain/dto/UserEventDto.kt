@@ -1,4 +1,4 @@
-package com.melowetty.hsepermhelper.dto
+package com.melowetty.hsepermhelper.domain.dto
 
 import com.melowetty.hsepermhelper.model.UserEventType
 import io.swagger.v3.oas.annotations.media.Schema

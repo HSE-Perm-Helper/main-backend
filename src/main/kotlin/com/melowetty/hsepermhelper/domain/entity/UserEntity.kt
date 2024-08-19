@@ -1,4 +1,4 @@
-package com.melowetty.hsepermhelper.entity
+package com.melowetty.hsepermhelper.domain.entity
 
 import jakarta.persistence.*
 import org.hibernate.annotations.OnDelete

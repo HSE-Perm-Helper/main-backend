@@ -1,7 +1,7 @@
 package com.melowetty.hsepermhelper.extension
 
-import com.melowetty.hsepermhelper.dto.UserEventDto
-import com.melowetty.hsepermhelper.entity.UserEventEntity
+import com.melowetty.hsepermhelper.domain.dto.UserEventDto
+import com.melowetty.hsepermhelper.domain.entity.UserEventEntity
 import com.melowetty.hsepermhelper.extension.UserExtensions.Companion.toDto
 import com.melowetty.hsepermhelper.extension.UserExtensions.Companion.toEntity
 

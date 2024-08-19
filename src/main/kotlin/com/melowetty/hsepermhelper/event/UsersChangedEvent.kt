@@ -1,6 +1,6 @@
 package com.melowetty.hsepermhelper.event
 
-import com.melowetty.hsepermhelper.dto.UserDto
+import com.melowetty.hsepermhelper.domain.dto.UserDto
 
 class UsersChangedEvent(
     user: UserDto,

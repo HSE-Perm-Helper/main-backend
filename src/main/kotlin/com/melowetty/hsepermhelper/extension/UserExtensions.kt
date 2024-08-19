@@ -1,9 +1,9 @@
 package com.melowetty.hsepermhelper.extension
 
-import com.melowetty.hsepermhelper.dto.SettingsDto
-import com.melowetty.hsepermhelper.dto.UserDto
-import com.melowetty.hsepermhelper.entity.SettingsEntity
-import com.melowetty.hsepermhelper.entity.UserEntity
+import com.melowetty.hsepermhelper.domain.dto.SettingsDto
+import com.melowetty.hsepermhelper.domain.dto.UserDto
+import com.melowetty.hsepermhelper.domain.entity.SettingsEntity
+import com.melowetty.hsepermhelper.domain.entity.UserEntity
 
 class UserExtensions {
     companion object {
