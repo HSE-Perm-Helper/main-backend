@@ -18,38 +18,5 @@ data class Schedule(
     val end: LocalDate,
     @Schema(description = "Тип расписания")
     val scheduleType: ScheduleType,
-) {
-    override fun hashCode(): Int {
-        var result = number ?: 0
-        result = 31 * result + lessons.hashCode()
-        result = 31 * result + start.hashCode()
-        result = 31 * result + end.hashCode()
-        result = 31 * result + scheduleType.hashCode()
-        return result
-    }
-
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (javaClass != other?.javaClass) return false
-
-        other as Schedule
-
-        if (number != other.number) return false
-        if (lessons != other.lessons) return false
-        if (start != other.start) return false
-        if (end != other.end) return false
-        if (scheduleType != other.scheduleType) return false
-
-        return true
-    }
-
-    fun toScheduleInfo(): ScheduleInfo {
-        return ScheduleInfo(
-            number = number,
-            start = start,
-            end = end,
-            scheduleType = scheduleType
-        )
-    }
-}
+)
 

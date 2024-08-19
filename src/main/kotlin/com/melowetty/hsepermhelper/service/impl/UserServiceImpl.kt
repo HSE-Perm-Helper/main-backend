@@ -2,12 +2,12 @@ package com.melowetty.hsepermhelper.service.impl
 
 import com.melowetty.hsepermhelper.dto.SettingsDto
 import com.melowetty.hsepermhelper.dto.UserDto
-import com.melowetty.hsepermhelper.entity.SettingsEntity
-import com.melowetty.hsepermhelper.entity.UserEntity
 import com.melowetty.hsepermhelper.event.EventType
 import com.melowetty.hsepermhelper.event.UsersChangedEvent
 import com.melowetty.hsepermhelper.exception.UserIsExistsException
 import com.melowetty.hsepermhelper.exception.UserNotFoundException
+import com.melowetty.hsepermhelper.extension.UserExtensions.Companion.toDto
+import com.melowetty.hsepermhelper.extension.UserExtensions.Companion.toEntity
 import com.melowetty.hsepermhelper.repository.UserRepository
 import com.melowetty.hsepermhelper.service.UserService
 import org.springframework.context.ApplicationEventPublisher
@@ -115,47 +115,5 @@ class UserServiceImpl(
 
     override fun getAllUsers(group: String, subGroup: Int): List<UserDto> {
         return userRepository.findAllBySettingsGroupAndSettingsSubGroup(group, subGroup).map { it.toDto() }
-    }
-
-    companion object {
-        fun UserEntity.toDto(): UserDto {
-            return UserDto(
-                id = id,
-                telegramId = telegramId,
-                settings = settings.toDto(),
-            )
-        }
-
-        fun UserDto.toEntity(): UserEntity {
-            return UserEntity(
-                id = id,
-                telegramId = telegramId,
-                settings = settings.toEntity(),
-            )
-        }
-
-        fun SettingsDto.toEntity(): SettingsEntity {
-            return SettingsEntity(
-                id = id,
-                group = group,
-                subGroup = subGroup,
-                includeCommonEnglish = includeCommonEnglish,
-                includeCommonMinor = includeCommonMinor,
-                isEnabledNewScheduleNotifications = isEnabledNewScheduleNotifications,
-                isEnabledChangedScheduleNotifications = isEnabledChangedScheduleNotifications
-            )
-        }
-
-        fun SettingsEntity.toDto(): SettingsDto {
-            return SettingsDto(
-                id = id,
-                group = group,
-                subGroup = subGroup,
-                includeCommonEnglish = includeCommonEnglish,
-                includeCommonMinor = includeCommonMinor,
-                isEnabledNewScheduleNotifications = isEnabledNewScheduleNotifications,
-                isEnabledChangedScheduleNotifications = isEnabledChangedScheduleNotifications
-            )
-        }
     }
 }

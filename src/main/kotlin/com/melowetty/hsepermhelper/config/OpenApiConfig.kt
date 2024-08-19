@@ -11,7 +11,7 @@ import io.swagger.v3.oas.annotations.servers.Server
 @OpenAPIDefinition(
     info = Info(
         title = "HSE Perm Helper API",
-        description = "Melowetty", version = "1.02.0-beta",
+        description = "Melowetty", version = "1.03.0",
         contact = Contact(
             name = "Denis Malinin",
             email = "melowetty@mail.ru",
@@ -20,7 +20,7 @@ import io.swagger.v3.oas.annotations.servers.Server
     ),
     servers = [
         Server(
-            url = "https://hse-schedule-bot.xenforo-studio.ru/api",
+            url = "https://api.hse-perm-helper.ru",
             description = "Production server"
         ),
         Server(
