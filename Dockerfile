@@ -1,4 +1,4 @@
-FROM gradle:8.4.0-jdk17-alpine AS TEMP_BUILD_IMAGE
+FROM gradle:8.10.0-jdk17-jammy as TEMP_BUILD_IMAGE
 
 #build container
 WORKDIR /home/gradle/project
