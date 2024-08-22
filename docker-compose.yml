@@ -20,7 +20,12 @@ services:
       - SPRING_DATASOURCE_PASSWORD=$DB_PASSWORD
       - SPRING_JPA_HIBERNATE_DDL_AUTO=update
       - APP_SECURITY_PRIVATE-KEY=$PRIVATE_KEY
+      - SERVER_PORT=$SPRING_LOCAL_PORT
+      - EUREKA_CLIENT_SERVICE-URL_DEFAULTZONE=http://$SERVICE_DISCOVERY_USER:$SERVICE_DISCOVERY_PASSWORD@$SERVICE_DISCOVERY_HOST:$SERVICE_DISCOVERY_PORT/eureka
     restart: always
+    networks:
+      - internal
+      - service-discovery_internal
   postgresdb:
       image: postgres
       restart: unless-stopped
@@ -33,3 +38,19 @@ services:
         - $POSTGRESDB_LOCAL_PORT:$POSTGRESDB_DOCKER_PORT
       volumes:
         - db:/var/lib/postgres
+      networks:
+        - internal
+  caddy:
+    image: caddy
+    restart: unless-stopped
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile
+    ports:
+      - 80:80
+      - 443:443
+volumes:
+  db:
+networks:
+  internal:
+  service-discovery_internal:
+    external: true

@@ -2,7 +2,6 @@ package com.melowetty.hsepermhelper.repository.impl
 
 import com.melowetty.hsepermhelper.repository.ScheduleFilesRepository
 import org.jsoup.Jsoup
-import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component
 import java.io.InputStream
 import java.net.URL

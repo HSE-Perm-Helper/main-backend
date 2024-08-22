@@ -1,7 +1,5 @@
 package com.melowetty.hsepermhelper.repository
 
-import java.io.InputStream
-
 interface ScheduleFilesRepository {
     /**
      * Get schedule files

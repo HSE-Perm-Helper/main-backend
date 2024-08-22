@@ -1,4 +1,4 @@
-package com.melowetty.hsepermhelper.dto
+package com.melowetty.hsepermhelper.domain.dto
 
 import com.fasterxml.jackson.annotation.JsonIgnore
 import io.swagger.v3.oas.annotations.media.Schema

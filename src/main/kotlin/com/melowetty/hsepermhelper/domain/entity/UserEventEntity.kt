@@ -1,4 +1,4 @@
-package com.melowetty.hsepermhelper.entity
+package com.melowetty.hsepermhelper.domain.entity
 
 import com.melowetty.hsepermhelper.model.UserEventType
 import jakarta.persistence.*

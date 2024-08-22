@@ -1,6 +1,6 @@
 package com.melowetty.hsepermhelper.controller
 
-import com.melowetty.hsepermhelper.dto.UserDto
+import com.melowetty.hsepermhelper.domain.dto.UserDto
 import com.melowetty.hsepermhelper.model.Response
 import com.melowetty.hsepermhelper.service.UserService
 import io.swagger.v3.oas.annotations.Operation
