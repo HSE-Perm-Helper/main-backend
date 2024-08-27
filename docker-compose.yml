@@ -9,9 +9,8 @@ services:
       dockerfile: Dockerfile
     volumes:
       - ./build:/home/gradle/project/build
-      - ./uploads:/home/gradle/project/build/uploads
-    ports:
-      - $SPRING_LOCAL_PORT:$SPRING_DOCKER_PORT
+    expose:
+      - "$SPRING_LOCAL_PORT"
     env_file: ./.env
     environment:
       - SPRING_PROFILES_ACTIVE=$ACTIVE_PROFILE
