@@ -40,16 +40,6 @@ services:
         - db:/var/lib/postgres
       networks:
         - internal
-  caddy:
-    image: caddy
-    restart: unless-stopped
-    volumes:
-      - ./Caddyfile:/etc/caddy/Caddyfile
-    ports:
-      - 80:80
-      - 443:443
-    networks:
-      - internal
 volumes:
   db:
 networks:
