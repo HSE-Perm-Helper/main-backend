@@ -29,6 +29,11 @@ class ScheduleServiceImpl(
     }
 
     private fun filterSchedule(schedule: Schedule, user: UserDto): Schedule {
+        val course = getCourseFromGroup(user.settings.group) // todo TEMP FIX
+        if(course == 3 || course == 4 || getShortGroupFromGroup(user.settings.group) == "ИЯ") {
+            return tempFilterSchedule(schedule, user)
+        }
+
         val filteredLessons = schedule.lessons.filter { lesson: Lesson ->
             if (lesson.subGroup != null) lesson.group == user.settings.group
                     && lesson.subGroup == user.settings.subGroup
@@ -42,6 +47,34 @@ class ScheduleServiceImpl(
         }
         return schedule.copy(
             lessons = filteredLessons
+        )
+    }
+
+    private fun getCourseFromGroup(group: String): Int {
+        val dividedGroup = group.split("-")
+        val year = dividedGroup[1].toInt()
+        return 25 - year
+    }
+
+    private fun getShortGroupFromGroup(group: String): String {
+        return group.split("-")[0]
+    }
+
+    private fun tempFilterSchedule(schedule: Schedule, user: UserDto): Schedule {
+        val filteredLessons = schedule.lessons.filter { lesson: Lesson ->
+            lesson.group == user.settings.group
+        }.filter {
+            if (it.lessonType != LessonType.COMMON_ENGLISH) true
+            else user.settings.includeCommonEnglish
+        }.filter {
+            if (it.lessonType != LessonType.COMMON_MINOR) true
+            else user.settings.includeCommonMinor
+        }
+        return schedule.copy(
+            lessons = filteredLessons.map {
+                if(it.subGroup == null) it
+                else it.copy(subject = "${it.subject} (${it.subGroup} подгруппа)")
+            }
         )
     }
 
