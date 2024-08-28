@@ -36,7 +36,7 @@ services:
     expose:
       - "$POSTGRESDB_LOCAL_PORT"
     volumes:
-      - db:/var/lib/postgres
+      - db:/var/lib/postgresql/data
     networks:
       - internal
 volumes:
