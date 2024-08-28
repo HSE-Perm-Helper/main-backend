@@ -55,7 +55,7 @@ class HseTimetableSheetExcelParserImpl(
         val groups = mutableMapOf<Int, String>()
         val programs = mutableMapOf<Int, String>()
         for (cellNum in 2 until sheet.getRow(2).physicalNumberOfCells) {
-            val group = sheet.getRow(2).getCellValue(cellNum)
+            val group = sheet.getRow(2).getCellValue(cellNum) ?: continue
             if (group != "") {
                 if (groups.containsValue(group).not()) {
                     groups[cellNum] = group
@@ -102,7 +102,7 @@ class HseTimetableSheetExcelParserImpl(
 
         return ParsedCellInfo(
             cellInfo = CellInfo(
-                value = rowData.row.getCellValue(cellNum),
+                value = rowData.row.getCellValue(cellNum) ?: return null,
                 course = rowData.course,
                 program = programme,
                 group = group,
@@ -114,10 +114,10 @@ class HseTimetableSheetExcelParserImpl(
     }
 
     private fun getLessonTime(rowData: RowData): Pair<LessonTime?, Action> {
-        var unparsedDate = rowData.row.getCellValue(0).split("\n")
+        var unparsedDate = rowData.row.getCellValue(0)?.split("\n") ?: return Pair(null, Action.CONTINUE)
         val lessonTime: LessonTime
 
-        val timeCell = rowData.row.getCellValue(1).split("\n").filter { it.isNotEmpty() }
+        val timeCell = rowData.row.getCellValue(1)?.split("\n")?.filter { it.isNotEmpty() } ?: return Pair(null, Action.CONTINUE)
         if(timeCell.size < 2) return Pair(null, Action.CONTINUE)
 
         val (startTime, endTime) = getStartAndEndTime(timeCell)
@@ -138,7 +138,7 @@ class HseTimetableSheetExcelParserImpl(
             lessonTime = ScheduledTime(date, startTime, endTime)
         }
 
-        rowData.previousData.prevDay = rowData.row.getCellValue(1)
+        rowData.previousData.prevDay = rowData.row.getCellValue(1)!!
         return Pair(lessonTime, Action.NOTHING)
     }
 
