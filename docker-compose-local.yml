@@ -14,7 +14,7 @@ services:
     env_file: ./.env
     environment:
       - SPRING_PROFILES_ACTIVE=$ACTIVE_PROFILE
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgresdb:$POSTGRESDB_DOCKER_PORT/$DB_NAME
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgresdb:$POSTGRESDB_LOCAL_PORT/$DB_NAME
       - SPRING_DATASOURCE_USERNAME=$DB_USERNAME
       - SPRING_DATASOURCE_PASSWORD=$DB_PASSWORD
       - SPRING_JPA_HIBERNATE_DDL_AUTO=update
@@ -26,19 +26,19 @@ services:
       - internal
       - service-discovery_internal
   postgresdb:
-      image: postgres
-      restart: unless-stopped
-      env_file: ./.env
-      environment:
-        - POSTGRES_USER=$DB_USERNAME
-        - POSTGRES_PASSWORD=$DB_PASSWORD
-        - POSTGRES_DB=$DB_NAME
-      ports:
-        - $POSTGRESDB_LOCAL_PORT:$POSTGRESDB_DOCKER_PORT
-      volumes:
-        - db:/var/lib/postgres
-      networks:
-        - internal
+    image: postgres
+    restart: unless-stopped
+    env_file: ./.env
+    environment:
+      - POSTGRES_USER=$DB_USERNAME
+      - POSTGRES_PASSWORD=$DB_PASSWORD
+      - POSTGRES_DB=$DB_NAME
+    expose:
+      - "$POSTGRESDB_LOCAL_PORT"
+    volumes:
+      - db:/var/lib/postgres
+    networks:
+      - internal
 volumes:
   db:
 networks:
