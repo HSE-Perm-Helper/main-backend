@@ -4,9 +4,6 @@ services:
     image: melowetty/main-backend
     depends_on:
       - postgresdb
-    build:
-      context: .
-      dockerfile: Dockerfile
     env_file: ./.env
     environment:
       - SPRING_PROFILES_ACTIVE=$ACTIVE_PROFILE
