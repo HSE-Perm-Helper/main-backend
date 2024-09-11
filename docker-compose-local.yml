@@ -9,8 +9,8 @@ services:
       dockerfile: Dockerfile
     volumes:
       - ./build:/home/gradle/project/build
-    expose:
-      - "$SPRING_LOCAL_PORT"
+    ports:
+      - 8080:8080
     env_file: ./.env
     environment:
       - SPRING_PROFILES_ACTIVE=$ACTIVE_PROFILE
@@ -20,10 +20,12 @@ services:
       - SPRING_JPA_HIBERNATE_DDL_AUTO=update
       - SERVER_PORT=$SPRING_LOCAL_PORT
       - EUREKA_CLIENT_SERVICE-URL_DEFAULTZONE=http://$SERVICE_DISCOVERY_USER:$SERVICE_DISCOVERY_PASSWORD@$SERVICE_DISCOVERY_HOST:$SERVICE_DISCOVERY_PORT/eureka
+      - KAFKA_BOOTSTRAP_SERVERS=$KAFKA_SERVERS
     restart: always
     networks:
       - internal
       - service-discovery_internal
+      - message-broker_shared
   postgresdb:
     image: postgres
     restart: unless-stopped
@@ -43,4 +45,6 @@ volumes:
 networks:
   internal:
   service-discovery_internal:
+    external: true
+  message-broker_shared:
     external: true
