@@ -6,7 +6,7 @@ on:
 
 jobs:
   build:
-    name: Backend deploying
+    name: Service deploying
     runs-on: ubuntu-latest
     steps:
     - name: executing remote ssh commands
@@ -16,8 +16,8 @@ jobs:
         username: ${{ secrets.USERNAME }}
         password: ${{ secrets.PASSWORD }}
         script: |
-          cd /projects/HsePermHelperBackendTest
+          cd /projects/main-backend
           git pull
-          docker-compose build
+          docker pull melowetty/main-backend
           docker-compose up -d
           docker system prune --all --force

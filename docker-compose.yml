@@ -1,16 +1,9 @@
 version: '3.8'
 services:
-  hse-perm-helper-backend:
-    image: melowetty/hse-perm-helper-backend
+  main-backend:
+    image: melowetty/main-backend
     depends_on:
       - postgresdb
-    build:
-      context: .
-      dockerfile: Dockerfile
-    volumes:
-      - ./build:/home/gradle/project/build
-    expose:
-      - "$SPRING_LOCAL_PORT"
     env_file: ./.env
     environment:
       - SPRING_PROFILES_ACTIVE=$ACTIVE_PROFILE
@@ -18,7 +11,6 @@ services:
       - SPRING_DATASOURCE_USERNAME=$DB_USERNAME
       - SPRING_DATASOURCE_PASSWORD=$DB_PASSWORD
       - SPRING_JPA_HIBERNATE_DDL_AUTO=update
-      - SERVER_PORT=$SPRING_LOCAL_PORT
       - KAFKA_BOOTSTRAP_SERVERS=$KAFKA_SERVERS
       - EUREKA_CLIENT_SERVICE-URL_DEFAULTZONE=http://$SERVICE_DISCOVERY_USER:$SERVICE_DISCOVERY_PASSWORD@$SERVICE_DISCOVERY_HOST:$SERVICE_DISCOVERY_PORT/eureka
     restart: always
