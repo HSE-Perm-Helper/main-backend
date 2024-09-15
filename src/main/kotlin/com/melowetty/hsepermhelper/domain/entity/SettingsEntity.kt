@@ -27,4 +27,7 @@ data class SettingsEntity(
 
     @Column(name = "is_enabled_changed_schedule_notification", columnDefinition = "BOOLEAN DEFAULT true")
     val isEnabledChangedScheduleNotifications: Boolean = true,
+
+    @Column(columnDefinition = "BOOLEAN DEFAULT false")
+    val isEnabledComingLessonsNotifications: Boolean = false,
 )
