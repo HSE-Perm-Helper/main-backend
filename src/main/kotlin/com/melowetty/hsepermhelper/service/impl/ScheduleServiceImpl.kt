@@ -113,7 +113,7 @@ class ScheduleServiceImpl(
                 targetSchedule = schedule.toScheduleInfo(),
                 users = users,
             )
-            notificationService.addNotification(scheduleAddedNotification)
+            notificationService.sendNotification(scheduleAddedNotification)
         }
         editedSchedules.forEach {
             val users = mutableSetOf<Long>()
@@ -136,7 +136,7 @@ class ScheduleServiceImpl(
                     targetSchedule = it.after.toScheduleInfo(),
                     users = users.toList()
                 )
-                notificationService.addNotification(scheduleChangedEvent)
+                notificationService.sendNotification(scheduleChangedEvent)
             }
         }
     }
