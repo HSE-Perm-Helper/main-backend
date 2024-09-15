@@ -7,7 +7,11 @@ import com.melowetty.hsepermhelper.excel.HseTimetableSheetExcelParser
 import com.melowetty.hsepermhelper.excel.model.CellInfo
 import com.melowetty.hsepermhelper.excel.model.ParsedCellInfo
 import com.melowetty.hsepermhelper.excel.model.ParsedScheduleInfo
-import com.melowetty.hsepermhelper.model.*
+import com.melowetty.hsepermhelper.model.CycleTime
+import com.melowetty.hsepermhelper.model.Lesson
+import com.melowetty.hsepermhelper.model.LessonTime
+import com.melowetty.hsepermhelper.model.ScheduleType
+import com.melowetty.hsepermhelper.model.ScheduledTime
 import com.melowetty.hsepermhelper.util.RowUtils.Companion.getCellValue
 import org.apache.poi.ss.usermodel.Cell
 import org.apache.poi.ss.usermodel.Font

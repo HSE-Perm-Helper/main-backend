@@ -2,7 +2,7 @@ package com.melowetty.hsepermhelper.service
 
 import com.melowetty.hsepermhelper.domain.dto.SettingsDto
 import com.melowetty.hsepermhelper.domain.dto.UserDto
-import java.util.*
+import java.util.UUID
 
 interface UserService {
 

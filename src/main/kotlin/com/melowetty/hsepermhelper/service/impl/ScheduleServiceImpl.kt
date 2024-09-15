@@ -3,7 +3,11 @@ package com.melowetty.hsepermhelper.service.impl
 import com.melowetty.hsepermhelper.domain.dto.UserDto
 import com.melowetty.hsepermhelper.exception.ScheduleNotFoundException
 import com.melowetty.hsepermhelper.extension.ScheduleExtensions.Companion.toScheduleInfo
-import com.melowetty.hsepermhelper.model.*
+import com.melowetty.hsepermhelper.model.Lesson
+import com.melowetty.hsepermhelper.model.LessonType
+import com.melowetty.hsepermhelper.model.Schedule
+import com.melowetty.hsepermhelper.model.ScheduleInfo
+import com.melowetty.hsepermhelper.model.SchedulesChanging
 import com.melowetty.hsepermhelper.notification.ScheduleAddedNotification
 import com.melowetty.hsepermhelper.notification.ScheduleChangedForUserNotification
 import com.melowetty.hsepermhelper.repository.ScheduleRepository
@@ -13,7 +17,7 @@ import com.melowetty.hsepermhelper.service.UserService
 import org.springframework.context.event.EventListener
 import org.springframework.stereotype.Service
 import java.time.LocalDate
-import java.util.*
+import java.util.UUID
 
 @Service
 class ScheduleServiceImpl(
