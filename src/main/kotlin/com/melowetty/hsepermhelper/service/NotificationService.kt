@@ -1,4 +1,4 @@
-package com.melowetty.hsepermhelper.service;
+package com.melowetty.hsepermhelper.service
 
 import com.melowetty.hsepermhelper.notification.Notification
 

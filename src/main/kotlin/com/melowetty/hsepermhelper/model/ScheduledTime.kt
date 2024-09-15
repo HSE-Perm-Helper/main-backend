@@ -9,10 +9,13 @@ data class ScheduledTime(
     val date: LocalDate,
     override val startTime: String,
     override val endTime: String,
-): LessonTime(startTime, endTime) {
+) : LessonTime(startTime, endTime) {
     override fun compareTo(other: LessonTime): Int {
-        if(other is ScheduledTime) {
-            return compareBy(ScheduledTime::date, ScheduledTime::startLocaltime, ScheduledTime::endLocaltime).compare(this, other)
+        if (other is ScheduledTime) {
+            return compareBy(ScheduledTime::date, ScheduledTime::startLocaltime, ScheduledTime::endLocaltime).compare(
+                this,
+                other
+            )
         }
         return compareBy(LessonTime::startTime, LessonTime::endTime).compare(this, other)
     }

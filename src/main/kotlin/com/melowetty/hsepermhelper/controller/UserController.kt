@@ -117,7 +117,8 @@ class UserController(
     )
     @GetMapping(
         "users",
-        produces = [MediaType.APPLICATION_JSON_VALUE])
+        produces = [MediaType.APPLICATION_JSON_VALUE]
+    )
     fun getUsers(): Response<List<UserDto>> {
         val users = userService.getAllUsers()
         return Response(users)
@@ -132,7 +133,8 @@ class UserController(
     @PostMapping(
         "users",
         consumes = [MediaType.APPLICATION_JSON_VALUE],
-        produces = [MediaType.APPLICATION_JSON_VALUE])
+        produces = [MediaType.APPLICATION_JSON_VALUE]
+    )
     fun createUser(
         @RequestBody userDto: UserDto,
     ): Response<UserDto> {
@@ -148,7 +150,8 @@ class UserController(
     @PutMapping(
         "users",
         consumes = [MediaType.APPLICATION_JSON_VALUE],
-        produces = [MediaType.APPLICATION_JSON_VALUE])
+        produces = [MediaType.APPLICATION_JSON_VALUE]
+    )
     fun updateUser(
         @RequestBody userDto: UserDto,
     ): Response<UserDto> {

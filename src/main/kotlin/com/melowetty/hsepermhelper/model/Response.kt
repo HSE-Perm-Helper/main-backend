@@ -11,8 +11,7 @@ data class Response<T>(
     val response: T,
     @Schema(description = "Наличие ошибки (true - если есть)", example = "false")
     val error: Boolean = false,
-) {
-}
+)
 
 data class ErrorResponse(
     val error: Boolean = true,

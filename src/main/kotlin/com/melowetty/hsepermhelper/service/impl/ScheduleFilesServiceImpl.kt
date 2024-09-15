@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service
 @Service
 class ScheduleFilesServiceImpl(
     private val repository: ScheduleFilesRepository
-): ScheduleFilesService {
+) : ScheduleFilesService {
     override fun getScheduleFiles(): List<File> {
         return repository.getScheduleFilesAsByteArray().map { File(data = it) }
     }

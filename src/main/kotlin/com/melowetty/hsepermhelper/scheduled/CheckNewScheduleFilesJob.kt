@@ -22,7 +22,7 @@ class CheckNewScheduleFilesJob(
         scheduleFilesService.fetchScheduleFiles()
         val after = scheduleFilesService.getScheduleFiles()
         val changes = filesCheckingChangesService.getChanges(before = before, after = after)
-        if(changes.addedOrChanged.isNotEmpty() || changes.deleted.isNotEmpty()) {
+        if (changes.addedOrChanged.isNotEmpty() || changes.deleted.isNotEmpty()) {
             log.debug("Schedule files has changed")
             eventPublisher.publishEvent(changes)
         }

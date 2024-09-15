@@ -27,15 +27,15 @@ data class Lesson(
     val lessonType: LessonType,
     @Schema(description = "Тип расписания-родителя", example = "WEEK_SCHEDULE")
     val parentScheduleType: ScheduleType,
-): Comparable<Lesson> {
+) : Comparable<Lesson> {
     /**
      * Returns lesson will be in online mode
      *
      * @return true if lesson is online else false
      */
     fun isOnline(): Boolean {
-        if(places == null) return false
-        if(links?.isNotEmpty() == true) return true
+        if (places == null) return false
+        if (links?.isNotEmpty() == true) return true
         return (places.all { it.building == null } || places.all { it.building == 0 }) && lessonType != LessonType.ENGLISH
     }
 

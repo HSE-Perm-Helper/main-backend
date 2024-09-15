@@ -7,19 +7,21 @@ import java.io.InputStream
 import java.net.URL
 
 @Component
-class ScheduleFilesRepositoryImpl: ScheduleFilesRepository {
+class ScheduleFilesRepositoryImpl : ScheduleFilesRepository {
     private var scheduleFiles: List<ByteArray> = listOf()
+
     init {
         fetchScheduleFiles()
     }
+
     final override fun fetchScheduleFiles() {
         val response = Jsoup.connect(SCHEDULE_BASE_URL).get()
         val elements = response.select(".content__inner.post__text p")
         val files = mutableListOf<InputStream>()
         for (element in elements) {
             if (element.html().contains("Бакалавриат")) continue
-            if(element.html().lowercase().contains("английский")) continue
-            if(element.html().contains("Магистратура")) break
+            if (element.html().lowercase().contains("английский")) continue
+            if (element.html().contains("Магистратура")) break
             val childLink = element.select("a")
             if (childLink.isEmpty()) continue
             val link = childLink.attr("href")

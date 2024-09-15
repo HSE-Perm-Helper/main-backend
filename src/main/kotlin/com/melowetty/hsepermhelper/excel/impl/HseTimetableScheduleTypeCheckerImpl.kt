@@ -6,13 +6,13 @@ import com.melowetty.hsepermhelper.model.ScheduleType
 import org.springframework.stereotype.Component
 
 @Component
-class HseTimetableScheduleTypeCheckerImpl: HseTimetableScheduleTypeChecker {
+class HseTimetableScheduleTypeCheckerImpl : HseTimetableScheduleTypeChecker {
     override fun getScheduleType(excelInfo: ParsedExcelInfo): ScheduleType {
         val (number, start, end) = excelInfo
         var scheduleType = ScheduleType.WEEK_SCHEDULE
-        if(number == null) {
+        if (number == null) {
             scheduleType = ScheduleType.SESSION_SCHEDULE
-        } else if(end.toEpochDay() - start.toEpochDay() > 7) {
+        } else if (end.toEpochDay() - start.toEpochDay() > 7) {
             scheduleType = ScheduleType.QUARTER_SCHEDULE
         }
         return scheduleType

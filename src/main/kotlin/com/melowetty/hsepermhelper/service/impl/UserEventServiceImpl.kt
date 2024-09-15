@@ -15,7 +15,7 @@ import org.springframework.stereotype.Service
 class UserEventServiceImpl(
     private val userEventRepository: UserEventRepository,
     private val userService: UserService,
-): UserEventService {
+) : UserEventService {
     override fun addUserEvent(telegramId: Long, eventType: UserEventType) {
         val user = userService.getByTelegramId(telegramId)
         return addUserEvent(user, eventType)

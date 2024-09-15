@@ -8,7 +8,7 @@ data class ScheduleAddedNotification(
     val targetSchedule: ScheduleInfo,
     @Schema(description = "Список Telegram ID, которым требуется выслать оповещение о новом расписании")
     val users: List<Long>,
-): Notification() {
+) : Notification() {
     override fun getNotificationType(): String {
         return "SCHEDULE_ADDED"
     }

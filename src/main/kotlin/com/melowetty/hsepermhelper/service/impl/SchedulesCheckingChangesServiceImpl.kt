@@ -7,17 +7,19 @@ import com.melowetty.hsepermhelper.service.SchedulesCheckingChangesService
 import org.springframework.stereotype.Service
 
 @Service
-class SchedulesCheckingChangesServiceImpl: SchedulesCheckingChangesService {
+class SchedulesCheckingChangesServiceImpl : SchedulesCheckingChangesService {
     override fun getChanges(before: List<Schedule>, after: List<Schedule>): SchedulesChanging {
         val deletedSchedules = before.filter { schedule ->
             after.find {
                 checkIsSimilarSchedule(it, schedule)
-        } == null }
+            } == null
+        }
 
         val addedSchedules = after.filter { schedule ->
             before.find {
                 checkIsSimilarSchedule(it, schedule)
-            } == null }
+            } == null
+        }
 
         val editedSchedules = mutableListOf<ScheduleDifference>()
 
@@ -25,7 +27,7 @@ class SchedulesCheckingChangesServiceImpl: SchedulesCheckingChangesService {
             val existsSchedule = before.find {
                 checkIsSimilarSchedule(it, newSchedule)
             } ?: continue
-            if(existsSchedule != newSchedule) {
+            if (existsSchedule != newSchedule) {
                 editedSchedules.add(
                     ScheduleDifference(
                         before = existsSchedule,

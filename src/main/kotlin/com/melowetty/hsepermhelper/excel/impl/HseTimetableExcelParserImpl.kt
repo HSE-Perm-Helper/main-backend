@@ -23,7 +23,7 @@ import java.time.format.DateTimeFormatter
 class HseTimetableExcelParserImpl(
     private val sheetParser: HseTimetableSheetExcelParser,
     private val scheduleTypeChecker: HseTimetableScheduleTypeChecker
-): HseTimetableExcelParser {
+) : HseTimetableExcelParser {
 
     private fun getWorkbook(inputStream: InputStream): Workbook {
         return WorkbookFactory.create(inputStream)
@@ -53,8 +53,10 @@ class HseTimetableExcelParserImpl(
                 scheduleType = scheduleInfo.type
             )
         } catch (exception: Exception) {
-            log.error("Произошла ошибка во время обработки файла с расписанием! " +
-                    "Stacktrace: ", exception)
+            log.error(
+                "Произошла ошибка во время обработки файла с расписанием! " +
+                        "Stacktrace: ", exception
+            )
             return null
         }
     }
@@ -77,8 +79,10 @@ class HseTimetableExcelParserImpl(
         val scheduleStart = scheduleInfoGroups[2]?.value?.let { LocalDate.parse(it, datePattern) } ?: return null
         val scheduleEnd = scheduleInfoGroups[3]?.value?.let { LocalDate.parse(it, datePattern) } ?: return null
 
-        val scheduleType = scheduleTypeChecker.getScheduleType(ParsedExcelInfo(
-            scheduleNumber, scheduleStart, scheduleEnd)
+        val scheduleType = scheduleTypeChecker.getScheduleType(
+            ParsedExcelInfo(
+                scheduleNumber, scheduleStart, scheduleEnd
+            )
         )
 
         return ParsedScheduleInfo(
@@ -90,15 +94,15 @@ class HseTimetableExcelParserImpl(
     }
 
     private fun unmergeRegions(sheet: Sheet) {
-        for(region in sheet.mergedRegions){
+        for (region in sheet.mergedRegions) {
             val cellValue = sheet.getRow(region.firstRow).getCellValue(region.firstColumn)
-            for(cell in region) {
+            for (cell in region) {
                 sheet.getRow(cell.row).getCell(cell.column).setCellValue(cellValue)
             }
         }
     }
 
     private fun filterSheet(sheet: Sheet): Boolean {
-        return sheet.sheetName.lowercase() != "доц";
+        return sheet.sheetName.lowercase() != "доц"
     }
 }
