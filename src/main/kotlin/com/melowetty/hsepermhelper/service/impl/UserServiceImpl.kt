@@ -13,7 +13,7 @@ import com.melowetty.hsepermhelper.service.UserService
 import org.springframework.context.ApplicationEventPublisher
 import org.springframework.stereotype.Service
 import org.springframework.util.ReflectionUtils
-import java.util.*
+import java.util.UUID
 
 @Service
 class UserServiceImpl(
