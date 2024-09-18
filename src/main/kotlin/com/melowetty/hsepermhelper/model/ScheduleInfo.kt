@@ -6,7 +6,7 @@ import io.swagger.v3.oas.annotations.media.Schema
 import java.time.LocalDate
 
 @Schema(description = "Информация о расписании")
-data class ScheduleInfo (
+data class ScheduleInfo(
     val number: Int?,
     @JsonFormat(pattern = DateUtils.DATE_PATTERN)
     val start: LocalDate,

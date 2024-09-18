@@ -14,9 +14,9 @@ import org.springframework.stereotype.Component
 @Component
 class HseTimetableCellExcelParserImpl(
     private val lessonTypeChecker: HseTimetableLessonTypeChecker
-): HseTimetableCellExcelParser {
+) : HseTimetableCellExcelParser {
     override fun parseLesson(cellInfo: ParsedCellInfo): List<Lesson> {
-        if(!filterCell(cellInfo)) return emptyList()
+        if (!filterCell(cellInfo)) return emptyList()
         return getLesson(
             scheduleInfo = cellInfo.scheduleInfo,
             cell = cellInfo.cellInfo,
@@ -46,9 +46,9 @@ class HseTimetableCellExcelParserImpl(
             val fields = it.toMutableList()
             val foundSubject = fields.find { it.fieldType == FieldType.SUBJECT }
             val subject: String
-            if(foundSubject == null) {
+            if (foundSubject == null) {
                 val link = fields.find { it.fieldType == FieldType.INFO }
-                if(link == null) return@forEach
+                if (link == null) return@forEach
                 subject = link.value.replace(LESSON_BUILDING_INFO_REGEX, "").trim()
                 fields.add(0, LessonField(subject, FieldType.SUBJECT))
                 link.value = link.value.replace(subject, "").trim()
@@ -56,23 +56,26 @@ class HseTimetableCellExcelParserImpl(
             val additionalLessonInfo = getAdditionalLessonInfo(fields)
             if (additionalLessonInfo.subGroups.isNotEmpty()) {
                 additionalLessonInfo.subGroups.forEach { subGroup ->
-                    builtLessons.add(buildLesson(
+                    builtLessons.add(
+                        buildLesson(
+                            fields = fields,
+                            additionalLessonInfo = additionalLessonInfo,
+                            cell = cell,
+                            scheduleInfo = scheduleInfo,
+                            subGroup = subGroup
+                        )
+                    )
+                }
+            } else {
+                builtLessons.add(
+                    buildLesson(
                         fields = fields,
                         additionalLessonInfo = additionalLessonInfo,
                         cell = cell,
                         scheduleInfo = scheduleInfo,
-                        subGroup = subGroup
-                    ))
-                }
-            }
-            else {
-                builtLessons.add(buildLesson(
-                    fields = fields,
-                    additionalLessonInfo = additionalLessonInfo,
-                    cell = cell,
-                    scheduleInfo = scheduleInfo,
-                    subGroup = null
-                ))
+                        subGroup = null
+                    )
+                )
             }
         }
         return builtLessons
@@ -93,11 +96,11 @@ class HseTimetableCellExcelParserImpl(
                     fields.add(LessonField(it.value.trim(), FieldType.LINK))
                     flag = true
                 }
-            if(LESSON_BUILDING_INFO_REGEX.find(cell) != null) {
+            if (LESSON_BUILDING_INFO_REGEX.find(cell) != null) {
                 fields.add(LessonField(cell.trim(), FieldType.INFO))
                 flag = true
             }
-            if(!flag) {
+            if (!flag) {
                 fields.add(LessonField(cell.trim(), FieldType.SUBJECT))
             }
         }
@@ -110,7 +113,7 @@ class HseTimetableCellExcelParserImpl(
         fields
             .forEach {
                 if (it.fieldType == FieldType.SUBJECT) {
-                    if(tempLessonFields.isNotEmpty()) {
+                    if (tempLessonFields.isNotEmpty()) {
                         rawLessons.add(tempLessonFields.toMutableList())
                     }
                     tempLessonFields.clear()
@@ -119,7 +122,7 @@ class HseTimetableCellExcelParserImpl(
                     tempLessonFields.add(it)
                 }
             }
-        if(tempLessonFields.isNotEmpty()) {
+        if (tempLessonFields.isNotEmpty()) {
             rawLessons.add(tempLessonFields.toMutableList())
         }
         return rawLessons
@@ -135,17 +138,17 @@ class HseTimetableCellExcelParserImpl(
             }
             var currentCount = 0
             val tempFields = mutableListOf<LessonField>()
-            while(currentCount < count) {
+            while (currentCount < count) {
                 var i = 0
                 var flag = false
                 lessonFields.forEach fieldIterator@{ field ->
-                    if(field.fieldType == FieldType.INFO) {
+                    if (field.fieldType == FieldType.INFO) {
                         if (i == currentCount) {
                             tempFields.add(field)
                             flag = true
                         }
-                        if(i > currentCount && flag.not()) return@fieldIterator
-                        if(i > currentCount && flag) {
+                        if (i > currentCount && flag.not()) return@fieldIterator
+                        if (i > currentCount && flag) {
                             unmergedLessonFields.add(tempFields.toMutableList())
                             tempFields.clear()
                             flag = false
@@ -156,14 +159,14 @@ class HseTimetableCellExcelParserImpl(
                         tempFields.add(field)
                     }
                 }
-                if(flag) {
+                if (flag) {
                     unmergedLessonFields.add(tempFields.toMutableList())
                     tempFields.clear()
                     flag = false
                 }
                 currentCount += 1
             }
-            if(tempFields.isNotEmpty()) {
+            if (tempFields.isNotEmpty()) {
                 unmergedLessonFields.add(tempFields)
             }
         }
@@ -172,11 +175,11 @@ class HseTimetableCellExcelParserImpl(
 
     private fun clearIncorrectLessonFields(allLessonFields: List<List<LessonField>>): List<List<LessonField>> {
         val lessons = allLessonFields.map { it.toMutableList() }.toMutableList()
-        if(allLessonFields.size > 1 && allLessonFields.any { lessonFields ->
+        if (allLessonFields.size > 1 && allLessonFields.any { lessonFields ->
                 lessonFields.all { it.fieldType != FieldType.INFO }
             }) {
             allLessonFields.forEachIndexed { index, lessonFields ->
-                if(index != 0) {
+                if (index != 0) {
                     if (lessonFields.all { it.fieldType != FieldType.INFO }) {
                         lessonFields.forEach {
                             if (it.fieldType == FieldType.SUBJECT) {
@@ -185,8 +188,7 @@ class HseTimetableCellExcelParserImpl(
                                         fieldType = FieldType.ADDITIONAL
                                     )
                                 )
-                            }
-                            else {
+                            } else {
                                 lessons[index - 1].add(it)
                             }
                         }
@@ -203,7 +205,7 @@ class HseTimetableCellExcelParserImpl(
         lessons.forEach {
             if (it.size == 1 && it.first().fieldType == FieldType.INFO) {
                 val match = LESSON_BUILDING_INFO_REGEX.containsMatchIn(it.first().value)
-                if(match) {
+                if (match) {
                     val subject = it.first().value
                     val info = LESSON_BUILDING_INFO_REGEX.find(subject)?.value
                     if (info != null) {
@@ -227,12 +229,12 @@ class HseTimetableCellExcelParserImpl(
         val subject = fields.first { it.fieldType == FieldType.SUBJECT }.value
         val lessonType = lessonTypeChecker.getLessonType(
             ParsedLessonInfo(
-            isSessionWeek = scheduleInfo.type == ScheduleType.SESSION_SCHEDULE,
-            isUnderlined = cell.isUnderlined,
-            subject = subject,
-            lessonInfo = additionalLessonInfo.lecturer,
-            isHaveBuildingInfo = fields.find { it.fieldType == FieldType.INFO } != null,
-            additionalInfo = additionalLessonInfo.additionalInfo
+                isSessionWeek = scheduleInfo.type == ScheduleType.SESSION_SCHEDULE,
+                isUnderlined = cell.isUnderlined,
+                subject = subject,
+                lessonInfo = additionalLessonInfo.lecturer,
+                isHaveBuildingInfo = fields.find { it.fieldType == FieldType.INFO } != null,
+                additionalInfo = additionalLessonInfo.additionalInfo
             )
         )
         return Lesson(
@@ -241,7 +243,7 @@ class HseTimetableCellExcelParserImpl(
             places = additionalLessonInfo.places,
             lecturer = additionalLessonInfo.lecturer,
             subGroup = subGroup,
-            group =  cell.group,
+            group = cell.group,
             course = cell.course,
             time = cell.time,
             programme = cell.program,
@@ -259,13 +261,15 @@ class HseTimetableCellExcelParserImpl(
         fields
             .filter { it.fieldType != FieldType.SUBJECT }
             .forEach { field ->
-                if(field.fieldType == FieldType.LINK) {
+                if (field.fieldType == FieldType.LINK) {
                     links.add(field.value)
-                } else if(field.fieldType == FieldType.INFO) {
+                } else if (field.fieldType == FieldType.INFO) {
                     val additionalInfoMatch = ADDITIONAL_INFO_REGEX.find(field.value)
-                    if(additionalInfoMatch != null) {
-                        val line = field.value.substring(0, additionalInfoMatch.range.first) + field.value.substring(additionalInfoMatch.range.last + 1)
-                        if(line.isNotEmpty()) {
+                    if (additionalInfoMatch != null) {
+                        val line = field.value.substring(0, additionalInfoMatch.range.first) + field.value.substring(
+                            additionalInfoMatch.range.last + 1
+                        )
+                        if (line.isNotEmpty()) {
                             additionalInfo.add(line)
                         }
                         val additionalInfoRegexGroups = additionalInfoMatch.groups
@@ -276,7 +280,7 @@ class HseTimetableCellExcelParserImpl(
                             placeMatches.addAll(maybePlaces)
                         }
                     }
-                } else if(field.fieldType == FieldType.ADDITIONAL) {
+                } else if (field.fieldType == FieldType.ADDITIONAL) {
                     additionalInfo.add(field.value)
                 }
             }
@@ -309,15 +313,14 @@ class HseTimetableCellExcelParserImpl(
                     } else {
                         offices.add(match.trim())
                     }
-                }
-                else {
+                } else {
                     offices.add(match.trim())
                 }
             }
         }
         return AdditionalLessonInfo(
             lecturer = lecturer,
-            places = if(places.isEmpty()) null else places,
+            places = if (places.isEmpty()) null else places,
             subGroups = subgroups,
             additionalInfo = if (additionalInfo.isEmpty()) null else additionalInfo,
             links = if (links.isEmpty()) null else links,
@@ -332,7 +335,8 @@ class HseTimetableCellExcelParserImpl(
 
     companion object {
         private val LESSON_BUILDING_INFO_REGEX = Regex("\\([^\\(\\)]*\\[\\d*\\].*\\)")
-        private val LINK_REGEX = Regex("https?:\\/\\/(www\\.)?[-a-zA-Z0-9@:%._\\+~#=]{1,256}\\.[a-zA-Z0-9()]{1,6}\\b([-a-zA-Z0-9()@:%_\\+.~#?&//=]*)")
+        private val LINK_REGEX =
+            Regex("https?:\\/\\/(www\\.)?[-a-zA-Z0-9@:%._\\+~#=]{1,256}\\.[a-zA-Z0-9()]{1,6}\\b([-a-zA-Z0-9()@:%_\\+.~#?&//=]*)")
         private val ADDITIONAL_INFO_REGEX = Regex("([^\\/]*)\\((.*)\\)")
         private val PLACE_INFO_REGEX = Regex("\\A[.[^\\[]]+|\\d+")
         private val PLACE_INFO_CHECK_REGEX = Regex("(.+)\\[\\d\\]")
@@ -344,6 +348,7 @@ class HseTimetableCellExcelParserImpl(
         LINK,
         ADDITIONAL,
     }
+
     internal data class LessonField(
         var value: String,
         val fieldType: FieldType

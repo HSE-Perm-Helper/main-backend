@@ -6,7 +6,7 @@ import com.melowetty.hsepermhelper.model.LessonType
 import org.springframework.stereotype.Component
 
 @Component
-class HseTimetableLessonTypeCheckerImpl: HseTimetableLessonTypeChecker {
+class HseTimetableLessonTypeCheckerImpl : HseTimetableLessonTypeChecker {
     override fun getLessonType(lessonInfo: ParsedLessonInfo): LessonType {
         val pureSubject = lessonInfo.subject.lowercase()
         val pureLessonInfo = lessonInfo.lessonInfo?.lowercase()

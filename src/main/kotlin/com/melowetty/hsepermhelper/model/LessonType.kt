@@ -48,7 +48,8 @@ enum class LessonType(val type: String) {
     },
     CONSULT("Консультация"),
     EVENT("Мероприятие");
-    public open fun reformatSubject(subject: String): String {
+
+    open fun reformatSubject(subject: String): String {
         return subject
     }
 }

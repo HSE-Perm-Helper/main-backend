@@ -7,7 +7,7 @@ class ScheduleUtils {
     companion object {
         fun normalizeSchedules(schedules: List<Schedule>): List<Schedule> {
             val sessionSchedules = schedules.filter { it.scheduleType == ScheduleType.SESSION_SCHEDULE }
-            if(sessionSchedules.size < 2) return schedules
+            if (sessionSchedules.size < 2) return schedules
             val filteredSchedules = schedules.filter { it.scheduleType != ScheduleType.SESSION_SCHEDULE }
             val mergedSchedule = mergeSessionSchedules(sessionSchedules)
             return filteredSchedules + mergedSchedule

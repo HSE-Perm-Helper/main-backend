@@ -3,7 +3,11 @@ package com.melowetty.hsepermhelper.service.impl
 import com.melowetty.hsepermhelper.domain.dto.UserDto
 import com.melowetty.hsepermhelper.exception.ScheduleNotFoundException
 import com.melowetty.hsepermhelper.extension.ScheduleExtensions.Companion.toScheduleInfo
-import com.melowetty.hsepermhelper.model.*
+import com.melowetty.hsepermhelper.model.Lesson
+import com.melowetty.hsepermhelper.model.LessonType
+import com.melowetty.hsepermhelper.model.Schedule
+import com.melowetty.hsepermhelper.model.ScheduleInfo
+import com.melowetty.hsepermhelper.model.SchedulesChanging
 import com.melowetty.hsepermhelper.notification.ScheduleAddedNotification
 import com.melowetty.hsepermhelper.notification.ScheduleChangedForUserNotification
 import com.melowetty.hsepermhelper.repository.ScheduleRepository
@@ -13,24 +17,24 @@ import com.melowetty.hsepermhelper.service.UserService
 import org.springframework.context.event.EventListener
 import org.springframework.stereotype.Service
 import java.time.LocalDate
-import java.util.*
+import java.util.UUID
 
 @Service
 class ScheduleServiceImpl(
     private val scheduleRepository: ScheduleRepository,
     private val userService: UserService,
     private val notificationService: NotificationService
-): ScheduleService {
+) : ScheduleService {
     private fun filterSchedules(schedules: List<Schedule>, user: UserDto): List<Schedule> {
         val filteredSchedules = schedules.map { schedule ->
-                filterSchedule(schedule, user)
+            filterSchedule(schedule, user)
         }
         return filteredSchedules
     }
 
     private fun filterSchedule(schedule: Schedule, user: UserDto): Schedule {
         val course = getCourseFromGroup(user.settings.group) // todo TEMP FIX
-        if(course == 3 || course == 4 || getShortGroupFromGroup(user.settings.group) == "ИЯ") {
+        if (course == 3 || course == 4 || getShortGroupFromGroup(user.settings.group) == "ИЯ") {
             return tempFilterSchedule(schedule, user)
         }
 
@@ -72,7 +76,7 @@ class ScheduleServiceImpl(
         }
         return schedule.copy(
             lessons = filteredLessons.map {
-                if(it.subGroup == null) it
+                if (it.subGroup == null) it
                 else it.copy(subject = "${it.subject} (${it.subGroup} подгруппа)")
             }
         )
@@ -90,7 +94,7 @@ class ScheduleServiceImpl(
 
     override fun getUserScheduleByTelegramId(telegramId: Long, start: LocalDate, end: LocalDate): Schedule {
         val schedule = scheduleRepository.getSchedules().filter { it.start == start && end == it.end }.getOrNull(0)
-        if(schedule == null) throw ScheduleNotFoundException("Расписание с такими датами не найдено!")
+        if (schedule == null) throw ScheduleNotFoundException("Расписание с такими датами не найдено!")
         val user = userService.getByTelegramId(telegramId)
         return filterSchedule(schedule, user)
     }
@@ -113,7 +117,7 @@ class ScheduleServiceImpl(
                 targetSchedule = schedule.toScheduleInfo(),
                 users = users,
             )
-            notificationService.addNotification(scheduleAddedNotification)
+            notificationService.sendNotification(scheduleAddedNotification)
         }
         editedSchedules.forEach {
             val users = mutableSetOf<Long>()
@@ -127,7 +131,8 @@ class ScheduleServiceImpl(
                     if (before.lessons.toHashSet() != after.lessons.toHashSet()) {
                         users.addAll(userService.getAllUsers().filter {
                             it.settings.group == user.settings.group
-                                && it.settings.subGroup == user.settings.subGroup }
+                                    && it.settings.subGroup == user.settings.subGroup
+                        }
                             .map { it.telegramId })
                     }
                 }
@@ -136,7 +141,7 @@ class ScheduleServiceImpl(
                     targetSchedule = it.after.toScheduleInfo(),
                     users = users.toList()
                 )
-                notificationService.addNotification(scheduleChangedEvent)
+                notificationService.sendNotification(scheduleChangedEvent)
             }
         }
     }

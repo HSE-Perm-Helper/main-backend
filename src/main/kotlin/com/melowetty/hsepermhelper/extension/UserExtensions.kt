@@ -31,7 +31,8 @@ class UserExtensions {
                 includeCommonEnglish = includeCommonEnglish,
                 includeCommonMinor = includeCommonMinor,
                 isEnabledNewScheduleNotifications = isEnabledNewScheduleNotifications,
-                isEnabledChangedScheduleNotifications = isEnabledChangedScheduleNotifications
+                isEnabledChangedScheduleNotifications = isEnabledChangedScheduleNotifications,
+                isEnabledComingLessonsNotifications = isEnabledComingLessonsNotifications,
             )
         }
 
@@ -43,7 +44,8 @@ class UserExtensions {
                 includeCommonEnglish = includeCommonEnglish,
                 includeCommonMinor = includeCommonMinor,
                 isEnabledNewScheduleNotifications = isEnabledNewScheduleNotifications,
-                isEnabledChangedScheduleNotifications = isEnabledChangedScheduleNotifications
+                isEnabledChangedScheduleNotifications = isEnabledChangedScheduleNotifications,
+                isEnabledComingLessonsNotifications = isEnabledComingLessonsNotifications,
             )
         }
     }

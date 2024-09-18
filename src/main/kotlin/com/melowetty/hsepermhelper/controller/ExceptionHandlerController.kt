@@ -2,7 +2,13 @@ package com.melowetty.hsepermhelper.controller
 
 import com.melowetty.hsepermhelper.annotation.Slf4j
 import com.melowetty.hsepermhelper.annotation.Slf4j.Companion.log
-import com.melowetty.hsepermhelper.exception.*
+import com.melowetty.hsepermhelper.exception.CustomException
+import com.melowetty.hsepermhelper.exception.PermissionDeniedException
+import com.melowetty.hsepermhelper.exception.ScheduleNotFoundException
+import com.melowetty.hsepermhelper.exception.SecretKeyParseException
+import com.melowetty.hsepermhelper.exception.UnauthorizedException
+import com.melowetty.hsepermhelper.exception.UserIsExistsException
+import com.melowetty.hsepermhelper.exception.UserNotFoundException
 import com.melowetty.hsepermhelper.model.ErrorResponse
 import org.springframework.core.env.Environment
 import org.springframework.core.env.get
@@ -33,14 +39,18 @@ class ExceptionHandlerController(
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(RuntimeException::class)
     fun handleRuntimeException(exception: RuntimeException): ResponseEntity<Any> {
-        return exceptionToDebugOrNormalResponseEntity(exception,
-            message = "Произошла ошибка во время выполнения запроса!", HttpStatus.INTERNAL_SERVER_ERROR)
+        return exceptionToDebugOrNormalResponseEntity(
+            exception,
+            message = "Произошла ошибка во время выполнения запроса!", HttpStatus.INTERNAL_SERVER_ERROR
+        )
     }
 
     @ExceptionHandler(NoHandlerFoundException::class)
     fun handleNoHandlerFoundException(exception: NoHandlerFoundException): ResponseEntity<Any> {
-        return exceptionToDebugOrNormalResponseEntity(exception,
-            message = "Страница не найдена!", HttpStatus.NOT_FOUND)
+        return exceptionToDebugOrNormalResponseEntity(
+            exception,
+            message = "Страница не найдена!", HttpStatus.NOT_FOUND
+        )
     }
 
     @ResponseStatus(HttpStatus.NOT_FOUND)
@@ -66,21 +76,27 @@ class ExceptionHandlerController(
 
     @ExceptionHandler(MissingServletRequestParameterException::class)
     fun handleMissingServletRequestParameterException(exception: MissingServletRequestParameterException): ResponseEntity<Any> {
-        return exceptionToDebugOrNormalResponseEntity(exception,
+        return exceptionToDebugOrNormalResponseEntity(
+            exception,
             message = "Необходимый параметр запроса ${exception.parameterName} типа ${exception.parameterType} не передан!",
-            statusCode = HttpStatus.BAD_REQUEST)
+            statusCode = HttpStatus.BAD_REQUEST
+        )
     }
 
     @ExceptionHandler(HttpMessageNotReadableException::class)
     fun handleHttpMessageNotReadableException(exception: HttpMessageNotReadableException): ResponseEntity<Any> {
-        return exceptionToDebugOrNormalResponseEntity(exception,
-            message = "Необходимое тело запроса не передано!", HttpStatus.BAD_REQUEST)
+        return exceptionToDebugOrNormalResponseEntity(
+            exception,
+            message = "Необходимое тело запроса не передано!", HttpStatus.BAD_REQUEST
+        )
     }
 
     @ExceptionHandler(IllegalArgumentException::class)
     fun handleIllegalArgumentException(exception: IllegalArgumentException): ResponseEntity<Any> {
-       return exceptionToDebugOrNormalResponseEntity(exception,
-           "Неверный параметр в запросе!", HttpStatus.BAD_REQUEST)
+        return exceptionToDebugOrNormalResponseEntity(
+            exception,
+            "Неверный параметр в запросе!", HttpStatus.BAD_REQUEST
+        )
     }
 
     @ExceptionHandler(UserIsExistsException::class)
@@ -96,7 +112,11 @@ class ExceptionHandlerController(
         return exception.toResponseEntity()
     }
 
-    private fun exceptionToDebugOrNormalResponseEntity(exception: Exception, message: String, statusCode: HttpStatusCode): ResponseEntity<Any> {
+    private fun exceptionToDebugOrNormalResponseEntity(
+        exception: Exception,
+        message: String,
+        statusCode: HttpStatusCode
+    ): ResponseEntity<Any> {
         val response = ErrorResponse(
             message = exception.message ?: message,
             code = exception.javaClass.simpleName,

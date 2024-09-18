@@ -25,4 +25,6 @@ data class SettingsDto(
 
     @Schema(description = "Включены ли уведомления о изменении расписания", example = "true")
     val isEnabledChangedScheduleNotifications: Boolean = true,
+
+    val isEnabledComingLessonsNotifications: Boolean = false,
 )

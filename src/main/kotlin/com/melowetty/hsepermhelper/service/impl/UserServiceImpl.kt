@@ -13,28 +13,28 @@ import com.melowetty.hsepermhelper.service.UserService
 import org.springframework.context.ApplicationEventPublisher
 import org.springframework.stereotype.Service
 import org.springframework.util.ReflectionUtils
-import java.util.*
+import java.util.UUID
 
 @Service
 class UserServiceImpl(
     private val eventPublisher: ApplicationEventPublisher,
     private val userRepository: UserRepository,
-): UserService {
+) : UserService {
     override fun getByTelegramId(telegramId: Long): UserDto {
         val user = userRepository.findByTelegramId(telegramId)
-        if(user.isEmpty) throw UserNotFoundException("Пользователь с таким Telegram ID не найден!")
+        if (user.isEmpty) throw UserNotFoundException("Пользователь с таким Telegram ID не найден!")
         return user.get().toDto()
     }
 
     override fun getById(id: UUID): UserDto {
         val user = userRepository.findById(id)
-        if(user.isEmpty) throw UserNotFoundException("Пользователь с таким ID не найден!")
+        if (user.isEmpty) throw UserNotFoundException("Пользователь с таким ID не найден!")
         return user.get().toDto()
     }
 
     override fun create(dto: UserDto): UserDto {
         val isExists = userRepository.existsByTelegramId(dto.telegramId)
-        if(isExists) throw UserIsExistsException("Пользователь с таким Telegram ID уже существует!")
+        if (isExists) throw UserIsExistsException("Пользователь с таким Telegram ID уже существует!")
         val user = userRepository.save(dto.toEntity()).toDto()
         val event = UsersChangedEvent(
             user = user,

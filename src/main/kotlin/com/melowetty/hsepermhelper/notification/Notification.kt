@@ -1,20 +1,8 @@
 package com.melowetty.hsepermhelper.notification
 
-import com.fasterxml.jackson.annotation.JsonFormat
-import com.fasterxml.jackson.annotation.JsonProperty
-import com.melowetty.hsepermhelper.util.DateUtils
-import io.swagger.v3.oas.annotations.media.Schema
-import java.time.LocalDateTime
-import java.util.*
+import com.fasterxml.jackson.annotation.JsonIgnore
 
 abstract class Notification {
-    val id: UUID = UUID.randomUUID()
-    @JsonProperty("createdTime")
-    @Schema(description = "Дата создания уведомления")
-    @JsonFormat(pattern = DateUtils.DATE_TIME_PATTERN)
-    val date: LocalDateTime = LocalDateTime.now()
-
-    @JsonProperty("notificationType")
-    @Schema(description = "Тип уведомления")
+    @JsonIgnore
     abstract fun getNotificationType(): String
 }
