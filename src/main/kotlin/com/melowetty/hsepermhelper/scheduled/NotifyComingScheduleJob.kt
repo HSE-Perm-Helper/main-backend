@@ -43,7 +43,10 @@ class NotifyComingScheduleJob(
 
     private fun getCurrentSchedule(currentDate: LocalDate, user: UserEntity): Schedule {
         val schedules = scheduleService.getUserSchedulesById(id = user.id)
-        return schedules.filter { it.scheduleType == ScheduleType.WEEK_SCHEDULE }.first {
+        return schedules.filter {
+            it.scheduleType == ScheduleType.WEEK_SCHEDULE ||
+                    it.scheduleType == ScheduleType.SESSION_SCHEDULE
+        }.first {
             (it.start.isBefore(currentDate).or(it.start.isEqual(currentDate)))
                     && (it.end.isAfter(currentDate).or(it.end.isEqual(currentDate)))
         }
