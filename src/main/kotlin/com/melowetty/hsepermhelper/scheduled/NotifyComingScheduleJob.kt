@@ -27,6 +27,7 @@ class NotifyComingScheduleJob(
             .forEach { (_, users) ->
                 if (users.isEmpty()) return@forEach
                 val upcomingSchedule = getUpcomingSchedule(currentDate, users.first())
+                if(upcomingSchedule.lessons.isEmpty()) return@forEach
 
                 val notification = UpcomingLessonsNotification(
                     targetSchedule = upcomingSchedule,
