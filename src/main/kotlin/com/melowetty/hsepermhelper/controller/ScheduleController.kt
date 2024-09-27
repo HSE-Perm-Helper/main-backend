@@ -84,7 +84,7 @@ class ScheduleController(
     fun getTomorrowSchedule(
         @PathVariable telegramId: Long,
     ): Response<List<Lesson>> {
-        val schedule = scheduleService.getTodayLessons(telegramId)
+        val schedule = scheduleService.getTomorrowLessons(telegramId)
         userEventService.addUserEvent(telegramId, UserEventType.GET_TOMORROW_SCHEDULE)
         return Response(schedule)
     }
