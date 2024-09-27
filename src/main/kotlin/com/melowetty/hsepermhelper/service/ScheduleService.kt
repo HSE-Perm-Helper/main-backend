@@ -1,5 +1,6 @@
 package com.melowetty.hsepermhelper.service
 
+import com.melowetty.hsepermhelper.model.Lesson
 import com.melowetty.hsepermhelper.model.Schedule
 import com.melowetty.hsepermhelper.model.ScheduleInfo
 import java.time.LocalDate
@@ -47,4 +48,8 @@ interface ScheduleService {
     fun getAvailableGroups(course: Int, program: String): List<String>
 
     fun getAvailableSubgroups(course: Int, program: String, group: String): List<Int>
+
+    fun getTodayLessons(telegramId: Long): List<Lesson>
+
+    fun getTomorrowLessons(telegramId: Long): List<Lesson>
 }

@@ -1,5 +1,6 @@
 package com.melowetty.hsepermhelper.controller
 
+import com.melowetty.hsepermhelper.model.Lesson
 import com.melowetty.hsepermhelper.model.Response
 import com.melowetty.hsepermhelper.model.Schedule
 import com.melowetty.hsepermhelper.model.ScheduleInfo
@@ -61,6 +62,30 @@ class ScheduleController(
         val endDate = LocalDate.parse(end, DateTimeFormatter.ofPattern(DateUtils.DATE_PATTERN))
         userEventService.addUserEvent(telegramId, UserEventType.GET_SCHEDULE)
         val schedule = scheduleService.getUserScheduleByTelegramId(telegramId, startDate, endDate)
+        return Response(schedule)
+    }
+
+    @GetMapping(
+        "v3/schedule/{telegramId}/today",
+        produces = [MediaType.APPLICATION_JSON_VALUE]
+    )
+    fun getTodaySchedule(
+        @PathVariable telegramId: Long,
+    ): Response<List<Lesson>> {
+        val schedule = scheduleService.getTodayLessons(telegramId)
+        userEventService.addUserEvent(telegramId, UserEventType.GET_TODAY_SCHEDULE)
+        return Response(schedule)
+    }
+
+    @GetMapping(
+        "v3/schedule/{telegramId}/tomorrow",
+        produces = [MediaType.APPLICATION_JSON_VALUE]
+    )
+    fun getTomorrowSchedule(
+        @PathVariable telegramId: Long,
+    ): Response<List<Lesson>> {
+        val schedule = scheduleService.getTodayLessons(telegramId)
+        userEventService.addUserEvent(telegramId, UserEventType.GET_TOMORROW_SCHEDULE)
         return Response(schedule)
     }
 

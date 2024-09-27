@@ -14,8 +14,13 @@ import com.melowetty.hsepermhelper.repository.ScheduleRepository
 import com.melowetty.hsepermhelper.service.NotificationService
 import com.melowetty.hsepermhelper.service.ScheduleService
 import com.melowetty.hsepermhelper.service.UserService
+import com.melowetty.hsepermhelper.util.DateUtils
+import com.melowetty.hsepermhelper.util.ScheduleUtils
+import com.melowetty.hsepermhelper.util.ScheduleUtils.Companion.filterWeekSchedules
+import org.springframework.cglib.core.Local
 import org.springframework.context.event.EventListener
 import org.springframework.stereotype.Service
+import java.time.DayOfWeek
 import java.time.LocalDate
 import java.util.UUID
 
@@ -160,5 +165,24 @@ class ScheduleServiceImpl(
 
     override fun getAvailableSubgroups(course: Int, program: String, group: String): List<Int> {
         return scheduleRepository.getAvailableSubgroups(course = course, program = program, group = group)
+    }
+
+    override fun getTodayLessons(telegramId: Long): List<Lesson> {
+        val schedules = getUserSchedulesByTelegramId(telegramId)
+            .filterWeekSchedules()
+        val todayDate = LocalDate.now(DateUtils.PERM_TIME_ZONE.toZoneId())
+
+        val schedule = ScheduleUtils.getWeekScheduleByDate(schedules, todayDate) ?: return listOf()
+        return ScheduleUtils.getLessonsAtDateInWeekSchedule(schedule, todayDate)
+    }
+
+    override fun getTomorrowLessons(telegramId: Long): List<Lesson> {
+        var tomorrowDate = LocalDate.now(DateUtils.PERM_TIME_ZONE.toZoneId()).plusDays(1)
+        if (tomorrowDate.dayOfWeek == DayOfWeek.SUNDAY) tomorrowDate = tomorrowDate.plusDays(1)
+        val schedules = getUserSchedulesByTelegramId(telegramId)
+            .filterWeekSchedules()
+
+        val schedule = ScheduleUtils.getWeekScheduleByDate(schedules, tomorrowDate) ?: return listOf()
+        return ScheduleUtils.getLessonsAtDateInWeekSchedule(schedule, tomorrowDate)
     }
 }
