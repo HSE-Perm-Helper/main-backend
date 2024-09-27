@@ -34,10 +34,10 @@ class ScheduleUtils {
             return filter { it.scheduleType == ScheduleType.WEEK_SCHEDULE || it.scheduleType == ScheduleType.SESSION_SCHEDULE }
         }
 
-        fun getWeekScheduleByDate(schedules: List<Schedule>, date: LocalDate): Schedule {
+        fun getWeekScheduleByDate(schedules: List<Schedule>, date: LocalDate): Schedule? {
             return schedules
                 .filterWeekSchedules()
-                .first { it.start <= date && it.end >= date }
+                .firstOrNull { it.start <= date && it.end >= date }
         }
 
         fun getLessonsAtDateInWeekSchedule(schedule: Schedule, date: LocalDate): List<Lesson> {
