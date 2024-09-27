@@ -4,6 +4,7 @@ import com.melowetty.hsepermhelper.model.*
 import com.melowetty.hsepermhelper.util.ScheduleUtils.Companion.filterWeekSchedules
 import org.hibernate.validator.internal.util.Contracts.assertTrue
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
@@ -73,9 +74,7 @@ class ScheduleUtilsTest {
     fun getWeekScheduleByDate_handlesNoMatchingSchedule() {
         val schedules = listOf(getSchedule(), getSchedule(), getSchedule())
         val date = LocalDate.now().plusDays(10)
-        assertThrows<NoSuchElementException> {
-            ScheduleUtils.getWeekScheduleByDate(schedules, date)
-        }
+        assertNull(ScheduleUtils.getWeekScheduleByDate(schedules, date))
     }
 
     @Test
