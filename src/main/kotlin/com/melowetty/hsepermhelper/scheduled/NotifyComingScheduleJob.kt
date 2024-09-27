@@ -9,6 +9,7 @@ import com.melowetty.hsepermhelper.notification.UpcomingLessonsNotification
 import com.melowetty.hsepermhelper.repository.UserRepository
 import com.melowetty.hsepermhelper.service.NotificationService
 import com.melowetty.hsepermhelper.service.ScheduleService
+import com.melowetty.hsepermhelper.util.ScheduleUtils
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component
 import java.time.LocalDate
@@ -44,20 +45,12 @@ class NotifyComingScheduleJob(
 
     private fun getCurrentSchedule(currentDate: LocalDate, user: UserEntity): Schedule {
         val schedules = scheduleService.getUserSchedulesById(id = user.id)
-        return schedules.filter {
-            it.scheduleType == ScheduleType.WEEK_SCHEDULE ||
-                    it.scheduleType == ScheduleType.SESSION_SCHEDULE
-        }.first {
-            (it.start.isBefore(currentDate).or(it.start.isEqual(currentDate)))
-                    && (it.end.isAfter(currentDate).or(it.end.isEqual(currentDate)))
-        }
+        return ScheduleUtils.getWeekScheduleByDate(schedules, currentDate)
     }
 
     private fun getUpcomingSchedule(currentDate: LocalDate, user: UserEntity): Schedule {
         val schedule = getCurrentSchedule(currentDate, user)
-        val upcomingLessons = schedule.lessons.filter {
-            (it.time as ScheduledTime).date.isEqual(currentDate)
-        }
+        val upcomingLessons = ScheduleUtils.getLessonsAtDateInWeekSchedule(schedule, currentDate)
 
         return schedule.copy(
             lessons = upcomingLessons

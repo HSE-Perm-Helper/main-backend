@@ -1,9 +1,12 @@
 package com.melowetty.hsepermhelper.util
 
 import com.melowetty.hsepermhelper.model.*
+import com.melowetty.hsepermhelper.util.ScheduleUtils.Companion.filterWeekSchedules
 import org.hibernate.validator.internal.util.Contracts.assertTrue
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 import java.time.LocalDate
 
 class ScheduleUtilsTest {
@@ -56,6 +59,69 @@ class ScheduleUtilsTest {
         val actual = ScheduleUtils.normalizeSchedules(schedules)
 
         assertTrue(actual.size == 3, "Расписания после нормализации содержит больше чем три расписания!")
+    }
+
+    @Test
+    fun getWeekScheduleByDate_returnsCorrectSchedule() {
+        val schedules = listOf(getSchedule(), getSchedule(), getSchedule())
+        val date = LocalDate.now()
+        val actual = ScheduleUtils.getWeekScheduleByDate(schedules, date)
+        assertEquals(schedules[0], actual, "Returned schedule does not match the expected schedule!")
+    }
+
+    @Test
+    fun getWeekScheduleByDate_handlesNoMatchingSchedule() {
+        val schedules = listOf(getSchedule(), getSchedule(), getSchedule())
+        val date = LocalDate.now().plusDays(10)
+        assertThrows<NoSuchElementException> {
+            ScheduleUtils.getWeekScheduleByDate(schedules, date)
+        }
+    }
+
+    @Test
+    fun getLessonsAtDateInWeekSchedule_returnsCorrectLessons() {
+        val schedule = getSchedule()
+        val date = LocalDate.now()
+        val actual = ScheduleUtils.getLessonsAtDateInWeekSchedule(schedule, date)
+        assertEquals(schedule.lessons, actual, "Returned lessons do not match the expected lessons!")
+    }
+
+    @Test
+    fun getLessonsAtDateInWeekSchedule_handlesNoLessonsOnDate() {
+        val schedule = getSchedule()
+        val date = LocalDate.now().plusDays(10)
+        val actual = ScheduleUtils.getLessonsAtDateInWeekSchedule(schedule, date)
+        assertTrue(actual.isEmpty(), "Expected no lessons on the given date!")
+    }
+
+    @Test
+    fun filterWeekSchedules_returnsOnlyWeekAndSessionSchedules() {
+        val schedules = listOf(
+            getSchedule().copy(scheduleType = ScheduleType.WEEK_SCHEDULE),
+            getSchedule().copy(scheduleType = ScheduleType.SESSION_SCHEDULE),
+            getSchedule().copy(scheduleType = ScheduleType.QUARTER_SCHEDULE)
+        )
+        val actual = schedules.filterWeekSchedules()
+        assertEquals(2, actual.size, "Expected only week and session schedules!")
+        assertTrue(actual.all { it.scheduleType == ScheduleType.WEEK_SCHEDULE || it.scheduleType == ScheduleType.SESSION_SCHEDULE },
+            "Expected only week and session schedules!")
+    }
+
+    @Test
+    fun filterWeekSchedules_handlesEmptyList() {
+        val schedules = emptyList<Schedule>()
+        val actual = schedules.filterWeekSchedules()
+        assertTrue(actual.isEmpty(), "Expected no schedules in the result!")
+    }
+
+    @Test
+    fun filterWeekSchedules_handlesNoMatchingSchedules() {
+        val schedules = listOf(
+            getSchedule().copy(scheduleType = ScheduleType.QUARTER_SCHEDULE),
+            getSchedule().copy(scheduleType = ScheduleType.QUARTER_SCHEDULE)
+        )
+        val actual = schedules.filterWeekSchedules()
+        assertTrue(actual.isEmpty(), "Expected no schedules in the result!")
     }
 
     private fun getLesson(): Lesson {
