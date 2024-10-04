@@ -3,7 +3,6 @@ package com.melowetty.hsepermhelper.service.impl
 import com.melowetty.hsepermhelper.domain.dto.UserDto
 import com.melowetty.hsepermhelper.domain.dto.UserEventDto
 import com.melowetty.hsepermhelper.extension.UserEventExtensions.Companion.toDto
-import com.melowetty.hsepermhelper.extension.UserEventExtensions.Companion.toEntity
 import com.melowetty.hsepermhelper.extension.UserExtensions.Companion.toEntity
 import com.melowetty.hsepermhelper.model.UserEventType
 import com.melowetty.hsepermhelper.repository.UserEventRepository

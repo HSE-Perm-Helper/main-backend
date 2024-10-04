@@ -3,8 +3,6 @@ package com.melowetty.hsepermhelper.scheduled
 import com.melowetty.hsepermhelper.annotation.Slf4j
 import com.melowetty.hsepermhelper.domain.entity.UserEntity
 import com.melowetty.hsepermhelper.model.Schedule
-import com.melowetty.hsepermhelper.model.ScheduleType
-import com.melowetty.hsepermhelper.model.ScheduledTime
 import com.melowetty.hsepermhelper.notification.UpcomingLessonsNotification
 import com.melowetty.hsepermhelper.repository.UserRepository
 import com.melowetty.hsepermhelper.service.NotificationService
@@ -29,7 +27,7 @@ class NotifyComingScheduleJob(
             .forEach { (_, users) ->
                 if (users.isEmpty()) return@forEach
                 val upcomingSchedule = getUpcomingSchedule(currentDate, users.first()) ?: return@forEach
-                if(upcomingSchedule.lessons.isEmpty()) return@forEach
+                if (upcomingSchedule.lessons.isEmpty()) return@forEach
 
                 val notification = UpcomingLessonsNotification(
                     targetSchedule = upcomingSchedule,

@@ -17,7 +17,6 @@ import com.melowetty.hsepermhelper.service.UserService
 import com.melowetty.hsepermhelper.util.DateUtils
 import com.melowetty.hsepermhelper.util.ScheduleUtils
 import com.melowetty.hsepermhelper.util.ScheduleUtils.Companion.filterWeekSchedules
-import org.springframework.cglib.core.Local
 import org.springframework.context.event.EventListener
 import org.springframework.stereotype.Service
 import java.time.DayOfWeek

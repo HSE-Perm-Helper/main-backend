@@ -22,8 +22,10 @@ import org.springframework.context.ApplicationEventPublisher
 class ScheduleRepositoryImplTest {
     @InjectMocks
     private lateinit var scheduleRepository: ScheduleRepositoryImpl
+
     @Mock
     private lateinit var eventPublisherMock: ApplicationEventPublisher
+
     @Mock
     private lateinit var scheduleFilesServiceMock: ScheduleFilesService
 
@@ -35,8 +37,10 @@ class ScheduleRepositoryImplTest {
 
     @Test
     fun `test handle event when schedule is changed`() {
-        val firstFile = File(TestUtils.readFileAsInputStream("repository/schedule-repository/schedule_1.xls").readAllBytes())
-        val secondFile = File(TestUtils.readFileAsInputStream("repository/schedule-repository/schedule_2.xls").readAllBytes())
+        val firstFile =
+            File(TestUtils.readFileAsInputStream("repository/schedule-repository/schedule_1.xls").readAllBytes())
+        val secondFile =
+            File(TestUtils.readFileAsInputStream("repository/schedule-repository/schedule_2.xls").readAllBytes())
 
         val firstSchedule = TestUtils.getSchedule()
         val secondSchedule = firstSchedule.copy(
@@ -45,15 +49,21 @@ class ScheduleRepositoryImplTest {
 
         Mockito.`when`(scheduleFilesServiceMock.getScheduleFiles()).thenReturn(listOf(firstFile), listOf(secondFile))
 
-        Mockito.`when`(schedulesCheckingChangesServiceMock.getChanges(
-            before = MockitoHelper.anyObject(),
-            after = MockitoHelper.anyObject(),
-        )).thenReturn(SchedulesChanging(
-            changed = listOf(ScheduleDifference(
-                before = firstSchedule,
-                after = secondSchedule,
-            ))
-        ))
+        Mockito.`when`(
+            schedulesCheckingChangesServiceMock.getChanges(
+                before = MockitoHelper.anyObject(),
+                after = MockitoHelper.anyObject(),
+            )
+        ).thenReturn(
+            SchedulesChanging(
+                changed = listOf(
+                    ScheduleDifference(
+                        before = firstSchedule,
+                        after = secondSchedule,
+                    )
+                )
+            )
+        )
 
         scheduleRepository.handleScheduleFilesUpdate(FilesChanging(addedOrChanged = listOf(firstFile, secondFile)))
 
@@ -66,25 +76,31 @@ class ScheduleRepositoryImplTest {
 
         Mockito.verify(eventPublisherMock, Mockito.times(1)).publishEvent(
             SchedulesChanging(
-                changed = listOf(ScheduleDifference(
-                    before = firstSchedule,
-                    after = secondSchedule,
-                ))
+                changed = listOf(
+                    ScheduleDifference(
+                        before = firstSchedule,
+                        after = secondSchedule,
+                    )
+                )
             )
         )
     }
 
     @Test
     fun `test handle event when schedule is not changed`() {
-        val firstFile = File(TestUtils.readFileAsInputStream("repository/schedule-repository/schedule_1.xls").readAllBytes())
-        val secondFile = File(TestUtils.readFileAsInputStream("repository/schedule-repository/schedule_1.xls").readAllBytes())
+        val firstFile =
+            File(TestUtils.readFileAsInputStream("repository/schedule-repository/schedule_1.xls").readAllBytes())
+        val secondFile =
+            File(TestUtils.readFileAsInputStream("repository/schedule-repository/schedule_1.xls").readAllBytes())
 
         Mockito.`when`(scheduleFilesServiceMock.getScheduleFiles()).thenReturn(listOf(firstFile), listOf(secondFile))
 
-        Mockito.`when`(schedulesCheckingChangesServiceMock.getChanges(
-            before = MockitoHelper.anyObject(),
-            after = MockitoHelper.anyObject(),
-        )).thenReturn(SchedulesChanging())
+        Mockito.`when`(
+            schedulesCheckingChangesServiceMock.getChanges(
+                before = MockitoHelper.anyObject(),
+                after = MockitoHelper.anyObject(),
+            )
+        ).thenReturn(SchedulesChanging())
 
         scheduleRepository.handleScheduleFilesUpdate(FilesChanging(withoutChanges = listOf(firstFile, secondFile)))
 

@@ -1,7 +1,6 @@
 package com.melowetty.hsepermhelper.service
 
 import com.melowetty.hsepermhelper.model.File
-import com.melowetty.hsepermhelper.model.FilesChanging
 import com.melowetty.hsepermhelper.repository.ScheduleFilesRepository
 import com.melowetty.hsepermhelper.service.impl.ScheduleFilesServiceImpl
 import com.melowetty.hsepermhelper.util.TestUtils
@@ -12,7 +11,6 @@ import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.Mockito
 import org.mockito.junit.jupiter.MockitoExtension
-import org.springframework.context.ApplicationEventPublisher
 
 
 @ExtendWith(MockitoExtension::class)
