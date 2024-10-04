@@ -1,13 +1,15 @@
 package com.melowetty.hsepermhelper.util
 
-import com.melowetty.hsepermhelper.model.*
+import com.melowetty.hsepermhelper.model.Lesson
+import com.melowetty.hsepermhelper.model.LessonType
+import com.melowetty.hsepermhelper.model.Schedule
+import com.melowetty.hsepermhelper.model.ScheduleType
+import com.melowetty.hsepermhelper.model.ScheduledTime
 import com.melowetty.hsepermhelper.util.ScheduleUtils.Companion.filterWeekSchedules
 import org.hibernate.validator.internal.util.Contracts.assertTrue
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNull
-import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.assertThrows
 import java.time.LocalDate
 
 class ScheduleUtilsTest {
@@ -16,22 +18,24 @@ class ScheduleUtilsTest {
         val lessons = listOf(getLesson(), getLesson(), getLesson(), getLesson(), getLesson())
         val start = LocalDate.now()
         val end = LocalDate.now()
-        val actual = ScheduleUtils.mergeSessionSchedules(listOf(
-            Schedule(
-                start = start,
-                end = end,
-                scheduleType = ScheduleType.SESSION_SCHEDULE,
-                lessons = lessons.subList(0, 3),
-                number = 1,
-            ),
-            Schedule(
-                start = end,
-                end = end,
-                scheduleType = ScheduleType.SESSION_SCHEDULE,
-                lessons = lessons.subList(3, 5),
-                number = 2,
+        val actual = ScheduleUtils.mergeSessionSchedules(
+            listOf(
+                Schedule(
+                    start = start,
+                    end = end,
+                    scheduleType = ScheduleType.SESSION_SCHEDULE,
+                    lessons = lessons.subList(0, 3),
+                    number = 1,
+                ),
+                Schedule(
+                    start = end,
+                    end = end,
+                    scheduleType = ScheduleType.SESSION_SCHEDULE,
+                    lessons = lessons.subList(3, 5),
+                    number = 2,
+                )
             )
-        ))
+        )
 
         val expected = Schedule(
             start = start,
@@ -54,9 +58,11 @@ class ScheduleUtilsTest {
 
     @Test
     fun `test normalize schedules when contains session schedule`() {
-        val schedules = listOf(getSchedule(), getSchedule(),
+        val schedules = listOf(
+            getSchedule(), getSchedule(),
             getSchedule().copy(scheduleType = ScheduleType.SESSION_SCHEDULE),
-            getSchedule().copy(scheduleType = ScheduleType.SESSION_SCHEDULE))
+            getSchedule().copy(scheduleType = ScheduleType.SESSION_SCHEDULE)
+        )
         val actual = ScheduleUtils.normalizeSchedules(schedules)
 
         assertTrue(actual.size == 3, "Расписания после нормализации содержит больше чем три расписания!")
@@ -102,8 +108,10 @@ class ScheduleUtilsTest {
         )
         val actual = schedules.filterWeekSchedules()
         assertEquals(2, actual.size, "Expected only week and session schedules!")
-        assertTrue(actual.all { it.scheduleType == ScheduleType.WEEK_SCHEDULE || it.scheduleType == ScheduleType.SESSION_SCHEDULE },
-            "Expected only week and session schedules!")
+        assertTrue(
+            actual.all { it.scheduleType == ScheduleType.WEEK_SCHEDULE || it.scheduleType == ScheduleType.SESSION_SCHEDULE },
+            "Expected only week and session schedules!"
+        )
     }
 
     @Test

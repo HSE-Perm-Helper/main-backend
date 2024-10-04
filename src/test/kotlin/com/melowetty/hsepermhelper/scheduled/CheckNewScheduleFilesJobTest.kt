@@ -32,10 +32,12 @@ class CheckNewScheduleFilesJobTest {
         val file = File(data = TestUtils.readFileAsInputStream("service/schedule-files/schedule_1.xls").readAllBytes())
         Mockito.`when`(scheduleFilesServiceMock.getScheduleFiles()).thenReturn(listOf(file), listOf(file))
 
-        Mockito.`when`(filesCheckingChangesServiceMock.getChanges(
-            before = listOf(file),
-            after = listOf(file),
-        )).thenReturn(
+        Mockito.`when`(
+            filesCheckingChangesServiceMock.getChanges(
+                before = listOf(file),
+                after = listOf(file),
+            )
+        ).thenReturn(
             FilesChanging(
                 withoutChanges = listOf(file),
             )
@@ -56,14 +58,18 @@ class CheckNewScheduleFilesJobTest {
 
     @Test
     fun `test fetch files when files is changed`() {
-        val firstFile = File(data = TestUtils.readFileAsInputStream("service/schedule-files/schedule_1.xls").readAllBytes())
-        val secondFile = File(data = TestUtils.readFileAsInputStream("service/schedule-files/schedule_2.xls").readAllBytes())
+        val firstFile =
+            File(data = TestUtils.readFileAsInputStream("service/schedule-files/schedule_1.xls").readAllBytes())
+        val secondFile =
+            File(data = TestUtils.readFileAsInputStream("service/schedule-files/schedule_2.xls").readAllBytes())
         Mockito.`when`(scheduleFilesServiceMock.getScheduleFiles()).thenReturn(listOf(firstFile), listOf(secondFile))
 
-        Mockito.`when`(filesCheckingChangesServiceMock.getChanges(
-            before = listOf(firstFile),
-            after = listOf(secondFile),
-        )).thenReturn(
+        Mockito.`when`(
+            filesCheckingChangesServiceMock.getChanges(
+                before = listOf(firstFile),
+                after = listOf(secondFile),
+            )
+        ).thenReturn(
             FilesChanging(
                 addedOrChanged = listOf(secondFile),
                 deleted = listOf(firstFile)

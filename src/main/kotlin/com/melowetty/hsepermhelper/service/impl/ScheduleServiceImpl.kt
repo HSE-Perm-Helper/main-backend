@@ -17,7 +17,6 @@ import com.melowetty.hsepermhelper.service.UserService
 import com.melowetty.hsepermhelper.util.DateUtils
 import com.melowetty.hsepermhelper.util.ScheduleUtils
 import com.melowetty.hsepermhelper.util.ScheduleUtils.Companion.filterWeekSchedules
-import org.springframework.cglib.core.Local
 import org.springframework.context.event.EventListener
 import org.springframework.stereotype.Service
 import java.time.DayOfWeek
@@ -82,7 +81,7 @@ class ScheduleServiceImpl(
         return schedule.copy(
             lessons = filteredLessons.map {
                 if (it.subGroup == null) it
-                else it.copy(subject = "${it.subject} (${it.subGroup} подгруппа)")
+                else it.copy(subject = "${it.subject} <b>(${it.subGroup} подгруппа)</b>")
             }
         )
     }
