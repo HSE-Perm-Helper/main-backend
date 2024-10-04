@@ -81,7 +81,7 @@ class ScheduleServiceImpl(
         return schedule.copy(
             lessons = filteredLessons.map {
                 if (it.subGroup == null) it
-                else it.copy(subject = "${it.subject} (${it.subGroup} подгруппа)")
+                else it.copy(subject = "${it.subject} <b>(${it.subGroup} подгруппа)</b>")
             }
         )
     }
