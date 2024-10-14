@@ -234,7 +234,8 @@ class HseTimetableCellExcelParserImpl(
                 subject = subject,
                 lessonInfo = additionalLessonInfo.lecturer,
                 isHaveBuildingInfo = fields.find { it.fieldType == FieldType.INFO } != null,
-                additionalInfo = additionalLessonInfo.additionalInfo
+                additionalInfo = additionalLessonInfo.additionalInfo,
+                schedulePeriod = scheduleInfo.startDate.rangeTo(scheduleInfo.endDate)
             )
         )
         return Lesson(

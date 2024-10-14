@@ -4,6 +4,8 @@ import com.melowetty.hsepermhelper.excel.HseTimetableLessonTypeChecker
 import com.melowetty.hsepermhelper.excel.model.ParsedLessonInfo
 import com.melowetty.hsepermhelper.model.LessonType
 import org.springframework.stereotype.Component
+import java.time.LocalDate
+import java.time.Month
 
 @Component
 class HseTimetableLessonTypeCheckerImpl : HseTimetableLessonTypeChecker {
@@ -20,7 +22,12 @@ class HseTimetableLessonTypeCheckerImpl : HseTimetableLessonTypeChecker {
         if (pureFullLessonInfo.contains("зачёт") || pureSubject.contains("зачет")) return LessonType.TEST
         if (pureFullLessonInfo.contains("английский язык")) return LessonType.COMMON_ENGLISH
         if (pureFullLessonInfo.contains("майнор")) {
-            if (lessonInfo.isSessionWeek) return LessonType.EXAM
+            val scheduleStart = lessonInfo.schedulePeriod.start
+
+            val isOctober = scheduleStart.month == Month.OCTOBER
+            val isMarch = scheduleStart.month == Month.MARCH
+
+            if (lessonInfo.isSessionWeek && !isMarch && !isOctober) return LessonType.EXAM
             return LessonType.COMMON_MINOR
         }
         if (pureSubject == "практика") return LessonType.PRACTICE
