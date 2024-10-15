@@ -93,7 +93,13 @@ class ScheduleRepositoryImpl(
             val matches = groupNumRegex.find(groups.last())
             val lastGroupNumMatch = matches!!.groups[1]
             val lastGroupNum = lastGroupNumMatch!!.value.toInt()
-            return (1..lastGroupNum * 2).toList()
+            var count = 2
+
+            if (program == "ИЯ") {
+                count = 3
+            }
+
+            return (1..lastGroupNum * count).toList()
         } catch (e: Exception) {
             throw RuntimeException("Возникли проблемы с обработкой группы!")
         }
