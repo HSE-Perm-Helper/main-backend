@@ -76,18 +76,10 @@ interface UserService {
      */
     fun updateUserSettings(telegramId: Long, settings: Map<String, Any?>): UserDto
 
-    /**
-     * Get all users by group and subgroup
-     *
-     * @param group user group
-     * @param subGroup user subgroup
-     * @return filtered user by group and subgroup
-     */
-    fun getAllUsers(group: String, subGroup: Int): List<UserDto>
 
     fun addHiddenLesson(telegramId: Long, lesson: HideLessonDto): UserDto
 
     fun removeHiddenLesson(telegramId: Long, lesson: HideLessonDto): UserDto
 
-    fun clearHiddenLessons(): UserDto
+    fun clearHiddenLessons(telegramId: Long): UserDto
 }
