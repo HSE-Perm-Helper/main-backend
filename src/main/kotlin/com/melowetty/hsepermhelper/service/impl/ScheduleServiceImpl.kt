@@ -38,8 +38,8 @@ class ScheduleServiceImpl(
     }
 
     private fun filterSchedule(schedule: Schedule, user: UserDto): Schedule {
-        val course = getCourseFromGroup(user.settings.group) // todo TEMP FIX
-        if (course == 3 || course == 4 || getShortGroupFromGroup(user.settings.group) == "ИЯ") {
+        val course = ScheduleUtils.getCourseFromGroup(user.settings.group) // todo TEMP FIX
+        if (course == 3 || course == 4 || ScheduleUtils.getShortGroupFromGroup(user.settings.group) == "ИЯ") {
             return tempFilterSchedule(schedule, user)
         }
 
@@ -48,20 +48,10 @@ class ScheduleServiceImpl(
                     && lesson.subGroup == user.settings.subGroup
             else lesson.group == user.settings.group
         }
-        
+
         return schedule.copy(
             lessons = filteredLessons
         )
-    }
-
-    private fun getCourseFromGroup(group: String): Int {
-        val dividedGroup = group.split("-")
-        val year = dividedGroup[1].toInt()
-        return 25 - year
-    }
-
-    private fun getShortGroupFromGroup(group: String): String {
-        return group.split("-")[0]
     }
 
     private fun tempFilterSchedule(schedule: Schedule, user: UserDto): Schedule {

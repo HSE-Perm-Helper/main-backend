@@ -47,7 +47,7 @@ class UserExtensions {
             )
         }
 
-        fun Iterable<UserEntity>.getGroupedBySettingsUsers() =
+        fun Iterable<UserEntity>.getGroupedEntityBySettingsUsers() =
             this
                 .groupBy { "${it.settings.group} ${it.settings.subGroup}}" }
 

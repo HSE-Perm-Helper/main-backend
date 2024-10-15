@@ -45,5 +45,15 @@ class ScheduleUtils {
                 (it.time as ScheduledTime).date.isEqual(date)
             }
         }
+
+        fun getCourseFromGroup(group: String): Int {
+            val dividedGroup = group.split("-")
+            val year = dividedGroup[1].toInt()
+            return 25 - year
+        }
+
+        fun getShortGroupFromGroup(group: String): String {
+            return group.split("-")[0]
+        }
     }
 }
