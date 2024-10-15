@@ -1,7 +1,9 @@
 package com.melowetty.hsepermhelper.service
 
+import com.melowetty.hsepermhelper.domain.dto.HideLessonDto
 import com.melowetty.hsepermhelper.domain.dto.SettingsDto
 import com.melowetty.hsepermhelper.domain.dto.UserDto
+import com.melowetty.hsepermhelper.model.LessonType
 import java.util.UUID
 
 interface UserService {
@@ -82,4 +84,10 @@ interface UserService {
      * @return filtered user by group and subgroup
      */
     fun getAllUsers(group: String, subGroup: Int): List<UserDto>
+
+    fun addHiddenLesson(telegramId: Long, lesson: HideLessonDto): UserDto
+
+    fun removeHiddenLesson(telegramId: Long, lesson: HideLessonDto): UserDto
+
+    fun clearHiddenLessons(): UserDto
 }

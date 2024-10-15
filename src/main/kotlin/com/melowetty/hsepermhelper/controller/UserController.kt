@@ -1,5 +1,6 @@
 package com.melowetty.hsepermhelper.controller
 
+import com.melowetty.hsepermhelper.domain.dto.HideLessonDto
 import com.melowetty.hsepermhelper.domain.dto.UserDto
 import com.melowetty.hsepermhelper.model.Response
 import com.melowetty.hsepermhelper.service.UserService
@@ -167,5 +168,15 @@ class UserController(
     ): Response<UserDto> {
         val user = userService.updateUser(userDto)
         return Response(user)
+    }
+
+    @PostMapping("user/hidden-lessons")
+    fun addHiddenLesson(@RequestParam telegramId: Long, @RequestBody lesson: HideLessonDto): UserDto {
+        return userService.addHiddenLesson(telegramId, lesson)
+    }
+
+    @DeleteMapping("user/hidden-lessons")
+    fun removeHiddenLesson(@RequestParam telegramId: Long, @RequestBody lesson: HideLessonDto): UserDto {
+        return userService.removeHiddenLesson(telegramId, lesson)
     }
 }
