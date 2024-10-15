@@ -33,6 +33,8 @@ class HseTimetableLessonTypeCheckerImpl : HseTimetableLessonTypeChecker {
         if (pureSubject == "практика") return LessonType.PRACTICE
         if (pureFullLessonInfo.contains("мкд") || pureFullLessonInfo.contains("мдк")) return LessonType.ICC
         if (pureFullLessonInfo.contains("лекция") || pureSubject.contains("лекции")) return LessonType.LECTURE
+        if (pureFullLessonInfo.contains("лек.")) return LessonType.LECTURE
+        if (pureFullLessonInfo.contains("сем.") || pureFullLessonInfo.contains("практ.")) return LessonType.SEMINAR
         if (pureFullLessonInfo.contains("семинар") || pureSubject.contains("семинары")) return LessonType.SEMINAR
         if (pureFullLessonInfo.contains("доц по выбору")) return LessonType.UNDEFINED_AED
         if (pureFullLessonInfo.contains("доц")) return LessonType.AED
