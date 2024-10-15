@@ -5,6 +5,7 @@ import jakarta.persistence.Entity
 import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
+import jakarta.persistence.OneToMany
 import jakarta.persistence.Table
 
 @Entity
@@ -21,11 +22,8 @@ data class SettingsEntity(
     @Column(name = "user_sub_group")
     val subGroup: Int = 0,
 
-    @Column(name = "include_common_english", columnDefinition = "BOOLEAN DEFAULT false")
-    val includeCommonEnglish: Boolean = false,
-
-    @Column(name = "include_common_minor", columnDefinition = "BOOLEAN DEFAULT true")
-    val includeCommonMinor: Boolean = true,
+    @OneToMany
+    val hiddenLessons: Set<HideLessonEntity>,
 
     @Column(name = "is_enabled_new_schedule_notification", columnDefinition = "BOOLEAN DEFAULT true")
     val isEnabledNewScheduleNotifications: Boolean = true,

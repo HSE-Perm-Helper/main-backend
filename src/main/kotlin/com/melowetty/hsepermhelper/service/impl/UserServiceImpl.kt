@@ -1,7 +1,10 @@
 package com.melowetty.hsepermhelper.service.impl
 
+import com.melowetty.hsepermhelper.domain.dto.HideLessonDto
 import com.melowetty.hsepermhelper.domain.dto.SettingsDto
 import com.melowetty.hsepermhelper.domain.dto.UserDto
+import com.melowetty.hsepermhelper.domain.entity.HideLessonEntity
+import com.melowetty.hsepermhelper.domain.entity.UserEntity
 import com.melowetty.hsepermhelper.exception.UserIsExistsException
 import com.melowetty.hsepermhelper.exception.UserNotFoundException
 import com.melowetty.hsepermhelper.extension.UserExtensions.Companion.toDto
@@ -70,7 +73,7 @@ class UserServiceImpl(
         val userSettings = user.settings.copy()
         val newSettings = settings.toMutableMap()
         newSettings.remove("id")
-        newSettings.forEach { t, u ->
+        newSettings.forEach { (t, u) ->
             val field = ReflectionUtils.findField(SettingsDto::class.java, t)
             if (field != null) {
                 field.trySetAccessible()
@@ -80,11 +83,58 @@ class UserServiceImpl(
         return updateUserSettings(telegramId, userSettings)
     }
 
+    override fun addHiddenLesson(telegramId: Long, lesson: HideLessonDto): UserDto {
+        val user = getUserEntityByTelegramId(telegramId)
+        val hiddenLessons = user.settings.hiddenLessons.toMutableSet()
+        hiddenLessons.add(
+            HideLessonEntity(
+                id = 0,
+                lesson = lesson.lesson,
+                lessonType = lesson.lessonType,
+                subGroup = lesson.subGroup
+            )
+        )
+        return userRepository.save(
+            user.copy(
+                settings = user.settings.copy(
+                    hiddenLessons = hiddenLessons,
+                )
+            )
+        ).toDto()
+    }
+
+    override fun removeHiddenLesson(telegramId: Long, lesson: HideLessonDto): UserDto {
+        val user = getUserEntityByTelegramId(telegramId)
+        val hiddenLessons = user.settings.hiddenLessons.toMutableSet()
+        hiddenLessons.removeIf {
+            it.lesson == lesson.lesson
+                    && it.lessonType == lesson.lessonType
+                    && it.subGroup == lesson.subGroup
+        }
+        return userRepository.save(
+            user.copy(
+                settings = user.settings.copy(
+                    hiddenLessons = hiddenLessons,
+                )
+            )
+        ).toDto()
+    }
+
+    override fun clearHiddenLessons(telegramId: Long): UserDto {
+        val user = getUserEntityByTelegramId(telegramId)
+        return userRepository.save(
+            user.copy(
+                settings = user.settings.copy(hiddenLessons = setOf())
+            )
+        ).toDto()
+    }
+
     override fun getAllUsers(): List<UserDto> {
         return userRepository.findAll().map { it.toDto() }
     }
 
-    override fun getAllUsers(group: String, subGroup: Int): List<UserDto> {
-        return userRepository.findAllBySettingsGroupAndSettingsSubGroup(group, subGroup).map { it.toDto() }
+    private fun getUserEntityByTelegramId(telegramId: Long): UserEntity {
+        return userRepository.findByTelegramId(telegramId)
+            .orElseThrow { UserNotFoundException("Пользователь с таким telegram ID не найден!") }
     }
 }

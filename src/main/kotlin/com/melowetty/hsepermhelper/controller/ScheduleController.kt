@@ -1,5 +1,6 @@
 package com.melowetty.hsepermhelper.controller
 
+import com.melowetty.hsepermhelper.model.AvailableLessonForHiding
 import com.melowetty.hsepermhelper.model.Lesson
 import com.melowetty.hsepermhelper.model.Response
 import com.melowetty.hsepermhelper.model.Schedule
@@ -180,5 +181,14 @@ class ScheduleController(
         group: String
     ): Response<List<Int>> {
         return Response(scheduleService.getAvailableSubgroups(course, program, group))
+    }
+
+    @GetMapping(
+        "schedule/lessons-for-hiding",
+        produces = [MediaType.APPLICATION_JSON_VALUE]
+    )
+    fun getAvailableLessonsForHiding(@RequestParam telegramId: Long): List<AvailableLessonForHiding> {
+        return scheduleService.getAvailableLessonsForHiding(telegramId).sortedBy { it.lessonType.ordinal }
+            .sortedBy { it.lesson }
     }
 }

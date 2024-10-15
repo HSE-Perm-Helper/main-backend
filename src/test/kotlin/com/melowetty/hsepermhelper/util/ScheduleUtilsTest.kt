@@ -131,6 +131,22 @@ class ScheduleUtilsTest {
         assertTrue(actual.isEmpty(), "Expected no schedules in the result!")
     }
 
+    @Test
+    fun getCourseFromGroup() {
+        val actual = ScheduleUtils.getCourseFromGroup("РИС-22-3")
+        val expected = 3
+
+        assertEquals(expected, actual)
+    }
+
+    @Test
+    fun getShortGroupFromGroup() {
+        val actual = ScheduleUtils.getShortGroupFromGroup("ИЯ-22-1")
+        val expected = "ИЯ"
+
+        assertEquals(expected, actual)
+    }
+
     private fun getLesson(): Lesson {
         return Lesson(
             course = 1,
