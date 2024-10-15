@@ -1,6 +1,7 @@
 package com.melowetty.hsepermhelper.domain.dto
 
 import com.fasterxml.jackson.annotation.JsonIgnore
+import com.melowetty.hsepermhelper.domain.entity.HideLessonEntity
 import io.swagger.v3.oas.annotations.media.Schema
 
 @Schema(description = "Настройки пользователя")
@@ -13,6 +14,8 @@ data class SettingsDto(
 
     @Schema(description = "Учебная подгруппа пользователя", example = "5")
     val subGroup: Int = 0,
+
+    val hiddenLessons: Set<HideLessonEntity>,
 
     @Schema(description = "Включены ли уведомления о новом расписании", example = "true")
     val isEnabledNewScheduleNotifications: Boolean = true,

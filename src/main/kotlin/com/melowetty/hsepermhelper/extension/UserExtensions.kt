@@ -31,6 +31,7 @@ class UserExtensions {
                 isEnabledNewScheduleNotifications = isEnabledNewScheduleNotifications,
                 isEnabledChangedScheduleNotifications = isEnabledChangedScheduleNotifications,
                 isEnabledComingLessonsNotifications = isEnabledComingLessonsNotifications,
+                hiddenLessons = hiddenLessons,
             )
         }
 
@@ -42,6 +43,7 @@ class UserExtensions {
                 isEnabledNewScheduleNotifications = isEnabledNewScheduleNotifications,
                 isEnabledChangedScheduleNotifications = isEnabledChangedScheduleNotifications,
                 isEnabledComingLessonsNotifications = isEnabledComingLessonsNotifications,
+                hiddenLessons = hiddenLessons,
             )
         }
 
