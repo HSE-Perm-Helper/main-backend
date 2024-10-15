@@ -2,7 +2,6 @@ package com.melowetty.hsepermhelper.scheduled
 
 import com.melowetty.hsepermhelper.annotation.Slf4j
 import com.melowetty.hsepermhelper.domain.entity.UserEntity
-import com.melowetty.hsepermhelper.extension.UserExtensions.Companion.getGroupedBySettingsUsers
 import com.melowetty.hsepermhelper.extension.UserExtensions.Companion.getGroupedEntityBySettingsUsers
 import com.melowetty.hsepermhelper.model.Schedule
 import com.melowetty.hsepermhelper.notification.UpcomingLessonsNotification

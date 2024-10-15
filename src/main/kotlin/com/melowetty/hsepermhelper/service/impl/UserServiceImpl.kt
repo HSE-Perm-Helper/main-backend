@@ -86,12 +86,21 @@ class UserServiceImpl(
     override fun addHiddenLesson(telegramId: Long, lesson: HideLessonDto): UserDto {
         val user = getUserEntityByTelegramId(telegramId)
         val hiddenLessons = user.settings.hiddenLessons.toMutableSet()
-        hiddenLessons.add(HideLessonEntity(id = 0, lesson = lesson.lesson, lessonType = lesson.lessonType, subGroup = lesson.subGroup))
-        return userRepository.save(user.copy(
-            settings = user.settings.copy(
-                hiddenLessons = hiddenLessons,
+        hiddenLessons.add(
+            HideLessonEntity(
+                id = 0,
+                lesson = lesson.lesson,
+                lessonType = lesson.lessonType,
+                subGroup = lesson.subGroup
             )
-        )).toDto()
+        )
+        return userRepository.save(
+            user.copy(
+                settings = user.settings.copy(
+                    hiddenLessons = hiddenLessons,
+                )
+            )
+        ).toDto()
     }
 
     override fun removeHiddenLesson(telegramId: Long, lesson: HideLessonDto): UserDto {
@@ -102,18 +111,22 @@ class UserServiceImpl(
                     && it.lessonType == lesson.lessonType
                     && it.subGroup == lesson.subGroup
         }
-        return userRepository.save(user.copy(
-            settings = user.settings.copy(
-                hiddenLessons = hiddenLessons,
+        return userRepository.save(
+            user.copy(
+                settings = user.settings.copy(
+                    hiddenLessons = hiddenLessons,
+                )
             )
-        )).toDto()
+        ).toDto()
     }
 
     override fun clearHiddenLessons(telegramId: Long): UserDto {
         val user = getUserEntityByTelegramId(telegramId)
-        return userRepository.save(user.copy(
-            settings = user.settings.copy(hiddenLessons = setOf())
-        )).toDto()
+        return userRepository.save(
+            user.copy(
+                settings = user.settings.copy(hiddenLessons = setOf())
+            )
+        ).toDto()
     }
 
     override fun getAllUsers(): List<UserDto> {

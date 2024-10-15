@@ -1,7 +1,6 @@
 package com.melowetty.hsepermhelper.domain.dto
 
 import com.fasterxml.jackson.annotation.JsonIgnore
-import com.melowetty.hsepermhelper.domain.entity.HideLessonEntity
 import io.swagger.v3.oas.annotations.media.Schema
 
 @Schema(description = "Настройки пользователя")

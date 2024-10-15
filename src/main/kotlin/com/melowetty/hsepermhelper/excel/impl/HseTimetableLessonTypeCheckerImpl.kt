@@ -4,7 +4,6 @@ import com.melowetty.hsepermhelper.excel.HseTimetableLessonTypeChecker
 import com.melowetty.hsepermhelper.excel.model.ParsedLessonInfo
 import com.melowetty.hsepermhelper.model.LessonType
 import org.springframework.stereotype.Component
-import java.time.LocalDate
 import java.time.Month
 
 @Component

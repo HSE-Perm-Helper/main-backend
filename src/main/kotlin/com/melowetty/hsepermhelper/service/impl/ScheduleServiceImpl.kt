@@ -124,7 +124,7 @@ class ScheduleServiceImpl(
             )
             notificationService.sendNotification(scheduleAddedNotification)
         }
-        editedSchedules.forEach outerFor@ { schedule ->
+        editedSchedules.forEach outerFor@{ schedule ->
             val users = mutableSetOf<Long>()
             userService.getAllUsers()
                 .filter { user ->
@@ -188,7 +188,8 @@ class ScheduleServiceImpl(
             it.scheduleType == ScheduleType.QUARTER_SCHEDULE
         } ?: throw ScheduleNotFoundException("Расписания на модуль пока нет")
 
-        val blacklistTypes = setOf(LessonType.COMMON_ENGLISH, LessonType.COMMON_MINOR, LessonType.ENGLISH, LessonType.MINOR)
+        val blacklistTypes =
+            setOf(LessonType.COMMON_ENGLISH, LessonType.COMMON_MINOR, LessonType.ENGLISH, LessonType.MINOR)
 
         return schedule.lessons.map {
             AvailableLessonForHiding(lesson = it.subject, lessonType = it.lessonType, subGroup = it.subGroup)
