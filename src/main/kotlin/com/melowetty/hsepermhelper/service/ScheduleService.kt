@@ -54,5 +54,5 @@ interface ScheduleService {
 
     fun getTomorrowLessons(telegramId: Long): List<Lesson>
 
-    fun getAvailableLessonsForHiding(): List<AvailableLessonForHiding>
+    fun getAvailableLessonsForHiding(telegramId: Long): List<AvailableLessonForHiding>
 }

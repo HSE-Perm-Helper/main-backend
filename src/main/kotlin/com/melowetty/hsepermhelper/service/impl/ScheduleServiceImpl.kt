@@ -4,10 +4,12 @@ import com.melowetty.hsepermhelper.domain.dto.UserDto
 import com.melowetty.hsepermhelper.exception.ScheduleNotFoundException
 import com.melowetty.hsepermhelper.extension.ScheduleExtensions.Companion.toScheduleInfo
 import com.melowetty.hsepermhelper.extension.UserExtensions.Companion.getGroupedBySettingsUsers
+import com.melowetty.hsepermhelper.model.AvailableLessonForHiding
 import com.melowetty.hsepermhelper.model.Lesson
 import com.melowetty.hsepermhelper.model.LessonType
 import com.melowetty.hsepermhelper.model.Schedule
 import com.melowetty.hsepermhelper.model.ScheduleInfo
+import com.melowetty.hsepermhelper.model.ScheduleType
 import com.melowetty.hsepermhelper.model.SchedulesChanging
 import com.melowetty.hsepermhelper.notification.ScheduleAddedNotification
 import com.melowetty.hsepermhelper.notification.ScheduleChangedForUserNotification
@@ -179,5 +181,19 @@ class ScheduleServiceImpl(
 
         val schedule = ScheduleUtils.getWeekScheduleByDate(schedules, tomorrowDate) ?: return listOf()
         return ScheduleUtils.getLessonsAtDateInWeekSchedule(schedule, tomorrowDate)
+    }
+
+    override fun getAvailableLessonsForHiding(telegramId: Long): List<AvailableLessonForHiding> {
+        val schedule = getUserSchedulesByTelegramId(telegramId).firstOrNull {
+            it.scheduleType == ScheduleType.QUARTER_SCHEDULE
+        } ?: throw ScheduleNotFoundException("Расписания на модуль пока нет")
+
+        val blacklistTypes = setOf(LessonType.COMMON_ENGLISH, LessonType.COMMON_MINOR, LessonType.ENGLISH, LessonType.MINOR)
+
+        return schedule.lessons.map {
+            AvailableLessonForHiding(lesson = it.subject, lessonType = it.lessonType, subGroup = it.subGroup)
+        }.filter {
+            blacklistTypes.contains(it.lessonType).not()
+        }
     }
 }
