@@ -9,7 +9,7 @@ import jakarta.persistence.Id
 import jakarta.persistence.Table
 
 @Entity
-@Table(name = "hide_subject")
+@Table(name = "hide_lesson")
 data class HideLessonEntity(
     @Id
     val id: Long,
