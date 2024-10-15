@@ -49,10 +49,10 @@ class UserExtensions {
 
         fun Iterable<UserEntity>.getGroupedEntityBySettingsUsers() =
             this
-                .groupBy { "${it.settings.group} ${it.settings.subGroup}}" }
+                .groupBy { "${it.settings.group} ${it.settings.subGroup}} ${it.settings.hiddenLessons}" }
 
         fun Iterable<UserDto>.getGroupedBySettingsUsers() =
             this
-                .groupBy { "${it.settings.group} ${it.settings.subGroup}" }
+                .groupBy { "${it.settings.group} ${it.settings.subGroup} ${it.settings.hiddenLessons}" }
     }
 }
