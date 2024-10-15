@@ -37,7 +37,7 @@ class ScheduleServiceImpl(
         return filteredSchedules
     }
 
-    private fun filterSchedule(schedule: Schedule, user: UserDto): Schedule {
+    fun filterSchedule(schedule: Schedule, user: UserDto): Schedule {
         val course = ScheduleUtils.getCourseFromGroup(user.settings.group) // todo TEMP FIX
         if (course == 3 || course == 4 || ScheduleUtils.getShortGroupFromGroup(user.settings.group) == "ИЯ") {
             return tempFilterSchedule(schedule, user)
@@ -47,6 +47,15 @@ class ScheduleServiceImpl(
             if (lesson.subGroup != null) lesson.group == user.settings.group
                     && lesson.subGroup == user.settings.subGroup
             else lesson.group == user.settings.group
+        }.filter {
+            (it.lessonType == LessonType.COMMON_ENGLISH).not()
+        }.filter {
+            user.settings.hiddenLessons.any { hideLessonEntity ->
+                hideLessonEntity.lesson == it.subject
+                        && hideLessonEntity.lessonType == it.lessonType
+                        && hideLessonEntity.subGroup == it.subGroup
+
+            }.not()
         }
 
         return schedule.copy(
@@ -57,6 +66,15 @@ class ScheduleServiceImpl(
     private fun tempFilterSchedule(schedule: Schedule, user: UserDto): Schedule {
         val filteredLessons = schedule.lessons.filter { lesson: Lesson ->
             lesson.group == user.settings.group
+        }.filter {
+            (it.lessonType == LessonType.COMMON_ENGLISH).not()
+        }.filter {
+            user.settings.hiddenLessons.any { hideLessonEntity ->
+                hideLessonEntity.lesson == it.subject
+                        && hideLessonEntity.lessonType == it.lessonType
+                        && hideLessonEntity.subGroup == it.subGroup
+
+            }.not()
         }
 
         return schedule.copy(

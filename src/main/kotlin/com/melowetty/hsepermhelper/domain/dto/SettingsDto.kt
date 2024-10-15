@@ -15,7 +15,7 @@ data class SettingsDto(
     @Schema(description = "Учебная подгруппа пользователя", example = "5")
     val subGroup: Int = 0,
 
-    val hiddenLessons: Set<HideLessonEntity>,
+    val hiddenLessons: Set<HideLessonDto>,
 
     @Schema(description = "Включены ли уведомления о новом расписании", example = "true")
     val isEnabledNewScheduleNotifications: Boolean = true,

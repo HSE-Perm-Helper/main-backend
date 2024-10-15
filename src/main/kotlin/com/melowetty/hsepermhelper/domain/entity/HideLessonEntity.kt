@@ -23,4 +23,9 @@ data class HideLessonEntity(
 
     val subGroup: Int?
 
-)
+) {
+    @Override
+    override fun toString(): String {
+        return this::class.simpleName + "(lesson = $lesson , lessonType = $lessonType , subGroup = $subGroup )"
+    }
+}
