@@ -47,13 +47,8 @@ class ScheduleServiceImpl(
             if (lesson.subGroup != null) lesson.group == user.settings.group
                     && lesson.subGroup == user.settings.subGroup
             else lesson.group == user.settings.group
-        }.filter {
-            if (it.lessonType != LessonType.COMMON_ENGLISH) true
-            else user.settings.includeCommonEnglish
-        }.filter {
-            if (it.lessonType != LessonType.COMMON_MINOR) true
-            else user.settings.includeCommonMinor
         }
+        
         return schedule.copy(
             lessons = filteredLessons
         )
@@ -72,13 +67,8 @@ class ScheduleServiceImpl(
     private fun tempFilterSchedule(schedule: Schedule, user: UserDto): Schedule {
         val filteredLessons = schedule.lessons.filter { lesson: Lesson ->
             lesson.group == user.settings.group
-        }.filter {
-            if (it.lessonType != LessonType.COMMON_ENGLISH) true
-            else user.settings.includeCommonEnglish
-        }.filter {
-            if (it.lessonType != LessonType.COMMON_MINOR) true
-            else user.settings.includeCommonMinor
         }
+
         return schedule.copy(
             lessons = filteredLessons.map {
                 if (it.subGroup == null) it
