@@ -3,6 +3,7 @@ package com.melowetty.hsepermhelper.service.impl
 import com.melowetty.hsepermhelper.domain.dto.UserDto
 import com.melowetty.hsepermhelper.exception.ScheduleNotFoundException
 import com.melowetty.hsepermhelper.extension.ScheduleExtensions.Companion.toScheduleInfo
+import com.melowetty.hsepermhelper.extension.UserExtensions.Companion.getGroupedBySettingsUsers
 import com.melowetty.hsepermhelper.model.Lesson
 import com.melowetty.hsepermhelper.model.LessonType
 import com.melowetty.hsepermhelper.model.Schedule
@@ -123,26 +124,23 @@ class ScheduleServiceImpl(
             )
             notificationService.sendNotification(scheduleAddedNotification)
         }
-        editedSchedules.forEach {
+        editedSchedules.forEach outerFor@ { schedule ->
             val users = mutableSetOf<Long>()
             userService.getAllUsers()
                 .filter { user ->
                     user.settings.isEnabledChangedScheduleNotifications
                 }
-                .distinctBy { "${it.settings.group} ${it.settings.subGroup}" }.forEach { user ->
-                    val before = filterSchedule(it.before, user)
-                    val after = filterSchedule(it.after, user)
+                .getGroupedBySettingsUsers().forEach { (_, groupedUsers) ->
+                    val user = groupedUsers.firstOrNull() ?: return@forEach
+                    val before = filterSchedule(schedule.before, user)
+                    val after = filterSchedule(schedule.after, user)
                     if (before.lessons.toHashSet() != after.lessons.toHashSet()) {
-                        users.addAll(userService.getAllUsers().filter {
-                            it.settings.group == user.settings.group
-                                    && it.settings.subGroup == user.settings.subGroup
-                        }
-                            .map { it.telegramId })
+                        users.addAll(groupedUsers.map { it.telegramId })
                     }
                 }
             if (users.isNotEmpty()) {
                 val scheduleChangedEvent = ScheduleChangedForUserNotification(
-                    targetSchedule = it.after.toScheduleInfo(),
+                    targetSchedule = schedule.after.toScheduleInfo(),
                     users = users.toList()
                 )
                 notificationService.sendNotification(scheduleChangedEvent)

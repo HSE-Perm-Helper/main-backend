@@ -28,8 +28,6 @@ class UserExtensions {
                 id = id,
                 group = group,
                 subGroup = subGroup,
-                includeCommonEnglish = includeCommonEnglish,
-                includeCommonMinor = includeCommonMinor,
                 isEnabledNewScheduleNotifications = isEnabledNewScheduleNotifications,
                 isEnabledChangedScheduleNotifications = isEnabledChangedScheduleNotifications,
                 isEnabledComingLessonsNotifications = isEnabledComingLessonsNotifications,
@@ -41,12 +39,18 @@ class UserExtensions {
                 id = id,
                 group = group,
                 subGroup = subGroup,
-                includeCommonEnglish = includeCommonEnglish,
-                includeCommonMinor = includeCommonMinor,
                 isEnabledNewScheduleNotifications = isEnabledNewScheduleNotifications,
                 isEnabledChangedScheduleNotifications = isEnabledChangedScheduleNotifications,
                 isEnabledComingLessonsNotifications = isEnabledComingLessonsNotifications,
             )
         }
+
+        fun Iterable<UserEntity>.getGroupedBySettingsUsers() =
+            this
+                .groupBy { "${it.settings.group} ${it.settings.subGroup}}" }
+
+        fun Iterable<UserDto>.getGroupedBySettingsUsers() =
+            this
+                .groupBy { "${it.settings.group} ${it.settings.subGroup}" }
     }
 }

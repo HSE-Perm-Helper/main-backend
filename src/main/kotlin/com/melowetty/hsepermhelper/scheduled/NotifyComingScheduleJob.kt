@@ -2,6 +2,7 @@ package com.melowetty.hsepermhelper.scheduled
 
 import com.melowetty.hsepermhelper.annotation.Slf4j
 import com.melowetty.hsepermhelper.domain.entity.UserEntity
+import com.melowetty.hsepermhelper.extension.UserExtensions.Companion.getGroupedBySettingsUsers
 import com.melowetty.hsepermhelper.model.Schedule
 import com.melowetty.hsepermhelper.notification.UpcomingLessonsNotification
 import com.melowetty.hsepermhelper.repository.UserRepository
@@ -23,7 +24,8 @@ class NotifyComingScheduleJob(
     @Scheduled(cron = "0 0 19 * * 0-5", zone = DateUtils.PERM_TIME_ZONE_STR)
     fun notifyComingLessons() {
         val currentDate = LocalDate.now().plusDays(1)
-        getGroupedBySettingsUsers()
+        userRepository.findAllBySettings_IsEnabledComingLessonsNotifications(true)
+            .getGroupedBySettingsUsers()
             .forEach { (_, users) ->
                 if (users.isEmpty()) return@forEach
                 val upcomingSchedule = getUpcomingSchedule(currentDate, users.first()) ?: return@forEach
@@ -37,10 +39,6 @@ class NotifyComingScheduleJob(
                 notificationService.sendNotification(notification)
             }
     }
-
-    private fun getGroupedBySettingsUsers() =
-        userRepository.findAllBySettings_IsEnabledComingLessonsNotifications(true)
-            .groupBy { "${it.settings.group} ${it.settings.subGroup} ${it.settings.includeCommonEnglish} ${it.settings.includeCommonMinor}" }
 
     private fun getCurrentSchedule(currentDate: LocalDate, user: UserEntity): Schedule? {
         val schedules = scheduleService.getUserSchedulesById(id = user.id)
