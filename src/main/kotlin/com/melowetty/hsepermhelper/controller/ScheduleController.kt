@@ -188,6 +188,6 @@ class ScheduleController(
         produces = [MediaType.APPLICATION_JSON_VALUE]
     )
     fun getAvailableLessonsForHiding(@RequestParam telegramId: Long): List<AvailableLessonForHiding> {
-        return scheduleService.getAvailableLessonsForHiding(telegramId).sortedBy { it.lesson }
+        return scheduleService.getAvailableLessonsForHiding(telegramId).sortedBy { it.lessonType.ordinal }.sortedBy { it.lesson }
     }
 }
