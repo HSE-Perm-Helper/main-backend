@@ -5,6 +5,8 @@ import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.EnumType
 import jakarta.persistence.Enumerated
+import jakarta.persistence.GeneratedValue
+import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
 import jakarta.persistence.Table
 
@@ -12,20 +14,21 @@ import jakarta.persistence.Table
 @Table(name = "hide_lesson")
 data class HideLessonEntity(
     @Id
-    val id: Long,
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    val id: Long? = null,
 
     @Column(nullable = false)
-    val lesson: String,
+    val lesson: String = "",
 
     @Enumerated(value = EnumType.STRING)
     @Column(nullable = false)
-    val lessonType: LessonType,
+    val lessonType: LessonType = LessonType.TEST,
 
-    val subGroup: Int?
+    val subGroup: Int? = null,
 
 ) {
     @Override
     override fun toString(): String {
-        return this::class.simpleName + "(lesson = $lesson , lessonType = $lessonType , subGroup = $subGroup )"
+        return this::class.simpleName + "(  lesson = $lesson   ,   lessonType = $lessonType   ,   subGroup = $subGroup )"
     }
 }

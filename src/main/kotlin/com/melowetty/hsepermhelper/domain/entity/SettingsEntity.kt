@@ -1,5 +1,6 @@
 package com.melowetty.hsepermhelper.domain.entity
 
+import jakarta.persistence.CascadeType
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.GeneratedValue
@@ -22,7 +23,7 @@ data class SettingsEntity(
     @Column(name = "user_sub_group")
     val subGroup: Int = 0,
 
-    @OneToMany
+    @OneToMany(orphanRemoval = true, cascade = [CascadeType.ALL])
     val hiddenLessons: Set<HideLessonEntity>,
 
     @Column(name = "is_enabled_new_schedule_notification", columnDefinition = "BOOLEAN DEFAULT true")

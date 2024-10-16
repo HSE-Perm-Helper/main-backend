@@ -9,6 +9,7 @@ import com.melowetty.hsepermhelper.exception.UserIsExistsException
 import com.melowetty.hsepermhelper.exception.UserNotFoundException
 import com.melowetty.hsepermhelper.extension.UserExtensions.Companion.toDto
 import com.melowetty.hsepermhelper.extension.UserExtensions.Companion.toEntity
+import com.melowetty.hsepermhelper.repository.HiddenLessonRepository
 import com.melowetty.hsepermhelper.repository.UserRepository
 import com.melowetty.hsepermhelper.service.UserService
 import org.springframework.stereotype.Service
@@ -18,6 +19,7 @@ import java.util.UUID
 @Service
 class UserServiceImpl(
     private val userRepository: UserRepository,
+    private val hiddenLessonRepository: HiddenLessonRepository,
 ) : UserService {
     override fun getByTelegramId(telegramId: Long): UserDto {
         val user = userRepository.findByTelegramId(telegramId)
@@ -86,14 +88,25 @@ class UserServiceImpl(
     override fun addHiddenLesson(telegramId: Long, lesson: HideLessonDto): UserDto {
         val user = getUserEntityByTelegramId(telegramId)
         val hiddenLessons = user.settings.hiddenLessons.toMutableSet()
-        hiddenLessons.add(
+
+        if (hiddenLessons.any {
+                it.lesson == lesson.lesson
+                        && it.lessonType == lesson.lessonType
+                        && it.subGroup == lesson.subGroup
+            }) {
+            throw RuntimeException("Эта пара уже скрыта!")
+        }
+
+        val lessonEntity = hiddenLessonRepository.save(
             HideLessonEntity(
-                id = 0,
                 lesson = lesson.lesson,
                 lessonType = lesson.lessonType,
                 subGroup = lesson.subGroup
             )
         )
+
+        hiddenLessons.add(lessonEntity)
+
         return userRepository.save(
             user.copy(
                 settings = user.settings.copy(
@@ -106,11 +119,18 @@ class UserServiceImpl(
     override fun removeHiddenLesson(telegramId: Long, lesson: HideLessonDto): UserDto {
         val user = getUserEntityByTelegramId(telegramId)
         val hiddenLessons = user.settings.hiddenLessons.toMutableSet()
+
         hiddenLessons.removeIf {
-            it.lesson == lesson.lesson
+            if (it.lesson == lesson.lesson
                     && it.lessonType == lesson.lessonType
-                    && it.subGroup == lesson.subGroup
+                && it.subGroup == lesson.subGroup
+            ) {
+                hiddenLessonRepository.delete(it)
+                return@removeIf true
+            }
+            return@removeIf false
         }
+
         return userRepository.save(
             user.copy(
                 settings = user.settings.copy(
@@ -122,6 +142,9 @@ class UserServiceImpl(
 
     override fun clearHiddenLessons(telegramId: Long): UserDto {
         val user = getUserEntityByTelegramId(telegramId)
+
+        hiddenLessonRepository.deleteAllInBatch(user.settings.hiddenLessons)
+
         return userRepository.save(
             user.copy(
                 settings = user.settings.copy(hiddenLessons = setOf())
