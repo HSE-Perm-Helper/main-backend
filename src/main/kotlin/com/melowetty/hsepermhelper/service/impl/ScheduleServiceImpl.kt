@@ -3,10 +3,13 @@ package com.melowetty.hsepermhelper.service.impl
 import com.melowetty.hsepermhelper.domain.dto.UserDto
 import com.melowetty.hsepermhelper.exception.ScheduleNotFoundException
 import com.melowetty.hsepermhelper.extension.ScheduleExtensions.Companion.toScheduleInfo
+import com.melowetty.hsepermhelper.extension.UserExtensions.Companion.getGroupedBySettingsUsers
+import com.melowetty.hsepermhelper.model.AvailableLessonForHiding
 import com.melowetty.hsepermhelper.model.Lesson
 import com.melowetty.hsepermhelper.model.LessonType
 import com.melowetty.hsepermhelper.model.Schedule
 import com.melowetty.hsepermhelper.model.ScheduleInfo
+import com.melowetty.hsepermhelper.model.ScheduleType
 import com.melowetty.hsepermhelper.model.SchedulesChanging
 import com.melowetty.hsepermhelper.notification.ScheduleAddedNotification
 import com.melowetty.hsepermhelper.notification.ScheduleChangedForUserNotification
@@ -29,17 +32,21 @@ class ScheduleServiceImpl(
     private val userService: UserService,
     private val notificationService: NotificationService
 ) : ScheduleService {
-    private fun filterSchedules(schedules: List<Schedule>, user: UserDto): List<Schedule> {
+    private fun filterSchedules(
+        schedules: List<Schedule>,
+        user: UserDto,
+        withoutHiddenLessons: Boolean = true
+    ): List<Schedule> {
         val filteredSchedules = schedules.map { schedule ->
-            filterSchedule(schedule, user)
+            filterSchedule(schedule, user, withoutHiddenLessons)
         }
         return filteredSchedules
     }
 
-    private fun filterSchedule(schedule: Schedule, user: UserDto): Schedule {
-        val course = getCourseFromGroup(user.settings.group) // todo TEMP FIX
-        if (course == 3 || course == 4 || getShortGroupFromGroup(user.settings.group) == "ИЯ") {
-            return tempFilterSchedule(schedule, user)
+    fun filterSchedule(schedule: Schedule, user: UserDto, withoutHiddenLessons: Boolean = true): Schedule {
+        val course = ScheduleUtils.getCourseFromGroup(user.settings.group) // todo TEMP FIX
+        if (course == 3 || course == 4 || ScheduleUtils.getShortGroupFromGroup(user.settings.group) == "ИЯ") {
+            return tempFilterSchedule(schedule, user, withoutHiddenLessons)
         }
 
         val filteredLessons = schedule.lessons.filter { lesson: Lesson ->
@@ -47,42 +54,45 @@ class ScheduleServiceImpl(
                     && lesson.subGroup == user.settings.subGroup
             else lesson.group == user.settings.group
         }.filter {
-            if (it.lessonType != LessonType.COMMON_ENGLISH) true
-            else user.settings.includeCommonEnglish
+            (it.lessonType == LessonType.COMMON_ENGLISH).not()
         }.filter {
-            if (it.lessonType != LessonType.COMMON_MINOR) true
-            else user.settings.includeCommonMinor
+            if (withoutHiddenLessons) {
+                return@filter user.settings.hiddenLessons.any { hideLessonEntity ->
+                    hideLessonEntity.lesson == it.subject
+                            && hideLessonEntity.lessonType == it.lessonType
+                            && hideLessonEntity.subGroup == user.settings.subGroup
+
+                }.not()
+            }
+            return@filter true
+        }.map {
+            it.copy(subGroup = null)
         }
+
         return schedule.copy(
             lessons = filteredLessons
         )
     }
 
-    private fun getCourseFromGroup(group: String): Int {
-        val dividedGroup = group.split("-")
-        val year = dividedGroup[1].toInt()
-        return 25 - year
-    }
-
-    private fun getShortGroupFromGroup(group: String): String {
-        return group.split("-")[0]
-    }
-
-    private fun tempFilterSchedule(schedule: Schedule, user: UserDto): Schedule {
+    private fun tempFilterSchedule(schedule: Schedule, user: UserDto, withoutHiddenLessons: Boolean): Schedule {
         val filteredLessons = schedule.lessons.filter { lesson: Lesson ->
             lesson.group == user.settings.group
         }.filter {
-            if (it.lessonType != LessonType.COMMON_ENGLISH) true
-            else user.settings.includeCommonEnglish
+            (it.lessonType == LessonType.COMMON_ENGLISH).not()
         }.filter {
-            if (it.lessonType != LessonType.COMMON_MINOR) true
-            else user.settings.includeCommonMinor
-        }
-        return schedule.copy(
-            lessons = filteredLessons.map {
-                if (it.subGroup == null) it
-                else it.copy(subject = "${it.subject} <b>(${it.subGroup} подгруппа)</b>")
+            if (withoutHiddenLessons) {
+                return@filter user.settings.hiddenLessons.any { hideLessonEntity ->
+                    hideLessonEntity.lesson == it.subject
+                            && hideLessonEntity.lessonType == it.lessonType
+                            && hideLessonEntity.subGroup == it.subGroup
+
+                }.not()
             }
+            return@filter true
+        }
+
+        return schedule.copy(
+            lessons = filteredLessons
         )
     }
 
@@ -123,26 +133,23 @@ class ScheduleServiceImpl(
             )
             notificationService.sendNotification(scheduleAddedNotification)
         }
-        editedSchedules.forEach {
+        editedSchedules.forEach outerFor@{ schedule ->
             val users = mutableSetOf<Long>()
             userService.getAllUsers()
                 .filter { user ->
                     user.settings.isEnabledChangedScheduleNotifications
                 }
-                .distinctBy { "${it.settings.group} ${it.settings.subGroup}" }.forEach { user ->
-                    val before = filterSchedule(it.before, user)
-                    val after = filterSchedule(it.after, user)
+                .getGroupedBySettingsUsers().forEach { (_, groupedUsers) ->
+                    val user = groupedUsers.firstOrNull() ?: return@forEach
+                    val before = filterSchedule(schedule.before, user)
+                    val after = filterSchedule(schedule.after, user)
                     if (before.lessons.toHashSet() != after.lessons.toHashSet()) {
-                        users.addAll(userService.getAllUsers().filter {
-                            it.settings.group == user.settings.group
-                                    && it.settings.subGroup == user.settings.subGroup
-                        }
-                            .map { it.telegramId })
+                        users.addAll(groupedUsers.map { it.telegramId })
                     }
                 }
             if (users.isNotEmpty()) {
                 val scheduleChangedEvent = ScheduleChangedForUserNotification(
-                    targetSchedule = it.after.toScheduleInfo(),
+                    targetSchedule = schedule.after.toScheduleInfo(),
                     users = users.toList()
                 )
                 notificationService.sendNotification(scheduleChangedEvent)
@@ -183,5 +190,23 @@ class ScheduleServiceImpl(
 
         val schedule = ScheduleUtils.getWeekScheduleByDate(schedules, tomorrowDate) ?: return listOf()
         return ScheduleUtils.getLessonsAtDateInWeekSchedule(schedule, tomorrowDate)
+    }
+
+    override fun getAvailableLessonsForHiding(telegramId: Long): List<AvailableLessonForHiding> {
+        val user = userService.getByTelegramId(telegramId)
+
+        val schedule = filterSchedules(scheduleRepository.getSchedules(), user, withoutHiddenLessons = false)
+            .firstOrNull {
+                it.scheduleType == ScheduleType.QUARTER_SCHEDULE
+            } ?: throw ScheduleNotFoundException("Расписания на модуль пока нет")
+
+        val blacklistTypes =
+            setOf(LessonType.COMMON_ENGLISH, LessonType.COMMON_MINOR, LessonType.ENGLISH, LessonType.MINOR)
+
+        return schedule.lessons.map {
+            AvailableLessonForHiding(lesson = it.subject, lessonType = it.lessonType, subGroup = it.subGroup)
+        }.filter {
+            blacklistTypes.contains(it.lessonType).not()
+        }
     }
 }

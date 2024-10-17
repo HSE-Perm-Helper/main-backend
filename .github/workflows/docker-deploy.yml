@@ -9,15 +9,15 @@ jobs:
     name: Service deploying
     runs-on: ubuntu-latest
     steps:
-    - name: executing remote ssh commands
-      uses: appleboy/ssh-action@v1.0.0
-      with:
-        host: ${{ secrets.HOST }}
-        username: ${{ secrets.USERNAME }}
-        password: ${{ secrets.PASSWORD }}
-        script: |
-          cd /projects/main-backend
-          git pull
-          docker pull melowetty/main-backend
-          docker-compose up -d
-          docker system prune --all --force
+      - name: executing remote ssh commands
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          password: ${{ secrets.PASSWORD }}
+          script: |
+            cd /projects/main-backend
+            git pull
+            docker pull melowetty/main-backend
+            docker-compose up -d
+            docker system prune --all --force
