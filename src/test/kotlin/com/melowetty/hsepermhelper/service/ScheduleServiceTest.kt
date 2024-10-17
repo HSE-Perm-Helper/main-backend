@@ -66,7 +66,7 @@ class ScheduleServiceTest {
 
         val actual = scheduleService.filterSchedule(schedule, user).lessons.toHashSet()
         val expected =
-            setOf(lesson, lesson.copy(subject = "Test Hidden", subGroup = 1, lessonType = LessonType.SEMINAR))
+            setOf(lesson.copy(subGroup = null), lesson.copy(subject = "Test Hidden", subGroup = null, lessonType = LessonType.SEMINAR))
 
         assertEquals(expected, actual)
     }
@@ -105,8 +105,8 @@ class ScheduleServiceTest {
 
         val actual = scheduleService.filterSchedule(schedule, user).lessons.toHashSet()
         val expected = setOf(
-            lesson.copy(subject = lesson.subject + " <b>(1 подгруппа)</b>"),
-            lesson.copy(subject = "Test Hidden <b>(2 подгруппа)</b>", subGroup = 2, lessonType = LessonType.SEMINAR)
+            lesson.copy(subject = lesson.subject),
+            lesson.copy(subject = "Test Hidden", subGroup = 2, lessonType = LessonType.SEMINAR)
         )
 
         assertEquals(expected, actual)
