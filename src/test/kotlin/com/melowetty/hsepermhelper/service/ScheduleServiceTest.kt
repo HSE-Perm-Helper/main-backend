@@ -3,7 +3,6 @@ package com.melowetty.hsepermhelper.service
 import com.melowetty.hsepermhelper.domain.dto.HideLessonDto
 import com.melowetty.hsepermhelper.domain.dto.SettingsDto
 import com.melowetty.hsepermhelper.domain.dto.UserDto
-import com.melowetty.hsepermhelper.domain.entity.HideLessonEntity
 import com.melowetty.hsepermhelper.model.Lesson
 import com.melowetty.hsepermhelper.model.LessonType
 import com.melowetty.hsepermhelper.model.Schedule
@@ -46,22 +45,28 @@ class ScheduleServiceTest {
             )
         )
 
-        val lesson = Lesson(subject = "Normal lesson", course = 1, programme = "РИС", "РИС-24-1", subGroup = 1, time = ScheduledTime(
-            LocalDate.now(), "11:00", "12:30"), lecturer = "test",
-            lessonType = LessonType.SEMINAR, parentScheduleType = ScheduleType.WEEK_SCHEDULE)
+        val lesson = Lesson(
+            subject = "Normal lesson", course = 1, programme = "РИС", "РИС-24-1", subGroup = 1, time = ScheduledTime(
+                LocalDate.now(), "11:00", "12:30"
+            ), lecturer = "test",
+            lessonType = LessonType.SEMINAR, parentScheduleType = ScheduleType.WEEK_SCHEDULE
+        )
 
         val schedule = Schedule(
             number = 0,
             scheduleType = ScheduleType.WEEK_SCHEDULE,
             start = LocalDate.now(),
             end = LocalDate.now(),
-            lessons = listOf(lesson, lesson.copy(subject = "Test Hidden", lessonType = LessonType.TEST),
+            lessons = listOf(
+                lesson, lesson.copy(subject = "Test Hidden", lessonType = LessonType.TEST),
                 lesson.copy(subject = "Test Hidden", subGroup = null),
-                lesson.copy(subject = "Test Hidden", subGroup = 1, lessonType = LessonType.SEMINAR))
+                lesson.copy(subject = "Test Hidden", subGroup = 1, lessonType = LessonType.SEMINAR)
+            )
         )
 
         val actual = scheduleService.filterSchedule(schedule, user).lessons.toHashSet()
-        val expected = setOf(lesson, lesson.copy(subject = "Test Hidden", subGroup = 1, lessonType = LessonType.SEMINAR))
+        val expected =
+            setOf(lesson, lesson.copy(subject = "Test Hidden", subGroup = 1, lessonType = LessonType.SEMINAR))
 
         assertEquals(expected, actual)
     }
@@ -79,22 +84,30 @@ class ScheduleServiceTest {
             )
         )
 
-        val lesson = Lesson(subject = "Normal lesson", course = 1, programme = "РИС", "РИС-22-1", subGroup = 1, time = ScheduledTime(
-            LocalDate.now(), "11:00", "12:30"), lecturer = "test",
-            lessonType = LessonType.SEMINAR, parentScheduleType = ScheduleType.WEEK_SCHEDULE)
+        val lesson = Lesson(
+            subject = "Normal lesson", course = 1, programme = "РИС", "РИС-22-1", subGroup = 1, time = ScheduledTime(
+                LocalDate.now(), "11:00", "12:30"
+            ), lecturer = "test",
+            lessonType = LessonType.SEMINAR, parentScheduleType = ScheduleType.WEEK_SCHEDULE
+        )
 
         val schedule = Schedule(
             number = 0,
             scheduleType = ScheduleType.WEEK_SCHEDULE,
             start = LocalDate.now(),
             end = LocalDate.now(),
-            lessons = listOf(lesson, lesson.copy(subject = "Test Hidden", lessonType = LessonType.TEST),
+            lessons = listOf(
+                lesson, lesson.copy(subject = "Test Hidden", lessonType = LessonType.TEST),
                 lesson.copy(subject = "Test Hidden", subGroup = null),
-                lesson.copy(subject = "Test Hidden", subGroup = 2, lessonType = LessonType.SEMINAR))
+                lesson.copy(subject = "Test Hidden", subGroup = 2, lessonType = LessonType.SEMINAR)
+            )
         )
 
         val actual = scheduleService.filterSchedule(schedule, user).lessons.toHashSet()
-        val expected = setOf(lesson.copy(subject = lesson.subject + " <b>(1 подгруппа)</b>"), lesson.copy(subject = "Test Hidden <b>(2 подгруппа)</b>", subGroup = 2, lessonType = LessonType.SEMINAR))
+        val expected = setOf(
+            lesson.copy(subject = lesson.subject + " <b>(1 подгруппа)</b>"),
+            lesson.copy(subject = "Test Hidden <b>(2 подгруппа)</b>", subGroup = 2, lessonType = LessonType.SEMINAR)
+        )
 
         assertEquals(expected, actual)
     }

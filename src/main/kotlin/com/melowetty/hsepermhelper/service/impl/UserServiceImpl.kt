@@ -122,7 +122,7 @@ class UserServiceImpl(
 
         hiddenLessons.removeIf {
             if (it.lesson == lesson.lesson
-                    && it.lessonType == lesson.lessonType
+                && it.lessonType == lesson.lessonType
                 && it.subGroup == lesson.subGroup
             ) {
                 hiddenLessonRepository.delete(it)

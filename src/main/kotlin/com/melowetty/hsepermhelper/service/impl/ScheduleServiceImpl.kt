@@ -32,7 +32,11 @@ class ScheduleServiceImpl(
     private val userService: UserService,
     private val notificationService: NotificationService
 ) : ScheduleService {
-    private fun filterSchedules(schedules: List<Schedule>, user: UserDto, withoutHiddenLessons: Boolean = true): List<Schedule> {
+    private fun filterSchedules(
+        schedules: List<Schedule>,
+        user: UserDto,
+        withoutHiddenLessons: Boolean = true
+    ): List<Schedule> {
         val filteredSchedules = schedules.map { schedule ->
             filterSchedule(schedule, user, withoutHiddenLessons)
         }
@@ -52,7 +56,7 @@ class ScheduleServiceImpl(
         }.filter {
             (it.lessonType == LessonType.COMMON_ENGLISH).not()
         }.filter {
-            if(withoutHiddenLessons) {
+            if (withoutHiddenLessons) {
                 return@filter user.settings.hiddenLessons.any { hideLessonEntity ->
                     hideLessonEntity.lesson == it.subject
                             && hideLessonEntity.lessonType == it.lessonType
@@ -76,7 +80,7 @@ class ScheduleServiceImpl(
         }.filter {
             (it.lessonType == LessonType.COMMON_ENGLISH).not()
         }.filter {
-            if(withoutHiddenLessons) {
+            if (withoutHiddenLessons) {
                 return@filter user.settings.hiddenLessons.any { hideLessonEntity ->
                     hideLessonEntity.lesson == it.subject
                             && hideLessonEntity.lessonType == it.lessonType
@@ -194,7 +198,7 @@ class ScheduleServiceImpl(
         val schedule = filterSchedules(scheduleRepository.getSchedules(), user, withoutHiddenLessons = false)
             .firstOrNull {
                 it.scheduleType == ScheduleType.QUARTER_SCHEDULE
-        } ?: throw ScheduleNotFoundException("Расписания на модуль пока нет")
+            } ?: throw ScheduleNotFoundException("Расписания на модуль пока нет")
 
         val blacklistTypes =
             setOf(LessonType.COMMON_ENGLISH, LessonType.COMMON_MINOR, LessonType.ENGLISH, LessonType.MINOR)
