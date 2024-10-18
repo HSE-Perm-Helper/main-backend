@@ -39,8 +39,8 @@ class ScheduleServiceTest {
                 group = "РИС-24-1",
                 subGroup = 1,
                 hiddenLessons = setOf(
-                    HideLessonDto(lesson = "Test Hidden", LessonType.TEST, subGroup = 1),
-                    HideLessonDto(lesson = "Test Hidden", LessonType.SEMINAR, subGroup = null)
+                    HideLessonDto(id = 1, lesson = "Test Hidden", LessonType.TEST, subGroup = 1),
+                    HideLessonDto(id = 2, lesson = "Test Hidden", LessonType.SEMINAR, subGroup = null)
                 )
             )
         )
@@ -78,8 +78,8 @@ class ScheduleServiceTest {
                 group = "РИС-22-1",
                 subGroup = 1,
                 hiddenLessons = setOf(
-                    HideLessonDto(lesson = "Test Hidden", LessonType.TEST, subGroup = 1),
-                    HideLessonDto(lesson = "Test Hidden", LessonType.SEMINAR, subGroup = null)
+                    HideLessonDto(id = 1, lesson = "Test Hidden", LessonType.TEST, subGroup = 1),
+                    HideLessonDto(id = 2 ,lesson = "Test Hidden", LessonType.SEMINAR, subGroup = null)
                 )
             )
         )

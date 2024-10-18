@@ -5,6 +5,7 @@ import com.melowetty.hsepermhelper.domain.dto.UserDto
 import com.melowetty.hsepermhelper.domain.entity.SettingsEntity
 import com.melowetty.hsepermhelper.domain.entity.UserEntity
 import com.melowetty.hsepermhelper.extension.HideLessonExtension.Companion.toDto
+import com.melowetty.hsepermhelper.extension.HideLessonExtension.Companion.toEntity
 
 class UserExtensions {
     companion object {
@@ -32,7 +33,7 @@ class UserExtensions {
                 isEnabledNewScheduleNotifications = isEnabledNewScheduleNotifications,
                 isEnabledChangedScheduleNotifications = isEnabledChangedScheduleNotifications,
                 isEnabledComingLessonsNotifications = isEnabledComingLessonsNotifications,
-                hiddenLessons = setOf(),
+                hiddenLessons = hiddenLessons.map { it.toEntity() }.toHashSet()
             )
         }
 
