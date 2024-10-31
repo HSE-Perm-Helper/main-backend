@@ -67,17 +67,23 @@ class HseTimetableExcelParserImpl(
         return parseScheduleInfo(scheduleInfo)
     }
 
-    private fun parseScheduleInfo(scheduleInfo: String): ParsedScheduleInfo? {
-        val scheduleInfoRegex = Regex("\\D*(\\d*).+\\s+(\\d+\\.\\d+\\.\\d+)\\s.+\\s(\\d+\\.\\d+\\.\\d+)")
-        val scheduleInfoMatches = scheduleInfoRegex.findAll(scheduleInfo)
-        val scheduleInfoGroups = scheduleInfoMatches.elementAt(0).groups
+    fun parseScheduleInfo(scheduleInfo: String): ParsedScheduleInfo? {
+        val scheduleInfoRegex = Regex("([\\d\\.]+)")
+        val scheduleInfoMatches = scheduleInfoRegex.findAll(scheduleInfo).toMutableList()
 
-        val scheduleNumber = (scheduleInfoGroups[1]?.value?.trim())?.toIntOrNull()
+        val scheduleNumber = (scheduleInfoMatches.first().groups[1]?.value?.trim())?.toIntOrNull()
 
-        val datePattern = DateTimeFormatter.ofPattern("dd.MM.yyyy")
+        if (scheduleInfoMatches.count() == 3) {
+            scheduleInfoMatches.removeFirst()
+        }
 
-        val scheduleStart = scheduleInfoGroups[2]?.value?.let { LocalDate.parse(it, datePattern) } ?: return null
-        val scheduleEnd = scheduleInfoGroups[3]?.value?.let { LocalDate.parse(it, datePattern) } ?: return null
+        val datePattern = DateTimeFormatter.ofPattern("ddMMyyyy")
+
+        val scheduleStart = scheduleInfoMatches.first().groups[1]?.value?.let { LocalDate.parse(it.replace(".", ""), datePattern) } ?: return null
+
+        scheduleInfoMatches.removeFirst()
+
+        val scheduleEnd = scheduleInfoMatches.first().groups[1]?.value?.let { LocalDate.parse(it.replace(".", ""), datePattern) } ?: return null
 
         val scheduleType = scheduleTypeChecker.getScheduleType(
             ParsedExcelInfo(
