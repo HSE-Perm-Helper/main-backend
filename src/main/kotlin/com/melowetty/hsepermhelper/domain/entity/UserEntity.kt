@@ -9,9 +9,11 @@ import jakarta.persistence.Id
 import jakarta.persistence.JoinColumn
 import jakarta.persistence.OneToOne
 import jakarta.persistence.Table
+import java.time.LocalDateTime
 import org.hibernate.annotations.OnDelete
 import org.hibernate.annotations.OnDeleteAction
 import java.util.UUID
+import org.springframework.data.annotation.CreatedDate
 
 @Entity
 @Table(name = "users")
@@ -25,6 +27,9 @@ data class UserEntity(
 
     @OneToOne(cascade = [CascadeType.ALL])
     @OnDelete(action = OnDeleteAction.CASCADE)
-    @JoinColumn(name = "user_id")
-    val settings: SettingsEntity
+    @JoinColumn(name = "settings_id")
+    val settings: SettingsEntity,
+
+    @CreatedDate
+    val createdDate: LocalDateTime = LocalDateTime.now()
 )
