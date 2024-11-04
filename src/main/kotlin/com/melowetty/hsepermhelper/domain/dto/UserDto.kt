@@ -1,6 +1,7 @@
 package com.melowetty.hsepermhelper.domain.dto
 
 import io.swagger.v3.oas.annotations.media.Schema
+import java.time.LocalDateTime
 import java.util.UUID
 
 @Schema(name = "User")
@@ -10,5 +11,7 @@ data class UserDto(
     @Schema(description = "Telegram ID пользователя", example = "123432412")
     val telegramId: Long = 0L,
     @Schema(description = "Настройки пользователя")
-    val settings: SettingsDto
+    val settings: SettingsDto,
+
+    val createdDate: LocalDateTime
 )
