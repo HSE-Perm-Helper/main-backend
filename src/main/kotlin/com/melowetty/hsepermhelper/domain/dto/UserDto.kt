@@ -13,5 +13,5 @@ data class UserDto(
     @Schema(description = "Настройки пользователя")
     val settings: SettingsDto,
 
-    val createdDate: LocalDateTime
+    val createdDate: LocalDateTime = LocalDateTime.now()
 )
