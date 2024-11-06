@@ -20,11 +20,11 @@ import com.melowetty.hsepermhelper.service.UserService
 import com.melowetty.hsepermhelper.util.DateUtils
 import com.melowetty.hsepermhelper.util.ScheduleUtils
 import com.melowetty.hsepermhelper.util.ScheduleUtils.Companion.filterWeekSchedules
-import org.springframework.context.event.EventListener
-import org.springframework.stereotype.Service
 import java.time.DayOfWeek
 import java.time.LocalDate
 import java.util.UUID
+import org.springframework.context.event.EventListener
+import org.springframework.stereotype.Service
 
 @Service
 class ScheduleServiceImpl(
@@ -134,7 +134,6 @@ class ScheduleServiceImpl(
             notificationService.sendNotification(scheduleAddedNotification)
         }
         editedSchedules.forEach outerFor@{ schedule ->
-            val users = mutableSetOf<Long>()
             userService.getAllUsers()
                 .filter { user ->
                     user.settings.isEnabledChangedScheduleNotifications
@@ -144,16 +143,14 @@ class ScheduleServiceImpl(
                     val before = filterSchedule(schedule.before, user)
                     val after = filterSchedule(schedule.after, user)
                     if (before.lessons.toHashSet() != after.lessons.toHashSet()) {
-                        users.addAll(groupedUsers.map { it.telegramId })
+                        val scheduleChangedEvent = ScheduleChangedForUserNotification(
+                            targetSchedule = schedule.after.toScheduleInfo(),
+                            users = groupedUsers.map { it.telegramId },
+                            differentDays = ScheduleUtils.getDifferentDaysByLessons(schedule.before, schedule.after)
+                        )
+                        notificationService.sendNotification(scheduleChangedEvent)
                     }
                 }
-            if (users.isNotEmpty()) {
-                val scheduleChangedEvent = ScheduleChangedForUserNotification(
-                    targetSchedule = schedule.after.toScheduleInfo(),
-                    users = users.toList()
-                )
-                notificationService.sendNotification(scheduleChangedEvent)
-            }
         }
     }
 

@@ -1,16 +1,18 @@
 package com.melowetty.hsepermhelper.util
 
+import com.melowetty.hsepermhelper.model.CycleTime
 import com.melowetty.hsepermhelper.model.Lesson
 import com.melowetty.hsepermhelper.model.LessonType
 import com.melowetty.hsepermhelper.model.Schedule
 import com.melowetty.hsepermhelper.model.ScheduleType
 import com.melowetty.hsepermhelper.model.ScheduledTime
 import com.melowetty.hsepermhelper.util.ScheduleUtils.Companion.filterWeekSchedules
+import java.time.DayOfWeek
+import java.time.LocalDate
 import org.hibernate.validator.internal.util.Contracts.assertTrue
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Test
-import java.time.LocalDate
 
 class ScheduleUtilsTest {
     @Test
@@ -147,6 +149,90 @@ class ScheduleUtilsTest {
         assertEquals(expected, actual)
     }
 
+    @Test
+    fun basicGetDifferentDaysByLessonsTest() {
+        val beforeSchedule = getSchedule()
+            .copy(
+                lessons = listOf(
+                    getLesson().copy(
+                        time = CycleTime(DayOfWeek.MONDAY, "9:40", "11:00"),
+                    ),
+                    getLesson().copy(
+                        time = CycleTime(DayOfWeek.THURSDAY, "9:40", "11:00"),
+                    ),
+                    getLesson().copy(
+                        time = CycleTime(DayOfWeek.FRIDAY, "9:40", "11:00"),
+                    )
+                )
+            )
+
+        val afterSchedule = getSchedule()
+            .copy(
+                lessons = listOf(
+                    getLesson().copy(
+                        time = CycleTime(DayOfWeek.MONDAY, "9:40", "11:00"),
+                    ),
+                    getLesson().copy(
+                        time = CycleTime(DayOfWeek.TUESDAY, "9:40", "11:00"),
+                    ),
+                    getLesson().copy(
+                        time = CycleTime(DayOfWeek.WEDNESDAY, "9:40", "11:00"),
+                    )
+                )
+            )
+
+        val actual = ScheduleUtils.getDifferentDaysByLessons(beforeSchedule, afterSchedule)
+        val expected = listOf(DayOfWeek.TUESDAY, DayOfWeek.WEDNESDAY, DayOfWeek.THURSDAY, DayOfWeek.FRIDAY)
+
+        assertEquals(expected, actual)
+    }
+
+    @Test
+    fun getDifferentDaysByLessonsWhenBeforeNoLessonsTest() {
+        val beforeSchedule = getSchedule()
+            .copy(lessons = listOf())
+
+        val afterSchedule = getSchedule()
+            .copy(
+                lessons = listOf(
+                    getLesson().copy(
+                        time = CycleTime(DayOfWeek.MONDAY, "9:40", "11:00"),
+                    ),
+                    getLesson().copy(
+                        time = CycleTime(DayOfWeek.TUESDAY, "9:40", "11:00"),
+                    ),
+                )
+            )
+
+        val actual = ScheduleUtils.getDifferentDaysByLessons(beforeSchedule, afterSchedule)
+        val expected = listOf(DayOfWeek.MONDAY, DayOfWeek.TUESDAY)
+
+        assertEquals(expected, actual)
+    }
+
+    @Test
+    fun getDifferentDaysByLessonsWhenAfterNoLessonsTest() {
+        val beforeSchedule = getSchedule()
+            .copy(
+                lessons = listOf(
+                    getLesson().copy(
+                        time = CycleTime(DayOfWeek.MONDAY, "9:40", "11:00"),
+                    ),
+                    getLesson().copy(
+                        time = CycleTime(DayOfWeek.TUESDAY, "9:40", "11:00"),
+                    ),
+                )
+            )
+
+        val afterSchedule = getSchedule()
+            .copy(lessons = listOf())
+
+        val actual = ScheduleUtils.getDifferentDaysByLessons(beforeSchedule, afterSchedule)
+        val expected = listOf(DayOfWeek.MONDAY, DayOfWeek.TUESDAY)
+
+        assertEquals(expected, actual)
+    }
+
     private fun getLesson(): Lesson {
         return Lesson(
             course = 1,
@@ -158,6 +244,7 @@ class ScheduleUtilsTest {
             subject = "test",
             subGroup = null,
             time = ScheduledTime(
+                dayOfWeek = DayOfWeek.MONDAY,
                 date = LocalDate.now(),
                 startTime = "9:40",
                 endTime = "11:00"

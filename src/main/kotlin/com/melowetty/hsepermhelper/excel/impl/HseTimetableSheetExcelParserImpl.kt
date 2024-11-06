@@ -13,14 +13,14 @@ import com.melowetty.hsepermhelper.model.LessonTime
 import com.melowetty.hsepermhelper.model.ScheduleType
 import com.melowetty.hsepermhelper.model.ScheduledTime
 import com.melowetty.hsepermhelper.util.RowUtils.Companion.getCellValue
+import java.time.DayOfWeek
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 import org.apache.poi.ss.usermodel.Cell
 import org.apache.poi.ss.usermodel.Font
 import org.apache.poi.ss.usermodel.Row
 import org.apache.poi.ss.usermodel.Sheet
 import org.springframework.stereotype.Component
-import java.time.DayOfWeek
-import java.time.LocalDate
-import java.time.format.DateTimeFormatter
 
 @Component
 @Slf4j
@@ -144,7 +144,7 @@ class HseTimetableSheetExcelParserImpl(
             lessonTime = CycleTime(day, startTime, endTime)
         } else {
             val date = LocalDate.parse(unparsedDate[1], DateTimeFormatter.ofPattern("dd.MM.yyyy"))
-            lessonTime = ScheduledTime(date, startTime, endTime)
+            lessonTime = ScheduledTime(date.dayOfWeek, date, startTime, endTime)
         }
 
         rowData.previousData.prevDay = rowData.row.getCellValue(1)!!

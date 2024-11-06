@@ -4,6 +4,7 @@ import com.melowetty.hsepermhelper.model.Lesson
 import com.melowetty.hsepermhelper.model.Schedule
 import com.melowetty.hsepermhelper.model.ScheduleType
 import com.melowetty.hsepermhelper.model.ScheduledTime
+import java.time.DayOfWeek
 import java.time.LocalDate
 
 class ScheduleUtils {
@@ -54,6 +55,27 @@ class ScheduleUtils {
 
         fun getShortGroupFromGroup(group: String): String {
             return group.split("-")[0]
+        }
+
+        fun getDifferentDaysByLessons(before: Schedule, after: Schedule): List<DayOfWeek> {
+            val changedDays = mutableSetOf<DayOfWeek>()
+            val daysForChecking = before.lessons.map { it.time.dayOfWeek }.toHashSet()
+            daysForChecking.addAll(after.lessons.map { it.time.dayOfWeek })
+
+            val groupedLessonsBefore = before.lessons.groupBy { it.time.dayOfWeek }
+            val groupedLessonsAfter = after.lessons.groupBy { it.time.dayOfWeek }
+
+            daysForChecking.forEach {
+                val beforeLessons = groupedLessonsBefore[it] ?: listOf()
+                val afterLessons = groupedLessonsAfter[it] ?: listOf()
+
+                if (beforeLessons.toHashSet() != afterLessons.toHashSet()) {
+                    changedDays.add(it)
+                }
+            }
+
+
+            return changedDays.sorted()
         }
     }
 }
