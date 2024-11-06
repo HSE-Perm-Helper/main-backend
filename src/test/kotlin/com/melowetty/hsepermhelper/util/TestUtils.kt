@@ -9,6 +9,7 @@ import com.melowetty.hsepermhelper.model.ScheduledTime
 import java.io.InputStream
 import java.nio.file.Files
 import java.nio.file.Path
+import java.time.DayOfWeek
 import java.time.LocalDate
 
 class TestUtils {
@@ -40,6 +41,7 @@ class TestUtils {
                 subject = "Программирование",
                 lessonType = LessonType.TEST,
                 time = ScheduledTime(
+                    dayOfWeek = DayOfWeek.MONDAY,
                     date = LocalDate.now(),
                     startTime = "9:40",
                     endTime = "11:00"

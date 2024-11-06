@@ -2,9 +2,11 @@ package com.melowetty.hsepermhelper.model
 
 import com.fasterxml.jackson.annotation.JsonIgnore
 import com.melowetty.hsepermhelper.util.DateUtils
+import java.time.DayOfWeek
 import java.time.LocalTime
 
 abstract class LessonTime(
+    open val dayOfWeek: DayOfWeek,
     open val startTime: String,
     open val endTime: String,
     @JsonIgnore

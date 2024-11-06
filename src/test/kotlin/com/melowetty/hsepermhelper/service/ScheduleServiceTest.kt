@@ -10,13 +10,14 @@ import com.melowetty.hsepermhelper.model.ScheduleType
 import com.melowetty.hsepermhelper.model.ScheduledTime
 import com.melowetty.hsepermhelper.repository.ScheduleRepository
 import com.melowetty.hsepermhelper.service.impl.ScheduleServiceImpl
+import java.time.DayOfWeek
+import java.time.LocalDate
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.junit.jupiter.MockitoExtension
-import java.time.LocalDate
 
 @ExtendWith(MockitoExtension::class)
 class ScheduleServiceTest {
@@ -47,7 +48,7 @@ class ScheduleServiceTest {
 
         val lesson = Lesson(
             subject = "Normal lesson", course = 1, programme = "РИС", "РИС-24-1", subGroup = 1, time = ScheduledTime(
-                LocalDate.now(), "11:00", "12:30"
+                DayOfWeek.MONDAY, LocalDate.now(), "11:00", "12:30"
             ), lecturer = "test",
             lessonType = LessonType.SEMINAR, parentScheduleType = ScheduleType.WEEK_SCHEDULE
         )
@@ -86,7 +87,7 @@ class ScheduleServiceTest {
 
         val lesson = Lesson(
             subject = "Normal lesson", course = 1, programme = "РИС", "РИС-22-1", subGroup = 1, time = ScheduledTime(
-                LocalDate.now(), "11:00", "12:30"
+                DayOfWeek.MONDAY, LocalDate.now(), "11:00", "12:30"
             ), lecturer = "test",
             lessonType = LessonType.SEMINAR, parentScheduleType = ScheduleType.WEEK_SCHEDULE
         )
