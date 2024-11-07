@@ -3,6 +3,7 @@ package com.melowetty.hsepermhelper.excel
 import com.melowetty.hsepermhelper.excel.impl.HseTimetableExcelParserImpl
 import com.melowetty.hsepermhelper.excel.model.ParsedScheduleInfo
 import com.melowetty.hsepermhelper.model.ScheduleType
+import com.melowetty.hsepermhelper.service.NotificationService
 import java.time.LocalDate
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
@@ -23,6 +24,9 @@ class HseTimetableExcelParserTest {
 
     @Mock
     private lateinit var typeChecker: HseTimetableScheduleTypeChecker
+
+    @Mock
+    private lateinit var notificationService: NotificationService
 
     @Test
     fun `get basic schedule info`() {
