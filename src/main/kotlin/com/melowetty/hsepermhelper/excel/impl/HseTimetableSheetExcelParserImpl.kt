@@ -12,6 +12,8 @@ import com.melowetty.hsepermhelper.model.Lesson
 import com.melowetty.hsepermhelper.model.LessonTime
 import com.melowetty.hsepermhelper.model.ScheduleType
 import com.melowetty.hsepermhelper.model.ScheduledTime
+import com.melowetty.hsepermhelper.notification.ServiceWarnNotification
+import com.melowetty.hsepermhelper.service.NotificationService
 import com.melowetty.hsepermhelper.util.RowUtils.Companion.getCellValue
 import java.time.DayOfWeek
 import java.time.LocalDate
@@ -25,7 +27,8 @@ import org.springframework.stereotype.Component
 @Component
 @Slf4j
 class HseTimetableSheetExcelParserImpl(
-    private val cellParser: HseTimetableCellExcelParser
+    private val cellParser: HseTimetableCellExcelParser,
+    private val notificationService: NotificationService,
 ) : HseTimetableSheetExcelParser {
     override fun parseSheet(sheet: Sheet, scheduleInfo: ParsedScheduleInfo): List<Lesson> {
         val lessons = mutableListOf<Lesson>()
@@ -97,6 +100,14 @@ class HseTimetableSheetExcelParserImpl(
                 log.error(
                     "Расписание: ${rowData.scheduleInfo}, sheet: ${row.sheet.sheetName}, cellAddress: ${cell.address}, value: $cellValue, stacktrace: ",
                     e
+                )
+
+                notificationService.sendNotification(
+                    ServiceWarnNotification(
+                        "Произошла ошибка во время обработки пары!\n" +
+                            "Расписание: ${rowData.scheduleInfo}, sheet: ${row.sheet.sheetName}, cellAddress: ${cell.address}, " +
+                            "value: $cellValue, stacktrace: ${e.stackTraceToString()}"
+                    )
                 )
             }
         }

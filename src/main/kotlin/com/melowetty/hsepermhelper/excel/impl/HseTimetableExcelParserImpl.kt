@@ -9,6 +9,8 @@ import com.melowetty.hsepermhelper.excel.model.ParsedExcelInfo
 import com.melowetty.hsepermhelper.excel.model.ParsedScheduleInfo
 import com.melowetty.hsepermhelper.model.Lesson
 import com.melowetty.hsepermhelper.model.Schedule
+import com.melowetty.hsepermhelper.notification.ServiceWarnNotification
+import com.melowetty.hsepermhelper.service.NotificationService
 import com.melowetty.hsepermhelper.util.RowUtils.Companion.getCellValue
 import org.apache.poi.ss.usermodel.Sheet
 import org.apache.poi.ss.usermodel.Workbook
@@ -22,7 +24,8 @@ import java.time.format.DateTimeFormatter
 @Slf4j
 class HseTimetableExcelParserImpl(
     private val sheetParser: HseTimetableSheetExcelParser,
-    private val scheduleTypeChecker: HseTimetableScheduleTypeChecker
+    private val scheduleTypeChecker: HseTimetableScheduleTypeChecker,
+    private val notificationService: NotificationService
 ) : HseTimetableExcelParser {
 
     private fun getWorkbook(inputStream: InputStream): Workbook {
@@ -57,6 +60,11 @@ class HseTimetableExcelParserImpl(
                 "Произошла ошибка во время обработки файла с расписанием! " +
                         "Stacktrace: ", exception
             )
+
+            notificationService.sendNotification(ServiceWarnNotification(
+                "Произошла ошибка во время обработки файла с расписанием! " +
+                        "Stacktrace: ${exception.stackTraceToString()}"
+            ))
             return null
         }
     }
