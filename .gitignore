@@ -43,3 +43,4 @@ src/main/resources/dev-env.properties
 .DS_Store
 .env
 docker-compose-postgres.yml
+amplicode.xml
