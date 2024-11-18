@@ -31,7 +31,6 @@ class UserExtensions {
             return SettingsEntity(
                 id = id,
                 group = group,
-                subGroup = subGroup,
                 isEnabledNewScheduleNotifications = isEnabledNewScheduleNotifications,
                 isEnabledChangedScheduleNotifications = isEnabledChangedScheduleNotifications,
                 isEnabledComingLessonsNotifications = isEnabledComingLessonsNotifications,
@@ -43,7 +42,6 @@ class UserExtensions {
             return SettingsDto(
                 id = id,
                 group = group,
-                subGroup = subGroup,
                 isEnabledNewScheduleNotifications = isEnabledNewScheduleNotifications,
                 isEnabledChangedScheduleNotifications = isEnabledChangedScheduleNotifications,
                 isEnabledComingLessonsNotifications = isEnabledComingLessonsNotifications,
@@ -53,10 +51,10 @@ class UserExtensions {
 
         fun Iterable<UserEntity>.getGroupedEntityBySettingsUsers() =
             this
-                .groupBy { "${it.settings.group} ${it.settings.subGroup}} ${it.settings.hiddenLessons}" }
+                .groupBy { "${it.settings.group} ${it.settings.hiddenLessons}" }
 
         fun Iterable<UserDto>.getGroupedBySettingsUsers() =
             this
-                .groupBy { "${it.settings.group} ${it.settings.subGroup} ${it.settings.hiddenLessons}" }
+                .groupBy { "${it.settings.group} ${it.settings.hiddenLessons}" }
     }
 }

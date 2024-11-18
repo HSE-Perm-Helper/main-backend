@@ -11,9 +11,6 @@ data class SettingsDto(
     @Schema(description = "Учебная группа пользователя", example = "РИС-22-3")
     val group: String = "",
 
-    @Schema(description = "Учебная подгруппа пользователя", example = "5")
-    val subGroup: Int = 0,
-
     val hiddenLessons: Set<HideLessonDto> = setOf(),
 
     @Schema(description = "Включены ли уведомления о новом расписании", example = "true")

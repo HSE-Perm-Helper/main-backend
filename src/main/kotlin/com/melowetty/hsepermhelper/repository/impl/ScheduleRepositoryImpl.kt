@@ -83,25 +83,4 @@ class ScheduleRepositoryImpl(
         if (groups.isEmpty()) throw IllegalArgumentException("Программа не найдена в расписании!")
         return groups
     }
-
-    override fun getAvailableSubgroups(course: Int, program: String, group: String): List<Int> {
-        if (schedules.isEmpty()) throw ScheduleNotFoundException("Расписание не найдено!")
-        val groups = getAvailableGroups(course, program)
-        if (groups.isEmpty()) throw IllegalArgumentException("Группа не найдена в расписании!")
-        val groupNumRegex = Regex("[А-Яа-яЁёa-zA-Z]+-\\d*-(\\d*)")
-        try {
-            val matches = groupNumRegex.find(groups.last())
-            val lastGroupNumMatch = matches!!.groups[1]
-            val lastGroupNum = lastGroupNumMatch!!.value.toInt()
-            var count = 2
-
-            if (program == "ИЯ") {
-                count = 3
-            }
-
-            return (1..lastGroupNum * count).toList()
-        } catch (e: Exception) {
-            throw RuntimeException("Возникли проблемы с обработкой группы!")
-        }
-    }
 }

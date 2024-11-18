@@ -14,12 +14,11 @@ class UserExtensionsTest {
         val user = UserEntity(
             settings = SettingsEntity(
                 group = "РИС-22-3",
-                subGroup = 1,
                 hiddenLessons = setOf(HideLessonEntity(id = 0, lesson = "Test", lessonType = LessonType.TEST, 2))
             )
         )
 
-        val users = listOf(user, user.copy(settings = user.settings.copy(subGroup = 2)), user.copy())
+        val users = listOf(user, user.copy(settings = user.settings.copy(group = "РИС-22-2")), user.copy())
 
         val groupedUsers = users.getGroupedEntityBySettingsUsers()
 
