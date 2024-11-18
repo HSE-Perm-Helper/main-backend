@@ -9,6 +9,15 @@ plugins {
     id("jacoco")
 }
 val springCloudVersion by extra("2022.0.4")
+val apachePoiVersion = "5.2.3"
+val postgresVersion = "42.6.0"
+val slf4jVersion = "2.0.0"
+val springDocStarterVersion = "2.2.0"
+val springDocKotlinVersion = "1.7.0"
+val mockitoVersion = "5.11.0"
+val mockitoKotlinVersion = "5.4.0"
+val jsoupVersion = "1.16.1"
+
 group = "com.melowetty"
 version = "1.03.0"
 
@@ -27,32 +36,33 @@ allOpen {
 }
 
 dependencies {
+    implementation("org.liquibase:liquibase-core")
+    implementation("org.postgresql:postgresql:${postgresVersion}")
+    implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
-    implementation("org.postgresql:postgresql:42.6.0")
+    implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
+    implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.springframework.cloud:spring-cloud-starter-netflix-eureka-client")
     implementation("org.springframework.boot:spring-boot-starter-actuator")
     implementation("org.springframework.kafka:spring-kafka")
-    implementation("org.liquibase:liquibase-core")
-    testImplementation("org.springframework.kafka:spring-kafka-test")
-    annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
-    implementation("org.springframework.boot:spring-boot-starter-data-jpa:3.1.2")
-    implementation("org.springframework.boot:spring-boot-starter-validation:3.1.2")
+    implementation("org.springframework.boot:spring-boot-starter-validation")
     implementation("org.springframework.boot:spring-boot-starter-web")
-    implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
-    implementation("org.jetbrains.kotlin:kotlin-reflect")
-    implementation("org.slf4j:slf4j-api:2.0.0")
+    implementation("org.slf4j:slf4j-api:${slf4jVersion}")
+    implementation("org.apache.poi:poi:${apachePoiVersion}")
+    implementation("org.apache.poi:poi-ooxml:${apachePoiVersion}")
+    implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:${springDocStarterVersion}")
+    implementation("org.jsoup:jsoup:${jsoupVersion}")
+
+    annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
+
+    runtimeOnly("org.springdoc:springdoc-openapi-kotlin:${springDocKotlinVersion}")
+
     developmentOnly("org.springframework.boot:spring-boot-devtools")
+
     testImplementation("org.springframework.boot:spring-boot-starter-test")
-    testImplementation("org.mockito:mockito-core:5.11.0")
-    testImplementation("org.mockito.kotlin:mockito-kotlin:5.4.0")
-    /* [Excel Parsing Module] */
-    implementation("org.apache.poi:poi:5.2.3")
-    implementation("org.apache.poi:poi-ooxml:5.2.3")
-    /* [Swagger] */
-    implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.2.0")
-    runtimeOnly("org.springdoc:springdoc-openapi-kotlin:1.7.0")
-    // jsoup HTML parser library @ https://jsoup.org/
-    implementation("org.jsoup:jsoup:1.16.1")
+    testImplementation("org.springframework.kafka:spring-kafka-test")
+    testImplementation("org.mockito:mockito-core:${mockitoVersion}")
+    testImplementation("org.mockito.kotlin:mockito-kotlin:${mockitoKotlinVersion}")
 }
 dependencyManagement {
     imports {
