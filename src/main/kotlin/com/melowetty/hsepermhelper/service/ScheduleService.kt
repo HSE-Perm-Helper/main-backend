@@ -48,8 +48,6 @@ interface ScheduleService {
 
     fun getAvailableGroups(course: Int, program: String): List<String>
 
-    fun getAvailableSubgroups(course: Int, program: String, group: String): List<Int>
-
     fun getTodayLessons(telegramId: Long): List<Lesson>
 
     fun getTomorrowLessons(telegramId: Long): List<Lesson>

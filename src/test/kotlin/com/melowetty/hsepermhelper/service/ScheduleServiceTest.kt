@@ -38,7 +38,6 @@ class ScheduleServiceTest {
         val user = UserDto(
             settings = SettingsDto(
                 group = "РИС-24-1",
-                subGroup = 1,
                 hiddenLessons = setOf(
                     HideLessonDto(id = 1, lesson = "Test Hidden", LessonType.TEST, subGroup = 1),
                     HideLessonDto(id = 2, lesson = "Test Hidden", LessonType.SEMINAR, subGroup = null)

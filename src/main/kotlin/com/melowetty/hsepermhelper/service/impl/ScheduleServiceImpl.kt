@@ -135,10 +135,6 @@ class ScheduleServiceImpl(
         return scheduleRepository.getAvailableGroups(course = course, program = program)
     }
 
-    override fun getAvailableSubgroups(course: Int, program: String, group: String): List<Int> {
-        return scheduleRepository.getAvailableSubgroups(course = course, program = program, group = group)
-    }
-
     override fun getTodayLessons(telegramId: Long): List<Lesson> {
         val schedules = getUserSchedulesByTelegramId(telegramId)
             .filterWeekSchedules()

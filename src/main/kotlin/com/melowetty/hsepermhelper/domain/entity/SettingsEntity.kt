@@ -21,9 +21,6 @@ data class SettingsEntity(
     @Column(name = "user_group")
     val group: String = "",
 
-    @Column(name = "user_sub_group")
-    val subGroup: Int = 0,
-
     @OneToMany(orphanRemoval = true, cascade = [CascadeType.ALL], fetch = FetchType.EAGER)
     val hiddenLessons: Set<HideLessonEntity>,
 

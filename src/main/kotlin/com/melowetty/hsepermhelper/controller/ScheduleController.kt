@@ -160,29 +160,6 @@ class ScheduleController(
         return Response(scheduleService.getAvailableGroups(course, program))
     }
 
-    @SecurityRequirement(name = "X-Secret-Key")
-    @Operation(
-        summary = "Получение доступных для выбора подгрупп",
-        description = "Позволяет получить доступные для выбора подгруппы для регистрации или изменения данных"
-    )
-    @GetMapping(
-        "schedule/available_subgroups",
-        produces = [MediaType.APPLICATION_JSON_VALUE]
-    )
-    fun getAvailableSubgroups(
-        @Parameter(description = "Номер курса")
-        @RequestParam("course")
-        course: Int,
-        @Parameter(description = "Образовательная программа")
-        @RequestParam("program")
-        program: String,
-        @Parameter(description = "Группа студента")
-        @RequestParam("group")
-        group: String
-    ): Response<List<Int>> {
-        return Response(scheduleService.getAvailableSubgroups(course, program, group))
-    }
-
     @GetMapping(
         "schedule/lessons-for-hiding",
         produces = [MediaType.APPLICATION_JSON_VALUE]

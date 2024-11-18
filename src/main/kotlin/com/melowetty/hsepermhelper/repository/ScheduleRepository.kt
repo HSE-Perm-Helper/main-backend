@@ -39,17 +39,4 @@ interface ScheduleRepository {
      * @return list of available groups
      */
     fun getAvailableGroups(course: Int, program: String): List<String>
-
-    /**
-     * Gets available subgroups for this group, course and program
-     *
-     * @param course user's course
-     * @param program user's program
-     * @param group user's group
-     * @throws ScheduleNotFoundException throws when schedule not found
-     * @throws IllegalArgumentException throws when user's group not found in schedule
-     * @throws RuntimeException throws when catching error in subgroup parsing
-     * @return list of available subgroups for this group
-     */
-    fun getAvailableSubgroups(course: Int, program: String, group: String): List<Int>
 }
