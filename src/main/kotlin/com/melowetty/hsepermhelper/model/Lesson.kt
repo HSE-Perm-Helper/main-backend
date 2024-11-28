@@ -34,8 +34,8 @@ data class Lesson(
      * @return true if lesson is online else false
      */
     fun isOnline(): Boolean {
-        if (places == null) return false
         if (links?.isNotEmpty() == true) return true
+        if (places == null) return false
         return (places.all { it.building == null } || places.all { it.building == 0 }) && lessonType != LessonType.ENGLISH
     }
 
