@@ -2,16 +2,19 @@
 
 -- changeset denismalinin:1730668446098-1
 --preconditions onFail:MARK_RAN
+--preconditions onError:WARN
 --precondition-sql-check expectedResult:0 SELECT COUNT(*) FROM hide_lesson
 CREATE SEQUENCE IF NOT EXISTS hide_lesson_seq START WITH 1 INCREMENT BY 50;
 
 -- changeset denismalinin:1730668446098-2
 --preconditions onFail:MARK_RAN
+--preconditions onError:WARN
 --precondition-sql-check expectedResult:0 SELECT COUNT(*) FROM settings
 CREATE SEQUENCE IF NOT EXISTS settings_seq START WITH 1 INCREMENT BY 50;
 
 -- changeset denismalinin:1730668446098-3
 --preconditions onFail:MARK_RAN
+--preconditions onError:WARN
 --precondition-sql-check expectedResult:0 SELECT COUNT(*) FROM hide_lesson
 CREATE TABLE hide_lesson
 (
@@ -24,6 +27,7 @@ CREATE TABLE hide_lesson
 
 -- changeset denismalinin:1730668446098-4
 --preconditions onFail:MARK_RAN
+--preconditions onError:WARN
 --precondition-sql-check expectedResult:0 SELECT COUNT(*) FROM settings
 CREATE TABLE settings
 (
@@ -38,6 +42,7 @@ CREATE TABLE settings
 
 -- changeset denismalinin:1730668446098-5
 --preconditions onFail:MARK_RAN
+--preconditions onError:WARN
 --precondition-sql-check expectedResult:0 SELECT COUNT(*) FROM settings_hidden_lessons
 CREATE TABLE settings_hidden_lessons
 (
@@ -48,6 +53,7 @@ CREATE TABLE settings_hidden_lessons
 
 -- changeset denismalinin:1730668446098-6
 --preconditions onFail:MARK_RAN
+--preconditions onError:WARN
 --precondition-sql-check expectedResult:0 SELECT COUNT(*) FROM users
 CREATE TABLE users
 (
@@ -59,6 +65,7 @@ CREATE TABLE users
 
 -- changeset denismalinin:1730668446098-7
 --preconditions onFail:MARK_RAN
+--preconditions onError:WARN
 --precondition-sql-check expectedResult:0 SELECT COUNT(*) FROM settings_hidden_lessons
 ALTER TABLE settings_hidden_lessons
     ADD CONSTRAINT uc_settings_hidden_lessons_hiddenlessons UNIQUE (hidden_lessons_id);
@@ -77,12 +84,14 @@ ALTER TABLE users
 
 -- changeset denismalinin:1730668446098-10
 --preconditions onFail:MARK_RAN
+--preconditions onError:WARN
 --precondition-sql-check expectedResult:0 SELECT COUNT(*) FROM settings_hidden_lessons
 ALTER TABLE settings_hidden_lessons
     ADD CONSTRAINT fk_sethidles_on_hide_lesson_entity FOREIGN KEY (hidden_lessons_id) REFERENCES hide_lesson (id);
 
 -- changeset denismalinin:1730668446098-11
 --preconditions onFail:MARK_RAN
+--preconditions onError:WARN
 --precondition-sql-check expectedResult:0 SELECT COUNT(*) FROM settings_hidden_lessons
 ALTER TABLE settings_hidden_lessons
     ADD CONSTRAINT fk_sethidles_on_settings_entity FOREIGN KEY (settings_entity_id) REFERENCES settings (id);
