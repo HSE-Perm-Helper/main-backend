@@ -169,6 +169,6 @@ class ScheduleServiceImpl(
             AvailableLessonForHiding(lesson = it.subject, lessonType = it.lessonType, subGroup = it.subGroup)
         }.filter {
             blacklistTypes.contains(it.lessonType).not()
-        }
+        }.distinct()
     }
 }
