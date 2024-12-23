@@ -70,9 +70,13 @@ class HseTimetableExcelParserImpl(
     }
 
     private fun getScheduleInfo(workbook: Workbook): ParsedScheduleInfo? {
-        unmergeRegions(workbook.getSheetAt(2))
-        val scheduleInfo = workbook.getSheetAt(1).getRow(1).getCellValue(3) ?: return null
-        return parseScheduleInfo(scheduleInfo)
+        return if (workbook.numberOfSheets >= 2) getScheduleInfoBySheet(workbook.getSheetAt(1))
+        else getScheduleInfoBySheet(workbook.getSheetAt(0))
+    }
+
+    private fun getScheduleInfoBySheet(sheet: Sheet): ParsedScheduleInfo? {
+        unmergeRegions(sheet)
+        return sheet.getRow(1).getCellValue(3)?.let { parseScheduleInfo(it) }
     }
 
     fun parseScheduleInfo(scheduleInfo: String): ParsedScheduleInfo? {
