@@ -1,6 +1,7 @@
 package com.melowetty.hsepermhelper.service.impl
 
 import com.melowetty.hsepermhelper.domain.dto.HideLessonDto
+import com.melowetty.hsepermhelper.domain.dto.RemoteScheduleLink
 import com.melowetty.hsepermhelper.domain.dto.SettingsDto
 import com.melowetty.hsepermhelper.domain.dto.UserDto
 import com.melowetty.hsepermhelper.domain.entity.HideLessonEntity
@@ -11,16 +12,23 @@ import com.melowetty.hsepermhelper.extension.UserExtensions.Companion.toDto
 import com.melowetty.hsepermhelper.extension.UserExtensions.Companion.toEntity
 import com.melowetty.hsepermhelper.repository.HiddenLessonRepository
 import com.melowetty.hsepermhelper.repository.UserRepository
+import com.melowetty.hsepermhelper.service.RemoteScheduleService
 import com.melowetty.hsepermhelper.service.UserService
 import org.springframework.stereotype.Service
 import org.springframework.util.ReflectionUtils
 import java.util.UUID
+import org.springframework.beans.factory.annotation.Value
+import org.springframework.web.util.UriComponentsBuilder
 
 @Service
 class UserServiceImpl(
     private val userRepository: UserRepository,
     private val hiddenLessonRepository: HiddenLessonRepository,
+    private val remoteScheduleService: RemoteScheduleService,
 ) : UserService {
+    @Value("\${remote-schedule.connect-url}")
+    private lateinit var remoteScheduleConnectUrl: String
+
     override fun getByTelegramId(telegramId: Long): UserDto {
         val user = userRepository.findByTelegramId(telegramId)
         if (user.isEmpty) throw UserNotFoundException("Пользователь с таким Telegram ID не найден!")
@@ -150,6 +158,31 @@ class UserServiceImpl(
                 settings = user.settings.copy(hiddenLessons = setOf())
             )
         ).toDto()
+    }
+
+    override fun getRemoteScheduleLink(telegramId: Long): RemoteScheduleLink {
+        val token = remoteScheduleService.getUserScheduleToken(telegramId)?.token
+            ?: return createOrUpdateScheduleLink(telegramId)
+
+        return RemoteScheduleLink(
+            direct = generateRemoteScheduleConnectLink(telegramId, token)
+        )
+    }
+
+    override fun createOrUpdateScheduleLink(telegramId: Long): RemoteScheduleLink {
+        val token = remoteScheduleService.createOrUpdateUserScheduleToken(telegramId).token
+
+        return RemoteScheduleLink(
+            direct = generateRemoteScheduleConnectLink(telegramId, token)
+        )
+    }
+
+    private fun generateRemoteScheduleConnectLink(telegramId: Long, token: String): String {
+        return UriComponentsBuilder.fromUriString(remoteScheduleConnectUrl)
+            .queryParam("telegramId", telegramId)
+            .queryParam("token", token)
+            .encode()
+            .toUriString()
     }
 
     override fun getAllUsers(): List<UserDto> {
