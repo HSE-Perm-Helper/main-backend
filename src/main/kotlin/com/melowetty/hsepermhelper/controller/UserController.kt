@@ -1,6 +1,7 @@
 package com.melowetty.hsepermhelper.controller
 
 import com.melowetty.hsepermhelper.domain.dto.HideLessonDto
+import com.melowetty.hsepermhelper.domain.dto.RemoteScheduleLink
 import com.melowetty.hsepermhelper.domain.dto.UserDto
 import com.melowetty.hsepermhelper.model.Response
 import com.melowetty.hsepermhelper.service.UserService
@@ -178,5 +179,15 @@ class UserController(
     @DeleteMapping("user/hidden-lessons")
     fun removeHiddenLesson(@RequestParam telegramId: Long, @RequestBody lesson: HideLessonDto): UserDto {
         return userService.removeHiddenLesson(telegramId, lesson)
+    }
+
+    @GetMapping("user/remote-schedule")
+    fun getRemoteScheduleLink(@RequestParam telegramId: Long): RemoteScheduleLink {
+        return userService.getRemoteScheduleLink(telegramId)
+    }
+
+    @PostMapping("user/remote-schedule")
+    fun createOrUpdateScheduleLink(@RequestParam telegramId: Long): RemoteScheduleLink {
+        return userService.createOrUpdateScheduleLink(telegramId)
     }
 }

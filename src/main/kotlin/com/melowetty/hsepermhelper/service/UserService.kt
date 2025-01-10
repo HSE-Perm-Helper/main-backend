@@ -1,6 +1,7 @@
 package com.melowetty.hsepermhelper.service
 
 import com.melowetty.hsepermhelper.domain.dto.HideLessonDto
+import com.melowetty.hsepermhelper.domain.dto.RemoteScheduleLink
 import com.melowetty.hsepermhelper.domain.dto.SettingsDto
 import com.melowetty.hsepermhelper.domain.dto.UserDto
 import java.util.UUID
@@ -81,4 +82,8 @@ interface UserService {
     fun removeHiddenLesson(telegramId: Long, lesson: HideLessonDto): UserDto
 
     fun clearHiddenLessons(telegramId: Long): UserDto
+
+    fun getRemoteScheduleLink(telegramId: Long): RemoteScheduleLink
+
+    fun createOrUpdateScheduleLink(telegramId: Long): RemoteScheduleLink
 }

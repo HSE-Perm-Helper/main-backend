@@ -47,6 +47,7 @@ dependencies {
     implementation("org.springframework.kafka:spring-kafka")
     implementation("org.springframework.boot:spring-boot-starter-validation")
     implementation("org.springframework.boot:spring-boot-starter-web")
+    implementation("org.springframework.cloud:spring-cloud-starter-openfeign")
     implementation("org.slf4j:slf4j-api:${slf4jVersion}")
     implementation("org.apache.poi:poi:${apachePoiVersion}")
     implementation("org.apache.poi:poi-ooxml:${apachePoiVersion}")
