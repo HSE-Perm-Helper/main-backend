@@ -165,7 +165,7 @@ class UserServiceImpl(
             ?: return createOrUpdateScheduleLink(telegramId)
 
         return RemoteScheduleLink(
-            direct = generateRemoteScheduleConnectLink(telegramId, token)
+            direct = generateRemoteScheduleConnectLink(token)
         )
     }
 
@@ -173,13 +173,12 @@ class UserServiceImpl(
         val token = remoteScheduleService.createOrUpdateUserScheduleToken(telegramId).token
 
         return RemoteScheduleLink(
-            direct = generateRemoteScheduleConnectLink(telegramId, token)
+            direct = generateRemoteScheduleConnectLink(token)
         )
     }
 
-    private fun generateRemoteScheduleConnectLink(telegramId: Long, token: String): String {
+    private fun generateRemoteScheduleConnectLink(token: String): String {
         return UriComponentsBuilder.fromUriString(remoteScheduleConnectUrl)
-            .queryParam("telegramId", telegramId)
             .queryParam("token", token)
             .encode()
             .toUriString()
