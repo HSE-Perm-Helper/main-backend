@@ -161,8 +161,11 @@ class UserServiceImpl(
     }
 
     override fun getRemoteScheduleLink(telegramId: Long): RemoteScheduleLink {
-        val token = remoteScheduleService.getUserScheduleToken(telegramId)?.token
-            ?: return createOrUpdateScheduleLink(telegramId)
+        val token: String = try {
+            remoteScheduleService.getUserScheduleToken(telegramId).token
+        } catch (e: RuntimeException) {
+            createOrUpdateScheduleLink(telegramId).direct
+        }
 
         return RemoteScheduleLink(
             direct = generateRemoteScheduleConnectLink(token)
