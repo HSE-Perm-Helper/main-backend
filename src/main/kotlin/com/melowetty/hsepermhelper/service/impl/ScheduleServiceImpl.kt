@@ -157,15 +157,12 @@ class ScheduleServiceImpl(
     override fun getAvailableLessonsForHiding(telegramId: Long): List<AvailableLessonForHiding> {
         val user = userService.getByTelegramId(telegramId)
 
-        val schedule = filterSchedules(scheduleRepository.getSchedules(), user, withoutHiddenLessons = false)
-            .firstOrNull {
-                it.scheduleType == ScheduleType.QUARTER_SCHEDULE
-            } ?: throw ScheduleNotFoundException("Расписания на модуль пока нет")
+        val schedules = filterSchedules(scheduleRepository.getSchedules(), user, withoutHiddenLessons = false)
 
         val blacklistTypes =
             setOf(LessonType.COMMON_ENGLISH, LessonType.COMMON_MINOR, LessonType.ENGLISH, LessonType.MINOR)
 
-        return schedule.lessons.map {
+        return schedules.map { it.lessons }.flatten().map {
             AvailableLessonForHiding(lesson = it.subject, lessonType = it.lessonType, subGroup = it.subGroup)
         }.filter {
             blacklistTypes.contains(it.lessonType).not()
