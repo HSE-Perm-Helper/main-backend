@@ -2,8 +2,8 @@ package com.melowetty.hsepermhelper.repository.impl
 
 import com.melowetty.hsepermhelper.excel.HseTimetableExcelParser
 import com.melowetty.hsepermhelper.exception.ScheduleNotFoundException
-import com.melowetty.hsepermhelper.model.FilesChanging
-import com.melowetty.hsepermhelper.model.Schedule
+import com.melowetty.hsepermhelper.model.file.FilesChanging
+import com.melowetty.hsepermhelper.model.schedule.Schedule
 import com.melowetty.hsepermhelper.repository.ScheduleRepository
 import com.melowetty.hsepermhelper.service.ScheduleFilesService
 import com.melowetty.hsepermhelper.service.SchedulesCheckingChangesService

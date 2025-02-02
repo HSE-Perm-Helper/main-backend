@@ -2,7 +2,7 @@ package com.melowetty.hsepermhelper.excel.impl
 
 import com.melowetty.hsepermhelper.excel.HseTimetableLessonTypeChecker
 import com.melowetty.hsepermhelper.excel.model.ParsedLessonInfo
-import com.melowetty.hsepermhelper.model.LessonType
+import com.melowetty.hsepermhelper.model.lesson.LessonType
 import org.springframework.stereotype.Component
 import java.time.Month
 

@@ -1,7 +1,7 @@
 package com.melowetty.hsepermhelper.scheduled
 
-import com.melowetty.hsepermhelper.model.File
-import com.melowetty.hsepermhelper.model.FilesChanging
+import com.melowetty.hsepermhelper.model.file.File
+import com.melowetty.hsepermhelper.model.file.FilesChanging
 import com.melowetty.hsepermhelper.service.FilesCheckingChangesService
 import com.melowetty.hsepermhelper.service.ScheduleFilesService
 import com.melowetty.hsepermhelper.util.TestUtils

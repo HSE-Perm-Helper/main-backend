@@ -1,9 +1,9 @@
 package com.melowetty.hsepermhelper.service
 
-import com.melowetty.hsepermhelper.model.Schedule
-import com.melowetty.hsepermhelper.model.ScheduleDifference
-import com.melowetty.hsepermhelper.model.ScheduleType
-import com.melowetty.hsepermhelper.model.SchedulesChanging
+import com.melowetty.hsepermhelper.model.schedule.Schedule
+import com.melowetty.hsepermhelper.model.schedule.ScheduleDifference
+import com.melowetty.hsepermhelper.model.schedule.ScheduleType
+import com.melowetty.hsepermhelper.model.event.SchedulesChanging
 import com.melowetty.hsepermhelper.service.impl.SchedulesCheckingChangesServiceImpl
 import com.melowetty.hsepermhelper.util.TestUtils.Companion.getSchedule
 import org.junit.jupiter.api.Assertions.assertEquals

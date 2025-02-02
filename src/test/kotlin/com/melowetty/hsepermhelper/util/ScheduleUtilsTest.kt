@@ -1,11 +1,11 @@
 package com.melowetty.hsepermhelper.util
 
-import com.melowetty.hsepermhelper.model.CycleTime
-import com.melowetty.hsepermhelper.model.Lesson
-import com.melowetty.hsepermhelper.model.LessonType
-import com.melowetty.hsepermhelper.model.Schedule
-import com.melowetty.hsepermhelper.model.ScheduleType
-import com.melowetty.hsepermhelper.model.ScheduledTime
+import com.melowetty.hsepermhelper.model.lesson.CycleTime
+import com.melowetty.hsepermhelper.model.lesson.Lesson
+import com.melowetty.hsepermhelper.model.lesson.LessonType
+import com.melowetty.hsepermhelper.model.schedule.Schedule
+import com.melowetty.hsepermhelper.model.schedule.ScheduleType
+import com.melowetty.hsepermhelper.model.lesson.ScheduledTime
 import com.melowetty.hsepermhelper.util.ScheduleUtils.Companion.filterWeekSchedules
 import java.time.DayOfWeek
 import java.time.LocalDate

@@ -1,6 +1,6 @@
 package com.melowetty.hsepermhelper.service
 
-import com.melowetty.hsepermhelper.model.File
+import com.melowetty.hsepermhelper.model.file.File
 
 interface ScheduleFilesService {
     /**

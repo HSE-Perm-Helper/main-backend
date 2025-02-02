@@ -1,9 +1,9 @@
 package com.melowetty.hsepermhelper.service
 
-import com.melowetty.hsepermhelper.model.AvailableLessonForHiding
-import com.melowetty.hsepermhelper.model.Lesson
-import com.melowetty.hsepermhelper.model.Schedule
-import com.melowetty.hsepermhelper.model.ScheduleInfo
+import com.melowetty.hsepermhelper.model.lesson.AvailableLessonForHiding
+import com.melowetty.hsepermhelper.model.lesson.Lesson
+import com.melowetty.hsepermhelper.model.schedule.Schedule
+import com.melowetty.hsepermhelper.model.schedule.ScheduleInfo
 import java.time.LocalDate
 import java.util.UUID
 

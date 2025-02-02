@@ -6,9 +6,9 @@ import com.melowetty.hsepermhelper.excel.model.CellInfo
 import com.melowetty.hsepermhelper.excel.model.ParsedCellInfo
 import com.melowetty.hsepermhelper.excel.model.ParsedLessonInfo
 import com.melowetty.hsepermhelper.excel.model.ParsedScheduleInfo
-import com.melowetty.hsepermhelper.model.Lesson
-import com.melowetty.hsepermhelper.model.LessonPlace
-import com.melowetty.hsepermhelper.model.ScheduleType
+import com.melowetty.hsepermhelper.model.lesson.Lesson
+import com.melowetty.hsepermhelper.model.lesson.LessonPlace
+import com.melowetty.hsepermhelper.model.schedule.ScheduleType
 import org.springframework.stereotype.Component
 
 @Component

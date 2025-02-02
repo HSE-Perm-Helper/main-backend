@@ -1,7 +1,8 @@
-package com.melowetty.hsepermhelper.model
+package com.melowetty.hsepermhelper.model.lesson
 
 import com.fasterxml.jackson.annotation.JsonFormat
 import com.fasterxml.jackson.annotation.JsonIgnore
+import com.melowetty.hsepermhelper.model.schedule.ScheduleType
 import com.melowetty.hsepermhelper.util.DateUtils
 import io.swagger.v3.oas.annotations.media.Schema
 

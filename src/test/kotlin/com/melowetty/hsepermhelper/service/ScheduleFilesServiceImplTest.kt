@@ -1,6 +1,6 @@
 package com.melowetty.hsepermhelper.service
 
-import com.melowetty.hsepermhelper.model.File
+import com.melowetty.hsepermhelper.model.file.File
 import com.melowetty.hsepermhelper.repository.ScheduleFilesRepository
 import com.melowetty.hsepermhelper.service.impl.ScheduleFilesServiceImpl
 import com.melowetty.hsepermhelper.util.TestUtils

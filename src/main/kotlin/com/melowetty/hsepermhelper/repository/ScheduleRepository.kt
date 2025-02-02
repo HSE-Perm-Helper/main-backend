@@ -1,6 +1,6 @@
 package com.melowetty.hsepermhelper.repository
 
-import com.melowetty.hsepermhelper.model.Schedule
+import com.melowetty.hsepermhelper.model.schedule.Schedule
 
 interface ScheduleRepository {
     /**

@@ -1,7 +1,7 @@
 package com.melowetty.hsepermhelper.service
 
-import com.melowetty.hsepermhelper.model.Schedule
-import com.melowetty.hsepermhelper.model.SchedulesChanging
+import com.melowetty.hsepermhelper.model.schedule.Schedule
+import com.melowetty.hsepermhelper.model.event.SchedulesChanging
 
 interface SchedulesCheckingChangesService {
     fun getChanges(before: List<Schedule>, after: List<Schedule>): SchedulesChanging

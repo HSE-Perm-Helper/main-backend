@@ -1,7 +1,7 @@
 package com.melowetty.hsepermhelper.extension
 
-import com.melowetty.hsepermhelper.model.Schedule
-import com.melowetty.hsepermhelper.model.ScheduleInfo
+import com.melowetty.hsepermhelper.model.schedule.Schedule
+import com.melowetty.hsepermhelper.model.schedule.ScheduleInfo
 
 class ScheduleExtensions {
     companion object {

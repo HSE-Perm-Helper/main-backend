@@ -1,4 +1,4 @@
-package com.melowetty.hsepermhelper.model
+package com.melowetty.hsepermhelper.model.lesson
 
 import java.time.DayOfWeek
 
