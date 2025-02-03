@@ -3,11 +3,14 @@ package com.melowetty.hsepermhelper.service
 import com.melowetty.hsepermhelper.domain.dto.HideLessonDto
 import com.melowetty.hsepermhelper.domain.dto.SettingsDto
 import com.melowetty.hsepermhelper.domain.dto.UserDto
+import com.melowetty.hsepermhelper.model.excel.ExcelLesson
+import com.melowetty.hsepermhelper.model.excel.ExcelSchedule
 import com.melowetty.hsepermhelper.model.lesson.Lesson
 import com.melowetty.hsepermhelper.model.lesson.LessonType
 import com.melowetty.hsepermhelper.model.schedule.Schedule
 import com.melowetty.hsepermhelper.model.schedule.ScheduleType
 import com.melowetty.hsepermhelper.model.lesson.ScheduledTime
+import com.melowetty.hsepermhelper.repository.ExcelScheduleRepository
 import java.time.DayOfWeek
 import java.time.LocalDate
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -23,7 +26,7 @@ class ScheduleServiceTest {
     private lateinit var scheduleService: ExcelScheduleService
 
     @Mock
-    private lateinit var scheduleRepository: ScheduleRepository
+    private lateinit var scheduleRepository: ExcelScheduleRepository
 
     @Mock
     private lateinit var userService: UserService
@@ -43,14 +46,14 @@ class ScheduleServiceTest {
             )
         )
 
-        val lesson = Lesson(
+        val lesson = ExcelLesson(
             subject = "Normal lesson", course = 1, programme = "РИС", "РИС-24-1", subGroup = 1, time = ScheduledTime(
                 DayOfWeek.MONDAY, LocalDate.now(), "11:00", "12:30"
             ), lecturer = "test",
-            lessonType = LessonType.SEMINAR, parentScheduleType = ScheduleType.WEEK_SCHEDULE
+            lessonType = LessonType.SEMINAR
         )
 
-        val schedule = Schedule(
+        val schedule = ExcelSchedule(
             number = 0,
             scheduleType = ScheduleType.WEEK_SCHEDULE,
             start = LocalDate.now(),

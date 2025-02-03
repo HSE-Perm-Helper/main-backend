@@ -1,6 +1,7 @@
 package com.melowetty.hsepermhelper.service.impl
 
 import com.melowetty.hsepermhelper.model.event.ExcelSchedulesChanging
+import com.melowetty.hsepermhelper.model.excel.ExcelSchedule
 import com.melowetty.hsepermhelper.model.excel.ExcelScheduleDifference
 import com.melowetty.hsepermhelper.model.schedule.Schedule
 import com.melowetty.hsepermhelper.service.SchedulesCheckingChangesService
@@ -8,7 +9,7 @@ import org.springframework.stereotype.Service
 
 @Service
 class SchedulesCheckingChangesServiceImpl : SchedulesCheckingChangesService {
-    override fun getChanges(before: List<Schedule>, after: List<Schedule>): ExcelSchedulesChanging {
+    override fun getChanges(before: List<ExcelSchedule>, after: List<ExcelSchedule>): ExcelSchedulesChanging {
         val deletedSchedules = before.filter { schedule ->
             after.find {
                 checkIsSimilarSchedule(it, schedule)
@@ -43,7 +44,7 @@ class SchedulesCheckingChangesServiceImpl : SchedulesCheckingChangesService {
         )
     }
 
-    private fun checkIsSimilarSchedule(firstSchedule: Schedule, secondSchedule: Schedule): Boolean {
+    private fun checkIsSimilarSchedule(firstSchedule: ExcelSchedule, secondSchedule: ExcelSchedule): Boolean {
         return firstSchedule.start == secondSchedule.start
                 && firstSchedule.end == secondSchedule.end
                 && firstSchedule.scheduleType == secondSchedule.scheduleType

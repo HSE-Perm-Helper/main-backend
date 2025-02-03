@@ -1,5 +1,6 @@
 package com.melowetty.hsepermhelper.util
 
+import com.melowetty.hsepermhelper.model.excel.ExcelLesson
 import com.melowetty.hsepermhelper.model.excel.ExcelSchedule
 import com.melowetty.hsepermhelper.model.lesson.Lesson
 import com.melowetty.hsepermhelper.model.lesson.ScheduledTime
@@ -36,10 +37,26 @@ class ScheduleUtils {
             return filter { it.scheduleType == ScheduleType.WEEK_SCHEDULE || it.scheduleType == ScheduleType.SESSION_SCHEDULE }
         }
 
+        fun List<ExcelSchedule>.filterWeekExcelSchedules(): List<ExcelSchedule> {
+            return filter { it.scheduleType == ScheduleType.WEEK_SCHEDULE || it.scheduleType == ScheduleType.SESSION_SCHEDULE }
+        }
+
+        fun getWeekScheduleByDate(schedules: List<ExcelSchedule>, date: LocalDate): ExcelSchedule? {
+            return schedules
+                .filterWeekExcelSchedules()
+                .firstOrNull { it.start <= date && it.end >= date }
+        }
+
         fun getWeekScheduleByDate(schedules: List<Schedule>, date: LocalDate): Schedule? {
             return schedules
                 .filterWeekSchedules()
                 .firstOrNull { it.start <= date && it.end >= date }
+        }
+
+        fun getLessonsAtDateInWeekSchedule(schedule: ExcelSchedule, date: LocalDate): List<ExcelLesson> {
+            return schedule.lessons.filter {
+                (it.time as ScheduledTime).date.isEqual(date)
+            }
         }
 
         fun getLessonsAtDateInWeekSchedule(schedule: Schedule, date: LocalDate): List<Lesson> {

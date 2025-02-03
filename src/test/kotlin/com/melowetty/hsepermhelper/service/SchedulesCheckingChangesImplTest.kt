@@ -4,6 +4,7 @@ import com.melowetty.hsepermhelper.model.schedule.Schedule
 import com.melowetty.hsepermhelper.model.excel.ExcelScheduleDifference
 import com.melowetty.hsepermhelper.model.schedule.ScheduleType
 import com.melowetty.hsepermhelper.model.event.ExcelSchedulesChanging
+import com.melowetty.hsepermhelper.model.excel.ExcelSchedule
 import com.melowetty.hsepermhelper.service.impl.SchedulesCheckingChangesServiceImpl
 import com.melowetty.hsepermhelper.util.TestUtils.Companion.getSchedule
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -30,7 +31,7 @@ class SchedulesCheckingChangesImplTest {
     @Test
     fun `get changes when schedules is deleted`() {
         val before = listOf(getSchedule(), getSchedule())
-        val after = listOf<Schedule>()
+        val after = listOf<ExcelSchedule>()
         val actual = schedulesCheckingChangesService.getChanges(before, after)
         val expected = ExcelSchedulesChanging(deleted = before)
         assertEquals(expected, actual)
@@ -38,7 +39,7 @@ class SchedulesCheckingChangesImplTest {
 
     @Test
     fun `get changes when schedules is added`() {
-        val before = listOf<Schedule>()
+        val before = listOf<ExcelSchedule>()
         val after = listOf(getSchedule(), getSchedule())
         val actual = schedulesCheckingChangesService.getChanges(before, after)
         val expected = ExcelSchedulesChanging(added = after)

@@ -1,11 +1,14 @@
 package com.melowetty.hsepermhelper.util
 
+import com.melowetty.hsepermhelper.model.excel.ExcelLesson
+import com.melowetty.hsepermhelper.model.excel.ExcelSchedule
 import com.melowetty.hsepermhelper.model.lesson.CycleTime
 import com.melowetty.hsepermhelper.model.lesson.Lesson
 import com.melowetty.hsepermhelper.model.lesson.LessonType
 import com.melowetty.hsepermhelper.model.schedule.Schedule
 import com.melowetty.hsepermhelper.model.schedule.ScheduleType
 import com.melowetty.hsepermhelper.model.lesson.ScheduledTime
+import com.melowetty.hsepermhelper.util.ScheduleUtils.Companion.filterWeekExcelSchedules
 import com.melowetty.hsepermhelper.util.ScheduleUtils.Companion.filterWeekSchedules
 import java.time.DayOfWeek
 import java.time.LocalDate
@@ -22,14 +25,14 @@ class ScheduleUtilsTest {
         val end = LocalDate.now()
         val actual = ScheduleUtils.mergeSessionSchedules(
             listOf(
-                Schedule(
+                ExcelSchedule(
                     start = start,
                     end = end,
                     scheduleType = ScheduleType.SESSION_SCHEDULE,
                     lessons = lessons.subList(0, 3),
                     number = 1,
                 ),
-                Schedule(
+                ExcelSchedule(
                     start = end,
                     end = end,
                     scheduleType = ScheduleType.SESSION_SCHEDULE,
@@ -39,7 +42,7 @@ class ScheduleUtilsTest {
             )
         )
 
-        val expected = Schedule(
+        val expected = ExcelSchedule(
             start = start,
             end = end,
             scheduleType = ScheduleType.SESSION_SCHEDULE,
@@ -108,7 +111,7 @@ class ScheduleUtilsTest {
             getSchedule().copy(scheduleType = ScheduleType.SESSION_SCHEDULE),
             getSchedule().copy(scheduleType = ScheduleType.QUARTER_SCHEDULE)
         )
-        val actual = schedules.filterWeekSchedules()
+        val actual = schedules.filterWeekExcelSchedules()
         assertEquals(2, actual.size, "Expected only week and session schedules!")
         assertTrue(
             actual.all { it.scheduleType == ScheduleType.WEEK_SCHEDULE || it.scheduleType == ScheduleType.SESSION_SCHEDULE },
@@ -129,7 +132,7 @@ class ScheduleUtilsTest {
             getSchedule().copy(scheduleType = ScheduleType.QUARTER_SCHEDULE),
             getSchedule().copy(scheduleType = ScheduleType.QUARTER_SCHEDULE)
         )
-        val actual = schedules.filterWeekSchedules()
+        val actual = schedules.filterWeekExcelSchedules()
         assertTrue(actual.isEmpty(), "Expected no schedules in the result!")
     }
 
@@ -233,13 +236,12 @@ class ScheduleUtilsTest {
         assertEquals(expected, actual)
     }
 
-    private fun getLesson(): Lesson {
-        return Lesson(
+    private fun getLesson(): ExcelLesson {
+        return ExcelLesson(
             course = 1,
             group = "test",
             lecturer = "test",
             lessonType = LessonType.TEST,
-            parentScheduleType = ScheduleType.SESSION_SCHEDULE,
             programme = "test",
             subject = "test",
             subGroup = null,
@@ -252,8 +254,8 @@ class ScheduleUtilsTest {
         )
     }
 
-    private fun getSchedule(): Schedule {
-        return Schedule(
+    private fun getSchedule(): ExcelSchedule {
+        return ExcelSchedule(
             start = LocalDate.now(),
             end = LocalDate.now(),
             scheduleType = ScheduleType.WEEK_SCHEDULE,
