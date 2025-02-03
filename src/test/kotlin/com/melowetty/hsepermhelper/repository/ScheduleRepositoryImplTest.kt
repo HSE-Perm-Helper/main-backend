@@ -4,7 +4,7 @@ import com.melowetty.hsepermhelper.excel.HseTimetableExcelParser
 import com.melowetty.hsepermhelper.model.file.File
 import com.melowetty.hsepermhelper.model.file.FilesChanging
 import com.melowetty.hsepermhelper.model.schedule.ScheduleDifference
-import com.melowetty.hsepermhelper.model.event.SchedulesChanging
+import com.melowetty.hsepermhelper.model.event.ExcelSchedulesChanging
 import com.melowetty.hsepermhelper.repository.impl.ScheduleRepositoryImpl
 import com.melowetty.hsepermhelper.service.ScheduleFilesService
 import com.melowetty.hsepermhelper.service.SchedulesCheckingChangesService
@@ -55,7 +55,7 @@ class ScheduleRepositoryImplTest {
                 after = MockitoHelper.anyObject(),
             )
         ).thenReturn(
-            SchedulesChanging(
+            ExcelSchedulesChanging(
                 changed = listOf(
                     ScheduleDifference(
                         before = firstSchedule,
@@ -75,7 +75,7 @@ class ScheduleRepositoryImplTest {
         )
 
         Mockito.verify(eventPublisherMock, Mockito.times(1)).publishEvent(
-            SchedulesChanging(
+            ExcelSchedulesChanging(
                 changed = listOf(
                     ScheduleDifference(
                         before = firstSchedule,
@@ -100,7 +100,7 @@ class ScheduleRepositoryImplTest {
                 before = MockitoHelper.anyObject(),
                 after = MockitoHelper.anyObject(),
             )
-        ).thenReturn(SchedulesChanging())
+        ).thenReturn(ExcelSchedulesChanging())
 
         scheduleRepository.handleScheduleFilesUpdate(FilesChanging(withoutChanges = listOf(firstFile, secondFile)))
 

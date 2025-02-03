@@ -1,10 +1,7 @@
 package com.melowetty.hsepermhelper.service
 
 import com.fasterxml.jackson.annotation.JsonProperty
-import com.melowetty.hsepermhelper.excel.HseTimetableLessonTypeChecker
-import com.melowetty.hsepermhelper.excel.model.ParsedLessonInfo
 import com.melowetty.hsepermhelper.model.lesson.HseAppLesson
-import com.melowetty.hsepermhelper.model.lesson.Lesson
 import com.melowetty.hsepermhelper.model.lesson.LessonType
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -52,7 +49,7 @@ class HseAppApiService(
                 streamLinks = it.streamLinks?.map { it.linK },
                 lecturers = it.lecturerProfiles.map { it.fullName },
                 note = note,
-                type = typeByValue.get(it.type.lowercase()) ?: LessonType.LECTURE
+                type = typeByValue[it.type.lowercase()] ?: LessonType.LECTURE
             )
         }
     }
@@ -69,8 +66,7 @@ class HseAppApiService(
         val note: String?,
         val streamLinks: List<StreamLink>?,
         @JsonProperty("lecturer_profiles")
-        val lecturerProfiles: List<LecturerProfile>,
-
+        val lecturerProfiles: List<LecturerProfile>
     )
 
     data class StreamLink(

@@ -3,7 +3,7 @@ package com.melowetty.hsepermhelper.service
 import com.melowetty.hsepermhelper.model.schedule.Schedule
 import com.melowetty.hsepermhelper.model.schedule.ScheduleDifference
 import com.melowetty.hsepermhelper.model.schedule.ScheduleType
-import com.melowetty.hsepermhelper.model.event.SchedulesChanging
+import com.melowetty.hsepermhelper.model.event.ExcelSchedulesChanging
 import com.melowetty.hsepermhelper.service.impl.SchedulesCheckingChangesServiceImpl
 import com.melowetty.hsepermhelper.util.TestUtils.Companion.getSchedule
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -23,7 +23,7 @@ class SchedulesCheckingChangesImplTest {
         val before = listOf(getSchedule(), getSchedule())
         val after = before.toList()
         val actual = schedulesCheckingChangesService.getChanges(before, after)
-        val expected = SchedulesChanging()
+        val expected = ExcelSchedulesChanging()
         assertEquals(expected, actual)
     }
 
@@ -32,7 +32,7 @@ class SchedulesCheckingChangesImplTest {
         val before = listOf(getSchedule(), getSchedule())
         val after = listOf<Schedule>()
         val actual = schedulesCheckingChangesService.getChanges(before, after)
-        val expected = SchedulesChanging(deleted = before)
+        val expected = ExcelSchedulesChanging(deleted = before)
         assertEquals(expected, actual)
     }
 
@@ -41,7 +41,7 @@ class SchedulesCheckingChangesImplTest {
         val before = listOf<Schedule>()
         val after = listOf(getSchedule(), getSchedule())
         val actual = schedulesCheckingChangesService.getChanges(before, after)
-        val expected = SchedulesChanging(added = after)
+        val expected = ExcelSchedulesChanging(added = after)
         assertEquals(expected, actual)
     }
 
@@ -52,7 +52,7 @@ class SchedulesCheckingChangesImplTest {
             lessons = listOf(before.lessons.first())
         )
         val actual = schedulesCheckingChangesService.getChanges(listOf(before), listOf(after))
-        val expected = SchedulesChanging(
+        val expected = ExcelSchedulesChanging(
             changed = listOf(ScheduleDifference(before = before, after = after))
         )
         assertEquals(expected, actual)
@@ -76,7 +76,7 @@ class SchedulesCheckingChangesImplTest {
         val afterThird = getSchedule().copy(end = LocalDate.of(2024, 10, 20))
         val after = listOf(afterFirst, afterSecond, afterThird)
 
-        val expected = SchedulesChanging(
+        val expected = ExcelSchedulesChanging(
             added = listOf(afterThird),
             deleted = listOf(beforeThird),
             changed = listOf(ScheduleDifference(before = beforeSecond, after = afterSecond))
