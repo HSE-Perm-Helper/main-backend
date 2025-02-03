@@ -8,7 +8,6 @@ import com.melowetty.hsepermhelper.model.lesson.LessonType
 import com.melowetty.hsepermhelper.model.schedule.Schedule
 import com.melowetty.hsepermhelper.model.schedule.ScheduleType
 import com.melowetty.hsepermhelper.model.lesson.ScheduledTime
-import com.melowetty.hsepermhelper.repository.ScheduleRepository
 import java.time.DayOfWeek
 import java.time.LocalDate
 import org.junit.jupiter.api.Assertions.assertEquals

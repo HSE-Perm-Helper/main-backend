@@ -7,11 +7,11 @@ import com.melowetty.hsepermhelper.excel.HseTimetableSheetExcelParser
 import com.melowetty.hsepermhelper.excel.model.CellInfo
 import com.melowetty.hsepermhelper.excel.model.ParsedCellInfo
 import com.melowetty.hsepermhelper.excel.model.ParsedScheduleInfo
+import com.melowetty.hsepermhelper.model.excel.ExcelLesson
 import com.melowetty.hsepermhelper.model.lesson.CycleTime
-import com.melowetty.hsepermhelper.model.lesson.Lesson
 import com.melowetty.hsepermhelper.model.lesson.LessonTime
-import com.melowetty.hsepermhelper.model.schedule.ScheduleType
 import com.melowetty.hsepermhelper.model.lesson.ScheduledTime
+import com.melowetty.hsepermhelper.model.schedule.ScheduleType
 import com.melowetty.hsepermhelper.notification.ServiceWarnNotification
 import com.melowetty.hsepermhelper.service.NotificationService
 import com.melowetty.hsepermhelper.util.RowUtils.Companion.getCellValue
@@ -30,8 +30,8 @@ class HseTimetableSheetExcelParserImpl(
     private val cellParser: HseTimetableCellExcelParser,
     private val notificationService: NotificationService,
 ) : HseTimetableSheetExcelParser {
-    override fun parseSheet(sheet: Sheet, scheduleInfo: ParsedScheduleInfo): List<Lesson> {
-        val lessons = mutableListOf<Lesson>()
+    override fun parseSheet(sheet: Sheet, scheduleInfo: ParsedScheduleInfo): List<ExcelLesson> {
+        val lessons = mutableListOf<ExcelLesson>()
         val course = getCourse(sheet.sheetName) ?: return listOf()
 
         val (groups, programs) = fillGroupsAndProgramsFromSheet(sheet)
@@ -76,10 +76,10 @@ class HseTimetableSheetExcelParserImpl(
         return Pair(groups, programs)
     }
 
-    private fun parseRow(rowData: RowData): Pair<List<Lesson>, Action> {
+    private fun parseRow(rowData: RowData): Pair<List<ExcelLesson>, Action> {
         val row = rowData.row
 
-        val lessons = mutableListOf<Lesson>()
+        val lessons = mutableListOf<ExcelLesson>()
         val (lessonTime, action) = getLessonTime(rowData)
 
         if (action != Action.NOTHING) return Pair(listOf(), action)

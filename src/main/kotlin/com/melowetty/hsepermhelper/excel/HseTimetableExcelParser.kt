@@ -1,8 +1,8 @@
 package com.melowetty.hsepermhelper.excel
 
-import com.melowetty.hsepermhelper.model.schedule.Schedule
+import com.melowetty.hsepermhelper.model.excel.ExcelSchedule
 import java.io.InputStream
 
 interface HseTimetableExcelParser {
-    fun parseScheduleFromExcelAsInputStream(inputStream: InputStream): Schedule?
+    fun parseScheduleFromExcelAsInputStream(inputStream: InputStream): ExcelSchedule?
 }

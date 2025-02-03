@@ -6,7 +6,7 @@ import com.melowetty.hsepermhelper.excel.model.CellInfo
 import com.melowetty.hsepermhelper.excel.model.ParsedCellInfo
 import com.melowetty.hsepermhelper.excel.model.ParsedLessonInfo
 import com.melowetty.hsepermhelper.excel.model.ParsedScheduleInfo
-import com.melowetty.hsepermhelper.model.lesson.Lesson
+import com.melowetty.hsepermhelper.model.excel.ExcelLesson
 import com.melowetty.hsepermhelper.model.lesson.LessonPlace
 import com.melowetty.hsepermhelper.model.schedule.ScheduleType
 import org.springframework.stereotype.Component
@@ -15,7 +15,7 @@ import org.springframework.stereotype.Component
 class HseTimetableCellExcelParserImpl(
     private val lessonTypeChecker: HseTimetableLessonTypeChecker
 ) : HseTimetableCellExcelParser {
-    override fun parseLesson(cellInfo: ParsedCellInfo): List<Lesson> {
+    override fun parseLesson(cellInfo: ParsedCellInfo): List<ExcelLesson> {
         if (!filterCell(cellInfo)) return emptyList()
         return getLesson(
             scheduleInfo = cellInfo.scheduleInfo,
@@ -39,9 +39,9 @@ class HseTimetableCellExcelParserImpl(
     private fun getLesson(
         scheduleInfo: ParsedScheduleInfo,
         cell: CellInfo
-    ): List<Lesson> {
+    ): List<ExcelLesson> {
         val preBuildLessons = preProcessingCell(cell)
-        val builtLessons = mutableListOf<Lesson>()
+        val builtLessons = mutableListOf<ExcelLesson>()
         preBuildLessons.forEach {
             val fields = it.toMutableList()
             val foundSubject = fields.find { it.fieldType == FieldType.SUBJECT }
@@ -225,7 +225,7 @@ class HseTimetableCellExcelParserImpl(
         scheduleInfo: ParsedScheduleInfo,
         additionalLessonInfo: AdditionalLessonInfo,
         subGroup: Int?
-    ): Lesson {
+    ): ExcelLesson {
         val subject = fields.first { it.fieldType == FieldType.SUBJECT }.value
         val lessonType = lessonTypeChecker.getLessonType(
             ParsedLessonInfo(
@@ -238,7 +238,7 @@ class HseTimetableCellExcelParserImpl(
                 schedulePeriod = scheduleInfo.startDate.rangeTo(scheduleInfo.endDate)
             )
         )
-        return Lesson(
+        return ExcelLesson(
             subject = lessonType.reformatSubject(subject),
             lessonType = lessonType,
             places = additionalLessonInfo.places,
@@ -248,7 +248,6 @@ class HseTimetableCellExcelParserImpl(
             course = cell.course,
             time = cell.time,
             programme = cell.program,
-            parentScheduleType = scheduleInfo.type,
             links = additionalLessonInfo.links,
             additionalInfo = additionalLessonInfo.additionalInfo,
         )

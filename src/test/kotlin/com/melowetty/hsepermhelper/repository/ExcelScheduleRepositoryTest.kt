@@ -3,9 +3,8 @@ package com.melowetty.hsepermhelper.repository
 import com.melowetty.hsepermhelper.excel.HseTimetableExcelParser
 import com.melowetty.hsepermhelper.model.file.File
 import com.melowetty.hsepermhelper.model.file.FilesChanging
-import com.melowetty.hsepermhelper.model.schedule.ScheduleDifference
+import com.melowetty.hsepermhelper.model.excel.ExcelScheduleDifference
 import com.melowetty.hsepermhelper.model.event.ExcelSchedulesChanging
-import com.melowetty.hsepermhelper.repository.impl.ScheduleRepositoryImpl
 import com.melowetty.hsepermhelper.service.ScheduleFilesService
 import com.melowetty.hsepermhelper.service.SchedulesCheckingChangesService
 import com.melowetty.hsepermhelper.util.MockitoHelper
@@ -19,9 +18,9 @@ import org.mockito.junit.jupiter.MockitoExtension
 import org.springframework.context.ApplicationEventPublisher
 
 @ExtendWith(MockitoExtension::class)
-class ScheduleRepositoryImplTest {
+class ExcelScheduleRepositoryTest {
     @InjectMocks
-    private lateinit var scheduleRepository: ScheduleRepositoryImpl
+    private lateinit var excelScheduleRepository: ExcelScheduleRepository
 
     @Mock
     private lateinit var eventPublisherMock: ApplicationEventPublisher
@@ -57,7 +56,7 @@ class ScheduleRepositoryImplTest {
         ).thenReturn(
             ExcelSchedulesChanging(
                 changed = listOf(
-                    ScheduleDifference(
+                    ExcelScheduleDifference(
                         before = firstSchedule,
                         after = secondSchedule,
                     )
@@ -65,7 +64,7 @@ class ScheduleRepositoryImplTest {
             )
         )
 
-        scheduleRepository.handleScheduleFilesUpdate(FilesChanging(addedOrChanged = listOf(firstFile, secondFile)))
+        excelScheduleRepository.handleScheduleFilesUpdate(FilesChanging(addedOrChanged = listOf(firstFile, secondFile)))
 
         Mockito.verify(scheduleFilesServiceMock, Mockito.times(1)).getScheduleFiles()
 
@@ -77,7 +76,7 @@ class ScheduleRepositoryImplTest {
         Mockito.verify(eventPublisherMock, Mockito.times(1)).publishEvent(
             ExcelSchedulesChanging(
                 changed = listOf(
-                    ScheduleDifference(
+                    ExcelScheduleDifference(
                         before = firstSchedule,
                         after = secondSchedule,
                     )
@@ -102,7 +101,7 @@ class ScheduleRepositoryImplTest {
             )
         ).thenReturn(ExcelSchedulesChanging())
 
-        scheduleRepository.handleScheduleFilesUpdate(FilesChanging(withoutChanges = listOf(firstFile, secondFile)))
+        excelScheduleRepository.handleScheduleFilesUpdate(FilesChanging(withoutChanges = listOf(firstFile, secondFile)))
 
         Mockito.verify(scheduleFilesServiceMock, Mockito.times(1)).getScheduleFiles()
 

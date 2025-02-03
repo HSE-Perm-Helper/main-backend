@@ -1,10 +1,9 @@
-package com.melowetty.hsepermhelper.repository.impl
+package com.melowetty.hsepermhelper.repository
 
 import com.melowetty.hsepermhelper.excel.HseTimetableExcelParser
 import com.melowetty.hsepermhelper.exception.ScheduleNotFoundException
+import com.melowetty.hsepermhelper.model.excel.ExcelSchedule
 import com.melowetty.hsepermhelper.model.file.FilesChanging
-import com.melowetty.hsepermhelper.model.schedule.Schedule
-import com.melowetty.hsepermhelper.repository.ScheduleRepository
 import com.melowetty.hsepermhelper.service.ScheduleFilesService
 import com.melowetty.hsepermhelper.service.SchedulesCheckingChangesService
 import com.melowetty.hsepermhelper.util.ScheduleUtils
@@ -14,20 +13,20 @@ import org.springframework.context.event.EventListener
 import org.springframework.stereotype.Component
 
 @Component
-class ScheduleRepositoryImpl(
+class ExcelScheduleRepository(
     private val eventPublisher: ApplicationEventPublisher,
     private val scheduleFilesService: ScheduleFilesService,
     private val schedulesCheckingChangesService: SchedulesCheckingChangesService,
     private val timetableExcelParser: HseTimetableExcelParser,
-) : ScheduleRepository {
-    private var schedules = listOf<Schedule>()
+) {
+    private var schedules = listOf<ExcelSchedule>()
 
     @EventListener(ApplicationReadyEvent::class)
     fun firstScheduleFetching() {
         fetchSchedules()
     }
 
-    override fun getSchedules(): List<Schedule> {
+    fun getSchedules(): List<ExcelSchedule> {
         return schedules
     }
 
@@ -49,7 +48,7 @@ class ScheduleRepositoryImpl(
         schedules = ScheduleUtils.normalizeSchedules(newSchedules)
     }
 
-    override fun getAvailableCourses(): List<Int> {
+    fun getAvailableCourses(): List<Int> {
         if (schedules.isEmpty()) throw ScheduleNotFoundException("Расписание не найдено!")
         val courses = schedules.flatMap { it.lessons }
             .asSequence()
@@ -60,7 +59,7 @@ class ScheduleRepositoryImpl(
         return courses
     }
 
-    override fun getAvailablePrograms(course: Int): List<String> {
+    fun getAvailablePrograms(course: Int): List<String> {
         if (schedules.isEmpty()) throw ScheduleNotFoundException("Расписание не найдено!")
         val programs = schedules.flatMap { it.lessons }
             .asSequence()
@@ -72,7 +71,7 @@ class ScheduleRepositoryImpl(
         return programs
     }
 
-    override fun getAvailableGroups(course: Int, program: String): List<String> {
+    fun getAvailableGroups(course: Int, program: String): List<String> {
         if (schedules.isEmpty()) throw ScheduleNotFoundException("Расписание не найдено!")
         val groups = schedules.flatMap { it.lessons }
             .asSequence()

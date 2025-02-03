@@ -1,15 +1,16 @@
 package com.melowetty.hsepermhelper.util
 
+import com.melowetty.hsepermhelper.model.excel.ExcelSchedule
 import com.melowetty.hsepermhelper.model.lesson.Lesson
+import com.melowetty.hsepermhelper.model.lesson.ScheduledTime
 import com.melowetty.hsepermhelper.model.schedule.Schedule
 import com.melowetty.hsepermhelper.model.schedule.ScheduleType
-import com.melowetty.hsepermhelper.model.lesson.ScheduledTime
 import java.time.DayOfWeek
 import java.time.LocalDate
 
 class ScheduleUtils {
     companion object {
-        fun normalizeSchedules(schedules: List<Schedule>): List<Schedule> {
+        fun normalizeSchedules(schedules: List<ExcelSchedule>): List<ExcelSchedule> {
             val sessionSchedules = schedules.filter { it.scheduleType == ScheduleType.SESSION_SCHEDULE }
             if (sessionSchedules.size < 2) return schedules
             val filteredSchedules = schedules.filter { it.scheduleType != ScheduleType.SESSION_SCHEDULE }
@@ -17,11 +18,11 @@ class ScheduleUtils {
             return filteredSchedules + mergedSchedule
         }
 
-        fun mergeSessionSchedules(sessionSchedules: List<Schedule>): Schedule {
+        fun mergeSessionSchedules(sessionSchedules: List<ExcelSchedule>): ExcelSchedule {
             val sortedSchedules = sessionSchedules.toList().sortedBy { it.start }
             val start = sortedSchedules.first().start
             val end = sortedSchedules.last().end
-            val mergedSchedule = Schedule(
+            val mergedSchedule = ExcelSchedule(
                 scheduleType = ScheduleType.SESSION_SCHEDULE,
                 start = start,
                 end = end,
@@ -57,7 +58,7 @@ class ScheduleUtils {
             return group.split("-")[0]
         }
 
-        fun getDifferentDaysByLessons(before: Schedule, after: Schedule): List<DayOfWeek> {
+        fun getDifferentDaysByLessons(before: ExcelSchedule, after: ExcelSchedule): List<DayOfWeek> {
             val changedDays = mutableSetOf<DayOfWeek>()
             val daysForChecking = before.lessons.map { it.time.dayOfWeek }.toHashSet()
             daysForChecking.addAll(after.lessons.map { it.time.dayOfWeek })

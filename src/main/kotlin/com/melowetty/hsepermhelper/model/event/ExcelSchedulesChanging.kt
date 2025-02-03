@@ -1,10 +1,10 @@
 package com.melowetty.hsepermhelper.model.event
 
-import com.melowetty.hsepermhelper.model.schedule.Schedule
-import com.melowetty.hsepermhelper.model.schedule.ScheduleDifference
+import com.melowetty.hsepermhelper.model.excel.ExcelSchedule
+import com.melowetty.hsepermhelper.model.excel.ExcelScheduleDifference
 
 data class ExcelSchedulesChanging(
-    val added: List<Schedule> = listOf(),
-    val changed: List<ScheduleDifference> = listOf(),
-    val deleted: List<Schedule> = listOf(),
+    val added: List<ExcelSchedule> = listOf(),
+    val changed: List<ExcelScheduleDifference> = listOf(),
+    val deleted: List<ExcelSchedule> = listOf(),
 )

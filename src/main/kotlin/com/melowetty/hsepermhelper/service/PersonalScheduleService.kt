@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service
 @Service
 class PersonalScheduleService(
     private val excelScheduleService: ExcelScheduleService,
+    private val hseAppApiService: HseAppApiService,
     private val userService: UserService,
 ) {
     fun getUserSchedulesByTelegramId(telegramId: Long): List<Schedule> {

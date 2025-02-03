@@ -1,7 +1,7 @@
 package com.melowetty.hsepermhelper.service
 
 import com.melowetty.hsepermhelper.model.schedule.Schedule
-import com.melowetty.hsepermhelper.model.schedule.ScheduleDifference
+import com.melowetty.hsepermhelper.model.excel.ExcelScheduleDifference
 import com.melowetty.hsepermhelper.model.schedule.ScheduleType
 import com.melowetty.hsepermhelper.model.event.ExcelSchedulesChanging
 import com.melowetty.hsepermhelper.service.impl.SchedulesCheckingChangesServiceImpl
@@ -53,7 +53,7 @@ class SchedulesCheckingChangesImplTest {
         )
         val actual = schedulesCheckingChangesService.getChanges(listOf(before), listOf(after))
         val expected = ExcelSchedulesChanging(
-            changed = listOf(ScheduleDifference(before = before, after = after))
+            changed = listOf(ExcelScheduleDifference(before = before, after = after))
         )
         assertEquals(expected, actual)
     }
@@ -79,7 +79,7 @@ class SchedulesCheckingChangesImplTest {
         val expected = ExcelSchedulesChanging(
             added = listOf(afterThird),
             deleted = listOf(beforeThird),
-            changed = listOf(ScheduleDifference(before = beforeSecond, after = afterSecond))
+            changed = listOf(ExcelScheduleDifference(before = beforeSecond, after = afterSecond))
         )
 
         val actual = schedulesCheckingChangesService.getChanges(before, after)

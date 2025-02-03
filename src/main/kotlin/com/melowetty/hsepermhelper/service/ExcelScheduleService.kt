@@ -2,17 +2,19 @@ package com.melowetty.hsepermhelper.service
 
 import com.melowetty.hsepermhelper.domain.dto.UserDto
 import com.melowetty.hsepermhelper.exception.ScheduleNotFoundException
+import com.melowetty.hsepermhelper.extension.ScheduleExtensions.Companion.toSchedule
 import com.melowetty.hsepermhelper.extension.ScheduleExtensions.Companion.toScheduleInfo
 import com.melowetty.hsepermhelper.extension.UserExtensions.Companion.getGroupedBySettingsUsers
 import com.melowetty.hsepermhelper.model.event.ExcelSchedulesChanging
+import com.melowetty.hsepermhelper.model.excel.ExcelLesson
+import com.melowetty.hsepermhelper.model.excel.ExcelSchedule
 import com.melowetty.hsepermhelper.model.lesson.AvailableLessonForHiding
-import com.melowetty.hsepermhelper.model.lesson.Lesson
 import com.melowetty.hsepermhelper.model.lesson.LessonType
 import com.melowetty.hsepermhelper.model.schedule.Schedule
 import com.melowetty.hsepermhelper.model.schedule.ScheduleInfo
 import com.melowetty.hsepermhelper.notification.ScheduleAddedNotification
 import com.melowetty.hsepermhelper.notification.ScheduleChangedForUserNotification
-import com.melowetty.hsepermhelper.repository.ScheduleRepository
+import com.melowetty.hsepermhelper.repository.ExcelScheduleRepository
 import com.melowetty.hsepermhelper.util.ScheduleUtils
 import java.time.LocalDate
 import org.springframework.context.event.EventListener
@@ -20,23 +22,23 @@ import org.springframework.stereotype.Service
 
 @Service
 class ExcelScheduleService(
-    private val scheduleRepository: ScheduleRepository,
+    private val scheduleRepository: ExcelScheduleRepository,
     private val userService: UserService,
     private val notificationService: NotificationService,
 ) {
     private fun filterSchedules(
-        schedules: List<Schedule>,
+        schedules: List<ExcelSchedule>,
         user: UserDto,
         withoutHiddenLessons: Boolean = true
-    ): List<Schedule> {
+    ): List<ExcelSchedule> {
         val filteredSchedules = schedules.map { schedule ->
             filterSchedule(schedule, user, withoutHiddenLessons)
         }
         return filteredSchedules
     }
 
-    fun filterSchedule(schedule: Schedule, user: UserDto, withoutHiddenLessons: Boolean = true): Schedule {
-        val filteredLessons = schedule.lessons.filter { lesson: Lesson ->
+    fun filterSchedule(schedule: ExcelSchedule, user: UserDto, withoutHiddenLessons: Boolean = true): ExcelSchedule {
+        val filteredLessons = schedule.lessons.filter { lesson: ExcelLesson ->
             lesson.group == user.settings.group
         }.filter {
             (it.lessonType == LessonType.COMMON_ENGLISH).not()
@@ -58,7 +60,7 @@ class ExcelScheduleService(
     }
 
     fun getUserSchedules(user: UserDto): List<Schedule> {
-        return filterSchedules(scheduleRepository.getSchedules(), user)
+        return filterSchedules(scheduleRepository.getSchedules(), user).map { it.toSchedule() }
     }
 
     fun getAvailableSchedules(): List<ScheduleInfo> {
@@ -69,7 +71,7 @@ class ExcelScheduleService(
     fun getUserSchedule(user: UserDto, start: LocalDate, end: LocalDate): Schedule {
         val schedule = scheduleRepository.getSchedules().filter { it.start == start && end == it.end }.getOrNull(0)
         if (schedule == null) throw ScheduleNotFoundException("Расписание с такими датами не найдено!")
-        return filterSchedule(schedule, user)
+        return filterSchedule(schedule, user).toSchedule()
     }
 
     fun getAvailableCourses(): List<Int> {
@@ -111,7 +113,7 @@ class ExcelScheduleService(
         }
     }
 
-    fun processNewExcelSchedule(schedule: Schedule) {
+    fun processNewExcelSchedule(schedule: ExcelSchedule) {
         val users = mutableListOf<Long>()
         users.addAll(userService.getAllUsers()
             .filter { it.settings.isEnabledNewScheduleNotifications }
@@ -123,7 +125,7 @@ class ExcelScheduleService(
         notificationService.sendNotification(scheduleAddedNotification)
     }
 
-    fun processEditedExcelSchedule(before: Schedule, after: Schedule) {
+    fun processEditedExcelSchedule(before: ExcelSchedule, after: ExcelSchedule) {
         userService.getAllUsers()
             .filter { user ->
                 user.settings.isEnabledChangedScheduleNotifications

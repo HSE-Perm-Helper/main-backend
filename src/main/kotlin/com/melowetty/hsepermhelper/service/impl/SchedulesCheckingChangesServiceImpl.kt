@@ -1,8 +1,8 @@
 package com.melowetty.hsepermhelper.service.impl
 
 import com.melowetty.hsepermhelper.model.event.ExcelSchedulesChanging
+import com.melowetty.hsepermhelper.model.excel.ExcelScheduleDifference
 import com.melowetty.hsepermhelper.model.schedule.Schedule
-import com.melowetty.hsepermhelper.model.schedule.ScheduleDifference
 import com.melowetty.hsepermhelper.service.SchedulesCheckingChangesService
 import org.springframework.stereotype.Service
 
@@ -21,7 +21,7 @@ class SchedulesCheckingChangesServiceImpl : SchedulesCheckingChangesService {
             } == null
         }
 
-        val editedSchedules = mutableListOf<ScheduleDifference>()
+        val editedSchedules = mutableListOf<ExcelScheduleDifference>()
 
         for (newSchedule in after) {
             val existsSchedule = before.find {
@@ -29,7 +29,7 @@ class SchedulesCheckingChangesServiceImpl : SchedulesCheckingChangesService {
             } ?: continue
             if (existsSchedule != newSchedule) {
                 editedSchedules.add(
-                    ScheduleDifference(
+                    ExcelScheduleDifference(
                         before = existsSchedule,
                         after = newSchedule
                     )
