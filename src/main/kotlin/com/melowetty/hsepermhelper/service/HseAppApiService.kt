@@ -47,8 +47,6 @@ class HseAppApiService(
         val lessons = restTemplate.getForObject(url, Array<HseAppApiLesson>::class.java)
             ?: throw RuntimeException("Произошла ошибка во время получения пар из внешнего источника")
 
-        val typeByValue: Map<String, LessonType> = LessonType.values().associateBy { it.type }
-
         return lessons.map {
             val streamLinks = processStreamLinks(it.streamLinks, it.note)
             val note = processNote(streamLinks, it.note)
@@ -61,8 +59,18 @@ class HseAppApiService(
                 streamLinks = streamLinks.ifEmpty { null },
                 lecturers = it.lecturerProfiles.map { it.fullName }.map { normalizeLecturer(it) },
                 note = note,
-                type = typeByValue[it.type.lowercase()] ?: LessonType.LECTURE
+                type = getLessonType(it.type)
             )
+        }
+    }
+
+    fun getLessonType(value: String): LessonType {
+        val typeByValue: Map<String, LessonType> = LessonType.values().associateBy { it.type }
+
+        return when(value.lowercase()) {
+            "лекция" -> LessonType.LECTURE
+            "семинары" -> LessonType.SEMINAR
+            else -> typeByValue[value.lowercase()] ?: LessonType.LECTURE
         }
     }
 
