@@ -12,7 +12,6 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc
 @EnableWebMvc
 @EnableScheduling
 @EnableDiscoveryClient
-@EnableKafka
 @EnableFeignClients
 class HsePermHelperApplication
 
