@@ -1,10 +1,9 @@
 package com.melowetty.hsepermhelper.service
 
-import com.fasterxml.jackson.annotation.JsonFormat
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.melowetty.hsepermhelper.model.hseapp.HseAppLesson
 import com.melowetty.hsepermhelper.model.lesson.LessonType
-import com.melowetty.hsepermhelper.util.DateUtils
+import com.melowetty.hsepermhelper.util.LinkUtils
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -20,6 +19,21 @@ class HseAppApiService(
 ) {
     companion object {
         private val dateFormat = DateTimeFormatter.ISO_DATE
+
+        fun normalizeLecturer(lecturer: String): String {
+            val words = lecturer.split(" ")
+
+            if (words.size == 1) return lecturer
+
+            return (listOf(words.first()) + words.subList(1, words.size)
+                .mapNotNull { it.firstOrNull() }
+                .map { "$it." }.toList())
+                .joinToString(" ")
+        }
+
+        fun normalizeSubject(subject: String): String {
+            return subject.replace("(рус)", "").trim()
+        }
     }
 
     fun getLessons(studentEmail: String, from: LocalDate, to: LocalDate): List<HseAppLesson> {
@@ -36,24 +50,44 @@ class HseAppApiService(
         val typeByValue: Map<String, LessonType> = LessonType.values().associateBy { it.type }
 
         return lessons.map {
-            var note = it.note
-            it.streamLinks?.forEach { note = note?.replace(it.linK, "") }
-
-            if (note?.isBlank() == true) {
-                note = null
-            }
+            val streamLinks = processStreamLinks(it.streamLinks, it.note)
+            val note = processNote(streamLinks, it.note)
 
             return@map HseAppLesson(
-                subject = it.discipline,
+                subject = normalizeSubject(it.discipline),
                 subjectLink = it.disciplineLink,
                 dateStart = it.dateStart,
                 dateEnd = it.dateEnd,
-                streamLinks = it.streamLinks?.map { it.linK },
-                lecturers = it.lecturerProfiles.map { it.fullName },
+                streamLinks = streamLinks.ifEmpty { null },
+                lecturers = it.lecturerProfiles.map { it.fullName }.map { normalizeLecturer(it) },
                 note = note,
                 type = typeByValue[it.type.lowercase()] ?: LessonType.LECTURE
             )
         }
+    }
+
+    fun processStreamLinks(streamLinks: List<StreamLink>?, note: String?): List<String> {
+        val streamLinks: List<String> = (streamLinks ?: listOf())
+            .stream().map { it.link }.toList()
+
+        val links = note?.let { it ->
+            LinkUtils.LINK_REGEX.findAll(it)
+                .map { it.value }
+                .toList()
+        } ?: listOf()
+
+        return streamLinks + links
+    }
+
+    fun processNote(streamLinks: List<String>, note: String?): String? {
+        var note = note
+        streamLinks.forEach { note = note?.replace(it, "") }
+
+        if (note?.isBlank() == true) {
+            note = null
+        }
+
+        return note
     }
 
     data class HseAppApiLesson(
@@ -72,7 +106,7 @@ class HseAppApiService(
     )
 
     data class StreamLink(
-        val linK: String
+        val link: String
     )
 
     data class LecturerProfile(
