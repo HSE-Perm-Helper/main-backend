@@ -36,7 +36,6 @@ enum class LessonType(val type: String) {
         }
     },
     COMMON_MINOR("Майнор"),
-    MINOR("Майнор"),
     COMMON_ENGLISH("Английский"),
     ENGLISH("Английский"),
     STATEMENT("Ведомость"),

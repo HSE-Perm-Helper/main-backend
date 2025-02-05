@@ -90,7 +90,7 @@ class ExcelScheduleService(
         val schedules = filterSchedules(scheduleRepository.getSchedules(), user, withoutHiddenLessons = false)
 
         val blacklistTypes =
-            setOf(LessonType.COMMON_ENGLISH, LessonType.COMMON_MINOR, LessonType.ENGLISH, LessonType.MINOR)
+            setOf(LessonType.COMMON_ENGLISH, LessonType.COMMON_MINOR, LessonType.ENGLISH)
 
         return schedules.asSequence().map { it.lessons }.flatten().map {
             AvailableLessonForHiding(lesson = it.subject, lessonType = it.lessonType, subGroup = it.subGroup)
