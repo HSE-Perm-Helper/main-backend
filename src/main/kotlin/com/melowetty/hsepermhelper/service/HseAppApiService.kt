@@ -1,7 +1,7 @@
 package com.melowetty.hsepermhelper.service
 
 import com.fasterxml.jackson.annotation.JsonProperty
-import com.melowetty.hsepermhelper.model.lesson.HseAppLesson
+import com.melowetty.hsepermhelper.model.hseapp.HseAppLesson
 import com.melowetty.hsepermhelper.model.lesson.LessonType
 import java.time.LocalDate
 import java.time.LocalDateTime
