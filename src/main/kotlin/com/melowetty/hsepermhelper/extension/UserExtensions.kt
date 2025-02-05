@@ -46,6 +46,7 @@ class UserExtensions {
                 isEnabledChangedScheduleNotifications = isEnabledChangedScheduleNotifications,
                 isEnabledComingLessonsNotifications = isEnabledComingLessonsNotifications,
                 hiddenLessons = hiddenLessons.map { it.toDto() }.toHashSet(),
+                email = email
             )
         }
 

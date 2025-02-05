@@ -18,6 +18,9 @@ data class SettingsEntity(
     @Column(name = "id", nullable = false)
     val id: Long? = null,
 
+    @Column(name = "email")
+    val email: String? = null,
+
     @Column(name = "user_group")
     val group: String = "",
 
