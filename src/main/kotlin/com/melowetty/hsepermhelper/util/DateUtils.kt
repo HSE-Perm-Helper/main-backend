@@ -1,8 +1,12 @@
 package com.melowetty.hsepermhelper.util
 
+import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.OffsetTime
+import java.time.ZoneId
 import java.time.ZoneOffset
+import java.time.ZonedDateTime
+import java.time.format.DateTimeFormatter
 import java.util.TimeZone
 
 class DateUtils {
@@ -22,7 +26,11 @@ class DateUtils {
             return LocalTime.of(split[0], split[1])
         }
 
-        fun OffsetTime.asStr(): String {
+        fun LocalDateTime.fromGmtToPermTime(): ZonedDateTime {
+            return atZone(ZoneId.of("GMT")).withZoneSameInstant(DateUtils.PERM_TIME_ZONE.toZoneId())
+        }
+
+        fun ZonedDateTime.asStr(): String {
             val hour = hour
             val minutes = minute
             val zeros = "0".repeat(2 - minutes.toString().length)

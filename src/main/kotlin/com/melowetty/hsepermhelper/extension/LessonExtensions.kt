@@ -5,8 +5,8 @@ import com.melowetty.hsepermhelper.model.hseapp.HseAppLesson
 import com.melowetty.hsepermhelper.model.lesson.Lesson
 import com.melowetty.hsepermhelper.model.lesson.ScheduledTime
 import com.melowetty.hsepermhelper.model.schedule.ScheduleType
-import com.melowetty.hsepermhelper.util.DateUtils
 import com.melowetty.hsepermhelper.util.DateUtils.Companion.asStr
+import com.melowetty.hsepermhelper.util.DateUtils.Companion.fromGmtToPermTime
 
 class LessonExtensions {
     companion object {
@@ -25,8 +25,8 @@ class LessonExtensions {
         }
 
         fun HseAppLesson.toLesson(): Lesson {
-            val startTime = dateStart.toLocalTime().atOffset(DateUtils.PERM_TIME_OFFSET).asStr()
-            val endTime = dateEnd.toLocalTime().atOffset(DateUtils.PERM_TIME_OFFSET).asStr()
+            val startTime = dateStart.fromGmtToPermTime().asStr()
+            val endTime = dateEnd.fromGmtToPermTime().asStr()
 
             return Lesson(
                 subject = subject,
