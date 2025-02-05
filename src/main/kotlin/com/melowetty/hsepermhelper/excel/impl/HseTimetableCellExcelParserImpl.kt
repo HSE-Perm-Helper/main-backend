@@ -9,6 +9,7 @@ import com.melowetty.hsepermhelper.excel.model.ParsedScheduleInfo
 import com.melowetty.hsepermhelper.model.excel.ExcelLesson
 import com.melowetty.hsepermhelper.model.lesson.LessonPlace
 import com.melowetty.hsepermhelper.model.schedule.ScheduleType
+import com.melowetty.hsepermhelper.util.LinkUtils
 import org.springframework.stereotype.Component
 
 @Component
@@ -91,7 +92,7 @@ class HseTimetableCellExcelParserImpl(
         val fields = mutableListOf<LessonField>()
         cells.forEach { cell ->
             var flag = false
-            LINK_REGEX.findAll(cell)
+            LinkUtils.LINK_REGEX.findAll(cell)
                 .forEach {
                     fields.add(LessonField(it.value.trim(), FieldType.LINK))
                     flag = true
@@ -335,8 +336,6 @@ class HseTimetableCellExcelParserImpl(
 
     companion object {
         private val LESSON_BUILDING_INFO_REGEX = Regex("\\([^\\(\\)]*\\[\\d*\\].*\\)")
-        private val LINK_REGEX =
-            Regex("https?:\\/\\/(www\\.)?[-a-zA-Z0-9@:%._\\+~#=]{1,256}\\.[a-zA-Z0-9()]{1,6}\\b([-a-zA-Z0-9()@:%_\\+.~#?&//=]*)")
         private val ADDITIONAL_INFO_REGEX = Regex("([^\\/]*)\\((.*)\\)")
         private val PLACE_INFO_REGEX = Regex("\\A[.[^\\[]]+|\\d+")
         private val PLACE_INFO_CHECK_REGEX = Regex("(.+)\\[\\d\\]")
