@@ -1,8 +1,12 @@
 package com.melowetty.hsepermhelper.extension
 
 import com.melowetty.hsepermhelper.model.excel.ExcelLesson
+import com.melowetty.hsepermhelper.model.hseapp.HseAppLesson
 import com.melowetty.hsepermhelper.model.lesson.Lesson
+import com.melowetty.hsepermhelper.model.lesson.ScheduledTime
 import com.melowetty.hsepermhelper.model.schedule.ScheduleType
+import com.melowetty.hsepermhelper.util.DateUtils
+import com.melowetty.hsepermhelper.util.DateUtils.Companion.asStr
 
 class LessonExtensions {
     companion object {
@@ -17,6 +21,27 @@ class LessonExtensions {
                 additionalInfo = additionalInfo,
                 lessonType = lessonType,
                 parentScheduleType = ScheduleType.WEEK_SCHEDULE,
+            )
+        }
+
+        fun HseAppLesson.toLesson(): Lesson {
+            val startTime = dateStart.toLocalTime().atOffset(DateUtils.PERM_TIME_OFFSET).asStr()
+            val endTime = dateEnd.toLocalTime().atOffset(DateUtils.PERM_TIME_OFFSET).asStr()
+
+            return Lesson(
+                subject = subject,
+                subGroup = null,
+                time = ScheduledTime(
+                    dateStart.dayOfWeek,
+                    dateStart.toLocalDate(),
+                    startTime,
+                    endTime
+                ),
+                lecturer = lecturers.firstOrNull(),
+                lessonType = type,
+                links = streamLinks,
+                additionalInfo = note?.let { listOf(note) },
+                parentScheduleType = ScheduleType.WEEK_SCHEDULE
             )
         }
     }
