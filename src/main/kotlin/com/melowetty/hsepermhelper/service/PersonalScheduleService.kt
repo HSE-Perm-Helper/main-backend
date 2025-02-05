@@ -90,6 +90,8 @@ class PersonalScheduleService(
         val dayOfWeek = getMinorDayOfWeek(schedules) ?: return schedule
 
         if (user.settings.email == null) return schedule
+        if (schedule.scheduleType == ScheduleType.QUARTER_SCHEDULE) return schedule
+
         val hseAppLessons = getHseAppMinorLessonsByUser(user.settings.email, dayOfWeek, start, end)
 
         return schedule.copy(
