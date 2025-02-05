@@ -8,7 +8,7 @@ data class SettingsDto(
     @JsonIgnore
     val id: Long? = null,
 
-    val email: String?,
+    val email: String? = null,
 
     @Schema(description = "Учебная группа пользователя", example = "РИС-22-3")
     val group: String = "",
