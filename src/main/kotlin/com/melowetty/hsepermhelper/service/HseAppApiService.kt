@@ -1,8 +1,10 @@
 package com.melowetty.hsepermhelper.service
 
+import com.fasterxml.jackson.annotation.JsonFormat
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.melowetty.hsepermhelper.model.hseapp.HseAppLesson
 import com.melowetty.hsepermhelper.model.lesson.LessonType
+import com.melowetty.hsepermhelper.util.DateUtils
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -58,7 +60,7 @@ class HseAppApiService(
         val type: String,
         @JsonProperty("date_start")
         val dateStart: LocalDateTime,
-        @JsonProperty("date_start")
+        @JsonProperty("date_end")
         val dateEnd: LocalDateTime,
         val discipline: String,
         @JsonProperty("discipline_link")
