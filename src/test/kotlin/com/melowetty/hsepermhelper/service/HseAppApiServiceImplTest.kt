@@ -1,15 +1,16 @@
 package com.melowetty.hsepermhelper.service
 
+import com.melowetty.hsepermhelper.service.impl.HseAppApiServiceImpl
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 
-class HseAppApiServiceTest {
+class HseAppApiServiceImplTest {
     @Test
     fun `test normalize lecturer when he or she have 3 words in full name`() {
         val lecturer = "Иванов Иван Иванович"
 
         val expected = "Иванов И. И."
-        Assertions.assertEquals(expected, HseAppApiService.normalizeLecturer(lecturer))
+        Assertions.assertEquals(expected, HseAppApiServiceImpl.normalizeLecturer(lecturer))
     }
 
     @Test
@@ -17,7 +18,7 @@ class HseAppApiServiceTest {
         val lecturer = "Иванов"
 
         val expected = "Иванов"
-        Assertions.assertEquals(expected, HseAppApiService.normalizeLecturer(lecturer))
+        Assertions.assertEquals(expected, HseAppApiServiceImpl.normalizeLecturer(lecturer))
     }
 
     @Test
@@ -25,6 +26,6 @@ class HseAppApiServiceTest {
         val lecturer = ""
 
         val expected = ""
-        Assertions.assertEquals(expected, HseAppApiService.normalizeLecturer(lecturer))
+        Assertions.assertEquals(expected, HseAppApiServiceImpl.normalizeLecturer(lecturer))
     }
 }

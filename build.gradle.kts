@@ -8,8 +8,10 @@ plugins {
     kotlin("plugin.jpa") version "1.8.22"
     id("jacoco")
 }
+
 val springCloudVersion by extra("2022.0.4")
 val apachePoiVersion = "5.2.3"
+val caffeineVersion = "3.2.0"
 val postgresVersion = "42.6.0"
 val slf4jVersion = "2.0.0"
 val springDocStarterVersion = "2.2.0"
@@ -36,22 +38,30 @@ allOpen {
 }
 
 dependencies {
+    implementation("com.github.ben-manes.caffeine:caffeine")
+
     implementation("org.liquibase:liquibase-core")
     implementation("org.postgresql:postgresql:${postgresVersion}")
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+
+    implementation("org.apache.poi:poi:${apachePoiVersion}")
+    implementation("org.apache.poi:poi-ooxml:${apachePoiVersion}")
+
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
+
     implementation("org.springframework.cloud:spring-cloud-starter-netflix-eureka-client")
     implementation("org.springframework.boot:spring-boot-starter-actuator")
     implementation("org.springframework.kafka:spring-kafka")
     implementation("org.springframework.boot:spring-boot-starter-validation")
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.cloud:spring-cloud-starter-openfeign")
+
     implementation("org.slf4j:slf4j-api:${slf4jVersion}")
-    implementation("org.apache.poi:poi:${apachePoiVersion}")
-    implementation("org.apache.poi:poi-ooxml:${apachePoiVersion}")
+
     implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:${springDocStarterVersion}")
+
     implementation("org.jsoup:jsoup:${jsoupVersion}")
 
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
