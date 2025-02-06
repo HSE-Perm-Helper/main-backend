@@ -72,7 +72,12 @@ class UserServiceImpl(
     override fun updateUserSettings(telegramId: Long, settings: SettingsDto): UserDto {
         val user = getByTelegramId(telegramId)
         val newUser = userRepository.save(
-            user.copy(settings = settings).toEntity()
+            user.copy(
+                settings = settings
+                .copy(
+                    email = user.settings.email
+                )
+            ).toEntity()
         ).toDto()
 
         return newUser
@@ -83,6 +88,7 @@ class UserServiceImpl(
         val userSettings = user.settings.copy()
         val newSettings = settings.toMutableMap()
         newSettings.remove("id")
+        newSettings.remove("email")
         newSettings.forEach { (t, u) ->
             val field = ReflectionUtils.findField(SettingsDto::class.java, t)
             if (field != null) {

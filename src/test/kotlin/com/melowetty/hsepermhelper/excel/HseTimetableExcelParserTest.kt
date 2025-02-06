@@ -2,7 +2,7 @@ package com.melowetty.hsepermhelper.excel
 
 import com.melowetty.hsepermhelper.excel.impl.HseTimetableExcelParserImpl
 import com.melowetty.hsepermhelper.excel.model.ParsedScheduleInfo
-import com.melowetty.hsepermhelper.model.ScheduleType
+import com.melowetty.hsepermhelper.model.schedule.ScheduleType
 import com.melowetty.hsepermhelper.service.NotificationService
 import java.time.LocalDate
 import org.junit.jupiter.api.Assertions.assertEquals

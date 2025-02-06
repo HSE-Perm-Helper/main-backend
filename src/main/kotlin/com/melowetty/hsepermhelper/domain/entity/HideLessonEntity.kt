@@ -1,6 +1,6 @@
 package com.melowetty.hsepermhelper.domain.entity
 
-import com.melowetty.hsepermhelper.model.LessonType
+import com.melowetty.hsepermhelper.model.lesson.LessonType
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.EnumType

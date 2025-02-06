@@ -6,16 +6,17 @@ import com.melowetty.hsepermhelper.excel.model.CellInfo
 import com.melowetty.hsepermhelper.excel.model.ParsedCellInfo
 import com.melowetty.hsepermhelper.excel.model.ParsedLessonInfo
 import com.melowetty.hsepermhelper.excel.model.ParsedScheduleInfo
-import com.melowetty.hsepermhelper.model.Lesson
-import com.melowetty.hsepermhelper.model.LessonPlace
-import com.melowetty.hsepermhelper.model.ScheduleType
+import com.melowetty.hsepermhelper.model.excel.ExcelLesson
+import com.melowetty.hsepermhelper.model.lesson.LessonPlace
+import com.melowetty.hsepermhelper.model.schedule.ScheduleType
+import com.melowetty.hsepermhelper.util.LinkUtils
 import org.springframework.stereotype.Component
 
 @Component
 class HseTimetableCellExcelParserImpl(
     private val lessonTypeChecker: HseTimetableLessonTypeChecker
 ) : HseTimetableCellExcelParser {
-    override fun parseLesson(cellInfo: ParsedCellInfo): List<Lesson> {
+    override fun parseLesson(cellInfo: ParsedCellInfo): List<ExcelLesson> {
         if (!filterCell(cellInfo)) return emptyList()
         return getLesson(
             scheduleInfo = cellInfo.scheduleInfo,
@@ -39,9 +40,9 @@ class HseTimetableCellExcelParserImpl(
     private fun getLesson(
         scheduleInfo: ParsedScheduleInfo,
         cell: CellInfo
-    ): List<Lesson> {
+    ): List<ExcelLesson> {
         val preBuildLessons = preProcessingCell(cell)
-        val builtLessons = mutableListOf<Lesson>()
+        val builtLessons = mutableListOf<ExcelLesson>()
         preBuildLessons.forEach {
             val fields = it.toMutableList()
             val foundSubject = fields.find { it.fieldType == FieldType.SUBJECT }
@@ -91,7 +92,7 @@ class HseTimetableCellExcelParserImpl(
         val fields = mutableListOf<LessonField>()
         cells.forEach { cell ->
             var flag = false
-            LINK_REGEX.findAll(cell)
+            LinkUtils.LINK_REGEX.findAll(cell)
                 .forEach {
                     fields.add(LessonField(it.value.trim(), FieldType.LINK))
                     flag = true
@@ -225,7 +226,7 @@ class HseTimetableCellExcelParserImpl(
         scheduleInfo: ParsedScheduleInfo,
         additionalLessonInfo: AdditionalLessonInfo,
         subGroup: Int?
-    ): Lesson {
+    ): ExcelLesson {
         val subject = fields.first { it.fieldType == FieldType.SUBJECT }.value
         val lessonType = lessonTypeChecker.getLessonType(
             ParsedLessonInfo(
@@ -238,7 +239,7 @@ class HseTimetableCellExcelParserImpl(
                 schedulePeriod = scheduleInfo.startDate.rangeTo(scheduleInfo.endDate)
             )
         )
-        return Lesson(
+        return ExcelLesson(
             subject = lessonType.reformatSubject(subject),
             lessonType = lessonType,
             places = additionalLessonInfo.places,
@@ -248,7 +249,6 @@ class HseTimetableCellExcelParserImpl(
             course = cell.course,
             time = cell.time,
             programme = cell.program,
-            parentScheduleType = scheduleInfo.type,
             links = additionalLessonInfo.links,
             additionalInfo = additionalLessonInfo.additionalInfo,
         )
@@ -336,8 +336,6 @@ class HseTimetableCellExcelParserImpl(
 
     companion object {
         private val LESSON_BUILDING_INFO_REGEX = Regex("\\([^\\(\\)]*\\[\\d*\\].*\\)")
-        private val LINK_REGEX =
-            Regex("https?:\\/\\/(www\\.)?[-a-zA-Z0-9@:%._\\+~#=]{1,256}\\.[a-zA-Z0-9()]{1,6}\\b([-a-zA-Z0-9()@:%_\\+.~#?&//=]*)")
         private val ADDITIONAL_INFO_REGEX = Regex("([^\\/]*)\\((.*)\\)")
         private val PLACE_INFO_REGEX = Regex("\\A[.[^\\[]]+|\\d+")
         private val PLACE_INFO_CHECK_REGEX = Regex("(.+)\\[\\d\\]")

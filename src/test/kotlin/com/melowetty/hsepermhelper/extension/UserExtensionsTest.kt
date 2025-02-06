@@ -4,7 +4,7 @@ import com.melowetty.hsepermhelper.domain.entity.HideLessonEntity
 import com.melowetty.hsepermhelper.domain.entity.SettingsEntity
 import com.melowetty.hsepermhelper.domain.entity.UserEntity
 import com.melowetty.hsepermhelper.extension.UserExtensions.Companion.getGroupedEntityBySettingsUsers
-import com.melowetty.hsepermhelper.model.LessonType
+import com.melowetty.hsepermhelper.model.lesson.LessonType
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 

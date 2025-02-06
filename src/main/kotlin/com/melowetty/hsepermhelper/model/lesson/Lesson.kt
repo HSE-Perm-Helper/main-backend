@@ -1,19 +1,12 @@
-package com.melowetty.hsepermhelper.model
+package com.melowetty.hsepermhelper.model.lesson
 
-import com.fasterxml.jackson.annotation.JsonFormat
-import com.fasterxml.jackson.annotation.JsonIgnore
-import com.melowetty.hsepermhelper.util.DateUtils
+import com.melowetty.hsepermhelper.model.schedule.ScheduleType
 import io.swagger.v3.oas.annotations.media.Schema
 
 data class Lesson(
     @Schema(description = "Учебный предмет", example = "Программирование")
     val subject: String,
-    @JsonIgnore val course: Int,
-    @JsonIgnore val programme: String,
-    @JsonIgnore val group: String,
     val subGroup: Int?,
-    @JsonFormat(pattern = DateUtils.DATE_PATTERN)
-    @Schema(description = "Время проведения пары", example = "03.09.2023", type = "string")
     val time: LessonTime,
     @Schema(description = "Преподаватель", example = "Викентьева О.Л.", nullable = true)
     val lecturer: String?,
