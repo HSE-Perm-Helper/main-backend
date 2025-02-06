@@ -1,11 +1,13 @@
 package com.melowetty.hsepermhelper.util
 
-import com.melowetty.hsepermhelper.model.File
-import com.melowetty.hsepermhelper.model.Lesson
-import com.melowetty.hsepermhelper.model.LessonType
-import com.melowetty.hsepermhelper.model.Schedule
-import com.melowetty.hsepermhelper.model.ScheduleType
-import com.melowetty.hsepermhelper.model.ScheduledTime
+import com.melowetty.hsepermhelper.model.excel.ExcelLesson
+import com.melowetty.hsepermhelper.model.excel.ExcelSchedule
+import com.melowetty.hsepermhelper.model.file.File
+import com.melowetty.hsepermhelper.model.lesson.Lesson
+import com.melowetty.hsepermhelper.model.lesson.LessonType
+import com.melowetty.hsepermhelper.model.schedule.Schedule
+import com.melowetty.hsepermhelper.model.schedule.ScheduleType
+import com.melowetty.hsepermhelper.model.lesson.ScheduledTime
 import java.io.InputStream
 import java.nio.file.Files
 import java.nio.file.Path
@@ -22,8 +24,8 @@ class TestUtils {
             return Files.newInputStream(Path.of("src/test/resources/$file"))
         }
 
-        fun getSchedule(): Schedule {
-            return Schedule(
+        fun getSchedule(): ExcelSchedule {
+            return ExcelSchedule(
                 number = 1,
                 scheduleType = ScheduleType.WEEK_SCHEDULE,
                 start = LocalDate.now(),
@@ -32,8 +34,8 @@ class TestUtils {
             )
         }
 
-        fun getLesson(): Lesson {
-            return Lesson(
+        private fun getLesson(): ExcelLesson {
+            return ExcelLesson(
                 course = 1,
                 programme = "РИС",
                 group = "РИС-22-3",
@@ -46,7 +48,6 @@ class TestUtils {
                     startTime = "9:40",
                     endTime = "11:00"
                 ),
-                parentScheduleType = ScheduleType.WEEK_SCHEDULE,
                 subGroup = 1
             )
         }

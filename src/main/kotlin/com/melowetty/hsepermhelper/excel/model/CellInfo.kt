@@ -1,6 +1,6 @@
 package com.melowetty.hsepermhelper.excel.model
 
-import com.melowetty.hsepermhelper.model.LessonTime
+import com.melowetty.hsepermhelper.model.lesson.LessonTime
 
 data class CellInfo(
     val value: String,

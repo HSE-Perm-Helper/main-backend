@@ -1,6 +1,7 @@
-package com.melowetty.hsepermhelper.model
+package com.melowetty.hsepermhelper.model.schedule
 
 import com.fasterxml.jackson.annotation.JsonFormat
+import com.melowetty.hsepermhelper.model.lesson.Lesson
 import com.melowetty.hsepermhelper.util.DateUtils
 import io.swagger.v3.oas.annotations.media.Schema
 import java.time.LocalDate

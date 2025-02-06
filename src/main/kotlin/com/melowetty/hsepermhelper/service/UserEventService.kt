@@ -1,6 +1,6 @@
 package com.melowetty.hsepermhelper.service
 
-import com.melowetty.hsepermhelper.model.UserEventType
+import com.melowetty.hsepermhelper.model.event.UserEventType
 
 interface UserEventService {
     /**

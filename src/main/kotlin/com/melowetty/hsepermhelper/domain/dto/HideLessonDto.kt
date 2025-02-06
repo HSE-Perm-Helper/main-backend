@@ -1,7 +1,7 @@
 package com.melowetty.hsepermhelper.domain.dto
 
 import com.fasterxml.jackson.annotation.JsonIgnore
-import com.melowetty.hsepermhelper.model.LessonType
+import com.melowetty.hsepermhelper.model.lesson.LessonType
 
 data class HideLessonDto(
     @JsonIgnore

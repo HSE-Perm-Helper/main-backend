@@ -1,4 +1,4 @@
-package com.melowetty.hsepermhelper.model
+package com.melowetty.hsepermhelper.model.lesson
 
 data class AvailableLessonForHiding(
     val lesson: String,

@@ -7,18 +7,18 @@ import com.melowetty.hsepermhelper.excel.HseTimetableScheduleTypeChecker
 import com.melowetty.hsepermhelper.excel.HseTimetableSheetExcelParser
 import com.melowetty.hsepermhelper.excel.model.ParsedExcelInfo
 import com.melowetty.hsepermhelper.excel.model.ParsedScheduleInfo
-import com.melowetty.hsepermhelper.model.Lesson
-import com.melowetty.hsepermhelper.model.Schedule
+import com.melowetty.hsepermhelper.model.excel.ExcelLesson
+import com.melowetty.hsepermhelper.model.excel.ExcelSchedule
 import com.melowetty.hsepermhelper.notification.ServiceWarnNotification
 import com.melowetty.hsepermhelper.service.NotificationService
 import com.melowetty.hsepermhelper.util.RowUtils.Companion.getCellValue
+import java.io.InputStream
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 import org.apache.poi.ss.usermodel.Sheet
 import org.apache.poi.ss.usermodel.Workbook
 import org.apache.poi.ss.usermodel.WorkbookFactory
 import org.springframework.stereotype.Component
-import java.io.InputStream
-import java.time.LocalDate
-import java.time.format.DateTimeFormatter
 
 @Component
 @Slf4j
@@ -32,10 +32,10 @@ class HseTimetableExcelParserImpl(
         return WorkbookFactory.create(inputStream)
     }
 
-    override fun parseScheduleFromExcelAsInputStream(inputStream: InputStream): Schedule? {
+    override fun parseScheduleFromExcelAsInputStream(inputStream: InputStream): ExcelSchedule? {
         try {
             val workbook = getWorkbook(inputStream)
-            val lessons = mutableListOf<Lesson>()
+            val lessons = mutableListOf<ExcelLesson>()
             val scheduleInfo = getScheduleInfo(workbook) ?: return null
 
             for (i in 0 until workbook.numberOfSheets) {
@@ -48,7 +48,7 @@ class HseTimetableExcelParserImpl(
 
             lessons.sortBy { it.time }
 
-            return Schedule(
+            return ExcelSchedule(
                 number = scheduleInfo.number,
                 start = scheduleInfo.startDate,
                 end = scheduleInfo.endDate,

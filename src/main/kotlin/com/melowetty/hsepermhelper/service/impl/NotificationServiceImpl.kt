@@ -1,6 +1,6 @@
 package com.melowetty.hsepermhelper.service.impl
 
-import com.melowetty.hsepermhelper.model.KafkaNotification
+import com.melowetty.hsepermhelper.model.event.KafkaNotification
 import com.melowetty.hsepermhelper.notification.Notification
 import com.melowetty.hsepermhelper.service.NotificationService
 import org.springframework.kafka.core.KafkaTemplate

@@ -1,6 +1,6 @@
 package com.melowetty.hsepermhelper.notification
 
-import com.melowetty.hsepermhelper.model.Schedule
+import com.melowetty.hsepermhelper.model.schedule.Schedule
 
 data class UpcomingLessonsNotification(
     val targetSchedule: Schedule,

@@ -1,6 +1,6 @@
 package com.melowetty.hsepermhelper.service
 
-import com.melowetty.hsepermhelper.model.FilesChanging
+import com.melowetty.hsepermhelper.model.file.FilesChanging
 import com.melowetty.hsepermhelper.service.impl.FilesCheckingChangesByHashcodeService
 import com.melowetty.hsepermhelper.util.TestUtils
 import org.junit.jupiter.api.Assertions.assertEquals

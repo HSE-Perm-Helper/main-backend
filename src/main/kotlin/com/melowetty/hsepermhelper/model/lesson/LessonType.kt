@@ -1,4 +1,4 @@
-package com.melowetty.hsepermhelper.model
+package com.melowetty.hsepermhelper.model.lesson
 
 enum class LessonType(val type: String) {
     LECTURE("Лекция") {
@@ -36,7 +36,6 @@ enum class LessonType(val type: String) {
         }
     },
     COMMON_MINOR("Майнор"),
-    MINOR("Майнор"),
     COMMON_ENGLISH("Английский"),
     ENGLISH("Английский"),
     STATEMENT("Ведомость"),
