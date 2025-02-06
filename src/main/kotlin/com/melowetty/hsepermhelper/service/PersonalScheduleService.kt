@@ -48,7 +48,7 @@ class PersonalScheduleService(
 
     fun addMinorLessons(user: UserDto, schedules: List<Schedule>): List<Schedule> {
         val (start, end) = getSchedulesDateRange(schedules) ?: return schedules
-        val dayOfWeek = getMinorDayOfWeek(schedules) ?: return schedules
+        val dayOfWeek = ScheduleUtils.getMinorDayOfWeek(schedules) ?: return schedules
 
         if (user.settings.email == null) return schedules
         val hseAppLessons = getHseAppMinorLessonsByUser(user.settings.email, dayOfWeek, start, end)
@@ -71,12 +71,6 @@ class PersonalScheduleService(
         }
     }
 
-    fun getMinorDayOfWeek(schedules: List<Schedule>): DayOfWeek? {
-        return schedules.map { it.lessons }
-            .flatten()
-            .firstOrNull { it.lessonType == LessonType.COMMON_MINOR }?.time?.dayOfWeek
-    }
-
    fun getAvailableSchedules(): List<ScheduleInfo> {
         return excelScheduleService.getAvailableSchedules()
     }
@@ -87,7 +81,7 @@ class PersonalScheduleService(
         val schedule = excelScheduleService.getUserSchedule(user, start, end)
 
         val schedules = excelScheduleService.getUserSchedules(user)
-        val dayOfWeek = getMinorDayOfWeek(schedules) ?: return schedule
+        val dayOfWeek = ScheduleUtils.getMinorDayOfWeek(schedules) ?: return schedule
 
         if (user.settings.email == null) return schedule
         if (schedule.scheduleType == ScheduleType.QUARTER_SCHEDULE) return schedule
