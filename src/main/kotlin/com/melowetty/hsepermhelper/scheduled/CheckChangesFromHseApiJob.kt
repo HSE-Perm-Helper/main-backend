@@ -47,6 +47,8 @@ class CheckChangesFromHseApiJob(
         val pageSize = 50
 
         val schedules = scheduleService.getAvailableSchedules()
+            .filterNot { it.scheduleType == ScheduleType.QUARTER_SCHEDULE }
+
         val (start, end) = getScheduleRange(schedules) ?: return
 
         val pageable = Pageable.ofSize(pageSize)
