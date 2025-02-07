@@ -1,4 +1,4 @@
-package com.melowetty.hsepermhelper.model.event
+package com.melowetty.hsepermhelper.domain.model.event
 
 import com.melowetty.hsepermhelper.model.excel.ExcelSchedule
 import com.melowetty.hsepermhelper.model.excel.ExcelScheduleDifference

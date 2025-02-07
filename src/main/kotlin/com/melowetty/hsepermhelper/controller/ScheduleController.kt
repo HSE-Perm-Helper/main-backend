@@ -3,7 +3,7 @@ package com.melowetty.hsepermhelper.controller
 import com.melowetty.hsepermhelper.model.Response
 import com.melowetty.hsepermhelper.model.event.UserEventType
 import com.melowetty.hsepermhelper.model.lesson.AvailableLessonForHiding
-import com.melowetty.hsepermhelper.model.lesson.Lesson
+import com.melowetty.hsepermhelper.domain.model.lesson.Lesson
 import com.melowetty.hsepermhelper.model.schedule.Schedule
 import com.melowetty.hsepermhelper.model.schedule.ScheduleInfo
 import com.melowetty.hsepermhelper.service.PersonalScheduleService
@@ -72,7 +72,7 @@ class ScheduleController(
     )
     fun getTodaySchedule(
         @PathVariable telegramId: Long,
-    ): Response<List<Lesson>> {
+    ): Response<List<com.melowetty.hsepermhelper.domain.model.lesson.Lesson>> {
         val schedule = personalScheduleService.getTodayLessons(telegramId)
         userEventService.addUserEvent(telegramId, UserEventType.GET_TODAY_SCHEDULE)
         return Response(schedule)
@@ -84,7 +84,7 @@ class ScheduleController(
     )
     fun getTomorrowSchedule(
         @PathVariable telegramId: Long,
-    ): Response<List<Lesson>> {
+    ): Response<List<com.melowetty.hsepermhelper.domain.model.lesson.Lesson>> {
         val schedule = personalScheduleService.getTomorrowLessons(telegramId)
         userEventService.addUserEvent(telegramId, UserEventType.GET_TOMORROW_SCHEDULE)
         return Response(schedule)

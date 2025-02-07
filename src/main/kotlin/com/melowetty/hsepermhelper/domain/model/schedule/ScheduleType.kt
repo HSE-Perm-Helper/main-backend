@@ -1,4 +1,4 @@
-package com.melowetty.hsepermhelper.model.schedule
+package com.melowetty.hsepermhelper.domain.model.schedule
 
 enum class ScheduleType {
     QUARTER_SCHEDULE,

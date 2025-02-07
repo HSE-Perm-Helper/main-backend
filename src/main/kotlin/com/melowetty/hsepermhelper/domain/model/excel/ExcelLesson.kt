@@ -1,4 +1,4 @@
-package com.melowetty.hsepermhelper.model.excel
+package com.melowetty.hsepermhelper.domain.model.excel
 
 import com.melowetty.hsepermhelper.model.lesson.LessonPlace
 import com.melowetty.hsepermhelper.model.lesson.LessonTime

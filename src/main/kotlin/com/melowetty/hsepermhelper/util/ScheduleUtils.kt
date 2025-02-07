@@ -2,7 +2,7 @@ package com.melowetty.hsepermhelper.util
 
 import com.melowetty.hsepermhelper.model.excel.ExcelLesson
 import com.melowetty.hsepermhelper.model.excel.ExcelSchedule
-import com.melowetty.hsepermhelper.model.lesson.Lesson
+import com.melowetty.hsepermhelper.domain.model.lesson.Lesson
 import com.melowetty.hsepermhelper.model.lesson.LessonType
 import com.melowetty.hsepermhelper.model.lesson.ScheduledTime
 import com.melowetty.hsepermhelper.model.schedule.Schedule
@@ -60,7 +60,7 @@ class ScheduleUtils {
             }
         }
 
-        fun getLessonsAtDateInWeekSchedule(schedule: Schedule, date: LocalDate): List<Lesson> {
+        fun getLessonsAtDateInWeekSchedule(schedule: Schedule, date: LocalDate): List<com.melowetty.hsepermhelper.domain.model.lesson.Lesson> {
             return schedule.lessons.filter {
                 (it.time as ScheduledTime).date.isEqual(date)
             }

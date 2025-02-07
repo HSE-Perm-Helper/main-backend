@@ -1,4 +1,4 @@
-package com.melowetty.hsepermhelper.model.hseapp
+package com.melowetty.hsepermhelper.domain.model.hseapp
 
 import com.melowetty.hsepermhelper.model.lesson.LessonType
 import java.time.LocalDateTime

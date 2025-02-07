@@ -1,4 +1,4 @@
-package com.melowetty.hsepermhelper.model.file
+package com.melowetty.hsepermhelper.domain.model.file
 
 import com.melowetty.hsepermhelper.util.HashUtils
 import java.io.ByteArrayInputStream

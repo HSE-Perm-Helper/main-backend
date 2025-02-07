@@ -1,4 +1,4 @@
-package com.melowetty.hsepermhelper.model.event
+package com.melowetty.hsepermhelper.domain.model.event
 
 enum class UserEventType {
     GET_SCHEDULE,

@@ -1,4 +1,4 @@
-package com.melowetty.hsepermhelper.model.schedule
+package com.melowetty.hsepermhelper.domain.model.schedule
 
 import com.fasterxml.jackson.annotation.JsonFormat
 import com.melowetty.hsepermhelper.util.DateUtils

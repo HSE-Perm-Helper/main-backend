@@ -1,4 +1,4 @@
-package com.melowetty.hsepermhelper.model.file
+package com.melowetty.hsepermhelper.domain.model.file
 
 data class FilesChanging(
     val addedOrChanged: List<File> = listOf(),

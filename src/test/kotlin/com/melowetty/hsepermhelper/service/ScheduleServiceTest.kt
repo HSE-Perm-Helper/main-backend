@@ -5,7 +5,7 @@ import com.melowetty.hsepermhelper.domain.dto.SettingsDto
 import com.melowetty.hsepermhelper.domain.dto.UserDto
 import com.melowetty.hsepermhelper.model.excel.ExcelLesson
 import com.melowetty.hsepermhelper.model.excel.ExcelSchedule
-import com.melowetty.hsepermhelper.model.lesson.Lesson
+import com.melowetty.hsepermhelper.domain.model.lesson.Lesson
 import com.melowetty.hsepermhelper.model.lesson.LessonType
 import com.melowetty.hsepermhelper.model.schedule.Schedule
 import com.melowetty.hsepermhelper.model.schedule.ScheduleType
