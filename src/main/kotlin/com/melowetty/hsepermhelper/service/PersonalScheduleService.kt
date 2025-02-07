@@ -50,8 +50,8 @@ class PersonalScheduleService(
         val (start, end) = getSchedulesDateRange(schedules) ?: return schedules
         val dayOfWeek = ScheduleUtils.getMinorDayOfWeek(schedules) ?: return schedules
 
-        if (user.settings.email == null) return schedules
-        val hseAppLessons = getHseAppMinorLessonsByUser(user.settings.email, dayOfWeek, start, end)
+        if (user.email == null) return schedules
+        val hseAppLessons = getHseAppMinorLessonsByUser(user.email, dayOfWeek, start, end)
 
         return schedules.map {
             if (it.scheduleType == ScheduleType.QUARTER_SCHEDULE) return@map it
@@ -83,10 +83,10 @@ class PersonalScheduleService(
         val schedules = excelScheduleService.getUserSchedules(user)
         val dayOfWeek = ScheduleUtils.getMinorDayOfWeek(schedules) ?: return schedule
 
-        if (user.settings.email == null) return schedule
+        if (user.email == null) return schedule
         if (schedule.scheduleType == ScheduleType.QUARTER_SCHEDULE) return schedule
 
-        val hseAppLessons = getHseAppMinorLessonsByUser(user.settings.email, dayOfWeek, start, end)
+        val hseAppLessons = getHseAppMinorLessonsByUser(user.email, dayOfWeek, start, end)
 
         return schedule.copy(
             lessons = (schedule.lessons + hseAppLessons)

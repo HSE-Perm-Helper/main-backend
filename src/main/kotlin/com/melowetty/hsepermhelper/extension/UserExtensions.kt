@@ -15,6 +15,7 @@ class UserExtensions {
                 telegramId = telegramId,
                 settings = settings.toDto(),
                 createdDate = createdDate,
+                email = email
             )
         }
 
@@ -24,6 +25,7 @@ class UserExtensions {
                 telegramId = telegramId,
                 settings = settings.toEntity(),
                 createdDate = createdDate,
+                email = email
             )
         }
 
@@ -46,7 +48,6 @@ class UserExtensions {
                 isEnabledChangedScheduleNotifications = isEnabledChangedScheduleNotifications,
                 isEnabledComingLessonsNotifications = isEnabledComingLessonsNotifications,
                 hiddenLessons = hiddenLessons.map { it.toDto() }.toHashSet(),
-                email = email
             )
         }
 

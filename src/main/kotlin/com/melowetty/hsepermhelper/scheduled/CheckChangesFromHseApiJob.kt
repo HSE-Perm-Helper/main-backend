@@ -53,7 +53,7 @@ class CheckChangesFromHseApiJob(
 
         val pageable = Pageable.ofSize(pageSize)
 
-        val users = userRepository.findBySettings_EmailNotNull(pageable)
+        val users = userRepository.findByEmailNotNull(pageable)
 
         val tasks = users.map {
             Callable {
@@ -64,7 +64,7 @@ class CheckChangesFromHseApiJob(
         executorService.invokeAll(tasks)
 
         for(page in startPage + 1 .. users.totalPages) {
-            val pagedTasks = userRepository.findBySettings_EmailNotNull(
+            val pagedTasks = userRepository.findByEmailNotNull(
                 Pageable.ofSize(pageSize).withPage(page)
             ).map {
                 Callable {
@@ -78,7 +78,7 @@ class CheckChangesFromHseApiJob(
 
     private fun processUser(user: UserEntity, schedules: List<ScheduleInfo>, start: LocalDate, end: LocalDate) {
         try {
-            val lessons = hseAppApiService.directGetLessons(user.settings.email!!, start, end)
+            val lessons = hseAppApiService.directGetLessons(user.email!!, start, end)
 
             val hash = lessons.hashCode()
             val prevHash = prevLessonsHash.getOrDefault(user.id, hash)
