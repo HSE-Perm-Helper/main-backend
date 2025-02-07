@@ -7,6 +7,7 @@ import com.melowetty.hsepermhelper.domain.dto.SettingsDto
 import com.melowetty.hsepermhelper.domain.dto.UserDto
 import com.melowetty.hsepermhelper.domain.entity.HideLessonEntity
 import com.melowetty.hsepermhelper.domain.entity.UserEntity
+import com.melowetty.hsepermhelper.domain.model.event.EmailIsVerifiedEvent
 import com.melowetty.hsepermhelper.exception.UserIsExistsException
 import com.melowetty.hsepermhelper.exception.UserNotFoundException
 import com.melowetty.hsepermhelper.extension.UserExtensions.Companion.toDto
@@ -20,7 +21,9 @@ import com.melowetty.hsepermhelper.validation.annotation.ValidHseEmail
 import jakarta.validation.Valid
 import jakarta.validation.constraints.Size
 import java.util.UUID
+import kotlin.jvm.optionals.getOrNull
 import org.springframework.beans.factory.annotation.Value
+import org.springframework.context.event.EventListener
 import org.springframework.stereotype.Service
 import org.springframework.util.ReflectionUtils
 import org.springframework.validation.annotation.Validated
@@ -199,6 +202,18 @@ class UserServiceImpl(
         userRepository.save(
             user.copy(email = null)
         )
+    }
+
+    @EventListener(EmailIsVerifiedEvent::class)
+    fun handleEmailVerifiedEvent(event: EmailIsVerifiedEvent) {
+        val user = userRepository.findById(event.userId).getOrNull()
+            ?: return
+
+        userRepository.save(
+            user.copy(email = event.email)
+        )
+
+        // TODO нотификация что почта подтвержедна
     }
 
     private fun generateRemoteScheduleConnectLink(token: String): String {
