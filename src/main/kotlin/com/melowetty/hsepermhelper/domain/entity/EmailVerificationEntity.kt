@@ -5,9 +5,11 @@ import jakarta.persistence.Entity
 import jakarta.persistence.Id
 import jakarta.persistence.JoinColumn
 import jakarta.persistence.OneToOne
+import jakarta.persistence.Table
 import java.time.LocalDateTime
 
 @Entity
+@Table(name = "email_verification")
 class EmailVerificationEntity(
     @Id
     @Column(length = 10, unique = true)
