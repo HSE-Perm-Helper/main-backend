@@ -1,8 +1,8 @@
-package com.melowetty.hsepermhelper.domain.model.excel
+package com.melowetty.hsepermhelper.excel.model
 
-import com.melowetty.hsepermhelper.model.lesson.LessonPlace
-import com.melowetty.hsepermhelper.model.lesson.LessonTime
-import com.melowetty.hsepermhelper.model.lesson.LessonType
+import com.melowetty.hsepermhelper.domain.model.lesson.LessonPlace
+import com.melowetty.hsepermhelper.domain.model.lesson.LessonTime
+import com.melowetty.hsepermhelper.domain.model.lesson.LessonType
 
 data class ExcelLesson(
     val subject: String,

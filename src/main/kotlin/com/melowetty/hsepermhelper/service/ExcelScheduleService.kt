@@ -1,17 +1,17 @@
 package com.melowetty.hsepermhelper.service
 
 import com.melowetty.hsepermhelper.domain.dto.UserDto
+import com.melowetty.hsepermhelper.domain.model.event.ExcelSchedulesChanging
+import com.melowetty.hsepermhelper.domain.model.lesson.AvailableLessonForHiding
+import com.melowetty.hsepermhelper.domain.model.lesson.LessonType
+import com.melowetty.hsepermhelper.domain.model.schedule.Schedule
+import com.melowetty.hsepermhelper.domain.model.schedule.ScheduleInfo
+import com.melowetty.hsepermhelper.excel.model.ExcelLesson
+import com.melowetty.hsepermhelper.excel.model.ExcelSchedule
 import com.melowetty.hsepermhelper.exception.ScheduleNotFoundException
 import com.melowetty.hsepermhelper.extension.ScheduleExtensions.Companion.toSchedule
 import com.melowetty.hsepermhelper.extension.ScheduleExtensions.Companion.toScheduleInfo
 import com.melowetty.hsepermhelper.extension.UserExtensions.Companion.getGroupedBySettingsUsers
-import com.melowetty.hsepermhelper.model.event.ExcelSchedulesChanging
-import com.melowetty.hsepermhelper.model.excel.ExcelLesson
-import com.melowetty.hsepermhelper.model.excel.ExcelSchedule
-import com.melowetty.hsepermhelper.model.lesson.AvailableLessonForHiding
-import com.melowetty.hsepermhelper.model.lesson.LessonType
-import com.melowetty.hsepermhelper.model.schedule.Schedule
-import com.melowetty.hsepermhelper.model.schedule.ScheduleInfo
 import com.melowetty.hsepermhelper.notification.ScheduleAddedNotification
 import com.melowetty.hsepermhelper.notification.ScheduleChangedForUserNotification
 import com.melowetty.hsepermhelper.repository.ExcelScheduleRepository

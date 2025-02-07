@@ -1,17 +1,16 @@
 package com.melowetty.hsepermhelper.service
 
-import com.melowetty.hsepermhelper.model.schedule.Schedule
-import com.melowetty.hsepermhelper.model.excel.ExcelScheduleDifference
-import com.melowetty.hsepermhelper.model.schedule.ScheduleType
-import com.melowetty.hsepermhelper.model.event.ExcelSchedulesChanging
-import com.melowetty.hsepermhelper.model.excel.ExcelSchedule
+import com.melowetty.hsepermhelper.domain.model.event.ExcelSchedulesChanging
+import com.melowetty.hsepermhelper.domain.model.schedule.ScheduleType
+import com.melowetty.hsepermhelper.excel.model.ExcelSchedule
+import com.melowetty.hsepermhelper.excel.model.ExcelScheduleDifference
 import com.melowetty.hsepermhelper.service.impl.SchedulesCheckingChangesServiceImpl
 import com.melowetty.hsepermhelper.util.TestUtils.Companion.getSchedule
+import java.time.LocalDate
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
-import java.time.LocalDate
 
 
 @SpringBootTest(classes = [SchedulesCheckingChangesServiceImpl::class])

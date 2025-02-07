@@ -1,6 +1,6 @@
 package com.melowetty.hsepermhelper.domain.model.hseapp
 
-import com.melowetty.hsepermhelper.model.lesson.LessonType
+import com.melowetty.hsepermhelper.domain.model.lesson.LessonType
 import java.time.LocalDateTime
 
 data class HseAppLesson(

@@ -1,14 +1,14 @@
 package com.melowetty.hsepermhelper.service
 
 import com.melowetty.hsepermhelper.domain.dto.UserDto
-import com.melowetty.hsepermhelper.extension.LessonExtensions.Companion.toLesson
-import com.melowetty.hsepermhelper.model.lesson.AvailableLessonForHiding
+import com.melowetty.hsepermhelper.domain.model.lesson.AvailableLessonForHiding
 import com.melowetty.hsepermhelper.domain.model.lesson.Lesson
-import com.melowetty.hsepermhelper.model.lesson.LessonType
-import com.melowetty.hsepermhelper.model.lesson.ScheduledTime
-import com.melowetty.hsepermhelper.model.schedule.Schedule
-import com.melowetty.hsepermhelper.model.schedule.ScheduleInfo
-import com.melowetty.hsepermhelper.model.schedule.ScheduleType
+import com.melowetty.hsepermhelper.domain.model.lesson.LessonType
+import com.melowetty.hsepermhelper.domain.model.lesson.ScheduledTime
+import com.melowetty.hsepermhelper.domain.model.schedule.Schedule
+import com.melowetty.hsepermhelper.domain.model.schedule.ScheduleInfo
+import com.melowetty.hsepermhelper.domain.model.schedule.ScheduleType
+import com.melowetty.hsepermhelper.extension.LessonExtensions.Companion.toLesson
 import com.melowetty.hsepermhelper.util.DateUtils
 import com.melowetty.hsepermhelper.util.ScheduleUtils
 import com.melowetty.hsepermhelper.util.ScheduleUtils.Companion.filterWeekSchedules
@@ -23,7 +23,8 @@ class PersonalScheduleService(
     private val userService: UserService,
 ) {
     private fun getHseAppMinorLessonsByUser(studentEmail: String, dayOfWeek: DayOfWeek,
-                                            from: LocalDate, to: LocalDate): List<com.melowetty.hsepermhelper.domain.model.lesson.Lesson> {
+                                            from: LocalDate, to: LocalDate
+    ): List<Lesson> {
         return try {
             hseAppApiService.getLessons(studentEmail, from, to)
                 .filter { it.dateStart.dayOfWeek == dayOfWeek }
@@ -99,7 +100,7 @@ class PersonalScheduleService(
         )
     }
 
-    fun getTodayLessons(telegramId: Long): List<com.melowetty.hsepermhelper.domain.model.lesson.Lesson> {
+    fun getTodayLessons(telegramId: Long): List<Lesson> {
         val schedules = getUserSchedulesByTelegramId(telegramId)
             .filterWeekSchedules()
         val todayDate = LocalDate.now(DateUtils.PERM_TIME_ZONE.toZoneId())
@@ -108,7 +109,7 @@ class PersonalScheduleService(
         return ScheduleUtils.getLessonsAtDateInWeekSchedule(schedule, todayDate)
     }
 
-    fun getTomorrowLessons(telegramId: Long): List<com.melowetty.hsepermhelper.domain.model.lesson.Lesson> {
+    fun getTomorrowLessons(telegramId: Long): List<Lesson> {
         var tomorrowDate = LocalDate.now(DateUtils.PERM_TIME_ZONE.toZoneId()).plusDays(1)
         if (tomorrowDate.dayOfWeek == DayOfWeek.SUNDAY) tomorrowDate = tomorrowDate.plusDays(1)
 

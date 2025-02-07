@@ -1,13 +1,11 @@
 package com.melowetty.hsepermhelper.util
 
-import com.melowetty.hsepermhelper.model.excel.ExcelLesson
-import com.melowetty.hsepermhelper.model.excel.ExcelSchedule
-import com.melowetty.hsepermhelper.model.file.File
-import com.melowetty.hsepermhelper.domain.model.lesson.Lesson
-import com.melowetty.hsepermhelper.model.lesson.LessonType
-import com.melowetty.hsepermhelper.model.schedule.Schedule
-import com.melowetty.hsepermhelper.model.schedule.ScheduleType
-import com.melowetty.hsepermhelper.model.lesson.ScheduledTime
+import com.melowetty.hsepermhelper.domain.model.file.File
+import com.melowetty.hsepermhelper.domain.model.lesson.LessonType
+import com.melowetty.hsepermhelper.domain.model.lesson.ScheduledTime
+import com.melowetty.hsepermhelper.domain.model.schedule.ScheduleType
+import com.melowetty.hsepermhelper.excel.model.ExcelLesson
+import com.melowetty.hsepermhelper.excel.model.ExcelSchedule
 import java.io.InputStream
 import java.nio.file.Files
 import java.nio.file.Path

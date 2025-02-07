@@ -1,7 +1,7 @@
 package com.melowetty.hsepermhelper.exception
 
-import com.melowetty.hsepermhelper.model.ErrorDebugResponse
-import com.melowetty.hsepermhelper.model.ErrorResponse
+import com.melowetty.hsepermhelper.domain.model.ErrorDebugResponse
+import com.melowetty.hsepermhelper.domain.model.ErrorResponse
 import org.springframework.http.HttpStatusCode
 import org.springframework.http.ResponseEntity
 

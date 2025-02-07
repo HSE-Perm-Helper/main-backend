@@ -1,4 +1,4 @@
-package com.melowetty.hsepermhelper.domain.model.excel
+package com.melowetty.hsepermhelper.excel.model
 
 data class ExcelScheduleDifference(
     val before: ExcelSchedule,

@@ -10,7 +10,7 @@ import java.time.LocalDate
 data class Schedule(
     @Schema(description = "Номер расписания", example = "6", nullable = true)
     val number: Int?,
-    val lessons: List<com.melowetty.hsepermhelper.domain.model.lesson.Lesson>,
+    val lessons: List<Lesson>,
     @JsonFormat(pattern = DateUtils.DATE_PATTERN)
     @Schema(description = "Дата начала расписания", example = "03.09.2023", type = "string")
     val start: LocalDate,

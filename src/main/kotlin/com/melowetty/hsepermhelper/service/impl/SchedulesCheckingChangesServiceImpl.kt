@@ -1,9 +1,8 @@
 package com.melowetty.hsepermhelper.service.impl
 
-import com.melowetty.hsepermhelper.model.event.ExcelSchedulesChanging
-import com.melowetty.hsepermhelper.model.excel.ExcelSchedule
-import com.melowetty.hsepermhelper.model.excel.ExcelScheduleDifference
-import com.melowetty.hsepermhelper.model.schedule.Schedule
+import com.melowetty.hsepermhelper.domain.model.event.ExcelSchedulesChanging
+import com.melowetty.hsepermhelper.excel.model.ExcelSchedule
+import com.melowetty.hsepermhelper.excel.model.ExcelScheduleDifference
 import com.melowetty.hsepermhelper.service.SchedulesCheckingChangesService
 import org.springframework.stereotype.Service
 

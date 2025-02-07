@@ -1,10 +1,10 @@
 package com.melowetty.hsepermhelper.scheduled
 
 import com.melowetty.hsepermhelper.domain.entity.UserEntity
+import com.melowetty.hsepermhelper.domain.model.hseapp.HseAppLesson
+import com.melowetty.hsepermhelper.domain.model.schedule.ScheduleInfo
+import com.melowetty.hsepermhelper.domain.model.schedule.ScheduleType
 import com.melowetty.hsepermhelper.extension.UserExtensions.Companion.toDto
-import com.melowetty.hsepermhelper.model.hseapp.HseAppLesson
-import com.melowetty.hsepermhelper.model.schedule.ScheduleInfo
-import com.melowetty.hsepermhelper.model.schedule.ScheduleType
 import com.melowetty.hsepermhelper.notification.ScheduleChangedForUserNotification
 import com.melowetty.hsepermhelper.repository.UserRepository
 import com.melowetty.hsepermhelper.service.ExcelScheduleService

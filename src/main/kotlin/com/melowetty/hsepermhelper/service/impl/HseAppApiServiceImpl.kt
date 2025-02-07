@@ -2,8 +2,8 @@ package com.melowetty.hsepermhelper.service.impl
 
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.melowetty.hsepermhelper.config.HseAppApiCacheConfig
-import com.melowetty.hsepermhelper.model.hseapp.HseAppLesson
-import com.melowetty.hsepermhelper.model.lesson.LessonType
+import com.melowetty.hsepermhelper.domain.model.hseapp.HseAppLesson
+import com.melowetty.hsepermhelper.domain.model.lesson.LessonType
 import com.melowetty.hsepermhelper.service.HseAppApiService
 import com.melowetty.hsepermhelper.util.LinkUtils
 import java.time.LocalDate

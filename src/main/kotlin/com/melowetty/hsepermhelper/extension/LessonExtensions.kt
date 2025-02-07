@@ -1,17 +1,17 @@
 package com.melowetty.hsepermhelper.extension
 
-import com.melowetty.hsepermhelper.model.excel.ExcelLesson
-import com.melowetty.hsepermhelper.model.hseapp.HseAppLesson
+import com.melowetty.hsepermhelper.domain.model.hseapp.HseAppLesson
 import com.melowetty.hsepermhelper.domain.model.lesson.Lesson
-import com.melowetty.hsepermhelper.model.lesson.ScheduledTime
-import com.melowetty.hsepermhelper.model.schedule.ScheduleType
+import com.melowetty.hsepermhelper.domain.model.lesson.ScheduledTime
+import com.melowetty.hsepermhelper.domain.model.schedule.ScheduleType
+import com.melowetty.hsepermhelper.excel.model.ExcelLesson
 import com.melowetty.hsepermhelper.util.DateUtils.Companion.asStr
 import com.melowetty.hsepermhelper.util.DateUtils.Companion.fromGmtToPermTime
 
 class LessonExtensions {
     companion object {
-        fun ExcelLesson.toLesson(): com.melowetty.hsepermhelper.domain.model.lesson.Lesson {
-            return com.melowetty.hsepermhelper.domain.model.lesson.Lesson(
+        fun ExcelLesson.toLesson(): Lesson {
+            return Lesson(
                 subject = subject,
                 subGroup = subGroup,
                 time = time,
@@ -24,11 +24,11 @@ class LessonExtensions {
             )
         }
 
-        fun HseAppLesson.toLesson(): com.melowetty.hsepermhelper.domain.model.lesson.Lesson {
+        fun HseAppLesson.toLesson(): Lesson {
             val startTime = dateStart.fromGmtToPermTime().asStr()
             val endTime = dateEnd.fromGmtToPermTime().asStr()
 
-            return com.melowetty.hsepermhelper.domain.model.lesson.Lesson(
+            return Lesson(
                 subject = subject,
                 subGroup = null,
                 time = ScheduledTime(

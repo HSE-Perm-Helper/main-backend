@@ -2,6 +2,7 @@ package com.melowetty.hsepermhelper.controller
 
 import com.melowetty.hsepermhelper.annotation.Slf4j
 import com.melowetty.hsepermhelper.annotation.Slf4j.Companion.log
+import com.melowetty.hsepermhelper.domain.model.ErrorResponse
 import com.melowetty.hsepermhelper.exception.CustomException
 import com.melowetty.hsepermhelper.exception.PermissionDeniedException
 import com.melowetty.hsepermhelper.exception.ScheduleNotFoundException
@@ -9,7 +10,7 @@ import com.melowetty.hsepermhelper.exception.SecretKeyParseException
 import com.melowetty.hsepermhelper.exception.UnauthorizedException
 import com.melowetty.hsepermhelper.exception.UserIsExistsException
 import com.melowetty.hsepermhelper.exception.UserNotFoundException
-import com.melowetty.hsepermhelper.model.ErrorResponse
+import java.lang.Boolean.parseBoolean
 import org.springframework.core.env.Environment
 import org.springframework.core.env.get
 import org.springframework.http.HttpStatus
@@ -21,7 +22,6 @@ import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.bind.annotation.RestControllerAdvice
 import org.springframework.web.servlet.NoHandlerFoundException
-import java.lang.Boolean.parseBoolean
 
 @RestControllerAdvice
 @Slf4j

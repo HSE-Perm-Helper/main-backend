@@ -3,7 +3,7 @@ package com.melowetty.hsepermhelper.controller
 import com.melowetty.hsepermhelper.domain.dto.HideLessonDto
 import com.melowetty.hsepermhelper.domain.dto.RemoteScheduleLink
 import com.melowetty.hsepermhelper.domain.dto.UserDto
-import com.melowetty.hsepermhelper.model.Response
+import com.melowetty.hsepermhelper.domain.model.Response
 import com.melowetty.hsepermhelper.service.UserService
 import io.swagger.v3.oas.annotations.Parameter
 import org.springframework.http.HttpStatus
