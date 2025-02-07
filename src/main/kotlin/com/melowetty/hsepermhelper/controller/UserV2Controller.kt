@@ -1,5 +1,7 @@
 package com.melowetty.hsepermhelper.controller
 
+import com.melowetty.hsepermhelper.controller.request.UserSetEmailRequest
+import com.melowetty.hsepermhelper.domain.dto.EmailVerificationDto
 import com.melowetty.hsepermhelper.domain.dto.HideLessonDto
 import com.melowetty.hsepermhelper.domain.dto.RemoteScheduleLink
 import com.melowetty.hsepermhelper.domain.dto.UserDto
@@ -7,6 +9,7 @@ import com.melowetty.hsepermhelper.domain.model.Response
 import com.melowetty.hsepermhelper.service.UserService
 import io.swagger.v3.oas.annotations.Parameter
 import org.springframework.http.HttpStatus
+import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PatchMapping
@@ -20,6 +23,7 @@ import org.springframework.web.bind.annotation.RestController
 
 @RestController
 @RequestMapping("v2/users")
+@Validated
 class UserV2Controller(
     private val userService: UserService
 ) {
@@ -93,5 +97,16 @@ class UserV2Controller(
     @PostMapping("{id}/remote-schedule")
     fun createOrUpdateScheduleLink(@PathVariable("id") telegramId: Long): RemoteScheduleLink {
         return userService.createOrUpdateScheduleLink(telegramId)
+    }
+
+    @PostMapping("{id}/email")
+    fun setOrUpdateEmailRequest(@PathVariable("id") id: Long, @RequestBody request: UserSetEmailRequest
+    ): EmailVerificationDto {
+        return userService.setOrUpdateEmailRequest(id, request.email)
+    }
+
+    @DeleteMapping("{id}/email")
+    fun setOrUpdateEmailRequest(@PathVariable("id") id: Long) {
+        return userService.deleteEmail(id)
     }
 }

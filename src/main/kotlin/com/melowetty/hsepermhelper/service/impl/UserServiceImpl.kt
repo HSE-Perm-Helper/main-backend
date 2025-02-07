@@ -1,5 +1,6 @@
 package com.melowetty.hsepermhelper.service.impl
 
+import com.melowetty.hsepermhelper.domain.dto.EmailVerificationDto
 import com.melowetty.hsepermhelper.domain.dto.HideLessonDto
 import com.melowetty.hsepermhelper.domain.dto.RemoteScheduleLink
 import com.melowetty.hsepermhelper.domain.dto.SettingsDto
@@ -14,13 +15,19 @@ import com.melowetty.hsepermhelper.repository.HiddenLessonRepository
 import com.melowetty.hsepermhelper.repository.UserRepository
 import com.melowetty.hsepermhelper.service.RemoteScheduleService
 import com.melowetty.hsepermhelper.service.UserService
-import org.springframework.stereotype.Service
-import org.springframework.util.ReflectionUtils
+import com.melowetty.hsepermhelper.validation.annotation.ValidHseEmail
+import jakarta.validation.Valid
+import jakarta.validation.constraints.Size
 import java.util.UUID
 import org.springframework.beans.factory.annotation.Value
+import org.springframework.stereotype.Service
+import org.springframework.util.ReflectionUtils
+import org.springframework.validation.annotation.Validated
+import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.util.UriComponentsBuilder
 
 @Service
+@Validated
 class UserServiceImpl(
     private val userRepository: UserRepository,
     private val hiddenLessonRepository: HiddenLessonRepository,
@@ -30,9 +37,7 @@ class UserServiceImpl(
     private lateinit var remoteScheduleConnectUrl: String
 
     override fun getByTelegramId(telegramId: Long): UserDto {
-        val user = userRepository.findByTelegramId(telegramId)
-        if (user.isEmpty) throw UserNotFoundException("Пользователь с таким Telegram ID не найден!")
-        return user.get().toDto()
+        return getUserEntityByTelegramId(telegramId).toDto()
     }
 
     override fun getById(id: UUID): UserDto {
@@ -55,9 +60,8 @@ class UserServiceImpl(
     }
 
     override fun deleteByTelegramId(telegramId: Long) {
-        val user = userRepository.findByTelegramId(telegramId)
-        if (user.isEmpty) throw UserNotFoundException("Пользователь с таким Telegram ID не найден!")
-        userRepository.delete(user.get())
+        val user = getUserEntityByTelegramId(telegramId)
+        userRepository.delete(user)
     }
 
     override fun updateUser(user: UserDto): UserDto {
@@ -179,6 +183,19 @@ class UserServiceImpl(
 
         return RemoteScheduleLink(
             direct = generateRemoteScheduleConnectLink(token)
+        )
+    }
+
+    override fun setOrUpdateEmailRequest(telegramId: Long,
+                                         @Valid @ValidHseEmail email: String
+    ): EmailVerificationDto {
+        TODO()
+    }
+
+    override fun deleteEmail(telegramId: Long) {
+        val user = getUserEntityByTelegramId(telegramId)
+        userRepository.save(
+            user.copy(email = null)
         )
     }
 

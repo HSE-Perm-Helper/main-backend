@@ -3,6 +3,7 @@ package com.melowetty.hsepermhelper.controller
 import com.melowetty.hsepermhelper.annotation.Slf4j
 import com.melowetty.hsepermhelper.annotation.Slf4j.Companion.log
 import com.melowetty.hsepermhelper.domain.model.ErrorResponse
+import com.melowetty.hsepermhelper.domain.model.Response
 import com.melowetty.hsepermhelper.exception.CustomException
 import com.melowetty.hsepermhelper.exception.PermissionDeniedException
 import com.melowetty.hsepermhelper.exception.ScheduleNotFoundException
@@ -10,6 +11,7 @@ import com.melowetty.hsepermhelper.exception.SecretKeyParseException
 import com.melowetty.hsepermhelper.exception.UnauthorizedException
 import com.melowetty.hsepermhelper.exception.UserIsExistsException
 import com.melowetty.hsepermhelper.exception.UserNotFoundException
+import jakarta.validation.ConstraintViolationException
 import java.lang.Boolean.parseBoolean
 import org.springframework.core.env.Environment
 import org.springframework.core.env.get
@@ -102,6 +104,15 @@ class ExceptionHandlerController(
     @ExceptionHandler(UserIsExistsException::class)
     fun handleUserIsExistsException(exception: UserIsExistsException): ResponseEntity<Any> {
         return exceptionToDebugOrNormalResponseEntity(exception)
+    }
+
+    @ExceptionHandler(ConstraintViolationException::class)
+    fun handleConstraintViolationException(e: ConstraintViolationException): ResponseEntity<Any> {
+        return ResponseEntity(
+            ErrorResponse(
+            "Ошибка валидации", "VALIDATION_ERROR", status = 400),
+            HttpStatus.BAD_REQUEST
+        )
     }
 
     private fun exceptionToDebugOrNormalResponseEntity(exception: CustomException): ResponseEntity<Any> {
