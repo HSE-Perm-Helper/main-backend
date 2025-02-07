@@ -24,9 +24,13 @@ class PersonalScheduleService(
 ) {
     private fun getHseAppMinorLessonsByUser(studentEmail: String, dayOfWeek: DayOfWeek,
                                             from: LocalDate, to: LocalDate): List<Lesson> {
-        return hseAppApiService.getLessons(studentEmail, from, to)
-            .filter { it.dateStart.dayOfWeek == dayOfWeek }
-            .map { it.toLesson() }
+        return try {
+            hseAppApiService.getLessons(studentEmail, from, to)
+                .filter { it.dateStart.dayOfWeek == dayOfWeek }
+                .map { it.toLesson() }
+        } catch (e: RuntimeException) {
+            emptyList()
+        }
     }
 
     fun getUserSchedulesByTelegramId(telegramId: Long): List<Schedule> {
