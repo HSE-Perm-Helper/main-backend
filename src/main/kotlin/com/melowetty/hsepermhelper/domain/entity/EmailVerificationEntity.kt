@@ -20,7 +20,7 @@ class EmailVerificationEntity(
     val email: String,
     val created: LocalDateTime,
     var attempts: Int,
-    var nextAttemptIn: Int,
+    var nextAttempt: LocalDateTime?,
 
     @Column(length = 24, unique = true)
     val secret: String

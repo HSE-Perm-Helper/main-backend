@@ -13,6 +13,7 @@ import com.melowetty.hsepermhelper.extension.UserExtensions.Companion.toDto
 import com.melowetty.hsepermhelper.extension.UserExtensions.Companion.toEntity
 import com.melowetty.hsepermhelper.repository.HiddenLessonRepository
 import com.melowetty.hsepermhelper.repository.UserRepository
+import com.melowetty.hsepermhelper.service.EmailVerificationService
 import com.melowetty.hsepermhelper.service.RemoteScheduleService
 import com.melowetty.hsepermhelper.service.UserService
 import com.melowetty.hsepermhelper.validation.annotation.ValidHseEmail
@@ -32,6 +33,7 @@ class UserServiceImpl(
     private val userRepository: UserRepository,
     private val hiddenLessonRepository: HiddenLessonRepository,
     private val remoteScheduleService: RemoteScheduleService,
+    private val emailVerificationService: EmailVerificationService
 ) : UserService {
     @Value("\${remote-schedule.connect-url}")
     private lateinit var remoteScheduleConnectUrl: String
@@ -189,7 +191,7 @@ class UserServiceImpl(
     override fun setOrUpdateEmailRequest(telegramId: Long,
                                          @Valid @ValidHseEmail email: String
     ): EmailVerificationDto {
-        TODO()
+        return emailVerificationService.startVerificationProcess(telegramId, email)
     }
 
     override fun deleteEmail(telegramId: Long) {

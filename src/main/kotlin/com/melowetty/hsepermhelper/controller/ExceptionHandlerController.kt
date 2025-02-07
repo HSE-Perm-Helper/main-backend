@@ -11,8 +11,10 @@ import com.melowetty.hsepermhelper.exception.SecretKeyParseException
 import com.melowetty.hsepermhelper.exception.UnauthorizedException
 import com.melowetty.hsepermhelper.exception.UserIsExistsException
 import com.melowetty.hsepermhelper.exception.UserNotFoundException
+import com.melowetty.hsepermhelper.exception.verification.VerificationNotFoundOrExpiredException
 import jakarta.validation.ConstraintViolationException
 import java.lang.Boolean.parseBoolean
+import java.util.Optional
 import org.springframework.core.env.Environment
 import org.springframework.core.env.get
 import org.springframework.http.HttpStatus
@@ -31,6 +33,11 @@ class ExceptionHandlerController(
     environment: Environment
 ) {
     private val isDebug = parseBoolean(environment["debug"])
+
+    @ExceptionHandler(VerificationNotFoundOrExpiredException::class)
+    fun handleVerificationNotFoundOrExpiredException(exception: VerificationNotFoundOrExpiredException): ResponseEntity<String> {
+        return ResponseEntity(exception.message, HttpStatus.NOT_FOUND)
+    }
 
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler(ScheduleNotFoundException::class)
