@@ -9,6 +9,20 @@ data class EmailVerificationDto(
     val token: String,
     @JsonFormat(pattern = DateUtils.DATE_TIME_PATTERN)
     val nextAttempt: LocalDateTime?,
-    val nextAttemptIn: Int? =
-        nextAttempt?.let { 0.coerceAtLeast(ChronoUnit.SECONDS.between(nextAttempt, LocalDateTime.now()).toInt()) }
-)
+    val nextAttemptIn: Int? = getNextAttemptIn(nextAttempt)
+) {
+    companion object {
+        fun getNextAttemptIn(nextAttempt: LocalDateTime?): Int? {
+            nextAttempt ?: return null
+            val currentDate = LocalDateTime.now()
+
+            val seconds = ChronoUnit.SECONDS.between(nextAttempt, currentDate).toInt()
+
+            if (currentDate >= nextAttempt) {
+                return 0
+            }
+
+            return seconds
+        }
+    }
+}
