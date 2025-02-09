@@ -85,6 +85,13 @@ class EmailVerificationService(
         emailVerificationRepository.deleteById(token)
     }
 
+    fun getVerificationByToken(token: String): EmailVerificationDto {
+        val verification = emailVerificationRepository.findByToken(token)
+            ?: throw VerificationRequestNotFoundException()
+
+        return verification.toDto()
+    }
+
     fun resendVerificationLink(token: String): EmailVerificationDto {
         val verification = emailVerificationRepository.findByToken(token)
             ?: throw VerificationRequestNotFoundException()
@@ -112,7 +119,7 @@ class EmailVerificationService(
     }
 
     private fun generateVerificationLink(secret: String): String {
-        return baseUrl + secret
+        return "$baseUrl/verify/$secret"
     }
 
     private fun EmailVerificationEntity.toDto(): EmailVerificationDto {

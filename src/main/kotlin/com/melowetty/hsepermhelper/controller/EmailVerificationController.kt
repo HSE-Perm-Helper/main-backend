@@ -14,10 +14,15 @@ import org.springframework.web.bind.annotation.RestController
 class EmailVerificationController(
     private val emailVerificationService: EmailVerificationService
 ) {
-    @GetMapping("{secret}")
+    @GetMapping("verify/{secret}")
     fun verifyEmailBySecret(@PathVariable("secret") secret: String): String {
         emailVerificationService.checkVerificationSecret(secret)
         return "Почта успешно подтверждена, эту страницу можно закрыть"
+    }
+
+    @GetMapping("{token}")
+    fun getEmailVerificationInfo(@PathVariable("token") token: String): EmailVerificationDto {
+        return emailVerificationService.getVerificationByToken(token)
     }
 
     @PostMapping("{token}")

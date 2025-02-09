@@ -17,6 +17,7 @@ import java.lang.Boolean.parseBoolean
 import java.util.Optional
 import org.springframework.core.env.Environment
 import org.springframework.core.env.get
+import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
 import org.springframework.http.HttpStatusCode
 import org.springframework.http.ResponseEntity
@@ -36,7 +37,10 @@ class ExceptionHandlerController(
 
     @ExceptionHandler(VerificationNotFoundOrExpiredException::class)
     fun handleVerificationNotFoundOrExpiredException(exception: VerificationNotFoundOrExpiredException): ResponseEntity<String> {
-        return ResponseEntity(exception.message, HttpStatus.NOT_FOUND)
+        return ResponseEntity
+            .status(HttpStatus.NOT_FOUND)
+            .header("Content-Type", "text/plain; charset=utf-8")
+            .body(exception.message)
     }
 
     @ResponseStatus(HttpStatus.NOT_FOUND)
