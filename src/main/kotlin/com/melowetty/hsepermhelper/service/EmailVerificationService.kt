@@ -3,6 +3,8 @@ package com.melowetty.hsepermhelper.service
 import com.melowetty.hsepermhelper.domain.dto.EmailVerificationDto
 import com.melowetty.hsepermhelper.domain.entity.EmailVerificationEntity
 import com.melowetty.hsepermhelper.domain.model.event.EmailIsVerifiedEvent
+import com.melowetty.hsepermhelper.domain.model.event.EmailVerificationSend
+import com.melowetty.hsepermhelper.domain.model.event.KafkaNotificationV2
 import com.melowetty.hsepermhelper.exception.UserNotFoundException
 import com.melowetty.hsepermhelper.exception.verification.ReachMaxAttemptsToVerificationRequestException
 import com.melowetty.hsepermhelper.exception.verification.VerificationNotFoundOrExpiredException
@@ -11,6 +13,7 @@ import com.melowetty.hsepermhelper.repository.EmailVerificationRepository
 import com.melowetty.hsepermhelper.repository.UserRepository
 import java.time.LocalDateTime
 import org.apache.commons.lang.RandomStringUtils
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.ApplicationEventPublisher
 import org.springframework.stereotype.Service
 
@@ -18,8 +21,12 @@ import org.springframework.stereotype.Service
 class EmailVerificationService(
     private val emailVerificationRepository: EmailVerificationRepository,
     private val userRepository: UserRepository,
-    private val eventPublisher: ApplicationEventPublisher
+    private val eventPublisher: ApplicationEventPublisher,
+    private val notificationService: NotificationService
 ) {
+    @Value("\${email-verification.base-url}")
+    private lateinit var baseUrl: String
+
     companion object {
         private const val TOKEN_LENGTH = 10
         private const val SECRET_LENGTH = 24
@@ -52,7 +59,9 @@ class EmailVerificationService(
 
         emailVerificationRepository.save(entity)
 
-        // TODO cделать отправку письма
+        notificationService.sendNotificationV2(
+            EmailVerificationSend(email, generateVerificationLink(entity.secret))
+        )
 
         return entity.toDto()
     }
@@ -93,11 +102,17 @@ class EmailVerificationService(
             verification.nextAttempt = null
         }
 
-        // TODO отсылаем письмо заново
+        notificationService.sendNotificationV2(
+            EmailVerificationSend(verification.email, generateVerificationLink(verification.secret))
+        )
 
         emailVerificationRepository.save(verification)
 
         return verification.toDto()
+    }
+
+    private fun generateVerificationLink(secret: String): String {
+        return baseUrl + secret
     }
 
     private fun EmailVerificationEntity.toDto(): EmailVerificationDto {
