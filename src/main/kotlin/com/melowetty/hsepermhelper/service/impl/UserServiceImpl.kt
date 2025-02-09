@@ -12,9 +12,11 @@ import com.melowetty.hsepermhelper.exception.UserIsExistsException
 import com.melowetty.hsepermhelper.exception.UserNotFoundException
 import com.melowetty.hsepermhelper.extension.UserExtensions.Companion.toDto
 import com.melowetty.hsepermhelper.extension.UserExtensions.Companion.toEntity
+import com.melowetty.hsepermhelper.notification.EmailIsVerifiedNotification
 import com.melowetty.hsepermhelper.repository.HiddenLessonRepository
 import com.melowetty.hsepermhelper.repository.UserRepository
 import com.melowetty.hsepermhelper.service.EmailVerificationService
+import com.melowetty.hsepermhelper.service.NotificationService
 import com.melowetty.hsepermhelper.service.RemoteScheduleService
 import com.melowetty.hsepermhelper.service.UserService
 import com.melowetty.hsepermhelper.validation.annotation.ValidHseEmail
@@ -36,7 +38,8 @@ class UserServiceImpl(
     private val userRepository: UserRepository,
     private val hiddenLessonRepository: HiddenLessonRepository,
     private val remoteScheduleService: RemoteScheduleService,
-    private val emailVerificationService: EmailVerificationService
+    private val emailVerificationService: EmailVerificationService,
+    private val notificationService: NotificationService
 ) : UserService {
     @Value("\${remote-schedule.connect-url}")
     private lateinit var remoteScheduleConnectUrl: String
@@ -213,7 +216,9 @@ class UserServiceImpl(
             user.copy(email = event.email)
         )
 
-        // TODO нотификация что почта подтвержедна
+        notificationService.sendNotificationV2(
+            EmailIsVerifiedNotification(user.telegramId)
+        )
     }
 
     private fun generateRemoteScheduleConnectLink(token: String): String {
