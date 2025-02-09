@@ -15,5 +15,5 @@ interface UserRepository : CrudRepository<UserEntity, UUID> {
     fun existsByTelegramId(telegramId: Long): Boolean
 
 
-    fun findBySettings_EmailNotNull(pageable: Pageable): Page<UserEntity>
+    fun findByEmailNotNull(pageable: Pageable): Page<UserEntity>
 }

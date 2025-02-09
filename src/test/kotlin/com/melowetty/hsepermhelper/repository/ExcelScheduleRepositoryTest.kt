@@ -1,10 +1,10 @@
 package com.melowetty.hsepermhelper.repository
 
+import com.melowetty.hsepermhelper.domain.model.event.ExcelSchedulesChanging
+import com.melowetty.hsepermhelper.domain.model.file.File
+import com.melowetty.hsepermhelper.domain.model.file.FilesChanging
 import com.melowetty.hsepermhelper.excel.HseTimetableExcelParser
-import com.melowetty.hsepermhelper.model.file.File
-import com.melowetty.hsepermhelper.model.file.FilesChanging
-import com.melowetty.hsepermhelper.model.excel.ExcelScheduleDifference
-import com.melowetty.hsepermhelper.model.event.ExcelSchedulesChanging
+import com.melowetty.hsepermhelper.excel.model.ExcelScheduleDifference
 import com.melowetty.hsepermhelper.service.ScheduleFilesService
 import com.melowetty.hsepermhelper.service.SchedulesCheckingChangesService
 import com.melowetty.hsepermhelper.util.MockitoHelper

@@ -2,6 +2,8 @@ package com.melowetty.hsepermhelper.controller
 
 import com.melowetty.hsepermhelper.annotation.Slf4j
 import com.melowetty.hsepermhelper.annotation.Slf4j.Companion.log
+import com.melowetty.hsepermhelper.domain.model.ErrorResponse
+import com.melowetty.hsepermhelper.domain.model.Response
 import com.melowetty.hsepermhelper.exception.CustomException
 import com.melowetty.hsepermhelper.exception.PermissionDeniedException
 import com.melowetty.hsepermhelper.exception.ScheduleNotFoundException
@@ -9,9 +11,13 @@ import com.melowetty.hsepermhelper.exception.SecretKeyParseException
 import com.melowetty.hsepermhelper.exception.UnauthorizedException
 import com.melowetty.hsepermhelper.exception.UserIsExistsException
 import com.melowetty.hsepermhelper.exception.UserNotFoundException
-import com.melowetty.hsepermhelper.model.ErrorResponse
+import com.melowetty.hsepermhelper.exception.verification.VerificationNotFoundOrExpiredException
+import jakarta.validation.ConstraintViolationException
+import java.lang.Boolean.parseBoolean
+import java.util.Optional
 import org.springframework.core.env.Environment
 import org.springframework.core.env.get
+import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
 import org.springframework.http.HttpStatusCode
 import org.springframework.http.ResponseEntity
@@ -21,7 +27,6 @@ import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.bind.annotation.RestControllerAdvice
 import org.springframework.web.servlet.NoHandlerFoundException
-import java.lang.Boolean.parseBoolean
 
 @RestControllerAdvice
 @Slf4j
@@ -29,6 +34,14 @@ class ExceptionHandlerController(
     environment: Environment
 ) {
     private val isDebug = parseBoolean(environment["debug"])
+
+    @ExceptionHandler(VerificationNotFoundOrExpiredException::class)
+    fun handleVerificationNotFoundOrExpiredException(exception: VerificationNotFoundOrExpiredException): ResponseEntity<String> {
+        return ResponseEntity
+            .status(HttpStatus.NOT_FOUND)
+            .header("Content-Type", "text/plain; charset=utf-8")
+            .body(exception.message)
+    }
 
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler(ScheduleNotFoundException::class)
@@ -102,6 +115,15 @@ class ExceptionHandlerController(
     @ExceptionHandler(UserIsExistsException::class)
     fun handleUserIsExistsException(exception: UserIsExistsException): ResponseEntity<Any> {
         return exceptionToDebugOrNormalResponseEntity(exception)
+    }
+
+    @ExceptionHandler(ConstraintViolationException::class)
+    fun handleConstraintViolationException(e: ConstraintViolationException): ResponseEntity<Any> {
+        return ResponseEntity(
+            ErrorResponse(
+            "Ошибка валидации", "VALIDATION_ERROR", status = 400),
+            HttpStatus.BAD_REQUEST
+        )
     }
 
     private fun exceptionToDebugOrNormalResponseEntity(exception: CustomException): ResponseEntity<Any> {

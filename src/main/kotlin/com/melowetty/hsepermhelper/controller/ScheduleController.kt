@@ -1,11 +1,11 @@
 package com.melowetty.hsepermhelper.controller
 
-import com.melowetty.hsepermhelper.model.Response
-import com.melowetty.hsepermhelper.model.event.UserEventType
-import com.melowetty.hsepermhelper.model.lesson.AvailableLessonForHiding
-import com.melowetty.hsepermhelper.model.lesson.Lesson
-import com.melowetty.hsepermhelper.model.schedule.Schedule
-import com.melowetty.hsepermhelper.model.schedule.ScheduleInfo
+import com.melowetty.hsepermhelper.domain.model.Response
+import com.melowetty.hsepermhelper.domain.model.event.UserEventType
+import com.melowetty.hsepermhelper.domain.model.lesson.AvailableLessonForHiding
+import com.melowetty.hsepermhelper.domain.model.lesson.Lesson
+import com.melowetty.hsepermhelper.domain.model.schedule.Schedule
+import com.melowetty.hsepermhelper.domain.model.schedule.ScheduleInfo
 import com.melowetty.hsepermhelper.service.PersonalScheduleService
 import com.melowetty.hsepermhelper.service.UserEventService
 import com.melowetty.hsepermhelper.util.DateUtils

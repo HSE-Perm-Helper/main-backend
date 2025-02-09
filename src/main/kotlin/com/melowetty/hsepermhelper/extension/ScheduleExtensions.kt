@@ -1,9 +1,9 @@
 package com.melowetty.hsepermhelper.extension
 
+import com.melowetty.hsepermhelper.domain.model.schedule.Schedule
+import com.melowetty.hsepermhelper.domain.model.schedule.ScheduleInfo
+import com.melowetty.hsepermhelper.excel.model.ExcelSchedule
 import com.melowetty.hsepermhelper.extension.LessonExtensions.Companion.toLesson
-import com.melowetty.hsepermhelper.model.excel.ExcelSchedule
-import com.melowetty.hsepermhelper.model.schedule.Schedule
-import com.melowetty.hsepermhelper.model.schedule.ScheduleInfo
 
 class ScheduleExtensions {
     companion object {
