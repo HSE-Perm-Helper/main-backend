@@ -5,10 +5,10 @@ import com.melowetty.hsepermhelper.annotation.Slf4j.Companion.log
 import com.melowetty.hsepermhelper.excel.HseTimetableExcelParser
 import com.melowetty.hsepermhelper.excel.HseTimetableScheduleTypeChecker
 import com.melowetty.hsepermhelper.excel.HseTimetableSheetExcelParser
+import com.melowetty.hsepermhelper.excel.model.ExcelLesson
+import com.melowetty.hsepermhelper.excel.model.ExcelSchedule
 import com.melowetty.hsepermhelper.excel.model.ParsedExcelInfo
 import com.melowetty.hsepermhelper.excel.model.ParsedScheduleInfo
-import com.melowetty.hsepermhelper.model.excel.ExcelLesson
-import com.melowetty.hsepermhelper.model.excel.ExcelSchedule
 import com.melowetty.hsepermhelper.notification.ServiceWarnNotification
 import com.melowetty.hsepermhelper.service.NotificationService
 import com.melowetty.hsepermhelper.util.RowUtils.Companion.getCellValue

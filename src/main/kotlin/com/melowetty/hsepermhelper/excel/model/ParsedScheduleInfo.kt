@@ -1,6 +1,6 @@
 package com.melowetty.hsepermhelper.excel.model
 
-import com.melowetty.hsepermhelper.model.schedule.ScheduleType
+import com.melowetty.hsepermhelper.domain.model.schedule.ScheduleType
 import java.time.LocalDate
 
 data class ParsedScheduleInfo(

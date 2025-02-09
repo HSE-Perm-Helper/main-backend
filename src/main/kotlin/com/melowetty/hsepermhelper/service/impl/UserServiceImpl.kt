@@ -1,38 +1,51 @@
 package com.melowetty.hsepermhelper.service.impl
 
+import com.melowetty.hsepermhelper.domain.dto.EmailVerificationDto
 import com.melowetty.hsepermhelper.domain.dto.HideLessonDto
 import com.melowetty.hsepermhelper.domain.dto.RemoteScheduleLink
 import com.melowetty.hsepermhelper.domain.dto.SettingsDto
 import com.melowetty.hsepermhelper.domain.dto.UserDto
 import com.melowetty.hsepermhelper.domain.entity.HideLessonEntity
 import com.melowetty.hsepermhelper.domain.entity.UserEntity
+import com.melowetty.hsepermhelper.domain.model.event.EmailIsVerifiedEvent
 import com.melowetty.hsepermhelper.exception.UserIsExistsException
 import com.melowetty.hsepermhelper.exception.UserNotFoundException
 import com.melowetty.hsepermhelper.extension.UserExtensions.Companion.toDto
 import com.melowetty.hsepermhelper.extension.UserExtensions.Companion.toEntity
+import com.melowetty.hsepermhelper.notification.EmailIsVerifiedNotification
 import com.melowetty.hsepermhelper.repository.HiddenLessonRepository
 import com.melowetty.hsepermhelper.repository.UserRepository
+import com.melowetty.hsepermhelper.service.EmailVerificationService
+import com.melowetty.hsepermhelper.service.NotificationService
 import com.melowetty.hsepermhelper.service.RemoteScheduleService
 import com.melowetty.hsepermhelper.service.UserService
+import com.melowetty.hsepermhelper.validation.annotation.ValidHseEmail
+import jakarta.validation.Valid
+import jakarta.validation.constraints.Size
+import java.util.UUID
+import kotlin.jvm.optionals.getOrNull
+import org.springframework.beans.factory.annotation.Value
+import org.springframework.context.event.EventListener
 import org.springframework.stereotype.Service
 import org.springframework.util.ReflectionUtils
-import java.util.UUID
-import org.springframework.beans.factory.annotation.Value
+import org.springframework.validation.annotation.Validated
+import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.util.UriComponentsBuilder
 
 @Service
+@Validated
 class UserServiceImpl(
     private val userRepository: UserRepository,
     private val hiddenLessonRepository: HiddenLessonRepository,
     private val remoteScheduleService: RemoteScheduleService,
+    private val emailVerificationService: EmailVerificationService,
+    private val notificationService: NotificationService
 ) : UserService {
     @Value("\${remote-schedule.connect-url}")
     private lateinit var remoteScheduleConnectUrl: String
 
     override fun getByTelegramId(telegramId: Long): UserDto {
-        val user = userRepository.findByTelegramId(telegramId)
-        if (user.isEmpty) throw UserNotFoundException("Пользователь с таким Telegram ID не найден!")
-        return user.get().toDto()
+        return getUserEntityByTelegramId(telegramId).toDto()
     }
 
     override fun getById(id: UUID): UserDto {
@@ -55,9 +68,8 @@ class UserServiceImpl(
     }
 
     override fun deleteByTelegramId(telegramId: Long) {
-        val user = userRepository.findByTelegramId(telegramId)
-        if (user.isEmpty) throw UserNotFoundException("Пользователь с таким Telegram ID не найден!")
-        userRepository.delete(user.get())
+        val user = getUserEntityByTelegramId(telegramId)
+        userRepository.delete(user)
     }
 
     override fun updateUser(user: UserDto): UserDto {
@@ -74,9 +86,6 @@ class UserServiceImpl(
         val newUser = userRepository.save(
             user.copy(
                 settings = settings
-                .copy(
-                    email = user.settings.email
-                )
             ).toEntity()
         ).toDto()
 
@@ -88,7 +97,6 @@ class UserServiceImpl(
         val userSettings = user.settings.copy()
         val newSettings = settings.toMutableMap()
         newSettings.remove("id")
-        newSettings.remove("email")
         newSettings.forEach { (t, u) ->
             val field = ReflectionUtils.findField(SettingsDto::class.java, t)
             if (field != null) {
@@ -183,6 +191,33 @@ class UserServiceImpl(
 
         return RemoteScheduleLink(
             direct = generateRemoteScheduleConnectLink(token)
+        )
+    }
+
+    override fun setOrUpdateEmailRequest(telegramId: Long,
+                                         @Valid @ValidHseEmail email: String
+    ): EmailVerificationDto {
+        return emailVerificationService.startVerificationProcess(telegramId, email)
+    }
+
+    override fun deleteEmail(telegramId: Long) {
+        val user = getUserEntityByTelegramId(telegramId)
+        userRepository.save(
+            user.copy(email = null)
+        )
+    }
+
+    @EventListener(EmailIsVerifiedEvent::class)
+    fun handleEmailVerifiedEvent(event: EmailIsVerifiedEvent) {
+        val user = userRepository.findById(event.userId).getOrNull()
+            ?: return
+
+        userRepository.save(
+            user.copy(email = event.email)
+        )
+
+        notificationService.sendNotificationV2(
+            EmailIsVerifiedNotification(user.telegramId)
         )
     }
 

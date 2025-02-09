@@ -1,14 +1,14 @@
 package com.melowetty.hsepermhelper.excel.impl
 
+import com.melowetty.hsepermhelper.domain.model.lesson.LessonPlace
+import com.melowetty.hsepermhelper.domain.model.schedule.ScheduleType
 import com.melowetty.hsepermhelper.excel.HseTimetableCellExcelParser
 import com.melowetty.hsepermhelper.excel.HseTimetableLessonTypeChecker
 import com.melowetty.hsepermhelper.excel.model.CellInfo
+import com.melowetty.hsepermhelper.excel.model.ExcelLesson
 import com.melowetty.hsepermhelper.excel.model.ParsedCellInfo
 import com.melowetty.hsepermhelper.excel.model.ParsedLessonInfo
 import com.melowetty.hsepermhelper.excel.model.ParsedScheduleInfo
-import com.melowetty.hsepermhelper.model.excel.ExcelLesson
-import com.melowetty.hsepermhelper.model.lesson.LessonPlace
-import com.melowetty.hsepermhelper.model.schedule.ScheduleType
 import com.melowetty.hsepermhelper.util.LinkUtils
 import org.springframework.stereotype.Component
 

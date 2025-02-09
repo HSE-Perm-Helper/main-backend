@@ -22,8 +22,11 @@ data class UserEntity(
     @GeneratedValue(strategy = GenerationType.UUID)
     val id: UUID = UUID.randomUUID(),
 
-    @Column(name = "telegram_id")
+    @Column(name = "telegram_id", unique = true)
     val telegramId: Long = 0L,
+
+    @Column
+    val email: String? = null,
 
     @OneToOne(cascade = [CascadeType.ALL])
     @OnDelete(action = OnDeleteAction.CASCADE)

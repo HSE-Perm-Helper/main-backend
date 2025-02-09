@@ -1,6 +1,6 @@
 package com.melowetty.hsepermhelper.service
 
-import com.melowetty.hsepermhelper.model.hseapp.HseAppLesson
+import com.melowetty.hsepermhelper.domain.model.hseapp.HseAppLesson
 import java.time.LocalDate
 
 interface HseAppApiService {

@@ -1,10 +1,10 @@
 package com.melowetty.hsepermhelper.extension
 
-import com.melowetty.hsepermhelper.model.excel.ExcelLesson
-import com.melowetty.hsepermhelper.model.hseapp.HseAppLesson
-import com.melowetty.hsepermhelper.model.lesson.Lesson
-import com.melowetty.hsepermhelper.model.lesson.ScheduledTime
-import com.melowetty.hsepermhelper.model.schedule.ScheduleType
+import com.melowetty.hsepermhelper.domain.model.hseapp.HseAppLesson
+import com.melowetty.hsepermhelper.domain.model.lesson.Lesson
+import com.melowetty.hsepermhelper.domain.model.lesson.ScheduledTime
+import com.melowetty.hsepermhelper.domain.model.schedule.ScheduleType
+import com.melowetty.hsepermhelper.excel.model.ExcelLesson
 import com.melowetty.hsepermhelper.util.DateUtils.Companion.asStr
 import com.melowetty.hsepermhelper.util.DateUtils.Companion.fromGmtToPermTime
 

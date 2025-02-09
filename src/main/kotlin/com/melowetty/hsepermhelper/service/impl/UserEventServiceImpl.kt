@@ -1,6 +1,6 @@
 package com.melowetty.hsepermhelper.service.impl
 
-import com.melowetty.hsepermhelper.model.event.UserEventType
+import com.melowetty.hsepermhelper.domain.model.event.UserEventType
 import com.melowetty.hsepermhelper.service.UserEventService
 import com.melowetty.hsepermhelper.service.UserService
 import org.springframework.kafka.core.KafkaTemplate

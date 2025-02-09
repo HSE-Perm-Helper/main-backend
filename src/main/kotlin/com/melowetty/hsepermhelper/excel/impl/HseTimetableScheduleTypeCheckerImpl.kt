@@ -1,8 +1,8 @@
 package com.melowetty.hsepermhelper.excel.impl
 
+import com.melowetty.hsepermhelper.domain.model.schedule.ScheduleType
 import com.melowetty.hsepermhelper.excel.HseTimetableScheduleTypeChecker
 import com.melowetty.hsepermhelper.excel.model.ParsedExcelInfo
-import com.melowetty.hsepermhelper.model.schedule.ScheduleType
 import org.springframework.stereotype.Component
 
 @Component

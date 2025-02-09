@@ -12,6 +12,8 @@ data class UserDto(
     val id: UUID = UUID.randomUUID(),
     @Schema(description = "Telegram ID пользователя", example = "123432412")
     val telegramId: Long = 0L,
+
+    val email: String? = null,
     @Schema(description = "Настройки пользователя")
     val settings: SettingsDto,
 

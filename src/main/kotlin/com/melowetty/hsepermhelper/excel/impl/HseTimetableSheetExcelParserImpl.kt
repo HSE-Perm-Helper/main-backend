@@ -2,16 +2,16 @@ package com.melowetty.hsepermhelper.excel.impl
 
 import com.melowetty.hsepermhelper.annotation.Slf4j
 import com.melowetty.hsepermhelper.annotation.Slf4j.Companion.log
+import com.melowetty.hsepermhelper.domain.model.lesson.CycleTime
+import com.melowetty.hsepermhelper.domain.model.lesson.LessonTime
+import com.melowetty.hsepermhelper.domain.model.lesson.ScheduledTime
+import com.melowetty.hsepermhelper.domain.model.schedule.ScheduleType
 import com.melowetty.hsepermhelper.excel.HseTimetableCellExcelParser
 import com.melowetty.hsepermhelper.excel.HseTimetableSheetExcelParser
 import com.melowetty.hsepermhelper.excel.model.CellInfo
+import com.melowetty.hsepermhelper.excel.model.ExcelLesson
 import com.melowetty.hsepermhelper.excel.model.ParsedCellInfo
 import com.melowetty.hsepermhelper.excel.model.ParsedScheduleInfo
-import com.melowetty.hsepermhelper.model.excel.ExcelLesson
-import com.melowetty.hsepermhelper.model.lesson.CycleTime
-import com.melowetty.hsepermhelper.model.lesson.LessonTime
-import com.melowetty.hsepermhelper.model.lesson.ScheduledTime
-import com.melowetty.hsepermhelper.model.schedule.ScheduleType
 import com.melowetty.hsepermhelper.notification.ServiceWarnNotification
 import com.melowetty.hsepermhelper.service.NotificationService
 import com.melowetty.hsepermhelper.util.RowUtils.Companion.getCellValue
