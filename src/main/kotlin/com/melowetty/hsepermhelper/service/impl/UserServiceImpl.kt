@@ -197,7 +197,14 @@ class UserServiceImpl(
     override fun setOrUpdateEmailRequest(telegramId: Long,
                                          @Valid @ValidHseEmail email: String
     ): EmailVerificationDto {
-        return emailVerificationService.startVerificationProcess(telegramId, email)
+        val normalizedEmail = email.lowercase()
+        val isExists = userRepository.existsByEmail(normalizedEmail)
+
+        if(isExists) {
+            throw UserIsExistsException("Пользователь с такой почтой уже есть")
+        }
+        
+        return emailVerificationService.startVerificationProcess(telegramId, normalizedEmail)
     }
 
     override fun deleteEmail(telegramId: Long) {
