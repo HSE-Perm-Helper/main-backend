@@ -11,5 +11,6 @@ data class HseAppLesson(
     val dateEnd: LocalDateTime,
     val streamLinks: List<String>?,
     val lecturers: List<String>,
-    val note: String?
+    val note: String?,
+    val auditorium: String?
 )
