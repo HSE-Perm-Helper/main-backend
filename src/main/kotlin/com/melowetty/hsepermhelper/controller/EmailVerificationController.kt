@@ -1,7 +1,10 @@
 package com.melowetty.hsepermhelper.controller
 
 import com.melowetty.hsepermhelper.domain.dto.EmailVerificationDto
+import com.melowetty.hsepermhelper.domain.model.Response
 import com.melowetty.hsepermhelper.service.EmailVerificationService
+import org.springframework.http.HttpStatus
+import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -15,9 +18,12 @@ class EmailVerificationController(
     private val emailVerificationService: EmailVerificationService
 ) {
     @GetMapping("verify/{secret}")
-    fun verifyEmailBySecret(@PathVariable("secret") secret: String): String {
+    fun verifyEmailBySecret(@PathVariable("secret") secret: String): ResponseEntity<String> {
         emailVerificationService.checkVerificationSecret(secret)
-        return "Почта успешно подтверждена, эту страницу можно закрыть"
+        return ResponseEntity
+            .status(HttpStatus.OK)
+            .header("Content-Type", "text/plain; charset=utf-8")
+            .body("Почта успешно подтверждена, эту страницу можно закрыть")
     }
 
     @GetMapping("{token}")
