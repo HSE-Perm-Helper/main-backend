@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonFormat
 import com.melowetty.hsepermhelper.util.DateUtils
 import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
+import kotlin.math.max
 
 data class EmailVerificationDto(
     val token: String,
@@ -16,13 +17,9 @@ data class EmailVerificationDto(
             nextAttempt ?: return null
             val currentDate = LocalDateTime.now()
 
-            val seconds = ChronoUnit.SECONDS.between(nextAttempt, currentDate).toInt()
+            val seconds = ChronoUnit.SECONDS.between(currentDate, nextAttempt).toInt()
 
-            if (currentDate >= nextAttempt) {
-                return 0
-            }
-
-            return seconds
+            return max(seconds, 0)
         }
     }
 }
