@@ -42,7 +42,7 @@ class EmailVerificationService(
 
         val existsVerification = emailVerificationRepository.findByUser(user)
         existsVerification?.let {
-            emailVerificationRepository.delete(existsVerification)
+            return existsVerification.toDto()
         }
 
 
