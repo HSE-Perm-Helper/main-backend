@@ -79,7 +79,8 @@ class HseAppApiServiceImpl(
                 streamLinks = streamLinks.ifEmpty { null },
                 lecturers = it.lecturerProfiles.map { it.fullName }.map { normalizeLecturer(it) },
                 note = note,
-                type = getLessonType(it.type)
+                type = getLessonType(it.type),
+                auditorium = it.auditorium
             )
         }
     }
@@ -130,7 +131,8 @@ class HseAppApiServiceImpl(
         val note: String?,
         val streamLinks: List<StreamLink>?,
         @JsonProperty("lecturer_profiles")
-        val lecturerProfiles: List<LecturerProfile>
+        val lecturerProfiles: List<LecturerProfile>,
+        val auditorium: String?
     )
 
     data class StreamLink(
