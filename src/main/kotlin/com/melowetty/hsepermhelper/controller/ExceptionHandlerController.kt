@@ -126,6 +126,11 @@ class ExceptionHandlerController(
         )
     }
 
+    @ExceptionHandler(CustomException::class)
+    fun handleCustomException(e: CustomException): ResponseEntity<Any> {
+        return exceptionToDebugOrNormalResponseEntity(e)
+    }
+
     private fun exceptionToDebugOrNormalResponseEntity(exception: CustomException): ResponseEntity<Any> {
         if (isDebug) {
             log.error(exception.stackTraceToString())

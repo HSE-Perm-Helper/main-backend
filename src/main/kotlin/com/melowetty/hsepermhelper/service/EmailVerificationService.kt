@@ -9,6 +9,7 @@ import com.melowetty.hsepermhelper.exception.UserNotFoundException
 import com.melowetty.hsepermhelper.exception.verification.ReachMaxAttemptsToVerificationRequestException
 import com.melowetty.hsepermhelper.exception.verification.VerificationNotFoundOrExpiredException
 import com.melowetty.hsepermhelper.exception.verification.VerificationRequestNotFoundException
+import com.melowetty.hsepermhelper.exception.verification.VerificationRequestYetNotReadyForResendException
 import com.melowetty.hsepermhelper.repository.EmailVerificationRepository
 import com.melowetty.hsepermhelper.repository.UserRepository
 import java.time.LocalDateTime
@@ -98,6 +99,10 @@ class EmailVerificationService(
 
         if (verification.nextAttempt == null) {
             throw ReachMaxAttemptsToVerificationRequestException()
+        }
+
+        if (verification.nextAttempt!! > LocalDateTime.now()) {
+            throw VerificationRequestYetNotReadyForResendException()
         }
 
         verification.attempts += 1
