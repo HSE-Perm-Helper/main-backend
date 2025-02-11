@@ -8,6 +8,7 @@ import com.melowetty.hsepermhelper.domain.dto.UserDto
 import com.melowetty.hsepermhelper.domain.entity.HideLessonEntity
 import com.melowetty.hsepermhelper.domain.entity.UserEntity
 import com.melowetty.hsepermhelper.domain.model.event.EmailIsVerifiedEvent
+import com.melowetty.hsepermhelper.domain.model.event.UserEventType
 import com.melowetty.hsepermhelper.exception.UserIsExistsException
 import com.melowetty.hsepermhelper.exception.UserNotFoundException
 import com.melowetty.hsepermhelper.extension.UserExtensions.Companion.toDto
@@ -18,6 +19,7 @@ import com.melowetty.hsepermhelper.repository.UserRepository
 import com.melowetty.hsepermhelper.service.EmailVerificationService
 import com.melowetty.hsepermhelper.service.NotificationService
 import com.melowetty.hsepermhelper.service.RemoteScheduleService
+import com.melowetty.hsepermhelper.service.UserEventService
 import com.melowetty.hsepermhelper.service.UserService
 import com.melowetty.hsepermhelper.validation.annotation.ValidHseEmail
 import jakarta.validation.Valid
@@ -39,7 +41,8 @@ class UserServiceImpl(
     private val hiddenLessonRepository: HiddenLessonRepository,
     private val remoteScheduleService: RemoteScheduleService,
     private val emailVerificationService: EmailVerificationService,
-    private val notificationService: NotificationService
+    private val notificationService: NotificationService,
+    private val userEventService: UserEventService
 ) : UserService {
     @Value("\${remote-schedule.connect-url}")
     private lateinit var remoteScheduleConnectUrl: String
@@ -96,6 +99,11 @@ class UserServiceImpl(
         val user = getByTelegramId(telegramId)
         val userSettings = user.settings.copy()
         val newSettings = settings.toMutableMap()
+
+        if (newSettings.containsKey("group")) {
+            userEventService.addUserEvent(telegramId, UserEventType.CHANGE_GROUP)
+        }
+
         newSettings.remove("id")
         newSettings.forEach { (t, u) ->
             val field = ReflectionUtils.findField(SettingsDto::class.java, t)
