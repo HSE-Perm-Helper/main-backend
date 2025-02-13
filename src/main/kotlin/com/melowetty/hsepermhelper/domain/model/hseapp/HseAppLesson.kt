@@ -12,5 +12,6 @@ data class HseAppLesson(
     val streamLinks: List<String>?,
     val lecturers: List<String>,
     val note: String?,
-    val auditorium: String?
+    val auditorium: String?,
+    val isMinor: Boolean
 )

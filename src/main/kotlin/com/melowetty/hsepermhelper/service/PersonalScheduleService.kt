@@ -22,12 +22,10 @@ class PersonalScheduleService(
     private val hseAppApiService: HseAppApiService,
     private val userService: UserService,
 ) {
-    private fun getHseAppMinorLessonsByUser(studentEmail: String, dayOfWeek: DayOfWeek,
-                                            from: LocalDate, to: LocalDate
-    ): List<Lesson> {
+    private fun getHseAppMinorLessonsByUser(studentEmail: String, from: LocalDate, to: LocalDate): List<Lesson> {
         return try {
             hseAppApiService.getLessons(studentEmail, from, to)
-                .filter { it.dateStart.dayOfWeek == dayOfWeek }
+                .filter { it.isMinor }
                 .map { it.toLesson() }
         } catch (e: RuntimeException) {
             emptyList()
@@ -53,10 +51,9 @@ class PersonalScheduleService(
 
     fun addMinorLessons(user: UserDto, schedules: List<Schedule>): List<Schedule> {
         val (start, end) = getSchedulesDateRange(schedules) ?: return schedules
-        val dayOfWeek = ScheduleUtils.getMinorDayOfWeek(schedules) ?: return schedules
 
         if (user.email == null) return schedules
-        val hseAppLessons = getHseAppMinorLessonsByUser(user.email, dayOfWeek, start, end)
+        val hseAppLessons = getHseAppMinorLessonsByUser(user.email, start, end)
 
         return schedules.map {
             if (it.scheduleType == ScheduleType.QUARTER_SCHEDULE) return@map it
@@ -85,13 +82,10 @@ class PersonalScheduleService(
 
         val schedule = excelScheduleService.getUserSchedule(user, start, end)
 
-        val schedules = excelScheduleService.getUserSchedules(user)
-        val dayOfWeek = ScheduleUtils.getMinorDayOfWeek(schedules) ?: return schedule
-
         if (user.email == null) return schedule
         if (schedule.scheduleType == ScheduleType.QUARTER_SCHEDULE) return schedule
 
-        val hseAppLessons = getHseAppMinorLessonsByUser(user.email, dayOfWeek, start, end)
+        val hseAppLessons = getHseAppMinorLessonsByUser(user.email, start, end)
 
         return schedule.copy(
             lessons = (schedule.lessons + hseAppLessons)
