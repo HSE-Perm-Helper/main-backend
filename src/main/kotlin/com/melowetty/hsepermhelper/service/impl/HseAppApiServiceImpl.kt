@@ -27,6 +27,7 @@ class HseAppApiServiceImpl(
 ): HseAppApiService {
     companion object {
         private val dateFormat = DateTimeFormatter.ISO_DATE
+        private const val HSE_APP_X_MINOR_BUILDING_ID = 6789
 
         fun normalizeLecturer(lecturer: String): String {
             val words = lecturer.split(" ")
@@ -80,7 +81,8 @@ class HseAppApiServiceImpl(
                 lecturers = it.lecturerProfiles.map { it.fullName }.map { normalizeLecturer(it) },
                 note = note,
                 type = getLessonType(it.type),
-                auditorium = it.auditorium
+                auditorium = it.auditorium,
+                isMinor = it.auditoriumId == HSE_APP_X_MINOR_BUILDING_ID
             )
         }
     }
@@ -132,6 +134,8 @@ class HseAppApiServiceImpl(
         val streamLinks: List<StreamLink>?,
         @JsonProperty("lecturer_profiles")
         val lecturerProfiles: List<LecturerProfile>,
+        @JsonProperty("auditorium_id")
+        val auditoriumId: Int,
         val auditorium: String?
     )
 

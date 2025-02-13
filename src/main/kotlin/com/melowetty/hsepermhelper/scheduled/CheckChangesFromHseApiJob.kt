@@ -4,13 +4,11 @@ import com.melowetty.hsepermhelper.domain.entity.UserEntity
 import com.melowetty.hsepermhelper.domain.model.hseapp.HseAppLesson
 import com.melowetty.hsepermhelper.domain.model.schedule.ScheduleInfo
 import com.melowetty.hsepermhelper.domain.model.schedule.ScheduleType
-import com.melowetty.hsepermhelper.extension.UserExtensions.Companion.toDto
 import com.melowetty.hsepermhelper.notification.ScheduleChangedForUserNotification
 import com.melowetty.hsepermhelper.repository.UserRepository
 import com.melowetty.hsepermhelper.service.ExcelScheduleService
 import com.melowetty.hsepermhelper.service.HseAppApiService
 import com.melowetty.hsepermhelper.service.NotificationService
-import com.melowetty.hsepermhelper.util.ScheduleUtils
 import java.time.LocalDate
 import java.util.UUID
 import java.util.concurrent.Callable
@@ -86,7 +84,7 @@ class CheckChangesFromHseApiJob(
             prevLessonsHash[user.id] = hash
 
             if (prevMinorHash.containsKey(user.id).not()) {
-                val lessons = getMinorLessons(user, lessons)
+                val lessons = getMinorLessons(lessons)
                 prevMinorHash[user.id] = getMinorLessonsMap(schedules, lessons)
             }
 
@@ -113,12 +111,8 @@ class CheckChangesFromHseApiJob(
         return result
     }
 
-    private fun getMinorLessons(user: UserEntity, lessons: List<HseAppLesson>): List<HseAppLesson> {
-        val schedules = scheduleService.getUserSchedules(user.toDto())
-
-        val dayOfWeek = ScheduleUtils.getMinorDayOfWeek(schedules)
-
-        return lessons.filter { it.dateStart.dayOfWeek == dayOfWeek }
+    private fun getMinorLessons(lessons: List<HseAppLesson>): List<HseAppLesson> {
+        return lessons.filter { it.isMinor }
     }
 
     private fun checkChanges(
@@ -126,7 +120,7 @@ class CheckChangesFromHseApiJob(
         schedules: List<ScheduleInfo>,
         lessons: List<HseAppLesson>
     ) {
-        val minorLessons = getMinorLessons(user, lessons)
+        val minorLessons = getMinorLessons(lessons)
 
         val dayOfWeek = minorLessons.firstOrNull()?.dateStart?.dayOfWeek ?: return
 
