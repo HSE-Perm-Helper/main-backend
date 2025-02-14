@@ -30,7 +30,6 @@ class HseTimetableLessonTypeCheckerImpl : HseTimetableLessonTypeChecker {
             return LessonType.COMMON_MINOR
         }
         if (pureSubject == "практика") return LessonType.PRACTICE
-        if (pureFullLessonInfo.contains("мкд") || pureFullLessonInfo.contains("мдк")) return LessonType.ICC
         if (pureFullLessonInfo.contains("лекция") || pureSubject.contains("лекции")) return LessonType.LECTURE
         if (pureFullLessonInfo.contains("лек.")) return LessonType.LECTURE
         if (pureFullLessonInfo.contains("сем.") || pureFullLessonInfo.contains("практ.")) return LessonType.SEMINAR
