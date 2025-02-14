@@ -240,10 +240,10 @@ class HseTimetableCellExcelParserImpl(
             )
         )
         return ExcelLesson(
-            subject = lessonType.reformatSubject(subject),
+            subject = lessonType.reformatSubject(subject).removeUselessInfo(),
             lessonType = lessonType,
             places = additionalLessonInfo.places,
-            lecturer = additionalLessonInfo.lecturer,
+            lecturer = additionalLessonInfo.lecturer?.removeUselessInfo(),
             subGroup = subGroup,
             group = cell.group,
             course = cell.course,
@@ -252,6 +252,10 @@ class HseTimetableCellExcelParserImpl(
             links = additionalLessonInfo.links,
             additionalInfo = additionalLessonInfo.additionalInfo,
         )
+    }
+
+    private fun String.removeUselessInfo(): String {
+        return this.replace("(МКД)", "", true).trim()
     }
 
     private fun getAdditionalLessonInfo(fields: List<LessonField>): AdditionalLessonInfo {

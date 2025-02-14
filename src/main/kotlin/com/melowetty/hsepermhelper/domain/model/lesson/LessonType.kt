@@ -39,13 +39,6 @@ enum class LessonType(val type: String) {
     COMMON_ENGLISH("Английский"),
     ENGLISH("Английский"),
     STATEMENT("Ведомость"),
-    ICC("МКД") {
-        override fun reformatSubject(subject: String): String {
-            return subject
-                .replace("(МКД)", "")
-                .trim()
-        }
-    },
     UNDEFINED_AED("ДОЦ по выбору"),
     AED("ДОЦ") {
         override fun reformatSubject(subject: String): String {
