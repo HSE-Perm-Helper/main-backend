@@ -89,13 +89,7 @@ class HseTimetableExcelParserImpl(
             scheduleInfoMatches.removeFirst()
         }
 
-        val datePattern = DateTimeFormatter.ofPattern("ddMMyyyy")
-
-        val scheduleStart = scheduleInfoMatches.first().groups[1]?.value?.let { LocalDate.parse(it.replace(".", ""), datePattern) } ?: return null
-
-        scheduleInfoMatches.removeFirst()
-
-        val scheduleEnd = scheduleInfoMatches.first().groups[1]?.value?.let { LocalDate.parse(it.replace(".", ""), datePattern) } ?: return null
+        val (scheduleStart , scheduleEnd) = parseScheduleDates(scheduleInfoMatches) ?: return null
 
         val scheduleType = scheduleTypeChecker.getScheduleType(
             ParsedExcelInfo(
@@ -109,6 +103,23 @@ class HseTimetableExcelParserImpl(
             endDate = scheduleEnd,
             type = scheduleType,
         )
+    }
+
+    private fun parseScheduleDates(matches: MutableList<MatchResult>): Pair<LocalDate, LocalDate>? {
+        val scheduleStart = matches.first().groups[1]?.value?.let { parseScheduleDate(it) } ?: return null
+
+        matches.removeFirst()
+
+        if (matches.isEmpty()) return Pair(scheduleStart, scheduleStart)
+
+        val scheduleEnd = matches.first().groups[1]?.value?.let { parseScheduleDate(it) } ?: return null
+
+        return Pair(scheduleStart, scheduleEnd)
+    }
+
+    private fun parseScheduleDate(value: String): LocalDate {
+        val datePattern = DateTimeFormatter.ofPattern("ddMMyyyy")
+        return LocalDate.parse(value.replace(".", ""), datePattern)
     }
 
     private fun unmergeRegions(sheet: Sheet) {

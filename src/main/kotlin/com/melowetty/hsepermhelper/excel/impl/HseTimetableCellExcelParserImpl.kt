@@ -234,7 +234,7 @@ class HseTimetableCellExcelParserImpl(
                 isUnderlined = cell.isUnderlined,
                 subject = subject,
                 lessonInfo = additionalLessonInfo.lecturer,
-                isHaveBuildingInfo = fields.find { it.fieldType == FieldType.INFO } != null,
+                isHaveBuildingInfo = fields.any { it.fieldType == FieldType.INFO },
                 additionalInfo = additionalLessonInfo.additionalInfo,
                 schedulePeriod = scheduleInfo.startDate.rangeTo(scheduleInfo.endDate)
             )
