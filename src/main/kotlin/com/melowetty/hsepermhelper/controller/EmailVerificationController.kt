@@ -1,7 +1,6 @@
 package com.melowetty.hsepermhelper.controller
 
 import com.melowetty.hsepermhelper.domain.dto.EmailVerificationDto
-import com.melowetty.hsepermhelper.domain.model.Response
 import com.melowetty.hsepermhelper.service.EmailVerificationService
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity

@@ -12,13 +12,11 @@ services:
       - SPRING_DATASOURCE_PASSWORD=$DB_PASSWORD
       - SPRING_JPA_HIBERNATE_DDL_AUTO=update
       - KAFKA_BOOTSTRAP_SERVERS=$KAFKA_SERVERS
-      - EUREKA_CLIENT_SERVICE-URL_DEFAULTZONE=http://$SERVICE_DISCOVERY_USER:$SERVICE_DISCOVERY_PASSWORD@$SERVICE_DISCOVERY_HOST:$SERVICE_DISCOVERY_PORT/eureka
       - HSE_APP_X_API_URL=$HSE_APP_X_API_URL
     restart: always
     networks:
       - internal
-      - service-discovery_internal
-      - message-broker_shared
+      - api-gateway_backend
   postgresdb:
     image: postgres
     restart: unless-stopped
@@ -37,7 +35,5 @@ volumes:
   db:
 networks:
   internal:
-  service-discovery_internal:
-    external: true
-  message-broker_shared:
+  api-gateway_backend:
     external: true

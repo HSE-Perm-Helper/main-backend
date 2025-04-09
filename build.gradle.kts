@@ -51,7 +51,6 @@ dependencies {
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
 
-    implementation("org.springframework.cloud:spring-cloud-starter-netflix-eureka-client")
     implementation("org.springframework.boot:spring-boot-starter-actuator")
     implementation("org.springframework.kafka:spring-kafka")
     implementation("org.springframework.boot:spring-boot-starter-validation")
@@ -63,6 +62,7 @@ dependencies {
     implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:${springDocStarterVersion}")
 
     implementation("org.jsoup:jsoup:${jsoupVersion}")
+    implementation("org.springframework.boot:spring-boot-starter-cache")
 
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
 

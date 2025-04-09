@@ -4,7 +4,6 @@ import com.melowetty.hsepermhelper.domain.dto.EmailVerificationDto
 import com.melowetty.hsepermhelper.domain.entity.EmailVerificationEntity
 import com.melowetty.hsepermhelper.domain.model.event.EmailIsVerifiedEvent
 import com.melowetty.hsepermhelper.domain.model.event.EmailVerificationSend
-import com.melowetty.hsepermhelper.domain.model.event.KafkaNotificationV2
 import com.melowetty.hsepermhelper.exception.UserNotFoundException
 import com.melowetty.hsepermhelper.exception.verification.ReachMaxAttemptsToVerificationRequestException
 import com.melowetty.hsepermhelper.exception.verification.VerificationNotFoundOrExpiredException
@@ -13,7 +12,7 @@ import com.melowetty.hsepermhelper.exception.verification.VerificationRequestYet
 import com.melowetty.hsepermhelper.repository.EmailVerificationRepository
 import com.melowetty.hsepermhelper.repository.UserRepository
 import java.time.LocalDateTime
-import org.apache.commons.lang.RandomStringUtils
+import org.apache.commons.lang3.RandomStringUtils
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.ApplicationEventPublisher
 import org.springframework.stereotype.Service

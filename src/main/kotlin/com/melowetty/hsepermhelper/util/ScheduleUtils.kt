@@ -1,7 +1,6 @@
 package com.melowetty.hsepermhelper.util
 
 import com.melowetty.hsepermhelper.domain.model.lesson.Lesson
-import com.melowetty.hsepermhelper.domain.model.lesson.LessonType
 import com.melowetty.hsepermhelper.domain.model.lesson.ScheduledTime
 import com.melowetty.hsepermhelper.domain.model.schedule.Schedule
 import com.melowetty.hsepermhelper.domain.model.schedule.ScheduleType
@@ -95,12 +94,6 @@ class ScheduleUtils {
 
 
             return changedDays.sorted()
-        }
-
-        fun getMinorDayOfWeek(schedules: List<Schedule>): DayOfWeek? {
-            return schedules.map { it.lessons }
-                .flatten()
-                .firstOrNull { it.lessonType == LessonType.COMMON_MINOR }?.time?.dayOfWeek
         }
     }
 }

@@ -27,7 +27,7 @@ class DateUtils {
         }
 
         fun LocalDateTime.fromGmtToPermTime(): ZonedDateTime {
-            return atZone(ZoneId.of("GMT")).withZoneSameInstant(DateUtils.PERM_TIME_ZONE.toZoneId())
+            return atZone(ZoneId.of("GMT")).withZoneSameInstant(PERM_TIME_ZONE.toZoneId())
         }
 
         fun ZonedDateTime.asStr(): String {
