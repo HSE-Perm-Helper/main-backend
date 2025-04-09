@@ -16,8 +16,7 @@ services:
     restart: always
     networks:
       - internal
-      - service-discovery_internal
-      - message-broker_shared
+      - api-gateway_backend
   postgresdb:
     image: postgres
     restart: unless-stopped
