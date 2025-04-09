@@ -62,6 +62,7 @@ dependencies {
     implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:${springDocStarterVersion}")
 
     implementation("org.jsoup:jsoup:${jsoupVersion}")
+    implementation("org.springframework.boot:spring-boot-starter-cache")
 
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
 
