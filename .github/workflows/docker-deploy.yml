@@ -14,9 +14,9 @@ jobs:
         with:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
-          password: ${{ secrets.PASSWORD }}
+          key: ${{ secrets.KEY }}
           script: |
-            cd /projects/main-backend
+            cd /services/main-backend
             git pull
             docker pull melowetty/main-backend
             docker-compose up -d
