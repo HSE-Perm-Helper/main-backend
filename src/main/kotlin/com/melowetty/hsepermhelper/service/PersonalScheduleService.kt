@@ -28,6 +28,7 @@ class PersonalScheduleService(
                 .filter { it.isMinor }
                 .map { it.toLesson() }
         } catch (e: RuntimeException) {
+            e.printStackTrace()
             emptyList()
         }
     }

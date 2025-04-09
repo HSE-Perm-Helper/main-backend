@@ -93,6 +93,7 @@ class HseAppApiServiceImpl(
         return when(value.lowercase()) {
             "лекция" -> LessonType.LECTURE
             "семинары" -> LessonType.SEMINAR
+            "экзамен" -> LessonType.EXAM
             else -> typeByValue[value.lowercase()] ?: LessonType.LECTURE
         }
     }
