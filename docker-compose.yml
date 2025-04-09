@@ -17,6 +17,8 @@ services:
     networks:
       - internal
       - api-gateway_backend
+    expose:
+      - 8080
   postgresdb:
     image: postgres
     restart: unless-stopped
