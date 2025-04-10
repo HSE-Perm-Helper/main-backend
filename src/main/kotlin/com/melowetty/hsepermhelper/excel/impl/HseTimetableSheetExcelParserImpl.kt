@@ -85,7 +85,7 @@ class HseTimetableSheetExcelParserImpl(
         if (action != Action.NOTHING) return Pair(listOf(), action)
 
         for (cellNum in 2 until row.physicalNumberOfCells) {
-            val cell = row.getCell(cellNum)
+            val cell = row.getCell(cellNum, Row.MissingCellPolicy.CREATE_NULL_AS_BLANK)
             val cellValue = cell.stringCellValue
             if (cellValue.isEmpty()) continue
 
