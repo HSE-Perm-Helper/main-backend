@@ -2,6 +2,7 @@ version: '3.8'
 services:
   main-backend:
     image: melowetty/main-backend
+    container_name: main-service
     depends_on:
       - postgresdb
     env_file: ./.env
