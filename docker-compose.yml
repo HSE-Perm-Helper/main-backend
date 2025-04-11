@@ -18,6 +18,9 @@ services:
     restart: always
     ports:
       - 127.0.0.1:$CONTAINER_PORT:8080
+    networks:
+      - api-gateway_backend
+      - internal
   postgresdb:
     image: postgres
     restart: unless-stopped
@@ -30,5 +33,11 @@ services:
       - $POSTGRESDB_LOCAL_PORT:$POSTGRESDB_DOCKER_PORT
     volumes:
       - db:/var/lib/postgresql/data
+    networks:
+      - internal
 volumes:
   db:
+networks:
+  internal:
+  api-gateway_backend:
+    external: true
