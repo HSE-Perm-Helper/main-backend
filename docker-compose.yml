@@ -39,5 +39,7 @@ volumes:
   db:
 networks:
   internal:
+  message-broker_shared:
+    external: true
   api-gateway_backend:
     external: true
