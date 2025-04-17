@@ -18,6 +18,7 @@ services:
     expose:
       - $SERVER_PORT
     networks:
+      - message-broker_shared
       - api-gateway_backend
       - internal
   postgresdb:
