@@ -19,9 +19,13 @@ class ScheduleFilesRepositoryImpl : ScheduleFilesRepository {
         val elements = response.select(".content__inner.post__text p")
         val files = mutableListOf<InputStream>()
         for (element in elements) {
-            if (element.html().contains("Бакалавриат")) continue
-            if (element.html().lowercase().contains("английский")) continue
-            if (element.html().contains("Магистратура")) break
+            val html = element.html()
+
+            if (html.contains("Бакалавриат")) continue
+            if (html.contains("Магистратура")) break
+
+            if (!isProcessable(html.lowercase())) continue
+
             val childLink = element.select("a")
             if (childLink.isEmpty()) continue
             val link = childLink.attr("href")
@@ -30,6 +34,16 @@ class ScheduleFilesRepositoryImpl : ScheduleFilesRepository {
             if (inputStream != null) files.add(inputStream)
         }
         scheduleFiles = files.map { it.readAllBytes() }
+    }
+
+    private fun isProcessable(name: String): Boolean {
+        val banWords = setOf("английский", "программные системы")
+
+        for (word in banWords) {
+            if (name.contains(word)) return false
+        }
+
+        return true
     }
 
     private fun downloadFileAsInputStream(path: String): InputStream? {
