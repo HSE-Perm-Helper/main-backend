@@ -91,4 +91,36 @@ class HseTimetableExcelParserTest {
 
         assertEquals(expected, actual)
     }
+
+    @Test
+    fun `get schedule info when get week number and one day`() {
+        val header = "на 6 неделю (19.12.2024)"
+
+        Mockito.`when`(typeChecker.getScheduleType(any())).thenReturn(ScheduleType.WEEK_SCHEDULE)
+        val actual = parser.parseScheduleInfo(header)
+        val expected = ParsedScheduleInfo(
+            number = 6,
+            startDate = LocalDate.of(2024, 12, 19),
+            endDate = LocalDate.of(2024, 12, 19),
+            type = ScheduleType.WEEK_SCHEDULE
+        )
+
+        assertEquals(expected, actual)
+    }
+
+    @Test
+    fun `get schedule info when no number week and one day`() {
+        val header = "на сессию (19.12.2024)"
+
+        Mockito.`when`(typeChecker.getScheduleType(any())).thenReturn(ScheduleType.SESSION_SCHEDULE)
+        val actual = parser.parseScheduleInfo(header)
+        val expected = ParsedScheduleInfo(
+            number = null,
+            startDate = LocalDate.of(2024, 12, 19),
+            endDate = LocalDate.of(2024, 12, 19),
+            type = ScheduleType.SESSION_SCHEDULE
+        )
+
+        assertEquals(expected, actual)
+    }
 }
