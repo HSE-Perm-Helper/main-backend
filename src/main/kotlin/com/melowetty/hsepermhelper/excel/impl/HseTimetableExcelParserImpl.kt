@@ -27,6 +27,13 @@ class HseTimetableExcelParserImpl(
     private val scheduleTypeChecker: HseTimetableScheduleTypeChecker,
     private val notificationService: NotificationService
 ) : HseTimetableExcelParser {
+    companion object {
+        private const val NUMS_DETECT_REGEX_PATTERN = "[\\d\\.]+"
+        private const val SCHEDULE_DATES_REGEX_PATTERN = "[\\(]{1}(.+)[\\)]{1}"
+
+        private val numsDetectRegex = NUMS_DETECT_REGEX_PATTERN.toRegex()
+        private val scheduleDatesRegex = SCHEDULE_DATES_REGEX_PATTERN.toRegex()
+    }
 
     private fun getWorkbook(inputStream: InputStream): Workbook {
         return WorkbookFactory.create(inputStream)
@@ -36,7 +43,8 @@ class HseTimetableExcelParserImpl(
         try {
             val workbook = getWorkbook(inputStream)
             val lessons = mutableListOf<ExcelLesson>()
-            val scheduleInfo = getScheduleInfo(workbook) ?: return null
+            val scheduleInfo = getScheduleInfo(workbook)
+                ?: throw RuntimeException("Не получилось обработать информацию о расписании")
 
             for (i in 0 until workbook.numberOfSheets) {
                 val sheet = workbook.getSheetAt(i)
@@ -70,8 +78,16 @@ class HseTimetableExcelParserImpl(
     }
 
     private fun getScheduleInfo(workbook: Workbook): ParsedScheduleInfo? {
-        return if (workbook.numberOfSheets >= 2) getScheduleInfoBySheet(workbook.getSheetAt(1))
-        else getScheduleInfoBySheet(workbook.getSheetAt(0))
+        for (sheet in workbook.sheetIterator()) {
+            try {
+                return getScheduleInfoBySheet(sheet)
+            } catch (e: RuntimeException) {
+                e.printStackTrace()
+                continue
+            }
+        }
+
+        return null
     }
 
     private fun getScheduleInfoBySheet(sheet: Sheet): ParsedScheduleInfo? {
@@ -80,21 +96,11 @@ class HseTimetableExcelParserImpl(
     }
 
     fun parseScheduleInfo(scheduleInfo: String): ParsedScheduleInfo? {
-        val scheduleInfoRegex = Regex("([\\d\\.]+)")
-        val scheduleInfoMatches = scheduleInfoRegex.findAll(scheduleInfo).toMutableList()
-
-        val scheduleNumber = (scheduleInfoMatches.first().groups[1]?.value?.trim())?.toIntOrNull()
-
-        if (scheduleInfoMatches.count() == 3) {
-            scheduleInfoMatches.removeFirst()
-        }
-
-        val (scheduleStart , scheduleEnd) = parseScheduleDates(scheduleInfoMatches) ?: return null
+        val scheduleNumber = parseScheduleNumber(scheduleInfo)
+        val (scheduleStart, scheduleEnd) = parseScheduleDates(scheduleInfo) ?: return null
 
         val scheduleType = scheduleTypeChecker.getScheduleType(
-            ParsedExcelInfo(
-                scheduleNumber, scheduleStart, scheduleEnd
-            )
+            ParsedExcelInfo(scheduleNumber, scheduleStart, scheduleEnd)
         )
 
         return ParsedScheduleInfo(
@@ -105,14 +111,23 @@ class HseTimetableExcelParserImpl(
         )
     }
 
-    private fun parseScheduleDates(matches: MutableList<MatchResult>): Pair<LocalDate, LocalDate>? {
-        val scheduleStart = matches.first().groups[1]?.value?.let { parseScheduleDate(it) } ?: return null
+    private fun parseScheduleNumber(scheduleInfo: String): Int? {
+        val scheduleNumberInfo = scheduleInfo.replace(scheduleDatesRegex, "").trim()
+        return numsDetectRegex.find(scheduleNumberInfo)?.value?.toIntOrNull()
+    }
+
+    private fun parseScheduleDates(scheduleInfo: String): Pair<LocalDate, LocalDate>? {
+        val scheduleDatesInfo = scheduleDatesRegex.find(scheduleInfo)?.groups?.get(1)?.value
+            ?: return null
+
+        val matches = numsDetectRegex.findAll(scheduleDatesInfo).toMutableList()
+        val scheduleStart = matches.firstOrNull()?.let { parseScheduleDate(it.value) } ?: return null
 
         matches.removeFirst()
 
         if (matches.isEmpty()) return Pair(scheduleStart, scheduleStart)
 
-        val scheduleEnd = matches.first().groups[1]?.value?.let { parseScheduleDate(it) } ?: return null
+        val scheduleEnd = matches.firstOrNull()?.let { parseScheduleDate(it.value) } ?: return null
 
         return Pair(scheduleStart, scheduleEnd)
     }
