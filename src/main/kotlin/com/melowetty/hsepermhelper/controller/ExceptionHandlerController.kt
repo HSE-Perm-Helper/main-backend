@@ -4,7 +4,6 @@ import com.melowetty.hsepermhelper.annotation.Slf4j
 import com.melowetty.hsepermhelper.annotation.Slf4j.Companion.log
 import com.melowetty.hsepermhelper.domain.model.ErrorResponse
 import com.melowetty.hsepermhelper.exception.CustomException
-import com.melowetty.hsepermhelper.exception.PermissionDeniedException
 import com.melowetty.hsepermhelper.exception.ScheduleNotFoundException
 import com.melowetty.hsepermhelper.exception.UserIsExistsException
 import com.melowetty.hsepermhelper.exception.UserNotFoundException
@@ -64,11 +63,6 @@ class ExceptionHandlerController(
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler(UserNotFoundException::class)
     fun handleUserNotFoundException(exception: UserNotFoundException): ResponseEntity<Any> {
-        return exceptionToDebugOrNormalResponseEntity(exception)
-    }
-
-    @ExceptionHandler(PermissionDeniedException::class)
-    fun handlePermissionDeniedException(exception: PermissionDeniedException): ResponseEntity<Any> {
         return exceptionToDebugOrNormalResponseEntity(exception)
     }
 
