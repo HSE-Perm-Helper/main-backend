@@ -3,21 +3,16 @@ package com.melowetty.hsepermhelper.controller
 import com.melowetty.hsepermhelper.annotation.Slf4j
 import com.melowetty.hsepermhelper.annotation.Slf4j.Companion.log
 import com.melowetty.hsepermhelper.domain.model.ErrorResponse
-import com.melowetty.hsepermhelper.domain.model.Response
 import com.melowetty.hsepermhelper.exception.CustomException
 import com.melowetty.hsepermhelper.exception.PermissionDeniedException
 import com.melowetty.hsepermhelper.exception.ScheduleNotFoundException
-import com.melowetty.hsepermhelper.exception.SecretKeyParseException
-import com.melowetty.hsepermhelper.exception.UnauthorizedException
 import com.melowetty.hsepermhelper.exception.UserIsExistsException
 import com.melowetty.hsepermhelper.exception.UserNotFoundException
 import com.melowetty.hsepermhelper.exception.verification.VerificationNotFoundOrExpiredException
 import jakarta.validation.ConstraintViolationException
 import java.lang.Boolean.parseBoolean
-import java.util.Optional
 import org.springframework.core.env.Environment
 import org.springframework.core.env.get
-import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
 import org.springframework.http.HttpStatusCode
 import org.springframework.http.ResponseEntity
@@ -74,16 +69,6 @@ class ExceptionHandlerController(
 
     @ExceptionHandler(PermissionDeniedException::class)
     fun handlePermissionDeniedException(exception: PermissionDeniedException): ResponseEntity<Any> {
-        return exceptionToDebugOrNormalResponseEntity(exception)
-    }
-
-    @ExceptionHandler(UnauthorizedException::class)
-    fun handleUnauthorizedException(exception: UnauthorizedException): ResponseEntity<Any> {
-        return exceptionToDebugOrNormalResponseEntity(exception)
-    }
-
-    @ExceptionHandler(SecretKeyParseException::class)
-    fun handleSecretKeyParseException(exception: SecretKeyParseException): ResponseEntity<Any> {
         return exceptionToDebugOrNormalResponseEntity(exception)
     }
 
