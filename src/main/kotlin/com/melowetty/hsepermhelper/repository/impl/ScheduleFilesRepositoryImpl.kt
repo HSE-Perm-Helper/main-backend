@@ -5,12 +5,18 @@ import org.jsoup.Jsoup
 import org.springframework.stereotype.Component
 import java.io.InputStream
 import java.net.URL
+import java.security.cert.X509Certificate
+import javax.net.ssl.HttpsURLConnection
+import javax.net.ssl.SSLContext
+import javax.net.ssl.TrustManager
+import javax.net.ssl.X509TrustManager
 
 @Component
 class ScheduleFilesRepositoryImpl : ScheduleFilesRepository {
     private var scheduleFiles: List<ByteArray> = listOf()
 
     init {
+        disableSSLVerification()
         fetchScheduleFiles()
     }
 
@@ -61,7 +67,20 @@ class ScheduleFilesRepositoryImpl : ScheduleFilesRepository {
     }
 
     companion object {
-        const val SCHEDULE_BASE_URL = "http://students.perm.hse.ru/timetable"
-        const val SCHEDULE_BASE_DOWNLOAD_URL = "http://students.perm.hse.ru"
+        const val SCHEDULE_BASE_URL = "https://students.perm.hse.ru/timetable"
+        const val SCHEDULE_BASE_DOWNLOAD_URL = "https://students.perm.hse.ru"
+
+        fun disableSSLVerification() {
+            val trustAllCerts = arrayOf<TrustManager>(object : X509TrustManager {
+                override fun checkClientTrusted(chain: Array<X509Certificate>, authType: String) {}
+                override fun checkServerTrusted(chain: Array<X509Certificate>, authType: String) {}
+                override fun getAcceptedIssuers(): Array<X509Certificate> = arrayOf()
+            })
+
+            val sslContext = SSLContext.getInstance("SSL")
+            sslContext.init(null, trustAllCerts, java.security.SecureRandom())
+            HttpsURLConnection.setDefaultSSLSocketFactory(sslContext.socketFactory)
+            HttpsURLConnection.setDefaultHostnameVerifier { _, _ -> true }
+        }
     }
 }
