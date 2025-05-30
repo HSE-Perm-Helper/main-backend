@@ -3,7 +3,7 @@ package com.melowetty.hsepermhelper.service
 import com.melowetty.hsepermhelper.domain.dto.EmailVerificationDto
 import com.melowetty.hsepermhelper.domain.entity.EmailVerificationEntity
 import com.melowetty.hsepermhelper.domain.model.event.EmailIsVerifiedEvent
-import com.melowetty.hsepermhelper.domain.model.event.EmailVerificationSend
+import com.melowetty.hsepermhelper.notification.verification.EmailVerificationSendNotification
 import com.melowetty.hsepermhelper.exception.UserNotFoundException
 import com.melowetty.hsepermhelper.exception.verification.ReachMaxAttemptsToVerificationRequestException
 import com.melowetty.hsepermhelper.exception.verification.VerificationNotFoundOrExpiredException
@@ -31,7 +31,7 @@ class EmailVerificationService(
         private const val TOKEN_LENGTH = 10
         private const val SECRET_LENGTH = 24
         private const val ATTEMPT_STEP_IN_SECONDS = 60L
-        private const val MAX_ATTEMPTS_COUNT = 3L
+        private const val MAX_ATTEMPTS_COUNT = 3
     }
 
     fun startVerificationProcess(telegramId: Long, email: String): EmailVerificationDto {
@@ -61,7 +61,7 @@ class EmailVerificationService(
         emailVerificationRepository.save(entity)
 
         notificationService.sendNotificationV2(
-            EmailVerificationSend(email, generateVerificationLink(entity.secret))
+            EmailVerificationSendNotification(email, generateVerificationLink(entity.secret))
         )
 
         return entity.toDto()
@@ -115,7 +115,7 @@ class EmailVerificationService(
         }
 
         notificationService.sendNotificationV2(
-            EmailVerificationSend(verification.email, generateVerificationLink(verification.secret))
+            EmailVerificationSendNotification(verification.email, generateVerificationLink(verification.secret))
         )
 
         emailVerificationRepository.save(verification)

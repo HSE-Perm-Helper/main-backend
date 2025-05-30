@@ -2,8 +2,7 @@ package com.melowetty.hsepermhelper.notification
 
 data class ServiceWarnNotification(
     val message: String
-) : Notification() {
-    override fun getNotificationType(): String {
-        return "SERVICE_WARNING"
-    }
-}
+): KafkaNotificationV2(
+    NotificationType.SERVICE_WARNING,
+    NotificationRecipient.SERVICE_ADMIN
+)

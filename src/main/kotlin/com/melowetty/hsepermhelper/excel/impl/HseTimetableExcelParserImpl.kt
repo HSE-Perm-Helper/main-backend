@@ -69,7 +69,7 @@ class HseTimetableExcelParserImpl(
                         "Stacktrace: ", exception
             )
 
-            notificationService.sendNotification(ServiceWarnNotification(
+            notificationService.sendNotificationV2(ServiceWarnNotification(
                 "Произошла ошибка во время обработки файла с расписанием! " +
                         "Stacktrace: ${exception.stackTraceToString()}"
             ))

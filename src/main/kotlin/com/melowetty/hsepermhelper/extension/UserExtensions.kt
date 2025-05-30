@@ -15,7 +15,8 @@ class UserExtensions {
                 telegramId = telegramId,
                 settings = settings.toDto(),
                 createdDate = createdDate,
-                email = email
+                email = email,
+                roles = roles
             )
         }
 
@@ -25,7 +26,8 @@ class UserExtensions {
                 telegramId = telegramId,
                 settings = settings.toEntity(),
                 createdDate = createdDate,
-                email = email
+                email = email,
+                roles = roles,
             )
         }
 

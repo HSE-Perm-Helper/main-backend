@@ -65,12 +65,10 @@ class HseTimetableSheetExcelParserImpl(
         val programs = mutableMapOf<Int, String>()
         for (cellNum in 2 until sheet.getRow(2).physicalNumberOfCells) {
             val group = sheet.getRow(2).getCellValue(cellNum) ?: continue
-            if (group != "") {
-                if (groups.containsValue(group).not()) {
-                    groups[cellNum] = group
-                    val programme = getProgramme(group) ?: ""
-                    programs[cellNum] = programme
-                }
+            if (group != "" && groups.containsValue(group).not()) {
+                groups[cellNum] = group
+                val programme = getProgramme(group) ?: ""
+                programs[cellNum] = programme
             }
         }
         return Pair(groups, programs)
@@ -102,7 +100,7 @@ class HseTimetableSheetExcelParserImpl(
                     e
                 )
 
-                notificationService.sendNotification(
+                notificationService.sendNotificationV2(
                     ServiceWarnNotification(
                         "Произошла ошибка во время обработки пары!\n" +
                             "Расписание: ${rowData.scheduleInfo}, sheet: ${row.sheet.sheetName}, cellAddress: ${cell.address}, " +

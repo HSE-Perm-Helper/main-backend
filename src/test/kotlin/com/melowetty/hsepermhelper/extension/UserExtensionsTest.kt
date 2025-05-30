@@ -3,6 +3,7 @@ package com.melowetty.hsepermhelper.extension
 import com.melowetty.hsepermhelper.domain.entity.HideLessonEntity
 import com.melowetty.hsepermhelper.domain.entity.SettingsEntity
 import com.melowetty.hsepermhelper.domain.entity.UserEntity
+import com.melowetty.hsepermhelper.domain.model.UserRole
 import com.melowetty.hsepermhelper.domain.model.lesson.LessonType
 import com.melowetty.hsepermhelper.extension.UserExtensions.Companion.getGroupedEntityBySettingsUsers
 import org.junit.jupiter.api.Assertions
@@ -15,7 +16,8 @@ class UserExtensionsTest {
             settings = SettingsEntity(
                 group = "РИС-22-3",
                 hiddenLessons = setOf(HideLessonEntity(id = 0, lesson = "Test", lessonType = LessonType.TEST, 2))
-            )
+            ),
+            roles = listOf(UserRole.USER)
         )
 
         val users = listOf(user, user.copy(settings = user.settings.copy(group = "РИС-22-2")), user.copy())

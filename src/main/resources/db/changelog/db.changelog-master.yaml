@@ -5,3 +5,6 @@ databaseChangeLog:
   - includeAll:
       path: /2025/02
       relativeToChangelogFile: true
+  - includeAll:
+      path: /2025/05
+      relativeToChangelogFile: true

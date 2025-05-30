@@ -13,7 +13,7 @@ import com.melowetty.hsepermhelper.exception.UserIsExistsException
 import com.melowetty.hsepermhelper.exception.UserNotFoundException
 import com.melowetty.hsepermhelper.extension.UserExtensions.Companion.toDto
 import com.melowetty.hsepermhelper.extension.UserExtensions.Companion.toEntity
-import com.melowetty.hsepermhelper.notification.EmailIsVerifiedNotification
+import com.melowetty.hsepermhelper.notification.verification.EmailIsVerifiedNotification
 import com.melowetty.hsepermhelper.repository.HiddenLessonRepository
 import com.melowetty.hsepermhelper.repository.UserRepository
 import com.melowetty.hsepermhelper.service.EmailVerificationService
@@ -23,7 +23,6 @@ import com.melowetty.hsepermhelper.service.UserEventService
 import com.melowetty.hsepermhelper.service.UserService
 import com.melowetty.hsepermhelper.validation.annotation.ValidHseEmail
 import jakarta.validation.Valid
-import jakarta.validation.constraints.Size
 import java.util.UUID
 import kotlin.jvm.optionals.getOrNull
 import org.springframework.beans.factory.annotation.Value
@@ -31,7 +30,6 @@ import org.springframework.context.event.EventListener
 import org.springframework.stereotype.Service
 import org.springframework.util.ReflectionUtils
 import org.springframework.validation.annotation.Validated
-import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.util.UriComponentsBuilder
 
 @Service
@@ -231,8 +229,9 @@ class UserServiceImpl(
             user.copy(email = event.email)
         )
 
-        notificationService.sendNotificationV2(
-            EmailIsVerifiedNotification(user.telegramId)
+        notificationService.sendUserNotification(
+            event.userId,
+            EmailIsVerifiedNotification()
         )
     }
 

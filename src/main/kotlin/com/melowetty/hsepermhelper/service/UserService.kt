@@ -10,7 +10,6 @@ import jakarta.validation.Valid
 import java.util.UUID
 
 interface UserService {
-
     /**
      * Method returns user by he/she telegram ID
      * @param telegramId telegram ID of user

@@ -1,6 +1,7 @@
 package com.melowetty.hsepermhelper.domain.dto
 
 import com.fasterxml.jackson.annotation.JsonFormat
+import com.melowetty.hsepermhelper.domain.model.UserRole
 import com.melowetty.hsepermhelper.util.DateUtils
 import io.swagger.v3.oas.annotations.media.Schema
 import java.time.LocalDateTime
@@ -18,5 +19,7 @@ data class UserDto(
     val settings: SettingsDto,
 
     @JsonFormat(pattern = DateUtils.DATE_TIME_PATTERN)
-    val createdDate: LocalDateTime = LocalDateTime.now()
+    val createdDate: LocalDateTime = LocalDateTime.now(),
+
+    val roles: List<UserRole>,
 )
