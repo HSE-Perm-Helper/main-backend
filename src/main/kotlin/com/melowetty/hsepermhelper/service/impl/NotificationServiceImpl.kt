@@ -44,7 +44,7 @@ class NotificationServiceImpl(
 
         val userRole = when(recipientType) {
             NotificationRecipient.NONE -> {
-                log.error("Sent attempt notification without recipients, notification: $notification")
+                sendNotificationToKafka(userId = null, notification)
                 return
             }
             NotificationRecipient.ALL -> UserRole.USER
