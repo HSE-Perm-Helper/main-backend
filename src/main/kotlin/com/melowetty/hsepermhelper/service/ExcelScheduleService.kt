@@ -12,8 +12,8 @@ import com.melowetty.hsepermhelper.exception.ScheduleNotFoundException
 import com.melowetty.hsepermhelper.extension.ScheduleExtensions.Companion.toSchedule
 import com.melowetty.hsepermhelper.extension.ScheduleExtensions.Companion.toScheduleInfo
 import com.melowetty.hsepermhelper.extension.UserExtensions.Companion.getGroupedBySettingsUsers
-import com.melowetty.hsepermhelper.notification.ScheduleAddedNotification
-import com.melowetty.hsepermhelper.notification.ScheduleChangedForUserNotification
+import com.melowetty.hsepermhelper.notification.schedule.ScheduleAddedNotification
+import com.melowetty.hsepermhelper.notification.schedule.ScheduleChangedForUserNotification
 import com.melowetty.hsepermhelper.repository.ExcelScheduleRepository
 import com.melowetty.hsepermhelper.util.ScheduleUtils
 import java.time.LocalDate

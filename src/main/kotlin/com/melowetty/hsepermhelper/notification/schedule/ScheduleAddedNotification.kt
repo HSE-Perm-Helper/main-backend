@@ -1,6 +1,7 @@
-package com.melowetty.hsepermhelper.notification
+package com.melowetty.hsepermhelper.notification.schedule
 
 import com.melowetty.hsepermhelper.domain.model.schedule.ScheduleInfo
+import com.melowetty.hsepermhelper.notification.Notification
 import io.swagger.v3.oas.annotations.media.Schema
 
 data class ScheduleAddedNotification(

@@ -1,8 +1,12 @@
 package com.melowetty.hsepermhelper.domain.entity
 
+import com.melowetty.hsepermhelper.domain.model.UserRole
 import jakarta.persistence.CascadeType
+import jakarta.persistence.CollectionTable
 import jakarta.persistence.Column
+import jakarta.persistence.ElementCollection
 import jakarta.persistence.Entity
+import jakarta.persistence.FetchType
 import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
@@ -34,5 +38,13 @@ data class UserEntity(
     val settings: SettingsEntity,
 
     @CreatedDate
-    val createdDate: LocalDateTime = LocalDateTime.now()
+    val createdDate: LocalDateTime = LocalDateTime.now(),
+
+    @CollectionTable(
+        name = "user_role",
+        joinColumns = [JoinColumn(name = "user_id")]
+    )
+    @ElementCollection(fetch = FetchType.EAGER)
+    @Column(name = "role_id")
+    val roles: List<UserRole>,
 )
