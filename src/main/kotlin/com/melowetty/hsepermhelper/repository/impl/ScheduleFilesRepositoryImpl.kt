@@ -1,13 +1,14 @@
 package com.melowetty.hsepermhelper.repository.impl
 
+import com.melowetty.hsepermhelper.domain.model.file.File
 import com.melowetty.hsepermhelper.repository.ScheduleFilesRepository
 import java.io.InputStream
 import java.net.URL
 import org.jsoup.Jsoup
 import org.springframework.beans.factory.annotation.Value
-import org.springframework.stereotype.Component
+import org.springframework.stereotype.Repository
 
-@Component
+@Repository
 class ScheduleFilesRepositoryImpl(
     @Value("\${api.timetable.base-url}")
     private val timetableBaseUrl: String,
@@ -15,7 +16,7 @@ class ScheduleFilesRepositoryImpl(
     @Value("\${api.timetable.download-url}")
     private val timetableDownloadUrl: String
 ) : ScheduleFilesRepository {
-    private var scheduleFiles: List<ByteArray> = listOf()
+    private var scheduleFiles: List<File> = listOf()
 
     init {
         fetchScheduleFiles()
@@ -24,7 +25,7 @@ class ScheduleFilesRepositoryImpl(
     final override fun fetchScheduleFiles() {
         val response = Jsoup.connect(timetableBaseUrl).get()
         val elements = response.select(".content__inner.post__text p")
-        val files = mutableListOf<InputStream>()
+        val files = mutableListOf<File>()
         for (element in elements) {
             val html = element.html()
 
@@ -38,9 +39,15 @@ class ScheduleFilesRepositoryImpl(
             val link = childLink.attr("href")
             if (link.isEmpty()) continue
             val inputStream = downloadFileAsInputStream(path = link)
-            if (inputStream != null) files.add(inputStream)
+            if (inputStream != null) {
+                val file = File(
+                    data = inputStream.readAllBytes(),
+                    name = element.text()
+                )
+                files.add(file)
+            }
         }
-        scheduleFiles = files.map { it.readAllBytes() }
+        scheduleFiles = files
     }
 
     private fun isProcessable(name: String): Boolean {
@@ -63,7 +70,7 @@ class ScheduleFilesRepositoryImpl(
         }
     }
 
-    override fun getScheduleFilesAsByteArray(): List<ByteArray> {
+    override fun getScheduleFiles(): List<File> {
         return scheduleFiles
     }
 }

@@ -2,6 +2,7 @@ package com.melowetty.hsepermhelper.excel.impl
 
 import com.melowetty.hsepermhelper.annotation.Slf4j
 import com.melowetty.hsepermhelper.annotation.Slf4j.Companion.log
+import com.melowetty.hsepermhelper.domain.model.file.File
 import com.melowetty.hsepermhelper.excel.HseTimetableExcelParser
 import com.melowetty.hsepermhelper.excel.HseTimetableScheduleTypeChecker
 import com.melowetty.hsepermhelper.excel.HseTimetableSheetExcelParser
@@ -39,9 +40,9 @@ class HseTimetableExcelParserImpl(
         return WorkbookFactory.create(inputStream)
     }
 
-    override fun parseScheduleFromExcelAsInputStream(inputStream: InputStream): ExcelSchedule? {
+    override fun parseScheduleFromExcel(file: File): ExcelSchedule? {
         try {
-            val workbook = getWorkbook(inputStream)
+            val workbook = getWorkbook(file.toInputStream())
             val lessons = mutableListOf<ExcelLesson>()
             val scheduleInfo = getScheduleInfo(workbook)
                 ?: throw RuntimeException("Не получилось обработать информацию о расписании")
@@ -65,12 +66,12 @@ class HseTimetableExcelParserImpl(
             )
         } catch (exception: Exception) {
             log.error(
-                "Произошла ошибка во время обработки файла с расписанием! " +
+                "Произошла ошибка во время обработки файла с расписанием! Файл: ${file.name}\n" +
                         "Stacktrace: ", exception
             )
 
             notificationService.sendNotificationV2(ServiceWarnNotification(
-                "Произошла ошибка во время обработки файла с расписанием! " +
+                "Произошла ошибка во время обработки файла с расписанием! Файл: ${file.name}\n" +
                         "Stacktrace: ${exception.stackTraceToString()}"
             ))
             return null
@@ -79,12 +80,8 @@ class HseTimetableExcelParserImpl(
 
     private fun getScheduleInfo(workbook: Workbook): ParsedScheduleInfo? {
         for (sheet in workbook.sheetIterator()) {
-            try {
-                return getScheduleInfoBySheet(sheet)
-            } catch (e: RuntimeException) {
-                e.printStackTrace()
-                continue
-            }
+            val info = getScheduleInfoBySheet(sheet)
+            if (info != null) return info
         }
 
         return null
@@ -92,12 +89,25 @@ class HseTimetableExcelParserImpl(
 
     private fun getScheduleInfoBySheet(sheet: Sheet): ParsedScheduleInfo? {
         unmergeRegions(sheet)
-        return sheet.getRow(1).getCellValue(3)?.let { parseScheduleInfo(it) }
+
+        val row = sheet.getRow(1)
+        for (i in 0 until row.physicalNumberOfCells) {
+            try {
+                val value = row.getCellValue(i)?.let { parseScheduleInfo(it) }
+                if (value != null) return value
+            } catch (e: RuntimeException) {
+                log.trace(e.stackTraceToString())
+                continue
+            }
+        }
+
+        return null
     }
 
     fun parseScheduleInfo(scheduleInfo: String): ParsedScheduleInfo? {
         val scheduleNumber = parseScheduleNumber(scheduleInfo)
-        val (scheduleStart, scheduleEnd) = parseScheduleDates(scheduleInfo) ?: return null
+        val (scheduleStart, scheduleEnd) = parseScheduleDates(scheduleInfo)
+            ?: throw IllegalArgumentException("Не удалось распознать даты расписания, номер: $scheduleNumber, текст: $scheduleInfo")
 
         val scheduleType = scheduleTypeChecker.getScheduleType(
             ParsedExcelInfo(scheduleNumber, scheduleStart, scheduleEnd)

@@ -43,43 +43,56 @@ class ExcelScheduleRepository(
 
     private fun fetchSchedules() {
         val newSchedules = scheduleFilesService.getScheduleFiles().mapNotNull {
-            timetableExcelParser.parseScheduleFromExcelAsInputStream(it.toInputStream())
+            timetableExcelParser.parseScheduleFromExcel(it)
         }
         schedules = ScheduleUtils.normalizeSchedules(newSchedules)
     }
 
     fun getAvailableCourses(): List<Int> {
-        if (schedules.isEmpty()) throw ScheduleNotFoundException("Расписание не найдено!")
+        if (schedules.isEmpty()) throw ScheduleNotFoundException(SCHEDULE_NOT_FOUND_EXCEPTION_MESSAGE)
         val courses = schedules.flatMap { it.lessons }
             .asSequence()
             .map { it.course }
             .toSortedSet()
             .toList()
-        if (courses.isEmpty()) throw RuntimeException("Возникли проблемы с обработкой расписания!")
+
+        require(courses.isNotEmpty()) {
+            "В расписании не найдены курсы!"
+        }
         return courses
     }
 
     fun getAvailablePrograms(course: Int): List<String> {
-        if (schedules.isEmpty()) throw ScheduleNotFoundException("Расписание не найдено!")
+        if (schedules.isEmpty()) throw ScheduleNotFoundException(SCHEDULE_NOT_FOUND_EXCEPTION_MESSAGE)
         val programs = schedules.flatMap { it.lessons }
             .asSequence()
             .filter { it.course == course }
             .map { it.programme }
             .toSortedSet()
             .toList()
-        if (programs.isEmpty()) throw IllegalArgumentException("Курс не найден в расписании!")
+
+        require(programs.isNotEmpty()) {
+            "Курс не найден в расписании!"
+        }
         return programs
     }
 
     fun getAvailableGroups(course: Int, program: String): List<String> {
-        if (schedules.isEmpty()) throw ScheduleNotFoundException("Расписание не найдено!")
+        if (schedules.isEmpty()) throw ScheduleNotFoundException(SCHEDULE_NOT_FOUND_EXCEPTION_MESSAGE)
         val groups = schedules.flatMap { it.lessons }
             .asSequence()
             .filter { it.course == course && it.programme == program }
             .map { it.group }
             .toSortedSet()
             .toList()
-        if (groups.isEmpty()) throw IllegalArgumentException("Программа не найдена в расписании!")
+
+        require(groups.isNotEmpty()) {
+            "Программа не найдена в расписании!"
+        }
         return groups
+    }
+
+    companion object {
+        private const val SCHEDULE_NOT_FOUND_EXCEPTION_MESSAGE = "Расписание не найдено!"
     }
 }
