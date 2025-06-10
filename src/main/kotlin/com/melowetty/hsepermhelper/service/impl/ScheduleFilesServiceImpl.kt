@@ -10,7 +10,7 @@ class ScheduleFilesServiceImpl(
     private val repository: ScheduleFilesRepository
 ) : ScheduleFilesService {
     override fun getScheduleFiles(): List<File> {
-        return repository.getScheduleFilesAsByteArray().map { File(data = it) }
+        return repository.getScheduleFiles()
     }
 
     override fun fetchScheduleFiles() {

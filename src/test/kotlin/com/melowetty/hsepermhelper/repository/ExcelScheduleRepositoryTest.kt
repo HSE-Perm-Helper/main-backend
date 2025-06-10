@@ -36,10 +36,14 @@ class ExcelScheduleRepositoryTest {
 
     @Test
     fun `test handle event when schedule is changed`() {
-        val firstFile =
-            File(TestUtils.readFileAsInputStream("repository/schedule-repository/schedule_1.xls").readAllBytes())
-        val secondFile =
-            File(TestUtils.readFileAsInputStream("repository/schedule-repository/schedule_2.xls").readAllBytes())
+        val firstFile = File(
+            TestUtils.readFileAsInputStream("repository/schedule-repository/schedule_1.xls").readAllBytes(),
+            name = "schedule_1.xls"
+        )
+        val secondFile = File(
+            TestUtils.readFileAsInputStream("repository/schedule-repository/schedule_2.xls").readAllBytes(),
+            name = "schedule_2.xls"
+        )
 
         val firstSchedule = TestUtils.getSchedule()
         val secondSchedule = firstSchedule.copy(
@@ -87,10 +91,14 @@ class ExcelScheduleRepositoryTest {
 
     @Test
     fun `test handle event when schedule is not changed`() {
-        val firstFile =
-            File(TestUtils.readFileAsInputStream("repository/schedule-repository/schedule_1.xls").readAllBytes())
-        val secondFile =
-            File(TestUtils.readFileAsInputStream("repository/schedule-repository/schedule_1.xls").readAllBytes())
+        val firstFile = File(
+            data = TestUtils.readFileAsInputStream("repository/schedule-repository/schedule_1.xls").readAllBytes(),
+            name = "schedule_1.xls"
+        )
+        val secondFile = File(
+            data = TestUtils.readFileAsInputStream("repository/schedule-repository/schedule_1.xls").readAllBytes(),
+            name = "schedule_1.xls"
+        )
 
         Mockito.`when`(scheduleFilesServiceMock.getScheduleFiles()).thenReturn(listOf(firstFile), listOf(secondFile))
 

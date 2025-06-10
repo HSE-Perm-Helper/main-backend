@@ -6,6 +6,7 @@ import java.io.InputStream
 
 data class File(
     val data: ByteArray,
+    val name: String,
     val hashCode: String = HashUtils.getHash(data),
 ) {
     override fun hashCode(): Int {

@@ -1,13 +1,15 @@
 package com.melowetty.hsepermhelper.repository
 
+import com.melowetty.hsepermhelper.domain.model.file.File
+
 interface ScheduleFilesRepository {
     /**
      * Get schedule files
      * Returns empty list if schedules are not found
      *
-     * @return list of schedule files as input stream
+     * @return list of schedule files
      */
-    fun getScheduleFilesAsByteArray(): List<ByteArray>
+    fun getScheduleFiles(): List<File>
 
     fun fetchScheduleFiles()
 }
