@@ -15,7 +15,10 @@ import java.time.LocalDate
 class TestUtils {
     companion object {
         fun readFile(file: String): File {
-            return File(data = readFileAsInputStream(file).readAllBytes())
+            return File(
+                data = readFileAsInputStream(file).readAllBytes(),
+                name = file
+            )
         }
 
         fun readFileAsInputStream(file: String): InputStream {
