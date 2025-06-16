@@ -3,12 +3,14 @@ package com.melowetty.hsepermhelper.service
 import com.melowetty.hsepermhelper.domain.dto.UserDto
 import com.melowetty.hsepermhelper.domain.model.event.ExcelSchedulesChanging
 import com.melowetty.hsepermhelper.domain.model.lesson.AvailableLessonForHiding
+import com.melowetty.hsepermhelper.domain.model.lesson.Lesson
 import com.melowetty.hsepermhelper.domain.model.lesson.LessonType
 import com.melowetty.hsepermhelper.domain.model.schedule.Schedule
 import com.melowetty.hsepermhelper.domain.model.schedule.ScheduleInfo
 import com.melowetty.hsepermhelper.excel.model.ExcelLesson
 import com.melowetty.hsepermhelper.excel.model.ExcelSchedule
 import com.melowetty.hsepermhelper.exception.ScheduleNotFoundException
+import com.melowetty.hsepermhelper.extension.LessonExtensions.Companion.toLesson
 import com.melowetty.hsepermhelper.extension.ScheduleExtensions.Companion.toSchedule
 import com.melowetty.hsepermhelper.extension.ScheduleExtensions.Companion.toScheduleInfo
 import com.melowetty.hsepermhelper.extension.UserExtensions.Companion.getGroupedBySettingsUsers
@@ -26,6 +28,17 @@ class ExcelScheduleService(
     private val userService: UserService,
     private val notificationService: NotificationService,
 ) {
+    fun getScheduleByGroup(
+        group: String,
+    ): List<Lesson> {
+        val schedules = scheduleRepository.getSchedules().filter { schedule ->
+            schedule.lessons.any { lesson ->
+                lesson.group == group
+            }
+        }
+        return schedules.map { it.lessons }.flatten().map { it.toLesson() }
+    }
+
     private fun filterSchedules(
         schedules: List<ExcelSchedule>,
         user: UserDto,
