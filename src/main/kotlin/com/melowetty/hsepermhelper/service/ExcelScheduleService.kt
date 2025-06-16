@@ -32,9 +32,14 @@ class ExcelScheduleService(
     fun getScheduleByGroup(
         group: String,
     ): List<Lesson> {
-        return scheduleRepository.getSchedules().asSequence().filterNot {
-            it.scheduleType == ScheduleType.QUARTER_SCHEDULE
-        }.map { it.lessons }.flatten().map { it.toLesson() }.sortedBy { it.time }.toList()
+        return scheduleRepository.getSchedules().asSequence()
+            .filterNot { it.scheduleType == ScheduleType.QUARTER_SCHEDULE }
+            .map { it.lessons }
+            .flatten()
+            .filter { it.group == group }
+            .map { it.toLesson() }
+            .sortedBy { it.time }
+            .toList()
     }
 
     private fun filterSchedules(
