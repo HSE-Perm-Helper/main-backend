@@ -7,6 +7,7 @@ import com.melowetty.hsepermhelper.domain.model.lesson.Lesson
 import com.melowetty.hsepermhelper.domain.model.lesson.LessonType
 import com.melowetty.hsepermhelper.domain.model.schedule.Schedule
 import com.melowetty.hsepermhelper.domain.model.schedule.ScheduleInfo
+import com.melowetty.hsepermhelper.domain.model.schedule.ScheduleType
 import com.melowetty.hsepermhelper.excel.model.ExcelLesson
 import com.melowetty.hsepermhelper.excel.model.ExcelSchedule
 import com.melowetty.hsepermhelper.exception.ScheduleNotFoundException
@@ -31,12 +32,9 @@ class ExcelScheduleService(
     fun getScheduleByGroup(
         group: String,
     ): List<Lesson> {
-        val schedules = scheduleRepository.getSchedules().filter { schedule ->
-            schedule.lessons.any { lesson ->
-                lesson.group == group
-            }
-        }
-        return schedules.map { it.lessons }.flatten().map { it.toLesson() }
+        return scheduleRepository.getSchedules().asSequence().filterNot {
+            it.scheduleType == ScheduleType.QUARTER_SCHEDULE
+        }.map { it.lessons }.flatten().map { it.toLesson() }.sortedBy { it.time }.toList()
     }
 
     private fun filterSchedules(
