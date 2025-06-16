@@ -109,11 +109,6 @@ class ScheduleController(
         return Response(schedule)
     }
 
-    @SecurityRequirement(name = "X-Secret-Key")
-    @Operation(
-        summary = "Получение доступных для выбора курсов",
-        description = "Позволяет получить доступные для выбора курсы для регистрации или изменения данных"
-    )
     @GetMapping(
         "schedule/available_courses",
         produces = [MediaType.APPLICATION_JSON_VALUE]
@@ -123,11 +118,6 @@ class ScheduleController(
         return Response(personalScheduleService.getAvailableCourses())
     }
 
-    @SecurityRequirement(name = "X-Secret-Key")
-    @Operation(
-        summary = "Получение доступных для выбора программ",
-        description = "Позволяет получить доступные для выбора программ для регистрации или изменения данных",
-    )
     @GetMapping(
         "schedule/available_programs",
         produces = [MediaType.APPLICATION_JSON_VALUE]
@@ -140,11 +130,6 @@ class ScheduleController(
         return Response(personalScheduleService.getAvailablePrograms(course))
     }
 
-    @SecurityRequirement(name = "X-Secret-Key")
-    @Operation(
-        summary = "Получение доступных для выбора групп",
-        description = "Позволяет получить доступные для выбора группы для регистрации или изменения данных",
-    )
     @GetMapping(
         "schedule/available_groups",
         produces = [MediaType.APPLICATION_JSON_VALUE]

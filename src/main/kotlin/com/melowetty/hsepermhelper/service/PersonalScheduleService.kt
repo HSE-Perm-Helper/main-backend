@@ -22,6 +22,8 @@ class PersonalScheduleService(
     private val hseAppApiService: HseAppApiService,
     private val userService: UserService,
 ) {
+    fun getScheduleByGroup(group: String) = excelScheduleService.getScheduleByGroup(group)
+
     private fun getHseAppMinorLessonsByUser(studentEmail: String, from: LocalDate, to: LocalDate): List<Lesson> {
         return try {
             hseAppApiService.getLessons(studentEmail, from, to)
