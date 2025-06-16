@@ -7,6 +7,7 @@ import com.melowetty.hsepermhelper.domain.model.lesson.Lesson
 import com.melowetty.hsepermhelper.domain.model.lesson.LessonType
 import com.melowetty.hsepermhelper.domain.model.schedule.Schedule
 import com.melowetty.hsepermhelper.domain.model.schedule.ScheduleInfo
+import com.melowetty.hsepermhelper.domain.model.schedule.ScheduleType
 import com.melowetty.hsepermhelper.excel.model.ExcelLesson
 import com.melowetty.hsepermhelper.excel.model.ExcelSchedule
 import com.melowetty.hsepermhelper.exception.ScheduleNotFoundException
@@ -35,7 +36,10 @@ class ExcelScheduleService(
             schedule.lessons.any { lesson ->
                 lesson.group == group
             }
+        }.filterNot {
+            it.scheduleType == ScheduleType.QUARTER_SCHEDULE
         }
+
         return schedules.map { it.lessons }.flatten().map { it.toLesson() }
     }
 
