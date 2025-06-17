@@ -1,5 +1,6 @@
 package com.melowetty.hsepermhelper.service
 
+import com.melowetty.hsepermhelper.domain.model.user.UserCreateRequest
 import com.melowetty.hsepermhelper.domain.dto.EmailVerificationDto
 import com.melowetty.hsepermhelper.domain.dto.HideLessonDto
 import com.melowetty.hsepermhelper.domain.dto.RemoteScheduleLink
@@ -24,12 +25,7 @@ interface UserService {
      */
     fun getById(id: UUID): UserDto
 
-    /**
-     * Method creates user and return telegram ID when operation have success
-     * @param dto User object
-     * @return telegram ID
-     */
-    fun create(dto: UserDto): UserDto
+    fun create(request: UserCreateRequest): UserDto
 
     /**
      * Returns list of all users

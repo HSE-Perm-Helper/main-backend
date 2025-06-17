@@ -3,7 +3,7 @@ package com.melowetty.hsepermhelper.service
 import com.melowetty.hsepermhelper.domain.dto.HideLessonDto
 import com.melowetty.hsepermhelper.domain.dto.SettingsDto
 import com.melowetty.hsepermhelper.domain.dto.UserDto
-import com.melowetty.hsepermhelper.domain.model.UserRole
+import com.melowetty.hsepermhelper.domain.model.user.UserRole
 import com.melowetty.hsepermhelper.domain.model.lesson.LessonType
 import com.melowetty.hsepermhelper.domain.model.lesson.ScheduledTime
 import com.melowetty.hsepermhelper.domain.model.schedule.ScheduleType

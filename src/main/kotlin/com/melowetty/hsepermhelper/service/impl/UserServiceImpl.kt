@@ -1,12 +1,15 @@
 package com.melowetty.hsepermhelper.service.impl
 
+import com.melowetty.hsepermhelper.domain.model.user.UserCreateRequest
 import com.melowetty.hsepermhelper.domain.dto.EmailVerificationDto
 import com.melowetty.hsepermhelper.domain.dto.HideLessonDto
 import com.melowetty.hsepermhelper.domain.dto.RemoteScheduleLink
 import com.melowetty.hsepermhelper.domain.dto.SettingsDto
 import com.melowetty.hsepermhelper.domain.dto.UserDto
 import com.melowetty.hsepermhelper.domain.entity.HideLessonEntity
+import com.melowetty.hsepermhelper.domain.entity.SettingsEntity
 import com.melowetty.hsepermhelper.domain.entity.UserEntity
+import com.melowetty.hsepermhelper.domain.model.user.UserRole
 import com.melowetty.hsepermhelper.domain.model.event.EmailIsVerifiedEvent
 import com.melowetty.hsepermhelper.domain.model.event.UserEventType
 import com.melowetty.hsepermhelper.exception.UserIsExistsException
@@ -55,11 +58,21 @@ class UserServiceImpl(
         return user.get().toDto()
     }
 
-    override fun create(dto: UserDto): UserDto {
-        val isExists = userRepository.existsByTelegramId(dto.telegramId)
-        if (isExists) throw UserIsExistsException("Пользователь с таким Telegram ID уже существует!")
-        val user = userRepository.save(dto.toEntity()).toDto()
-        return user
+    override fun create(request: UserCreateRequest): UserDto {
+        val isExists = userRepository.existsByTelegramId(request.telegramId)
+        if (isExists) {
+            throw UserIsExistsException("Пользователь с таким Telegram ID уже существует!")
+        }
+
+        val user = UserEntity(
+            telegramId = request.telegramId,
+            settings = SettingsEntity(
+                group = request.group
+            ),
+            roles = listOf(UserRole.USER)
+        )
+
+        return userRepository.save(user).toDto()
     }
 
     override fun deleteById(id: UUID) {

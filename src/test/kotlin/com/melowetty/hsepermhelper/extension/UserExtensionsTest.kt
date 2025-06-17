@@ -3,7 +3,7 @@ package com.melowetty.hsepermhelper.extension
 import com.melowetty.hsepermhelper.domain.entity.HideLessonEntity
 import com.melowetty.hsepermhelper.domain.entity.SettingsEntity
 import com.melowetty.hsepermhelper.domain.entity.UserEntity
-import com.melowetty.hsepermhelper.domain.model.UserRole
+import com.melowetty.hsepermhelper.domain.model.user.UserRole
 import com.melowetty.hsepermhelper.domain.model.lesson.LessonType
 import com.melowetty.hsepermhelper.extension.UserExtensions.Companion.getGroupedEntityBySettingsUsers
 import org.junit.jupiter.api.Assertions

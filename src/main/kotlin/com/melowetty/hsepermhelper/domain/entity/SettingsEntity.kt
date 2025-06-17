@@ -22,7 +22,7 @@ data class SettingsEntity(
     val group: String = "",
 
     @OneToMany(orphanRemoval = true, cascade = [CascadeType.ALL], fetch = FetchType.EAGER)
-    val hiddenLessons: Set<HideLessonEntity>,
+    val hiddenLessons: Set<HideLessonEntity> = setOf(),
 
     @Column(name = "is_enabled_new_schedule_notification", columnDefinition = "BOOLEAN DEFAULT true")
     val isEnabledNewScheduleNotifications: Boolean = true,

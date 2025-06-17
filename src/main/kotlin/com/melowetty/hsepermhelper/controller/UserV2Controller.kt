@@ -1,5 +1,6 @@
 package com.melowetty.hsepermhelper.controller
 
+import com.melowetty.hsepermhelper.domain.model.user.UserCreateRequest
 import com.melowetty.hsepermhelper.controller.request.UserSetEmailRequest
 import com.melowetty.hsepermhelper.domain.dto.EmailVerificationDto
 import com.melowetty.hsepermhelper.domain.dto.HideLessonDto
@@ -65,9 +66,9 @@ class UserV2Controller(
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
     fun createUser(
-        @RequestBody userDto: UserDto,
+        @RequestBody request: UserCreateRequest,
     ): Response<UserDto> {
-        val user = userService.create(dto = userDto)
+        val user = userService.create(request)
         return Response(user)
     }
 

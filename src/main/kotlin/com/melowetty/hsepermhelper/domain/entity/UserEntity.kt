@@ -1,6 +1,6 @@
 package com.melowetty.hsepermhelper.domain.entity
 
-import com.melowetty.hsepermhelper.domain.model.UserRole
+import com.melowetty.hsepermhelper.domain.model.user.UserRole
 import jakarta.persistence.CascadeType
 import jakarta.persistence.CollectionTable
 import jakarta.persistence.Column

@@ -1,4 +1,4 @@
-package com.melowetty.hsepermhelper.domain.model
+package com.melowetty.hsepermhelper.domain.model.user
 
 enum class UserRole {
     USER,
