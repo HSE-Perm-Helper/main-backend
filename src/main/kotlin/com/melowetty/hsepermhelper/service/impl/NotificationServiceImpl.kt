@@ -3,8 +3,7 @@ package com.melowetty.hsepermhelper.service.impl
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import com.melowetty.hsepermhelper.annotation.Slf4j
-import com.melowetty.hsepermhelper.annotation.Slf4j.Companion.log
-import com.melowetty.hsepermhelper.domain.model.UserRole
+import com.melowetty.hsepermhelper.domain.model.user.UserRole
 import com.melowetty.hsepermhelper.domain.model.event.KafkaNotification
 import com.melowetty.hsepermhelper.notification.KafkaNotificationV2
 import com.melowetty.hsepermhelper.notification.Notification

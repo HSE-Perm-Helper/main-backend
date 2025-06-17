@@ -1,7 +1,7 @@
 package com.melowetty.hsepermhelper.repository
 
 import com.melowetty.hsepermhelper.domain.entity.UserEntity
-import com.melowetty.hsepermhelper.domain.model.UserRole
+import com.melowetty.hsepermhelper.domain.model.user.UserRole
 import java.util.Optional
 import java.util.UUID
 import org.springframework.data.domain.Page
