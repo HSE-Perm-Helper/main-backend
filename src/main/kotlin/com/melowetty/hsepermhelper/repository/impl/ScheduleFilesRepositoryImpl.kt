@@ -51,7 +51,7 @@ class ScheduleFilesRepositoryImpl(
     }
 
     private fun isProcessable(name: String): Boolean {
-        val banWords = setOf("английский", "программные системы")
+        val banWords = setOf("английский", "программные системы", "управление бизнесом", "модуль")
 
         for (word in banWords) {
             if (name.contains(word)) return false
