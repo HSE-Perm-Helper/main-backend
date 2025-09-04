@@ -1,5 +1,6 @@
 package com.melowetty.hsepermhelper.repository.impl
 
+import com.melowetty.hsepermhelper.annotation.Slf4j
 import com.melowetty.hsepermhelper.domain.model.file.File
 import com.melowetty.hsepermhelper.repository.ScheduleFilesRepository
 import java.io.InputStream
@@ -18,11 +19,12 @@ class ScheduleFilesRepositoryImpl(
 ) : ScheduleFilesRepository {
     private var scheduleFiles: List<File> = listOf()
 
+    // TODO: Should be refactored
     init {
-        fetchScheduleFiles()
+        this.fetchScheduleFiles()
     }
 
-    final override fun fetchScheduleFiles() {
+    override fun fetchScheduleFiles() {
         val response = Jsoup.connect(timetableBaseUrl).get()
         val elements = response.select(".content__inner.post__text p")
         val files = mutableListOf<File>()
@@ -63,7 +65,8 @@ class ScheduleFilesRepositoryImpl(
     private fun downloadFileAsInputStream(path: String): InputStream? {
         return try {
             val urlParts = path.split("/data")
-            URL("$timetableDownloadUrl/data${urlParts[1]}").openStream().readAllBytes().inputStream()
+            val url = "$timetableDownloadUrl/data${urlParts[1]}"
+            URL(url).openStream().readAllBytes().inputStream()
         } catch (e: Exception) {
             e.printStackTrace()
             null
