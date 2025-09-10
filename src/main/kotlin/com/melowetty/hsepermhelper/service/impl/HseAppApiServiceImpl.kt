@@ -104,7 +104,7 @@ class HseAppApiServiceImpl(
 
     companion object {
         private val dateFormat = DateTimeFormatter.ISO_DATE
-        private const val HSE_APP_X_MINOR_BUILDING_ID = 6789
+        private const val HSE_APP_X_MINOR_BUILDING_ID = 1630
 
         fun normalizeLecturer(lecturer: String): String {
             val words = lecturer.split(" ")
