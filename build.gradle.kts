@@ -3,9 +3,9 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 plugins {
     id("org.springframework.boot") version "3.1.2"
     id("io.spring.dependency-management") version "1.1.2"
-    kotlin("jvm") version "1.8.22"
-    kotlin("plugin.spring") version "1.8.22"
-    kotlin("plugin.jpa") version "1.8.22"
+    kotlin("jvm") version "1.9.24"
+    kotlin("plugin.spring") version "1.9.24"
+    kotlin("plugin.jpa") version "1.9.24"
     id("jacoco")
 }
 
@@ -15,7 +15,7 @@ val caffeineVersion = "3.2.0"
 val postgresVersion = "42.6.0"
 val slf4jVersion = "2.0.0"
 val springDocStarterVersion = "2.2.0"
-val springDocKotlinVersion = "1.7.0"
+val springDocKotlinVersion = "2.2.0"
 val mockitoVersion = "5.11.0"
 val mockitoKotlinVersion = "5.4.0"
 val jsoupVersion = "1.16.1"
@@ -24,7 +24,7 @@ group = "com.melowetty"
 version = "1.03.0"
 
 java {
-    sourceCompatibility = JavaVersion.VERSION_17
+    sourceCompatibility = JavaVersion.VERSION_21
 }
 
 repositories {
@@ -66,8 +66,6 @@ dependencies {
 
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
 
-    runtimeOnly("org.springdoc:springdoc-openapi-kotlin:${springDocKotlinVersion}")
-
     developmentOnly("org.springframework.boot:spring-boot-devtools")
 
     testImplementation("org.springframework.boot:spring-boot-starter-test")
@@ -84,7 +82,7 @@ dependencyManagement {
 tasks.withType<KotlinCompile> {
     kotlinOptions {
         freeCompilerArgs += "-Xjsr305=strict"
-        jvmTarget = "17"
+        jvmTarget = "21"
     }
 }
 
