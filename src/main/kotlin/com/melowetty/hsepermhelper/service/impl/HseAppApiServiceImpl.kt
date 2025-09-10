@@ -25,26 +25,6 @@ class HseAppApiServiceImpl(
     @Qualifier("hse-app-retryer")
     private val retryTemplate: RetryTemplate
 ): HseAppApiService {
-    companion object {
-        private val dateFormat = DateTimeFormatter.ISO_DATE
-        private const val HSE_APP_X_MINOR_BUILDING_ID = 6789
-
-        fun normalizeLecturer(lecturer: String): String {
-            val words = lecturer.split(" ")
-
-            if (words.size == 1) return lecturer
-
-            return (listOf(words.first()) + words.subList(1, words.size)
-                .mapNotNull { it.firstOrNull() }
-                .map { "$it." }.toList())
-                .joinToString(" ")
-        }
-
-        fun normalizeSubject(subject: String): String {
-            return subject.replace("(рус)", "").trim()
-        }
-    }
-
     @Cacheable(cacheNames = [HseAppApiCacheConfig.HSE_APP_LESSONS_CACHE])
     override fun getLessons(studentEmail: String, from: LocalDate, to: LocalDate): List<HseAppLesson> {
         return directGetLessons(studentEmail, from, to)
@@ -99,27 +79,47 @@ class HseAppApiServiceImpl(
     }
 
     fun processStreamLinks(streamLinks: List<StreamLink>?, note: String?): List<String> {
-        val streamLinks: List<String> = (streamLinks ?: listOf())
+        val processedStreamLinks: List<String> = (streamLinks ?: listOf())
             .stream().map { it.link }.toList()
 
-        val links = note?.let { it ->
-            LinkUtils.LINK_REGEX.findAll(it)
+        val links = note?.let { input ->
+            LinkUtils.LINK_REGEX.findAll(input)
                 .map { it.value }
                 .toList()
         } ?: listOf()
 
-        return streamLinks + links
+        return processedStreamLinks + links
     }
 
     fun processNote(streamLinks: List<String>, note: String?): String? {
-        var note = note
-        streamLinks.forEach { note = note?.replace(it, "") }
+        var processedNote = note
+        streamLinks.forEach { processedNote = processedNote?.replace(it, "") }
 
-        if (note?.isBlank() == true) {
-            note = null
+        if (processedNote?.isBlank() == true) {
+            processedNote = null
         }
 
-        return note
+        return processedNote
+    }
+
+    companion object {
+        private val dateFormat = DateTimeFormatter.ISO_DATE
+        private const val HSE_APP_X_MINOR_BUILDING_ID = 6789
+
+        fun normalizeLecturer(lecturer: String): String {
+            val words = lecturer.split(" ")
+
+            if (words.size == 1) return lecturer
+
+            return (listOf(words.first()) + words.subList(1, words.size)
+                .mapNotNull { it.firstOrNull() }
+                .map { "$it." }.toList())
+                .joinToString(" ")
+        }
+
+        fun normalizeSubject(subject: String): String {
+            return subject.replace("(рус)", "").trim()
+        }
     }
 
     data class HseAppApiLesson(
@@ -130,7 +130,7 @@ class HseAppApiServiceImpl(
         val dateEnd: LocalDateTime,
         val discipline: String,
         @JsonProperty("discipline_link")
-        val disciplineLink: String,
+        val disciplineLink: String?,
         val note: String?,
         val streamLinks: List<StreamLink>?,
         @JsonProperty("lecturer_profiles")

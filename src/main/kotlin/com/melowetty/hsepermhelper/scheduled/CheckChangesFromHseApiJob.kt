@@ -84,8 +84,8 @@ class CheckChangesFromHseApiJob(
             prevLessonsHash[user.id] = hash
 
             if (prevMinorHash.containsKey(user.id).not()) {
-                val lessons = getMinorLessons(lessons)
-                prevMinorHash[user.id] = getMinorLessonsMap(schedules, lessons)
+                val minorLessons = getMinorLessons(lessons)
+                prevMinorHash[user.id] = getMinorLessonsMap(schedules, minorLessons)
             }
 
             if (hash != prevHash) {
