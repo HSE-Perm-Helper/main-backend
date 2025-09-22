@@ -7,6 +7,7 @@ import com.melowetty.hsepermhelper.domain.model.lesson.Lesson
 import com.melowetty.hsepermhelper.domain.model.schedule.Schedule
 import com.melowetty.hsepermhelper.domain.model.schedule.ScheduleInfo
 import com.melowetty.hsepermhelper.service.PersonalScheduleService
+import com.melowetty.hsepermhelper.service.ScheduleInfoService
 import com.melowetty.hsepermhelper.service.UserEventService
 import com.melowetty.hsepermhelper.util.DateUtils
 import io.swagger.v3.oas.annotations.Operation
@@ -27,6 +28,7 @@ import org.springframework.web.bind.annotation.RestController
 class ScheduleController(
     private val personalScheduleService: PersonalScheduleService,
     private val userEventService: UserEventService,
+    private val scheduleInfoService: ScheduleInfoService,
 ) {
     @SecurityRequirement(name = "X-Secret-Key")
     @Operation(
@@ -115,7 +117,7 @@ class ScheduleController(
     )
     fun getAvailableCourses(
     ): Response<List<Int>> {
-        return Response(personalScheduleService.getAvailableCourses())
+        return Response(scheduleInfoService.getAvailableCourses())
     }
 
     @GetMapping(
@@ -127,7 +129,7 @@ class ScheduleController(
         @RequestParam("course")
         course: Int,
     ): Response<List<String>> {
-        return Response(personalScheduleService.getAvailablePrograms(course))
+        return Response(scheduleInfoService.getAvailablePrograms(course))
     }
 
     @GetMapping(
@@ -142,7 +144,7 @@ class ScheduleController(
         @RequestParam("program")
         program: String,
     ): Response<List<String>> {
-        return Response(personalScheduleService.getAvailableGroups(course, program))
+        return Response(scheduleInfoService.getAvailableGroups(course, program))
     }
 
     @GetMapping(

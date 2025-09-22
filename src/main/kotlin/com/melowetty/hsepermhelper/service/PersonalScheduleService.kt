@@ -117,18 +117,6 @@ class PersonalScheduleService(
         return ScheduleUtils.getLessonsAtDateInWeekSchedule(schedule, tomorrowDate)
     }
 
-    fun getAvailableCourses(): List<Int> {
-        return excelScheduleService.getAvailableCourses()
-    }
-
-    fun getAvailablePrograms(course: Int): List<String> {
-        return excelScheduleService.getAvailablePrograms(course = course)
-    }
-
-    fun getAvailableGroups(course: Int, program: String): List<String> {
-        return excelScheduleService.getAvailableGroups(course = course, program = program)
-    }
-
     fun getAvailableLessonsForHiding(telegramId: Long): List<AvailableLessonForHiding> {
         val user = userService.getByTelegramId(telegramId)
         return excelScheduleService.getAvailableLessonsForHiding(user)

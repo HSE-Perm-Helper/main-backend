@@ -3,6 +3,7 @@ package com.melowetty.hsepermhelper.controller
 import com.melowetty.hsepermhelper.domain.model.Response
 import com.melowetty.hsepermhelper.domain.model.lesson.Lesson
 import com.melowetty.hsepermhelper.service.PersonalScheduleService
+import com.melowetty.hsepermhelper.service.ScheduleInfoService
 import io.swagger.v3.oas.annotations.Parameter
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.GetMapping
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController
 @RequestMapping("/public/schedule")
 class PublicScheduleController(
     private val personalScheduleService: PersonalScheduleService,
+    private val scheduleInfoService: ScheduleInfoService,
 ) {
     @GetMapping
     fun getScheduleByGroup(
@@ -30,7 +32,7 @@ class PublicScheduleController(
     )
     fun getAvailableCourses(
     ): Response<List<Int>> {
-        return Response(personalScheduleService.getAvailableCourses())
+        return Response(scheduleInfoService.getAvailableCourses())
     }
 
     @GetMapping(
@@ -42,7 +44,7 @@ class PublicScheduleController(
         @RequestParam("course")
         course: Int,
     ): Response<List<String>> {
-        return Response(personalScheduleService.getAvailablePrograms(course))
+        return Response(scheduleInfoService.getAvailablePrograms(course))
     }
 
     @GetMapping(
@@ -57,6 +59,6 @@ class PublicScheduleController(
         @RequestParam("program")
         program: String,
     ): Response<List<String>> {
-        return Response(personalScheduleService.getAvailableGroups(course, program))
+        return Response(scheduleInfoService.getAvailableGroups(course, program))
     }
 }
