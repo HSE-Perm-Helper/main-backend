@@ -4,6 +4,7 @@ import com.melowetty.hsepermhelper.domain.model.Response
 import com.melowetty.hsepermhelper.domain.model.lesson.Lesson
 import com.melowetty.hsepermhelper.service.PersonalScheduleService
 import com.melowetty.hsepermhelper.service.ScheduleInfoService
+import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.Parameter
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.GetMapping
@@ -26,6 +27,8 @@ class PublicScheduleController(
         return Response(personalScheduleService.getScheduleByGroup(group))
     }
 
+    @Deprecated("Use v1/schedule-info/available-courses")
+    @Operation(deprecated = true)
     @GetMapping(
         "available_courses",
         produces = [MediaType.APPLICATION_JSON_VALUE]
@@ -35,6 +38,8 @@ class PublicScheduleController(
         return Response(scheduleInfoService.getAvailableCourses())
     }
 
+    @Deprecated("Use v1/schedule-info/available-programs")
+    @Operation(deprecated = true)
     @GetMapping(
         "available_programs",
         produces = [MediaType.APPLICATION_JSON_VALUE]
@@ -47,6 +52,8 @@ class PublicScheduleController(
         return Response(scheduleInfoService.getAvailablePrograms(course))
     }
 
+    @Deprecated("Use v1/schedule-info/available-groups")
+    @Operation(deprecated = true)
     @GetMapping(
         "available_groups",
         produces = [MediaType.APPLICATION_JSON_VALUE]
