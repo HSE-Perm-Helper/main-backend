@@ -16,7 +16,7 @@ class ScheduleInfoController (
     private val scheduleInfoService: ScheduleInfoService
 ){
     @GetMapping(
-        "available-courses",
+        "courses",
         produces = [MediaType.APPLICATION_JSON_VALUE]
     )
     fun getAvailableCourses(
@@ -25,7 +25,7 @@ class ScheduleInfoController (
     }
 
     @GetMapping(
-        "available-programs",
+        "programs",
         produces = [MediaType.APPLICATION_JSON_VALUE]
     )
     fun getAvailablePrograms(
@@ -37,7 +37,7 @@ class ScheduleInfoController (
     }
 
     @GetMapping(
-        "available-groups",
+        "groups",
         produces = [MediaType.APPLICATION_JSON_VALUE]
     )
     fun getAvailableGroups(

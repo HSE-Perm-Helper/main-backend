@@ -111,7 +111,7 @@ class ScheduleController(
         return Response(schedule)
     }
 
-    @Deprecated("Use v1/schedule-info/available-courses")
+    @Deprecated("Use v1/schedule-info/courses")
     @Operation(deprecated = true)
     @GetMapping(
         "schedule/available_courses",
@@ -122,7 +122,7 @@ class ScheduleController(
         return Response(scheduleInfoService.getAvailableCourses())
     }
 
-    @Deprecated("Use v1/schedule-info/available-programs")
+    @Deprecated("Use v1/schedule-info/programs")
     @Operation(deprecated = true)
     @GetMapping(
         "schedule/available_programs",
@@ -136,7 +136,7 @@ class ScheduleController(
         return Response(scheduleInfoService.getAvailablePrograms(course))
     }
 
-    @Deprecated("Use v1/schedule-info/available-groups")
+    @Deprecated("Use v1/schedule-info/groups")
     @Operation(deprecated = true)
     @GetMapping(
         "schedule/available_groups",
