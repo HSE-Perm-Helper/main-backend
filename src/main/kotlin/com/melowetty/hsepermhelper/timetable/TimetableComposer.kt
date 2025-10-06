@@ -25,7 +25,7 @@ class TimetableComposer(
 
         val embedded = embeddedTimetables.filter {
             it.isEmbeddable(user, timetable)
-        }
+        }.sortedByDescending { it.priority() }
 
         logger.info { "Found ${embedded.size} embedded timetables" }
 

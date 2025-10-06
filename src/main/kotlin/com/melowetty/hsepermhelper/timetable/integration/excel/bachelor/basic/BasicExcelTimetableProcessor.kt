@@ -1,16 +1,15 @@
 package com.melowetty.hsepermhelper.timetable.integration.excel.bachelor.basic
 
-import com.melowetty.hsepermhelper.timetable.integration.excel.ExcelScheduleProcessor
-import com.melowetty.hsepermhelper.timetable.model.InternalTimetable
+import com.melowetty.hsepermhelper.timetable.integration.excel.ExcelTimetableProcessor
 import com.melowetty.hsepermhelper.timetable.integration.excel.ExcelTimetableStorage
 import com.melowetty.hsepermhelper.timetable.model.ExcelTimetable
 import org.apache.poi.ss.usermodel.Workbook
 import org.springframework.stereotype.Component
 
 @Component
-class BasicExcelScheduleProcessor(
+class BasicExcelTimetableProcessor(
     private val storage: ExcelTimetableStorage,
-) : ExcelScheduleProcessor {
+) : ExcelTimetableProcessor {
     override fun process(data: Workbook): List<ExcelTimetable> {
         TODO("Not yet implemented")
     }

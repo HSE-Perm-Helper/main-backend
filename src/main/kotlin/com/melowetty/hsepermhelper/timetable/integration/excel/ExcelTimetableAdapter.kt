@@ -9,19 +9,19 @@ import org.apache.poi.ss.usermodel.WorkbookFactory
 import org.springframework.stereotype.Component
 
 @Component
-class ExcelScheduleAdapter(
+class ExcelTimetableAdapter(
     private val storage: ExcelTimetableStorage,
-    processors: List<ExcelScheduleProcessor>,
+    processors: List<ExcelTimetableProcessor>,
 ) {
-    private val prioritizedProcessors: List<ExcelScheduleProcessor> =
+    private val prioritizedProcessors: List<ExcelTimetableProcessor> =
         processors.sortedByDescending { it.priority() }
 
-    fun processAndPersist(file: File) {
+    fun processAndPersist(file: File): List<String> {
         val processor = prioritizedProcessors.firstOrNull {
             it.isParseable(file.name)
         } ?: run {
             logger.warn { "No processor found for file ${file.name}" }
-            return
+            return listOf()
         }
 
         val workbook = WorkbookFactory.create(file.toInputStream())
@@ -33,9 +33,13 @@ class ExcelScheduleAdapter(
 
         logger.info { "Processed ${timetables.size} timetables" }
 
-        timetables.map {
-            storage.saveTimetable(it)
+        val ids = timetables.map {
+            storage.saveTimetable(it).id()
         }
+
+        logger.info { "Saved ${ids.size} timetables" }
+
+        return ids
     }
 
     private fun preprocessWorkbook(workbook: Workbook) {
