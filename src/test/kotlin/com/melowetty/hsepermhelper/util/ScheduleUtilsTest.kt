@@ -5,8 +5,8 @@ import com.melowetty.hsepermhelper.domain.model.lesson.LessonType
 import com.melowetty.hsepermhelper.domain.model.lesson.ScheduledTime
 import com.melowetty.hsepermhelper.domain.model.schedule.Schedule
 import com.melowetty.hsepermhelper.domain.model.schedule.ScheduleType
-import com.melowetty.hsepermhelper.excel.model.ExcelLesson
-import com.melowetty.hsepermhelper.excel.model.ExcelSchedule
+import com.melowetty.hsepermhelper.timetable.model.InternalLesson
+import com.melowetty.hsepermhelper.timetable.model.InternalTimetable
 import com.melowetty.hsepermhelper.util.ScheduleUtils.Companion.filterWeekExcelSchedules
 import com.melowetty.hsepermhelper.util.ScheduleUtils.Companion.filterWeekSchedules
 import java.time.DayOfWeek
@@ -24,27 +24,27 @@ class ScheduleUtilsTest {
         val end = LocalDate.now()
         val actual = ScheduleUtils.mergeSessionSchedules(
             listOf(
-                ExcelSchedule(
+                InternalTimetable(
                     start = start,
                     end = end,
-                    scheduleType = ScheduleType.SESSION_SCHEDULE,
+                    type = ScheduleType.SESSION_SCHEDULE,
                     lessons = lessons.subList(0, 3),
                     number = 1,
                 ),
-                ExcelSchedule(
+                InternalTimetable(
                     start = end,
                     end = end,
-                    scheduleType = ScheduleType.SESSION_SCHEDULE,
+                    type = ScheduleType.SESSION_SCHEDULE,
                     lessons = lessons.subList(3, 5),
                     number = 2,
                 )
             )
         )
 
-        val expected = ExcelSchedule(
+        val expected = InternalTimetable(
             start = start,
             end = end,
-            scheduleType = ScheduleType.SESSION_SCHEDULE,
+            type = ScheduleType.SESSION_SCHEDULE,
             lessons = lessons,
             number = 1,
         )
@@ -235,8 +235,8 @@ class ScheduleUtilsTest {
         assertEquals(expected, actual)
     }
 
-    private fun getLesson(): ExcelLesson {
-        return ExcelLesson(
+    private fun getLesson(): InternalLesson {
+        return InternalLesson(
             course = 1,
             group = "test",
             lecturer = "test",
@@ -253,11 +253,11 @@ class ScheduleUtilsTest {
         )
     }
 
-    private fun getSchedule(): ExcelSchedule {
-        return ExcelSchedule(
+    private fun getSchedule(): InternalTimetable {
+        return InternalTimetable(
             start = LocalDate.now(),
             end = LocalDate.now(),
-            scheduleType = ScheduleType.WEEK_SCHEDULE,
+            type = ScheduleType.WEEK_SCHEDULE,
             lessons = listOf(getLesson(), getLesson(), getLesson(), getLesson()),
             number = 1,
         )

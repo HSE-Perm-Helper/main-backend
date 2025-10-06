@@ -4,6 +4,7 @@ import com.melowetty.hsepermhelper.domain.model.schedule.ScheduleType
 import com.melowetty.hsepermhelper.excel.impl.HseTimetableExcelParserImpl
 import com.melowetty.hsepermhelper.excel.model.ParsedScheduleInfo
 import com.melowetty.hsepermhelper.service.NotificationService
+import com.melowetty.hsepermhelper.timetable.integration.excel.bachelor.shared.BachelorTimetableSheetExcelParser
 import java.time.LocalDate
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
@@ -20,7 +21,7 @@ class HseTimetableExcelParserTest {
     private lateinit var parser: HseTimetableExcelParserImpl
 
     @Mock
-    private lateinit var sheetParser: HseTimetableSheetExcelParser
+    private lateinit var sheetParser: BachelorTimetableSheetExcelParser
 
     @Mock
     private lateinit var typeChecker: HseTimetableScheduleTypeChecker

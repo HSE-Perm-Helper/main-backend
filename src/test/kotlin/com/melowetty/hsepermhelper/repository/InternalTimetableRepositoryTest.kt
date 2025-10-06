@@ -4,7 +4,7 @@ import com.melowetty.hsepermhelper.domain.model.event.ExcelSchedulesChanging
 import com.melowetty.hsepermhelper.domain.model.file.File
 import com.melowetty.hsepermhelper.domain.model.file.FilesChanging
 import com.melowetty.hsepermhelper.excel.HseTimetableExcelParser
-import com.melowetty.hsepermhelper.excel.model.ExcelScheduleDifference
+import com.melowetty.hsepermhelper.timetable.model.InternalScheduleDifference
 import com.melowetty.hsepermhelper.service.ScheduleFilesService
 import com.melowetty.hsepermhelper.service.SchedulesCheckingChangesService
 import com.melowetty.hsepermhelper.util.MockitoHelper
@@ -18,7 +18,7 @@ import org.mockito.junit.jupiter.MockitoExtension
 import org.springframework.context.ApplicationEventPublisher
 
 @ExtendWith(MockitoExtension::class)
-class ExcelScheduleRepositoryTest {
+class InternalTimetableRepositoryTest {
     @InjectMocks
     private lateinit var excelScheduleRepository: ExcelScheduleRepository
 
@@ -60,7 +60,7 @@ class ExcelScheduleRepositoryTest {
         ).thenReturn(
             ExcelSchedulesChanging(
                 changed = listOf(
-                    ExcelScheduleDifference(
+                    InternalScheduleDifference(
                         before = firstSchedule,
                         after = secondSchedule,
                     )
@@ -80,7 +80,7 @@ class ExcelScheduleRepositoryTest {
         Mockito.verify(eventPublisherMock, Mockito.times(1)).publishEvent(
             ExcelSchedulesChanging(
                 changed = listOf(
-                    ExcelScheduleDifference(
+                    InternalScheduleDifference(
                         before = firstSchedule,
                         after = secondSchedule,
                     )

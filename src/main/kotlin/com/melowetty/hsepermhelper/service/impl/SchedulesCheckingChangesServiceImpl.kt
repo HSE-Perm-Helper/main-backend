@@ -1,14 +1,14 @@
 package com.melowetty.hsepermhelper.service.impl
 
 import com.melowetty.hsepermhelper.domain.model.event.ExcelSchedulesChanging
-import com.melowetty.hsepermhelper.excel.model.ExcelSchedule
-import com.melowetty.hsepermhelper.excel.model.ExcelScheduleDifference
+import com.melowetty.hsepermhelper.timetable.model.InternalTimetable
+import com.melowetty.hsepermhelper.timetable.model.InternalScheduleDifference
 import com.melowetty.hsepermhelper.service.SchedulesCheckingChangesService
 import org.springframework.stereotype.Service
 
 @Service
 class SchedulesCheckingChangesServiceImpl : SchedulesCheckingChangesService {
-    override fun getChanges(before: List<ExcelSchedule>, after: List<ExcelSchedule>): ExcelSchedulesChanging {
+    override fun getChanges(before: List<InternalTimetable>, after: List<InternalTimetable>): ExcelSchedulesChanging {
         val deletedSchedules = before.filter { schedule ->
             after.find {
                 checkIsSimilarSchedule(it, schedule)
@@ -21,7 +21,7 @@ class SchedulesCheckingChangesServiceImpl : SchedulesCheckingChangesService {
             } == null
         }
 
-        val editedSchedules = mutableListOf<ExcelScheduleDifference>()
+        val editedSchedules = mutableListOf<InternalScheduleDifference>()
 
         for (newSchedule in after) {
             val existsSchedule = before.find {
@@ -29,7 +29,7 @@ class SchedulesCheckingChangesServiceImpl : SchedulesCheckingChangesService {
             } ?: continue
             if (existsSchedule != newSchedule) {
                 editedSchedules.add(
-                    ExcelScheduleDifference(
+                    InternalScheduleDifference(
                         before = existsSchedule,
                         after = newSchedule
                     )
@@ -43,9 +43,9 @@ class SchedulesCheckingChangesServiceImpl : SchedulesCheckingChangesService {
         )
     }
 
-    private fun checkIsSimilarSchedule(firstSchedule: ExcelSchedule, secondSchedule: ExcelSchedule): Boolean {
+    private fun checkIsSimilarSchedule(firstSchedule: InternalTimetable, secondSchedule: InternalTimetable): Boolean {
         return firstSchedule.start == secondSchedule.start
                 && firstSchedule.end == secondSchedule.end
-                && firstSchedule.scheduleType == secondSchedule.scheduleType
+                && firstSchedule.type == secondSchedule.type
     }
 }

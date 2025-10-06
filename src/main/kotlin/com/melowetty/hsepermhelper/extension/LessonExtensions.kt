@@ -5,7 +5,7 @@ import com.melowetty.hsepermhelper.domain.model.lesson.Lesson
 import com.melowetty.hsepermhelper.domain.model.lesson.LessonPlace
 import com.melowetty.hsepermhelper.domain.model.lesson.ScheduledTime
 import com.melowetty.hsepermhelper.domain.model.schedule.ScheduleType
-import com.melowetty.hsepermhelper.excel.model.ExcelLesson
+import com.melowetty.hsepermhelper.timetable.model.InternalLesson
 import com.melowetty.hsepermhelper.util.DateUtils.Companion.asStr
 import com.melowetty.hsepermhelper.util.DateUtils.Companion.fromGmtToPermTime
 
@@ -13,7 +13,7 @@ class LessonExtensions {
     companion object {
         private const val HSE_APP_ONLINE_PLACE_DEFINITION = "Онлайн"
 
-        fun ExcelLesson.toLesson(): Lesson {
+        fun InternalLesson.toLesson(): Lesson {
             return Lesson(
                 subject = subject,
                 subGroup = subGroup,
@@ -49,8 +49,8 @@ class LessonExtensions {
                 lessonType = type,
                 links = streamLinks,
                 additionalInfo = note?.let { listOf(note) },
+                places = places.ifEmpty { null },
                 parentScheduleType = ScheduleType.WEEK_SCHEDULE,
-                places = places.ifEmpty { null }
             )
         }
     }

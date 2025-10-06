@@ -2,8 +2,8 @@ package com.melowetty.hsepermhelper.service
 
 import com.melowetty.hsepermhelper.domain.model.event.ExcelSchedulesChanging
 import com.melowetty.hsepermhelper.domain.model.schedule.ScheduleType
-import com.melowetty.hsepermhelper.excel.model.ExcelSchedule
-import com.melowetty.hsepermhelper.excel.model.ExcelScheduleDifference
+import com.melowetty.hsepermhelper.timetable.model.InternalTimetable
+import com.melowetty.hsepermhelper.timetable.model.InternalScheduleDifference
 import com.melowetty.hsepermhelper.service.impl.SchedulesCheckingChangesServiceImpl
 import com.melowetty.hsepermhelper.util.TestUtils.Companion.getSchedule
 import java.time.LocalDate
@@ -30,7 +30,7 @@ class SchedulesCheckingChangesImplTest {
     @Test
     fun `get changes when schedules is deleted`() {
         val before = listOf(getSchedule(), getSchedule())
-        val after = listOf<ExcelSchedule>()
+        val after = listOf<InternalTimetable>()
         val actual = schedulesCheckingChangesService.getChanges(before, after)
         val expected = ExcelSchedulesChanging(deleted = before)
         assertEquals(expected, actual)
@@ -38,7 +38,7 @@ class SchedulesCheckingChangesImplTest {
 
     @Test
     fun `get changes when schedules is added`() {
-        val before = listOf<ExcelSchedule>()
+        val before = listOf<InternalTimetable>()
         val after = listOf(getSchedule(), getSchedule())
         val actual = schedulesCheckingChangesService.getChanges(before, after)
         val expected = ExcelSchedulesChanging(added = after)
@@ -53,7 +53,7 @@ class SchedulesCheckingChangesImplTest {
         )
         val actual = schedulesCheckingChangesService.getChanges(listOf(before), listOf(after))
         val expected = ExcelSchedulesChanging(
-            changed = listOf(ExcelScheduleDifference(before = before, after = after))
+            changed = listOf(InternalScheduleDifference(before = before, after = after))
         )
         assertEquals(expected, actual)
     }
@@ -79,7 +79,7 @@ class SchedulesCheckingChangesImplTest {
         val expected = ExcelSchedulesChanging(
             added = listOf(afterThird),
             deleted = listOf(beforeThird),
-            changed = listOf(ExcelScheduleDifference(before = beforeSecond, after = afterSecond))
+            changed = listOf(InternalScheduleDifference(before = beforeSecond, after = afterSecond))
         )
 
         val actual = schedulesCheckingChangesService.getChanges(before, after)

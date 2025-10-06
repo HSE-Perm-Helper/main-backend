@@ -7,9 +7,7 @@ import com.melowetty.hsepermhelper.domain.model.lesson.Lesson
 import com.melowetty.hsepermhelper.domain.model.lesson.LessonType
 import com.melowetty.hsepermhelper.domain.model.schedule.Schedule
 import com.melowetty.hsepermhelper.domain.model.schedule.ScheduleInfo
-import com.melowetty.hsepermhelper.domain.model.schedule.ScheduleType
-import com.melowetty.hsepermhelper.excel.model.ExcelLesson
-import com.melowetty.hsepermhelper.excel.model.ExcelSchedule
+import com.melowetty.hsepermhelper.timetable.model.InternalTimetable
 import com.melowetty.hsepermhelper.exception.ScheduleNotFoundException
 import com.melowetty.hsepermhelper.extension.LessonExtensions.Companion.toLesson
 import com.melowetty.hsepermhelper.extension.ScheduleExtensions.Companion.toSchedule
@@ -18,12 +16,15 @@ import com.melowetty.hsepermhelper.extension.UserExtensions.Companion.getGrouped
 import com.melowetty.hsepermhelper.notification.schedule.ScheduleAddedNotification
 import com.melowetty.hsepermhelper.notification.schedule.ScheduleChangedForUserNotification
 import com.melowetty.hsepermhelper.repository.ExcelScheduleRepository
+import com.melowetty.hsepermhelper.timetable.model.InternalTimetableType
+import com.melowetty.hsepermhelper.timetable.model.impl.GroupBasedLesson
 import com.melowetty.hsepermhelper.util.ScheduleUtils
 import java.time.LocalDate
 import org.springframework.context.event.EventListener
 import org.springframework.stereotype.Service
 
 @Service
+@Deprecated("Stop using when new schedule flow is implemented")
 class ExcelScheduleService(
     private val scheduleRepository: ExcelScheduleRepository,
     private val userService: UserService,
@@ -33,9 +34,10 @@ class ExcelScheduleService(
         group: String,
     ): List<Lesson> {
         return scheduleRepository.getSchedules().asSequence()
-            .filterNot { it.scheduleType == ScheduleType.QUARTER_SCHEDULE }
+            .filterNot { it.type == InternalTimetableType.BACHELOR_QUARTER_SCHEDULE }
             .map { it.lessons }
             .flatten()
+            .mapNotNull { it as? GroupBasedLesson }
             .filter { it.group == group }
             .map { it.toLesson() }
             .sortedBy { it.time }
@@ -43,18 +45,20 @@ class ExcelScheduleService(
     }
 
     private fun filterSchedules(
-        schedules: List<ExcelSchedule>,
+        schedules: List<InternalTimetable>,
         user: UserDto,
         withoutHiddenLessons: Boolean = true
-    ): List<ExcelSchedule> {
+    ): List<InternalTimetable> {
         val filteredSchedules = schedules.map { schedule ->
             filterSchedule(schedule, user, withoutHiddenLessons)
         }
         return filteredSchedules
     }
 
-    fun filterSchedule(schedule: ExcelSchedule, user: UserDto, withoutHiddenLessons: Boolean = true): ExcelSchedule {
-        val filteredLessons = schedule.lessons.filter { lesson: ExcelLesson ->
+    fun filterSchedule(schedule: InternalTimetable, user: UserDto, withoutHiddenLessons: Boolean = true): InternalTimetable {
+        val filteredLessons = schedule.lessons
+            .mapNotNull { it as? GroupBasedLesson }
+            .filter { lesson: GroupBasedLesson ->
             lesson.group == user.settings.group
         }.filter {
             (it.lessonType == LessonType.COMMON_ENGLISH).not()
@@ -129,7 +133,7 @@ class ExcelScheduleService(
         }
     }
 
-    fun processNewExcelSchedule(schedule: ExcelSchedule) {
+    fun processNewExcelSchedule(schedule: InternalTimetable) {
         val users = mutableListOf<Long>()
         users.addAll(userService.getAllUsers()
             .filter { it.settings.isEnabledNewScheduleNotifications }
@@ -141,7 +145,7 @@ class ExcelScheduleService(
         notificationService.sendNotification(scheduleAddedNotification)
     }
 
-    fun processEditedExcelSchedule(before: ExcelSchedule, after: ExcelSchedule) {
+    fun processEditedExcelSchedule(before: InternalTimetable, after: InternalTimetable) {
         userService.getAllUsers()
             .filter { user ->
                 user.settings.isEnabledChangedScheduleNotifications

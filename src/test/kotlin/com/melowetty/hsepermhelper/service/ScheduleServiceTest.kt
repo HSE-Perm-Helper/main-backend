@@ -7,8 +7,8 @@ import com.melowetty.hsepermhelper.domain.model.user.UserRole
 import com.melowetty.hsepermhelper.domain.model.lesson.LessonType
 import com.melowetty.hsepermhelper.domain.model.lesson.ScheduledTime
 import com.melowetty.hsepermhelper.domain.model.schedule.ScheduleType
-import com.melowetty.hsepermhelper.excel.model.ExcelLesson
-import com.melowetty.hsepermhelper.excel.model.ExcelSchedule
+import com.melowetty.hsepermhelper.timetable.model.InternalLesson
+import com.melowetty.hsepermhelper.timetable.model.InternalTimetable
 import com.melowetty.hsepermhelper.repository.ExcelScheduleRepository
 import java.time.DayOfWeek
 import java.time.LocalDate
@@ -46,16 +46,16 @@ class ScheduleServiceTest {
             roles = listOf(UserRole.USER)
         )
 
-        val lesson = ExcelLesson(
+        val lesson = InternalLesson(
             subject = "Normal lesson", course = 1, programme = "РИС", "РИС-24-1", subGroup = 1, time = ScheduledTime(
                 DayOfWeek.MONDAY, LocalDate.now(), "11:00", "12:30"
             ), lecturer = "test",
             lessonType = LessonType.SEMINAR
         )
 
-        val schedule = ExcelSchedule(
+        val schedule = InternalTimetable(
             number = 0,
-            scheduleType = ScheduleType.WEEK_SCHEDULE,
+            type = ScheduleType.WEEK_SCHEDULE,
             start = LocalDate.now(),
             end = LocalDate.now(),
             lessons = listOf(

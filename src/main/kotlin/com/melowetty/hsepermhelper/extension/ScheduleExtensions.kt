@@ -2,7 +2,7 @@ package com.melowetty.hsepermhelper.extension
 
 import com.melowetty.hsepermhelper.domain.model.schedule.Schedule
 import com.melowetty.hsepermhelper.domain.model.schedule.ScheduleInfo
-import com.melowetty.hsepermhelper.excel.model.ExcelSchedule
+import com.melowetty.hsepermhelper.timetable.model.InternalTimetable
 import com.melowetty.hsepermhelper.extension.LessonExtensions.Companion.toLesson
 
 class ScheduleExtensions {
@@ -16,21 +16,21 @@ class ScheduleExtensions {
             )
         }
 
-        fun ExcelSchedule.toScheduleInfo(): ScheduleInfo {
+        fun InternalTimetable.toScheduleInfo(): ScheduleInfo {
             return ScheduleInfo(
                 number = number,
                 start = start,
                 end = end,
-                scheduleType = scheduleType
+                scheduleType = type
             )
         }
 
-        fun ExcelSchedule.toSchedule(): Schedule {
+        fun InternalTimetable.toSchedule(): Schedule {
             return Schedule(
                 number = number,
                 start = start,
                 end = end,
-                scheduleType = scheduleType,
+                scheduleType = type,
                 lessons = lessons.map { it.toLesson() }
             )
         }
