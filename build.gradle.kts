@@ -19,6 +19,7 @@ val springDocKotlinVersion = "2.2.0"
 val mockitoVersion = "5.11.0"
 val mockitoKotlinVersion = "5.4.0"
 val jsoupVersion = "1.16.1"
+val kotlinLoggingVersion = "7.0.3"
 
 group = "com.melowetty"
 version = "1.03.0"
@@ -56,6 +57,8 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-validation")
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.cloud:spring-cloud-starter-openfeign")
+
+    implementation("io.github.oshai:kotlin-logging-jvm:${kotlinLoggingVersion}")
 
     implementation("org.slf4j:slf4j-api:${slf4jVersion}")
 

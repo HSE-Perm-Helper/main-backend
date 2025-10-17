@@ -1,14 +1,11 @@
-package com.melowetty.hsepermhelper.excel.impl
+package com.melowetty.hsepermhelper.timetable.integration.excel.bachelor.shared
 
 import com.melowetty.hsepermhelper.domain.model.lesson.LessonType
-import com.melowetty.hsepermhelper.excel.HseTimetableLessonTypeChecker
 import com.melowetty.hsepermhelper.excel.model.ParsedLessonInfo
 import java.time.Month
-import org.springframework.stereotype.Component
 
-@Component
-class HseTimetableLessonTypeCheckerImpl : HseTimetableLessonTypeChecker {
-    override fun getLessonType(lessonInfo: ParsedLessonInfo): LessonType {
+object LessonTypeUtils {
+    fun getLessonType(lessonInfo: ParsedLessonInfo): LessonType {
         val pureSubject = lessonInfo.subject.lowercase()
         val pureLessonInfo = lessonInfo.lessonInfo?.lowercase()
         val pureFullLessonInfo = pureSubject + " " +
@@ -19,7 +16,7 @@ class HseTimetableLessonTypeCheckerImpl : HseTimetableLessonTypeChecker {
         if (pureFullLessonInfo.contains("консультация")) return LessonType.CONSULT
         if (pureFullLessonInfo.contains("экзамен")) return LessonType.EXAM
         if (pureFullLessonInfo.contains("зачёт") || pureSubject.contains("зачет")) return LessonType.TEST
-        if (pureFullLessonInfo.contains("английский язык")) return LessonType.COMMON_ENGLISH
+        if (pureFullLessonInfo.contains("курс. английский язык")) return LessonType.COMMON_ENGLISH
         if (pureFullLessonInfo.contains("майнор")) {
             val scheduleStart = lessonInfo.schedulePeriod.start
 

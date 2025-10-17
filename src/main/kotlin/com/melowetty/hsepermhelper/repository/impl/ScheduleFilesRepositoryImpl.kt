@@ -24,7 +24,7 @@ class ScheduleFilesRepositoryImpl(
         this.fetchScheduleFiles()
     }
 
-    override fun fetchScheduleFiles() {
+    override fun fetchScheduleFiles(): List<File> {
         val response = Jsoup.connect(timetableBaseUrl).get()
         val elements = response.select(".content__inner.post__text p")
         val files = mutableListOf<File>()
@@ -50,10 +50,12 @@ class ScheduleFilesRepositoryImpl(
             }
         }
         scheduleFiles = files
+
+        return files
     }
 
     private fun isProcessable(name: String): Boolean {
-        val banWords = setOf("английский", "программные системы", "управление бизнесом", "модуль")
+        val banWords = setOf("английский", "англ", "программные системы", "управление бизнесом", "оп")
 
         for (word in banWords) {
             if (name.contains(word)) return false

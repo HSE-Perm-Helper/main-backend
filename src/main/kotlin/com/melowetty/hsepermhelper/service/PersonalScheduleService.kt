@@ -17,6 +17,7 @@ import java.time.LocalDate
 import org.springframework.stereotype.Service
 
 @Service
+@Deprecated("Refactor when new schedule flow is implemented")
 class PersonalScheduleService(
     private val excelScheduleService: ExcelScheduleService,
     private val hseAppApiService: HseAppApiService,

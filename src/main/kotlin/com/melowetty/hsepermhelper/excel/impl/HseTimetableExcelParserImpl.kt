@@ -4,14 +4,16 @@ import com.melowetty.hsepermhelper.annotation.Slf4j
 import com.melowetty.hsepermhelper.annotation.Slf4j.Companion.log
 import com.melowetty.hsepermhelper.domain.model.file.File
 import com.melowetty.hsepermhelper.excel.HseTimetableExcelParser
-import com.melowetty.hsepermhelper.excel.HseTimetableScheduleTypeChecker
-import com.melowetty.hsepermhelper.excel.HseTimetableSheetExcelParser
-import com.melowetty.hsepermhelper.excel.model.ExcelLesson
-import com.melowetty.hsepermhelper.excel.model.ExcelSchedule
+import com.melowetty.hsepermhelper.timetable.integration.excel.bachelor.shared.BachelorTimetableSheetExcelParser
+import com.melowetty.hsepermhelper.timetable.model.InternalLesson
+import com.melowetty.hsepermhelper.timetable.model.InternalTimetable
 import com.melowetty.hsepermhelper.excel.model.ParsedExcelInfo
 import com.melowetty.hsepermhelper.excel.model.ParsedScheduleInfo
 import com.melowetty.hsepermhelper.notification.ServiceWarnNotification
 import com.melowetty.hsepermhelper.service.NotificationService
+import com.melowetty.hsepermhelper.timetable.integration.excel.bachelor.shared.TimetableTypeUtils
+import com.melowetty.hsepermhelper.timetable.model.ExcelTimetable
+import com.melowetty.hsepermhelper.timetable.model.impl.GroupBasedLesson
 import com.melowetty.hsepermhelper.util.RowUtils.Companion.getCellValue
 import java.io.InputStream
 import java.time.LocalDate
@@ -24,8 +26,7 @@ import org.springframework.stereotype.Component
 @Component
 @Slf4j
 class HseTimetableExcelParserImpl(
-    private val sheetParser: HseTimetableSheetExcelParser,
-    private val scheduleTypeChecker: HseTimetableScheduleTypeChecker,
+    private val sheetParser: BachelorTimetableSheetExcelParser,
     private val notificationService: NotificationService
 ) : HseTimetableExcelParser {
     companion object {
@@ -40,29 +41,28 @@ class HseTimetableExcelParserImpl(
         return WorkbookFactory.create(inputStream)
     }
 
-    override fun parseScheduleFromExcel(file: File): ExcelSchedule? {
+    override fun parseScheduleFromExcel(file: File): ExcelTimetable? {
         try {
             val workbook = getWorkbook(file.toInputStream())
-            val lessons = mutableListOf<ExcelLesson>()
+            val lessons = mutableListOf<GroupBasedLesson>()
             val scheduleInfo = getScheduleInfo(workbook)
                 ?: throw RuntimeException("Не получилось обработать информацию о расписании")
 
             for (i in 0 until workbook.numberOfSheets) {
                 val sheet = workbook.getSheetAt(i)
                 if (!filterSheet(sheet)) continue
-                unmergeRegions(sheet)
                 val parsedLessons = sheetParser.parseSheet(sheet, scheduleInfo)
                 lessons.addAll(parsedLessons)
             }
 
             lessons.sortBy { it.time }
 
-            return ExcelSchedule(
+            return ExcelTimetable(
                 number = scheduleInfo.number,
                 start = scheduleInfo.startDate,
                 end = scheduleInfo.endDate,
                 lessons = lessons,
-                scheduleType = scheduleInfo.type
+                type = scheduleInfo.type
             )
         } catch (exception: Exception) {
             log.error(
@@ -88,8 +88,6 @@ class HseTimetableExcelParserImpl(
     }
 
     private fun getScheduleInfoBySheet(sheet: Sheet): ParsedScheduleInfo? {
-        unmergeRegions(sheet)
-
         val row = sheet.getRow(1)
         for (i in 0 until row.physicalNumberOfCells) {
             try {
@@ -109,7 +107,7 @@ class HseTimetableExcelParserImpl(
         val (scheduleStart, scheduleEnd) = parseScheduleDates(scheduleInfo)
             ?: throw IllegalArgumentException("Не удалось распознать даты расписания, номер: $scheduleNumber, текст: $scheduleInfo")
 
-        val scheduleType = scheduleTypeChecker.getScheduleType(
+        val scheduleType = TimetableTypeUtils.getScheduleType(
             ParsedExcelInfo(scheduleNumber, scheduleStart, scheduleEnd)
         )
 
@@ -145,15 +143,6 @@ class HseTimetableExcelParserImpl(
     private fun parseScheduleDate(value: String): LocalDate {
         val datePattern = DateTimeFormatter.ofPattern("ddMMyyyy")
         return LocalDate.parse(value.replace(".", ""), datePattern)
-    }
-
-    private fun unmergeRegions(sheet: Sheet) {
-        for (region in sheet.mergedRegions) {
-            val cellValue = sheet.getRow(region.firstRow).getCellValue(region.firstColumn)
-            for (cell in region) {
-                sheet.getRow(cell.row).getCell(cell.column).setCellValue(cellValue)
-            }
-        }
     }
 
     private fun filterSheet(sheet: Sheet): Boolean {

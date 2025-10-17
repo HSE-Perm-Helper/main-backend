@@ -1,22 +1,21 @@
 package com.melowetty.hsepermhelper.excel.impl
 
 import com.melowetty.hsepermhelper.domain.model.lesson.LessonPlace
-import com.melowetty.hsepermhelper.domain.model.schedule.ScheduleType
 import com.melowetty.hsepermhelper.excel.HseTimetableCellExcelParser
-import com.melowetty.hsepermhelper.excel.HseTimetableLessonTypeChecker
 import com.melowetty.hsepermhelper.excel.model.CellInfo
-import com.melowetty.hsepermhelper.excel.model.ExcelLesson
+import com.melowetty.hsepermhelper.timetable.model.InternalLesson
 import com.melowetty.hsepermhelper.excel.model.ParsedCellInfo
 import com.melowetty.hsepermhelper.excel.model.ParsedLessonInfo
 import com.melowetty.hsepermhelper.excel.model.ParsedScheduleInfo
+import com.melowetty.hsepermhelper.timetable.integration.excel.bachelor.shared.LessonTypeUtils
+import com.melowetty.hsepermhelper.timetable.model.InternalTimetableType
+import com.melowetty.hsepermhelper.timetable.model.impl.GroupBasedLesson
 import com.melowetty.hsepermhelper.util.LinkUtils
 import org.springframework.stereotype.Component
 
 @Component
-class HseTimetableCellExcelParserImpl(
-    private val lessonTypeChecker: HseTimetableLessonTypeChecker
-) : HseTimetableCellExcelParser {
-    override fun parseLesson(cellInfo: ParsedCellInfo): List<ExcelLesson> {
+class HseTimetableCellExcelParserImpl : HseTimetableCellExcelParser {
+    override fun parseLesson(cellInfo: ParsedCellInfo): List<GroupBasedLesson> {
         if (!filterCell(cellInfo)) return emptyList()
         return getLesson(
             scheduleInfo = cellInfo.scheduleInfo,
@@ -40,9 +39,9 @@ class HseTimetableCellExcelParserImpl(
     private fun getLesson(
         scheduleInfo: ParsedScheduleInfo,
         cell: CellInfo
-    ): List<ExcelLesson> {
+    ): List<GroupBasedLesson> {
         val preBuildLessons = preProcessingCell(cell)
-        val builtLessons = mutableListOf<ExcelLesson>()
+        val builtLessons = mutableListOf<GroupBasedLesson>()
         preBuildLessons.forEach {
             val fields = it.toMutableList()
             val foundSubject = fields.find { it.fieldType == FieldType.SUBJECT }
@@ -63,7 +62,7 @@ class HseTimetableCellExcelParserImpl(
                             additionalLessonInfo = additionalLessonInfo,
                             cell = cell,
                             scheduleInfo = scheduleInfo,
-                            subGroup = subGroup
+                            subGroup = subGroup,
                         )
                     )
                 }
@@ -74,7 +73,7 @@ class HseTimetableCellExcelParserImpl(
                         additionalLessonInfo = additionalLessonInfo,
                         cell = cell,
                         scheduleInfo = scheduleInfo,
-                        subGroup = null
+                        subGroup = null,
                     )
                 )
             }
@@ -225,12 +224,12 @@ class HseTimetableCellExcelParserImpl(
         cell: CellInfo,
         scheduleInfo: ParsedScheduleInfo,
         additionalLessonInfo: AdditionalLessonInfo,
-        subGroup: Int?
-    ): ExcelLesson {
+        subGroup: Int?,
+    ): GroupBasedLesson {
         val subject = fields.first { it.fieldType == FieldType.SUBJECT }.value
-        val lessonType = lessonTypeChecker.getLessonType(
+        val lessonType = LessonTypeUtils.getLessonType(
             ParsedLessonInfo(
-                isSessionWeek = scheduleInfo.type == ScheduleType.SESSION_SCHEDULE,
+                isSessionWeek = scheduleInfo.type == InternalTimetableType.BACHELOR_SESSION_SCHEDULE,
                 isUnderlined = cell.isUnderlined,
                 subject = subject,
                 lessonInfo = additionalLessonInfo.lecturer,
@@ -239,16 +238,14 @@ class HseTimetableCellExcelParserImpl(
                 schedulePeriod = scheduleInfo.startDate.rangeTo(scheduleInfo.endDate)
             )
         )
-        return ExcelLesson(
+        return GroupBasedLesson(
             subject = lessonType.reformatSubject(subject).removeUselessInfo(),
             lessonType = lessonType,
             places = additionalLessonInfo.places,
             lecturer = additionalLessonInfo.lecturer?.removeUselessInfo(),
-            subGroup = subGroup,
             group = cell.group,
-            course = cell.course,
+            subGroup = subGroup,
             time = cell.time,
-            programme = cell.program,
             links = additionalLessonInfo.links,
             additionalInfo = additionalLessonInfo.additionalInfo,
         )

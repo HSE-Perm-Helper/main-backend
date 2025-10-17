@@ -1,10 +1,10 @@
 package com.melowetty.hsepermhelper.domain.model.event
 
-import com.melowetty.hsepermhelper.excel.model.ExcelSchedule
-import com.melowetty.hsepermhelper.excel.model.ExcelScheduleDifference
+import com.melowetty.hsepermhelper.timetable.model.InternalTimetable
+import com.melowetty.hsepermhelper.timetable.model.InternalScheduleDifference
 
 data class ExcelSchedulesChanging(
-    val added: List<ExcelSchedule> = listOf(),
-    val changed: List<ExcelScheduleDifference> = listOf(),
-    val deleted: List<ExcelSchedule> = listOf(),
+    val added: List<InternalTimetable> = listOf(),
+    val changed: List<InternalScheduleDifference> = listOf(),
+    val deleted: List<InternalTimetable> = listOf(),
 )

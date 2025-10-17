@@ -11,5 +11,5 @@ interface ScheduleFilesRepository {
      */
     fun getScheduleFiles(): List<File>
 
-    fun fetchScheduleFiles()
+    fun fetchScheduleFiles(): List<File>
 }
