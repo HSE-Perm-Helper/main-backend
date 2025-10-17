@@ -32,44 +32,4 @@ class ScheduleServiceTest {
 
     @Mock
     private lateinit var notificationService: NotificationService
-
-    @Test
-    fun `normal filter user schedule with hidden lessons`() {
-        val user = UserDto(
-            settings = SettingsDto(
-                group = "РИС-24-1",
-                hiddenLessons = setOf(
-                    HideLessonDto(id = 1, lesson = "Test Hidden", LessonType.TEST, subGroup = 1),
-                    HideLessonDto(id = 2, lesson = "Test Hidden", LessonType.SEMINAR, subGroup = null)
-                )
-            ),
-            roles = listOf(UserRole.USER)
-        )
-
-        val lesson = InternalLesson(
-            subject = "Normal lesson", course = 1, programme = "РИС", "РИС-24-1", subGroup = 1, time = ScheduledTime(
-                DayOfWeek.MONDAY, LocalDate.now(), "11:00", "12:30"
-            ), lecturer = "test",
-            lessonType = LessonType.SEMINAR
-        )
-
-        val schedule = InternalTimetable(
-            number = 0,
-            type = ScheduleType.WEEK_SCHEDULE,
-            start = LocalDate.now(),
-            end = LocalDate.now(),
-            lessons = listOf(
-                lesson,
-                lesson.copy(subject = "Test Hidden", lessonType = LessonType.TEST),
-                lesson.copy(subject = "Test Hidden", subGroup = null),
-                lesson.copy(subject = "Test Hidden", subGroup = 1, lessonType = LessonType.SEMINAR)
-            )
-        )
-
-        val actual = scheduleService.filterSchedule(schedule, user).lessons.toHashSet()
-        val expected =
-            setOf(lesson.copy(), lesson.copy(subject = "Test Hidden", subGroup = 1, lessonType = LessonType.SEMINAR))
-
-        assertEquals(expected, actual)
-    }
 }

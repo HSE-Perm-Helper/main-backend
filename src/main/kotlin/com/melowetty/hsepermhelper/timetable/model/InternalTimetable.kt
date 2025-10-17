@@ -1,6 +1,7 @@
 package com.melowetty.hsepermhelper.timetable.model
 
 import java.time.LocalDate
+import java.time.LocalDateTime
 
 open class InternalTimetable(
     var id: String? = null,
@@ -9,6 +10,8 @@ open class InternalTimetable(
     val start: LocalDate,
     val end: LocalDate,
     val type: InternalTimetableType,
+    val created: LocalDateTime = LocalDateTime.now(),
+    val updated: LocalDateTime = LocalDateTime.now(),
 ) {
     fun id() = id ?: throw IllegalStateException("id is null")
 
@@ -43,7 +46,9 @@ open class InternalTimetable(
         start: LocalDate = this.start,
         end: LocalDate = this.end,
         type: InternalTimetableType = this.type,
+        created: LocalDateTime = this.created,
+        updated: LocalDateTime = this.updated,
     ): InternalTimetable {
-        return InternalTimetable(id, number, lessons, start, end, type)
+        return InternalTimetable(id, number, lessons, start, end, type, created, updated)
     }
 }

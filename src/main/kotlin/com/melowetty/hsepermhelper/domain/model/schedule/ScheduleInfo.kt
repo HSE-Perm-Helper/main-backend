@@ -7,6 +7,7 @@ import java.time.LocalDate
 
 @Schema(description = "Информация о расписании")
 data class ScheduleInfo(
+    val id: String,
     val number: Int?,
     @JsonFormat(pattern = DateUtils.DATE_PATTERN)
     val start: LocalDate,

@@ -17,6 +17,11 @@ class ExcelTimetableAdapter(
         processors.sortedByDescending { it.priority() }
 
     fun processAndPersist(file: File): List<String> {
+        // todo: идея такая, парсим все расписания как есть и сохраняем во временное хранилище,
+        // после чего берем все timetable info, объединяем нужные расписания и сохраняем
+        // после, берем по парно timetable info и сверяем контент пар в прод таблице и во временной таблице, но сначала чекаем хэш, если все окей,
+        // то просто стираем из временной и также сохраняем айдишники которые мы процессили, если есть расписания которые мы не тронули,
+        // то сносим их
         val processor = prioritizedProcessors.firstOrNull {
             it.isParseable(file.name)
         } ?: run {
@@ -34,7 +39,7 @@ class ExcelTimetableAdapter(
         logger.info { "Processed ${timetables.size} timetables" }
 
         val ids = timetables.map {
-            storage.saveTimetable(it).id()
+            storage.saveTimetableAsHidden(it).id()
         }
 
         logger.info { "Saved ${ids.size} timetables" }

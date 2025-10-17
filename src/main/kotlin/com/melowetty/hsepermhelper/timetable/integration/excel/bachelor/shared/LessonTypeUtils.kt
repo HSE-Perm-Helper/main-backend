@@ -16,7 +16,7 @@ object LessonTypeUtils {
         if (pureFullLessonInfo.contains("консультация")) return LessonType.CONSULT
         if (pureFullLessonInfo.contains("экзамен")) return LessonType.EXAM
         if (pureFullLessonInfo.contains("зачёт") || pureSubject.contains("зачет")) return LessonType.TEST
-        if (pureFullLessonInfo.contains("английский язык")) return LessonType.COMMON_ENGLISH
+        if (pureFullLessonInfo.contains("курс. английский язык")) return LessonType.COMMON_ENGLISH
         if (pureFullLessonInfo.contains("майнор")) {
             val scheduleStart = lessonInfo.schedulePeriod.start
 

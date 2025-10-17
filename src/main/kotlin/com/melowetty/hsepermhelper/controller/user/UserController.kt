@@ -1,4 +1,4 @@
-package com.melowetty.hsepermhelper.controller
+package com.melowetty.hsepermhelper.controller.user
 
 import com.melowetty.hsepermhelper.domain.dto.HideLessonDto
 import com.melowetty.hsepermhelper.domain.dto.RemoteScheduleLink

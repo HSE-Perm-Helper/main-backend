@@ -3,7 +3,9 @@ package com.melowetty.hsepermhelper.timetable.integration.excel
 import com.melowetty.hsepermhelper.domain.model.file.File
 import com.melowetty.hsepermhelper.timetable.model.ExcelFileMetadata
 import org.apache.commons.lang3.RandomStringUtils
+import org.springframework.stereotype.Component
 
+@Component
 class ExcelFileMetadataStorage {
     private val storage = mutableMapOf<String, ExcelFileMetadata>()
 

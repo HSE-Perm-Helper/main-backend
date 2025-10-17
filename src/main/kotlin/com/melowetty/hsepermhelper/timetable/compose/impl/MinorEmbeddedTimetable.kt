@@ -8,6 +8,7 @@ import com.melowetty.hsepermhelper.service.HseAppApiService
 import com.melowetty.hsepermhelper.timetable.compose.EmbeddedTimetable
 import com.melowetty.hsepermhelper.timetable.model.InternalTimetableType
 import com.melowetty.hsepermhelper.timetable.model.InternalTimetable
+import com.melowetty.hsepermhelper.timetable.model.TimetableContext
 import com.melowetty.hsepermhelper.timetable.model.impl.MinorLesson
 import com.melowetty.hsepermhelper.util.DateUtils.Companion.asStr
 import com.melowetty.hsepermhelper.util.DateUtils.Companion.fromGmtToPermTime
@@ -63,7 +64,7 @@ class MinorEmbeddedTimetable(
         )
     }
 
-    override fun isEmbeddable(user: UserDto, timetable: InternalTimetable): Boolean {
+    override fun isEmbeddable(user: UserDto, timetable: InternalTimetable, context: TimetableContext): Boolean {
         return user.email != null &&
             (timetable.type == InternalTimetableType.BACHELOR_WEEK_SCHEDULE
                 || timetable.type == InternalTimetableType.BACHELOR_SESSION_SCHEDULE)

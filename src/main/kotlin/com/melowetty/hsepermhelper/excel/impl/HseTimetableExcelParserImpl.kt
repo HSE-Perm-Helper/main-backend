@@ -13,6 +13,7 @@ import com.melowetty.hsepermhelper.notification.ServiceWarnNotification
 import com.melowetty.hsepermhelper.service.NotificationService
 import com.melowetty.hsepermhelper.timetable.integration.excel.bachelor.shared.TimetableTypeUtils
 import com.melowetty.hsepermhelper.timetable.model.ExcelTimetable
+import com.melowetty.hsepermhelper.timetable.model.impl.GroupBasedLesson
 import com.melowetty.hsepermhelper.util.RowUtils.Companion.getCellValue
 import java.io.InputStream
 import java.time.LocalDate
@@ -43,7 +44,7 @@ class HseTimetableExcelParserImpl(
     override fun parseScheduleFromExcel(file: File): ExcelTimetable? {
         try {
             val workbook = getWorkbook(file.toInputStream())
-            val lessons = mutableListOf<InternalLesson>()
+            val lessons = mutableListOf<GroupBasedLesson>()
             val scheduleInfo = getScheduleInfo(workbook)
                 ?: throw RuntimeException("Не получилось обработать информацию о расписании")
 
@@ -61,7 +62,7 @@ class HseTimetableExcelParserImpl(
                 start = scheduleInfo.startDate,
                 end = scheduleInfo.endDate,
                 lessons = lessons,
-                scheduleType = scheduleInfo.type
+                type = scheduleInfo.type
             )
         } catch (exception: Exception) {
             log.error(

@@ -22,6 +22,7 @@ class ScheduleExtensions {
 
         fun InternalTimetable.toScheduleInfo(): ScheduleInfo {
             return ScheduleInfo(
+                id = "",
                 number = number,
                 start = start,
                 end = end,

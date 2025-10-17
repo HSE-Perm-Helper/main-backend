@@ -3,6 +3,8 @@ package com.melowetty.hsepermhelper.timetable.compose.impl
 import com.melowetty.hsepermhelper.domain.dto.UserDto
 import com.melowetty.hsepermhelper.timetable.compose.EmbeddedTimetable
 import com.melowetty.hsepermhelper.timetable.model.InternalTimetable
+import com.melowetty.hsepermhelper.timetable.model.TimetableContext
+import com.melowetty.hsepermhelper.timetable.model.TimetablePurpose
 import io.github.oshai.kotlinlogging.KotlinLogging
 import org.springframework.stereotype.Component
 
@@ -23,8 +25,9 @@ class HiddenLessonsEmbeddedTimetable: EmbeddedTimetable {
         return timetable.copy(lessons = lessons)
     }
 
-    override fun isEmbeddable(user: UserDto, timetable: InternalTimetable): Boolean {
-        return user.settings.hiddenLessons.isNotEmpty()
+    override fun isEmbeddable(user: UserDto, timetable: InternalTimetable, context: TimetableContext): Boolean {
+        return context.purpose != TimetablePurpose.SETTINGS
+                && user.settings.hiddenLessons.isNotEmpty()
     }
 
     override fun priority(): Int {
