@@ -1,19 +1,20 @@
-package com.melowetty.hsepermhelper.excel.impl
+package com.melowetty.hsepermhelper.timetable.integration.excel.bachelor.shared.impl
 
 import com.melowetty.hsepermhelper.annotation.Slf4j
 import com.melowetty.hsepermhelper.annotation.Slf4j.Companion.log
 import com.melowetty.hsepermhelper.domain.model.lesson.CycleTime
 import com.melowetty.hsepermhelper.domain.model.lesson.LessonTime
 import com.melowetty.hsepermhelper.domain.model.lesson.ScheduledTime
-import com.melowetty.hsepermhelper.domain.model.schedule.ScheduleType
 import com.melowetty.hsepermhelper.excel.HseTimetableCellExcelParser
-import com.melowetty.hsepermhelper.excel.HseTimetableSheetExcelParser
+import com.melowetty.hsepermhelper.timetable.integration.excel.bachelor.shared.BachelorTimetableSheetExcelParser
 import com.melowetty.hsepermhelper.excel.model.CellInfo
-import com.melowetty.hsepermhelper.excel.model.ExcelLesson
+import com.melowetty.hsepermhelper.timetable.model.InternalLesson
 import com.melowetty.hsepermhelper.excel.model.ParsedCellInfo
 import com.melowetty.hsepermhelper.excel.model.ParsedScheduleInfo
 import com.melowetty.hsepermhelper.notification.ServiceWarnNotification
 import com.melowetty.hsepermhelper.service.NotificationService
+import com.melowetty.hsepermhelper.timetable.model.InternalTimetableType
+import com.melowetty.hsepermhelper.timetable.model.impl.GroupBasedLesson
 import com.melowetty.hsepermhelper.util.RowUtils.Companion.getCellValue
 import java.time.DayOfWeek
 import java.time.LocalDate
@@ -26,12 +27,12 @@ import org.springframework.stereotype.Component
 
 @Component
 @Slf4j
-class HseTimetableSheetExcelParserImpl(
+class BachelorTimetableSheetExcelParserImpl(
     private val cellParser: HseTimetableCellExcelParser,
     private val notificationService: NotificationService,
-) : HseTimetableSheetExcelParser {
-    override fun parseSheet(sheet: Sheet, scheduleInfo: ParsedScheduleInfo): List<ExcelLesson> {
-        val lessons = mutableListOf<ExcelLesson>()
+) : BachelorTimetableSheetExcelParser {
+    override fun parseSheet(sheet: Sheet, scheduleInfo: ParsedScheduleInfo): List<GroupBasedLesson> {
+        val lessons = mutableListOf<GroupBasedLesson>()
         val course = getCourse(sheet.sheetName) ?: return listOf()
 
         val (groups, programs) = fillGroupsAndProgramsFromSheet(sheet)
@@ -74,10 +75,10 @@ class HseTimetableSheetExcelParserImpl(
         return Pair(groups, programs)
     }
 
-    private fun parseRow(rowData: RowData): Pair<List<ExcelLesson>, Action> {
+    private fun parseRow(rowData: RowData): Pair<List<GroupBasedLesson>, Action> {
         val row = rowData.row
 
-        val lessons = mutableListOf<ExcelLesson>()
+        val lessons = mutableListOf<GroupBasedLesson>()
         val (lessonTime, action) = getLessonTime(rowData)
 
         if (action != Action.NOTHING) return Pair(listOf(), action)
@@ -142,7 +143,7 @@ class HseTimetableSheetExcelParserImpl(
         val (startTime, endTime) = getStartAndEndTime(timeCell)
 
         if (unparsedDate.size < 2) {
-            if (rowData.scheduleInfo.type != ScheduleType.QUARTER_SCHEDULE) {
+            if (rowData.scheduleInfo.type != InternalTimetableType.BACHELOR_QUARTER_SCHEDULE) {
                 if (rowData.previousData.prevDay.isNotEmpty()) {
                     unparsedDate = rowData.previousData.prevDay.split("\n")
                 } else {

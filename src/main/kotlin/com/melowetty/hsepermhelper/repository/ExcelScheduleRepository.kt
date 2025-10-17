@@ -2,10 +2,11 @@ package com.melowetty.hsepermhelper.repository
 
 import com.melowetty.hsepermhelper.domain.model.file.FilesChanging
 import com.melowetty.hsepermhelper.excel.HseTimetableExcelParser
-import com.melowetty.hsepermhelper.excel.model.ExcelSchedule
 import com.melowetty.hsepermhelper.exception.ScheduleNotFoundException
 import com.melowetty.hsepermhelper.service.ScheduleFilesService
 import com.melowetty.hsepermhelper.service.SchedulesCheckingChangesService
+import com.melowetty.hsepermhelper.timetable.model.ExcelTimetable
+import com.melowetty.hsepermhelper.timetable.model.InternalTimetable
 import com.melowetty.hsepermhelper.util.ScheduleUtils
 import org.springframework.boot.context.event.ApplicationReadyEvent
 import org.springframework.context.ApplicationEventPublisher
@@ -19,14 +20,14 @@ class ExcelScheduleRepository(
     private val schedulesCheckingChangesService: SchedulesCheckingChangesService,
     private val timetableExcelParser: HseTimetableExcelParser,
 ) {
-    private var schedules = listOf<ExcelSchedule>()
+    private var schedules = listOf<ExcelTimetable>()
 
     @EventListener(ApplicationReadyEvent::class)
     fun firstScheduleFetching() {
         fetchSchedules()
     }
 
-    fun getSchedules(): List<ExcelSchedule> {
+    fun getSchedules(): List<InternalTimetable> {
         return schedules
     }
 
@@ -45,14 +46,14 @@ class ExcelScheduleRepository(
         val newSchedules = scheduleFilesService.getScheduleFiles().mapNotNull {
             timetableExcelParser.parseScheduleFromExcel(it)
         }
-        schedules = ScheduleUtils.normalizeSchedules(newSchedules)
+        schedules = ScheduleUtils.normalizeSchedules(newSchedules) as List<ExcelTimetable>
     }
 
     fun getAvailableCourses(): List<Int> {
         if (schedules.isEmpty()) throw ScheduleNotFoundException(SCHEDULE_NOT_FOUND_EXCEPTION_MESSAGE)
         val courses = schedules.flatMap { it.lessons }
             .asSequence()
-            .map { it.course }
+            .map { it.course() }
             .toSortedSet()
             .toList()
 
@@ -66,8 +67,8 @@ class ExcelScheduleRepository(
         if (schedules.isEmpty()) throw ScheduleNotFoundException(SCHEDULE_NOT_FOUND_EXCEPTION_MESSAGE)
         val programs = schedules.flatMap { it.lessons }
             .asSequence()
-            .filter { it.course == course }
-            .map { it.programme }
+            .filter { it.course() == course }
+            .map { it.program() }
             .toSortedSet()
             .toList()
 
@@ -81,7 +82,7 @@ class ExcelScheduleRepository(
         if (schedules.isEmpty()) throw ScheduleNotFoundException(SCHEDULE_NOT_FOUND_EXCEPTION_MESSAGE)
         val groups = schedules.flatMap { it.lessons }
             .asSequence()
-            .filter { it.course == course && it.programme == program }
+            .filter { it.course() == course && it.program() == program }
             .map { it.group }
             .toSortedSet()
             .toList()

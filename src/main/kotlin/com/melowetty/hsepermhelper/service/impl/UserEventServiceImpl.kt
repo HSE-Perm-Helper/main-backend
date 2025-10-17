@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service
 class UserEventServiceImpl(
     private val kafkaTemplate: KafkaTemplate<String, Any>,
 ) : UserEventService {
+    @Deprecated("Remove lazy init")
     @Autowired
     @Lazy
     private lateinit var userService: UserService

@@ -4,27 +4,29 @@ import com.melowetty.hsepermhelper.domain.model.lesson.Lesson
 import com.melowetty.hsepermhelper.domain.model.lesson.ScheduledTime
 import com.melowetty.hsepermhelper.domain.model.schedule.Schedule
 import com.melowetty.hsepermhelper.domain.model.schedule.ScheduleType
-import com.melowetty.hsepermhelper.excel.model.ExcelLesson
-import com.melowetty.hsepermhelper.excel.model.ExcelSchedule
+import com.melowetty.hsepermhelper.timetable.model.InternalLesson
+import com.melowetty.hsepermhelper.timetable.model.InternalTimetableType
+import com.melowetty.hsepermhelper.timetable.model.InternalTimetable
 import java.time.DayOfWeek
 import java.time.LocalDate
 
 class ScheduleUtils {
     companion object {
-        fun normalizeSchedules(schedules: List<ExcelSchedule>): List<ExcelSchedule> {
-            val sessionSchedules = schedules.filter { it.scheduleType == ScheduleType.SESSION_SCHEDULE }
+        fun normalizeSchedules(schedules: List<InternalTimetable>): List<InternalTimetable> {
+            val sessionSchedules = schedules.filter { it.type == InternalTimetableType.BACHELOR_SESSION_SCHEDULE }
             if (sessionSchedules.size < 2) return schedules
-            val filteredSchedules = schedules.filter { it.scheduleType != ScheduleType.SESSION_SCHEDULE }
+            val filteredSchedules = schedules.filter { it.type != InternalTimetableType.BACHELOR_SESSION_SCHEDULE }
             val mergedSchedule = mergeSessionSchedules(sessionSchedules)
             return filteredSchedules + mergedSchedule
         }
 
-        fun mergeSessionSchedules(sessionSchedules: List<ExcelSchedule>): ExcelSchedule {
+        fun mergeSessionSchedules(sessionSchedules: List<InternalTimetable>): InternalTimetable {
             val sortedSchedules = sessionSchedules.toList().sortedBy { it.start }
             val start = sortedSchedules.first().start
             val end = sortedSchedules.last().end
-            val mergedSchedule = ExcelSchedule(
-                scheduleType = ScheduleType.SESSION_SCHEDULE,
+            val mergedSchedule = InternalTimetable(
+                id = sessionSchedules.first().id,
+                type = sessionSchedules.first().type,
                 start = start,
                 end = end,
                 number = sortedSchedules.first().number,
@@ -37,11 +39,11 @@ class ScheduleUtils {
             return filter { it.scheduleType == ScheduleType.WEEK_SCHEDULE || it.scheduleType == ScheduleType.SESSION_SCHEDULE }
         }
 
-        fun List<ExcelSchedule>.filterWeekExcelSchedules(): List<ExcelSchedule> {
-            return filter { it.scheduleType == ScheduleType.WEEK_SCHEDULE || it.scheduleType == ScheduleType.SESSION_SCHEDULE }
+        fun List<InternalTimetable>.filterWeekExcelSchedules(): List<InternalTimetable> {
+            return filter { it.type != InternalTimetableType.BACHELOR_QUARTER_SCHEDULE }
         }
 
-        fun getWeekScheduleByDate(schedules: List<ExcelSchedule>, date: LocalDate): ExcelSchedule? {
+        fun getWeekScheduleByDate(schedules: List<InternalTimetable>, date: LocalDate): InternalTimetable? {
             return schedules
                 .filterWeekExcelSchedules()
                 .firstOrNull { it.start <= date && it.end >= date }
@@ -53,7 +55,7 @@ class ScheduleUtils {
                 .firstOrNull { it.start <= date && it.end >= date }
         }
 
-        fun getLessonsAtDateInWeekSchedule(schedule: ExcelSchedule, date: LocalDate): List<ExcelLesson> {
+        fun getLessonsAtDateInWeekSchedule(schedule: InternalTimetable, date: LocalDate): List<InternalLesson> {
             return schedule.lessons.filter {
                 (it.time as ScheduledTime).date.isEqual(date)
             }
@@ -75,7 +77,7 @@ class ScheduleUtils {
             return group.split("-")[0]
         }
 
-        fun getDifferentDaysByLessons(before: ExcelSchedule, after: ExcelSchedule): List<DayOfWeek> {
+        fun getDifferentDaysByLessons(before: InternalTimetable, after: InternalTimetable): List<DayOfWeek> {
             val changedDays = mutableSetOf<DayOfWeek>()
             val daysForChecking = before.lessons.map { it.time.dayOfWeek }.toHashSet()
             daysForChecking.addAll(after.lessons.map { it.time.dayOfWeek })

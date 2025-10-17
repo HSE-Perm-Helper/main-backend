@@ -68,7 +68,7 @@ class HseAppApiServiceImpl(
     }
 
     fun getLessonType(value: String): LessonType {
-        val typeByValue: Map<String, LessonType> = LessonType.values().associateBy { it.type }
+        val typeByValue: Map<String, LessonType> = LessonType.entries.associateBy { it.type }
 
         return when(value.lowercase()) {
             "лекция" -> LessonType.LECTURE
