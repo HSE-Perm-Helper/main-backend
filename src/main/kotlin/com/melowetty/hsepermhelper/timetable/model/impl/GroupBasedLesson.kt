@@ -20,7 +20,7 @@ data class GroupBasedLesson(
     fun program() = group.split("-").first()
 
     fun course(): Int {
-        val year = group.split("-").last().toInt()
+        val year = group.split("-")[1].toInt()
         val curDate = LocalDate.now()
         val curYear = curDate.year % 100
 
