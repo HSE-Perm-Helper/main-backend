@@ -44,6 +44,7 @@ class HseTimetableExcelParserImpl(
     override fun parseScheduleFromExcel(file: File): ExcelTimetable? {
         try {
             val workbook = getWorkbook(file.toInputStream())
+            preprocessWorkbook(workbook)
             val lessons = mutableListOf<GroupBasedLesson>()
             val scheduleInfo = getScheduleInfo(workbook)
                 ?: throw RuntimeException("Не получилось обработать информацию о расписании")
@@ -75,6 +76,21 @@ class HseTimetableExcelParserImpl(
                         "Stacktrace: ${exception.stackTraceToString()}"
             ))
             return null
+        }
+    }
+
+    private fun preprocessWorkbook(workbook: Workbook) {
+        for (sheet in workbook.sheetIterator()) {
+            unmergeRegions(sheet)
+        }
+    }
+
+    private fun unmergeRegions(sheet: Sheet) {
+        for (region in sheet.mergedRegions) {
+            val cellValue = sheet.getRow(region.firstRow).getCellValue(region.firstColumn)
+            for (cell in region) {
+                sheet.getRow(cell.row).getCell(cell.column).setCellValue(cellValue)
+            }
         }
     }
 
