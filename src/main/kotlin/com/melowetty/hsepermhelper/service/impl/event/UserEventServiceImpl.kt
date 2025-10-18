@@ -1,14 +1,16 @@
-package com.melowetty.hsepermhelper.service.impl
+package com.melowetty.hsepermhelper.service.impl.event
 
 import com.melowetty.hsepermhelper.domain.model.event.UserEventType
 import com.melowetty.hsepermhelper.service.UserEventService
 import com.melowetty.hsepermhelper.service.UserService
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
 import org.springframework.context.annotation.Lazy
 import org.springframework.kafka.core.KafkaTemplate
 import org.springframework.stereotype.Service
 
 @Service
+@ConditionalOnProperty("api.user-events.enabled", havingValue = "true")
 class UserEventServiceImpl(
     private val kafkaTemplate: KafkaTemplate<String, Any>,
 ) : UserEventService {

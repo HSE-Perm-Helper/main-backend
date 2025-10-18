@@ -1,22 +1,22 @@
-package com.melowetty.hsepermhelper.service.impl
+package com.melowetty.hsepermhelper.service.impl.notification
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
-import com.melowetty.hsepermhelper.annotation.Slf4j
-import com.melowetty.hsepermhelper.domain.model.user.UserRole
 import com.melowetty.hsepermhelper.domain.model.event.KafkaNotification
+import com.melowetty.hsepermhelper.domain.model.user.UserRole
 import com.melowetty.hsepermhelper.notification.KafkaNotificationV2
 import com.melowetty.hsepermhelper.notification.Notification
 import com.melowetty.hsepermhelper.notification.NotificationRecipient
 import com.melowetty.hsepermhelper.repository.UserRepository
 import com.melowetty.hsepermhelper.service.NotificationService
-import java.util.UUID
 import org.springframework.beans.factory.annotation.Value
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
 import org.springframework.kafka.core.KafkaTemplate
 import org.springframework.stereotype.Service
+import java.util.*
 
 @Service
-@Slf4j
+@ConditionalOnProperty("api.notifications.enabled", havingValue = "true")
 class NotificationServiceImpl(
     private val kafkaTemplateKafkaNotification: KafkaTemplate<String, KafkaNotification>,
     private val kafkaTemplateKafkaNotificationV2: KafkaTemplate<String, Map<String, Any?>>,
