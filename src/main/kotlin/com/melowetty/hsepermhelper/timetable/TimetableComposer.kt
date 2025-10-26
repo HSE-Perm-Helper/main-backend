@@ -5,6 +5,7 @@ import com.melowetty.hsepermhelper.domain.model.lesson.Lesson
 import com.melowetty.hsepermhelper.domain.model.schedule.Schedule
 import com.melowetty.hsepermhelper.domain.model.schedule.ScheduleInfo
 import com.melowetty.hsepermhelper.extension.ScheduleExtensions.Companion.toSchedule
+import com.melowetty.hsepermhelper.extension.ScheduleExtensions.Companion.toScheduleType
 import com.melowetty.hsepermhelper.timetable.compose.EmbeddedTimetable
 import com.melowetty.hsepermhelper.timetable.compose.ParentTimetable
 import com.melowetty.hsepermhelper.timetable.model.TimetableContext
@@ -24,9 +25,11 @@ class TimetableComposer(
     fun getAllLessons(user: UserDto): List<Lesson> {
         val context = TimetableContext(TimetablePurpose.SETTINGS)
 
-        val timetables = timetables.mapNotNull {
-            if (it.isAvailableForUser(user)) {
-                it.getTimetables()
+        val timetables = timetables.mapNotNull { timetable ->
+            if (timetable.isAvailableForUser(user)) {
+                timetable.getTimetables().map {
+                    it.copy(id = TimetableInfoEncoder.encode(it.id, timetable.getProcessorType()))
+                }
             } else null
         }.flatten().sortedBy { it.start }
 
@@ -43,7 +46,6 @@ class TimetableComposer(
                 currentTimetableCountByType[it.type] = currentCount + 1
                 true
             }
-
         }
 
         return filteredTimetables.asSequence().map {
@@ -71,17 +73,25 @@ class TimetableComposer(
             resultTimetable = e.embed(user, resultTimetable)
         }
 
+        resultTimetable.id = id
+
         return resultTimetable.toSchedule()
     }
 
     fun getAvailableTimetables(user: UserDto): List<ScheduleInfo> {
-        return timetables.mapNotNull {
-            if (it.isAvailableForUser(user)) {
-                Pair(it.getProcessorType(), it.getTimetables())
+        return timetables.mapNotNull { timetable ->
+            if (timetable.isAvailableForUser(user)) {
+                timetable.getTimetables().map {
+                    ScheduleInfo(
+                        id = TimetableInfoEncoder.encode(it.id, timetable.getProcessorType()),
+                        number = it.number,
+                        start = it.start,
+                        end = it.end,
+                        scheduleType = it.type.toScheduleType(),
+                    )
+                }
             } else null
-        }.map {
-            throw NotImplementedError("Return schedule info")
-        }
+        }.flatten()
     }
 
     companion object {

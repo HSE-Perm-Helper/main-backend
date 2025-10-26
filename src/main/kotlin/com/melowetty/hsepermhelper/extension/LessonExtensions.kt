@@ -40,7 +40,6 @@ class LessonExtensions {
                 subject = subject,
                 subGroup = null,
                 time = ScheduledTime(
-                    dateStart.dayOfWeek,
                     dateStart.toLocalDate(),
                     startTime,
                     endTime

@@ -12,17 +12,20 @@ class ScheduleExtensions {
     companion object {
         fun InternalTimetable.toInfo(): InternalTimetableInfo {
             return InternalTimetableInfo(
-                id = id(),
+                id = id ?: "",
                 number = number,
                 start = start,
                 end = end,
-                type = type
+                type = type,
+                educationType = educationType,
+                isParent = isParent,
+                lessonsHash = lessonsHash,
             )
         }
 
         fun InternalTimetable.toScheduleInfo(): ScheduleInfo {
             return ScheduleInfo(
-                id = "",
+                id = id ?: "",
                 number = number,
                 start = start,
                 end = end,
@@ -42,9 +45,10 @@ class ScheduleExtensions {
 
         fun InternalTimetableType.toScheduleType(): ScheduleType {
             return when (this) {
-                InternalTimetableType.BACHELOR_WEEK_SCHEDULE -> ScheduleType.WEEK_SCHEDULE
-                InternalTimetableType.BACHELOR_SESSION_SCHEDULE -> ScheduleType.SESSION_SCHEDULE
-                InternalTimetableType.BACHELOR_QUARTER_SCHEDULE -> ScheduleType.QUARTER_SCHEDULE
+                InternalTimetableType.BACHELOR_WEEK_TIMETABLE -> ScheduleType.WEEK_SCHEDULE
+                InternalTimetableType.BACHELOR_SESSION_TIMETABLE -> ScheduleType.SESSION_SCHEDULE
+                InternalTimetableType.BACHELOR_QUARTER_TIMETABLE -> ScheduleType.QUARTER_SCHEDULE
+                InternalTimetableType.BACHELOR_ENGLISH_TIMETABLE -> throw IllegalArgumentException("Timetable type is not able to display")
             }
         }
     }

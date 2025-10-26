@@ -2,10 +2,10 @@ package com.melowetty.hsepermhelper.timetable.compose.impl
 
 import com.melowetty.hsepermhelper.domain.dto.UserDto
 import com.melowetty.hsepermhelper.timetable.compose.ParentTimetable
+import com.melowetty.hsepermhelper.timetable.integration.excel.ExcelTimetableStorage
 import com.melowetty.hsepermhelper.timetable.model.InternalTimetable
 import com.melowetty.hsepermhelper.timetable.model.InternalTimetableInfo
 import com.melowetty.hsepermhelper.timetable.model.InternalTimetableProcessorType
-import com.melowetty.hsepermhelper.timetable.integration.excel.ExcelTimetableStorage
 import org.springframework.stereotype.Component
 
 @Component
@@ -21,7 +21,7 @@ class BachelorParentTimetable(
     }
 
     override fun getProcessorType(): InternalTimetableProcessorType {
-        return InternalTimetableProcessorType.BACHELOR_SCHEDULE
+        return InternalTimetableProcessorType.BACHELOR_OFFLINE_TIMETABLE
     }
 
     override fun isAvailableForUser(user: UserDto): Boolean {

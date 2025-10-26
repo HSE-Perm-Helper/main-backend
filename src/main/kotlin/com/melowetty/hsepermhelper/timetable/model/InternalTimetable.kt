@@ -10,9 +10,13 @@ open class InternalTimetable(
     val start: LocalDate,
     val end: LocalDate,
     val type: InternalTimetableType,
+    val educationType: EducationType,
+    val isParent: Boolean,
     val created: LocalDateTime = LocalDateTime.now(),
     val updated: LocalDateTime = LocalDateTime.now(),
 ) {
+    val lessonsHash  by lazy { lessons.hashCode() }
+
     fun id() = id ?: throw IllegalStateException("id is null")
 
     override fun equals(other: Any?): Boolean {
@@ -25,6 +29,7 @@ open class InternalTimetable(
         if (start != other.start) return false
         if (end != other.end) return false
         if (type != other.type) return false
+        if (isParent != other.isParent) return false
 
         return true
     }
@@ -36,6 +41,7 @@ open class InternalTimetable(
         result = 31 * result + start.hashCode()
         result = 31 * result + end.hashCode()
         result = 31 * result + type.hashCode()
+        result = 31 * result + isParent.hashCode()
         return result
     }
 
@@ -46,9 +52,11 @@ open class InternalTimetable(
         start: LocalDate = this.start,
         end: LocalDate = this.end,
         type: InternalTimetableType = this.type,
+        educationType: EducationType = this.educationType,
+        isParent: Boolean = this.isParent,
         created: LocalDateTime = this.created,
         updated: LocalDateTime = this.updated,
     ): InternalTimetable {
-        return InternalTimetable(id, number, lessons, start, end, type, created, updated)
+        return InternalTimetable(id, number, lessons, start, end, type, educationType, isParent, created, updated)
     }
 }

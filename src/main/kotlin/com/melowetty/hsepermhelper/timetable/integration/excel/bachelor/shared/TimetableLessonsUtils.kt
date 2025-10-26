@@ -1,36 +1,33 @@
-package com.melowetty.hsepermhelper.timetable.integration.excel.bachelor.shared.impl
+package com.melowetty.hsepermhelper.timetable.integration.excel.bachelor.shared
 
-import com.melowetty.hsepermhelper.annotation.Slf4j
-import com.melowetty.hsepermhelper.annotation.Slf4j.Companion.log
+import com.melowetty.hsepermhelper.context.ExcelTimetableParseContextHolder
+import com.melowetty.hsepermhelper.domain.model.context.ParseError
 import com.melowetty.hsepermhelper.domain.model.lesson.CycleTime
 import com.melowetty.hsepermhelper.domain.model.lesson.LessonTime
 import com.melowetty.hsepermhelper.domain.model.lesson.ScheduledTime
-import com.melowetty.hsepermhelper.excel.HseTimetableCellExcelParser
-import com.melowetty.hsepermhelper.timetable.integration.excel.bachelor.shared.BachelorTimetableSheetExcelParser
 import com.melowetty.hsepermhelper.excel.model.CellInfo
 import com.melowetty.hsepermhelper.excel.model.ParsedCellInfo
 import com.melowetty.hsepermhelper.excel.model.ParsedScheduleInfo
-import com.melowetty.hsepermhelper.notification.ServiceWarnNotification
-import com.melowetty.hsepermhelper.service.NotificationService
 import com.melowetty.hsepermhelper.timetable.model.InternalTimetableType
 import com.melowetty.hsepermhelper.timetable.model.impl.GroupBasedLesson
 import com.melowetty.hsepermhelper.util.RowUtils.Companion.getCellValue
-import java.time.DayOfWeek
-import java.time.LocalDate
-import java.time.format.DateTimeFormatter
+import io.github.oshai.kotlinlogging.KotlinLogging
 import org.apache.poi.ss.usermodel.Cell
 import org.apache.poi.ss.usermodel.Font
 import org.apache.poi.ss.usermodel.Row
 import org.apache.poi.ss.usermodel.Sheet
-import org.springframework.stereotype.Component
+import java.time.DayOfWeek
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 
-@Component
-@Slf4j
-class BachelorTimetableSheetExcelParserImpl(
-    private val cellParser: HseTimetableCellExcelParser,
-    private val notificationService: NotificationService,
-) : BachelorTimetableSheetExcelParser {
-    override fun parseSheet(sheet: Sheet, scheduleInfo: ParsedScheduleInfo): List<GroupBasedLesson> {
+object TimetableLessonsUtils {
+    private val logger = KotlinLogging.logger {  }
+
+    fun parseSheet(
+        sheet: Sheet,
+        scheduleInfo: ParsedScheduleInfo,
+        cellParser: (ParsedCellInfo) -> List<GroupBasedLesson>,
+    ): List<GroupBasedLesson> {
         val lessons = mutableListOf<GroupBasedLesson>()
 
         val groups = parseGroups(sheet)
@@ -45,7 +42,8 @@ class BachelorTimetableSheetExcelParserImpl(
                     scheduleInfo = scheduleInfo,
                     groups = groups,
                     previousData = previousData
-                )
+                ),
+                cellParser
             )
 
             if (action == Action.BREAK) break
@@ -67,7 +65,7 @@ class BachelorTimetableSheetExcelParserImpl(
         return groups
     }
 
-    private fun parseRow(rowData: RowData): Pair<List<GroupBasedLesson>, Action> {
+    private fun parseRow(rowData: RowData, parser: (ParsedCellInfo) -> List<GroupBasedLesson>): Pair<List<GroupBasedLesson>, Action> {
         val row = rowData.row
 
         val lessons = mutableListOf<GroupBasedLesson>()
@@ -83,23 +81,20 @@ class BachelorTimetableSheetExcelParserImpl(
             val lessonInfo = getParsedLessonInfo(cellNum, rowData, lessonTime!!) ?: break
 
             try {
-                val parsedLessons = cellParser.parseLesson(lessonInfo)
+                val parsedLessons = parser(lessonInfo)
                 lessons.addAll(parsedLessons)
 
-            } catch (e: Exception) {
-                log.error("Произошла ошибка во время обработки пары!")
-                log.error(
-                    "Расписание: ${rowData.scheduleInfo}, sheet: ${row.sheet.sheetName}, cellAddress: ${cell.address}, value: $cellValue, stacktrace: ",
-                    e
+            } catch (e: RuntimeException) {
+                val error = ParseError(
+                    sheet = rowData.row.sheet.sheetName,
+                    cell = cell.address.formatAsString(),
+                    cellValue = cellValue,
+                    exception = e,
                 )
 
-                notificationService.sendNotificationV2(
-                    ServiceWarnNotification(
-                        "Произошла ошибка во время обработки пары!\n" +
-                            "Расписание: ${rowData.scheduleInfo}, sheet: ${row.sheet.sheetName}, cellAddress: ${cell.address}, " +
-                            "value: $cellValue, stacktrace: ${e.stackTraceToString()}"
-                    )
-                )
+                ExcelTimetableParseContextHolder.addError(error)
+
+                logger.warn(e) { "Error when parse lessons, error: $error" }
             }
         }
 
@@ -148,17 +143,6 @@ class BachelorTimetableSheetExcelParserImpl(
 
         rowData.previousData.prevDay = rowData.row.getCellValue(1)!!
         return Pair(lessonTime, Action.NOTHING)
-    }
-
-    private fun getProgramme(programme: String): String? {
-        val programmeRegex = Regex("[А-Яа-яЁёa-zA-Z]+")
-        return programmeRegex.find(programme)?.value
-    }
-
-    private fun getCourse(sheetName: String): Int? {
-        val courseRegex = Regex(pattern = "[0-9]+")
-        val course = courseRegex.find(sheetName)?.value ?: return null
-        return course.toInt()
     }
 
     private fun getStartAndEndTime(timeCell: List<String>): Pair<String, String> {

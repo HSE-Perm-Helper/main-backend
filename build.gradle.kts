@@ -39,6 +39,9 @@ allOpen {
 }
 
 dependencies {
+    implementation(libs.spring.quartz)
+    implementation(libs.spring.tx)
+
     implementation("com.github.ben-manes.caffeine:caffeine")
 
     implementation("org.liquibase:liquibase-core")
@@ -71,10 +74,15 @@ dependencies {
 
     developmentOnly("org.springframework.boot:spring-boot-devtools")
 
+    // TODO: Remove mockito from spring test starter
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.springframework.kafka:spring-kafka-test")
+
+    // TODO: Remove mockito from project
     testImplementation("org.mockito:mockito-core:${mockitoVersion}")
     testImplementation("org.mockito.kotlin:mockito-kotlin:${mockitoKotlinVersion}")
+
+    testImplementation(libs.mockK)
 }
 dependencyManagement {
     imports {
@@ -113,7 +121,7 @@ jacoco {
 }
 
 tasks.jacocoTestReport {
-    dependsOn(tasks.test) // tests are required to run before generating the report
+    dependsOn(tasks.test)
     reports {
         xml.required.set(false)
         csv.required.set(true)

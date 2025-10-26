@@ -1,4 +1,4 @@
-package com.melowetty.hsepermhelper.service.impl
+package com.melowetty.hsepermhelper.service.impl.timetable
 
 import com.melowetty.hsepermhelper.domain.model.file.File
 import com.melowetty.hsepermhelper.timetable.integration.excel.ExcelFileMetadataStorage
@@ -8,7 +8,8 @@ import org.springframework.stereotype.Component
 
 @Component
 class ExcelTimetableFilesProcessService(
-    private val storage: ExcelFileMetadataStorage
+    private val storage: ExcelFileMetadataStorage,
+    private val excelTimetableProcessService: ExcelTimetableProcessService,
 ) {
     fun processOrNothing(current: List<File>) {
         val prev = storage.getFilesMetadata()
@@ -43,7 +44,13 @@ class ExcelTimetableFilesProcessService(
 
         if (addedOrChanged.isNotEmpty()) {
             logger.info { "Added or changed ${addedOrChanged.size} files and deleted ${deleted.size} files" }
+        } else {
+            logger.info { "No files added or changed" }
         }
+
+        val notChanged = prevFilesByHash.mapNotNull { currentFilesByHash[it.key] }
+
+        excelTimetableProcessService.processFiles(addedOrChanged, deleted, notChanged)
     }
 
     companion object {

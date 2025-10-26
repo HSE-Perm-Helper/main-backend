@@ -1,7 +1,6 @@
-package com.melowetty.hsepermhelper.excel.impl
+package com.melowetty.hsepermhelper.timetable.integration.excel.bachelor.basic
 
 import com.melowetty.hsepermhelper.domain.model.lesson.LessonPlace
-import com.melowetty.hsepermhelper.excel.HseTimetableCellExcelParser
 import com.melowetty.hsepermhelper.excel.model.CellInfo
 import com.melowetty.hsepermhelper.excel.model.ParsedCellInfo
 import com.melowetty.hsepermhelper.excel.model.ParsedLessonInfo
@@ -10,11 +9,14 @@ import com.melowetty.hsepermhelper.timetable.integration.excel.bachelor.shared.L
 import com.melowetty.hsepermhelper.timetable.model.InternalTimetableType
 import com.melowetty.hsepermhelper.timetable.model.impl.GroupBasedLesson
 import com.melowetty.hsepermhelper.util.LinkUtils
-import org.springframework.stereotype.Component
 
-@Component
-class HseTimetableCellExcelParserImpl : HseTimetableCellExcelParser {
-    override fun parseLesson(cellInfo: ParsedCellInfo): List<GroupBasedLesson> {
+object BasicTimetableCellParser {
+    private val LESSON_BUILDING_INFO_REGEX = Regex("\\([^\\(\\)]*\\[\\d*\\].*\\)")
+    private val ADDITIONAL_INFO_REGEX = Regex("([^\\/]*)\\((.*)\\)")
+    private val PLACE_INFO_REGEX = Regex("\\A[.[^\\[]]+|\\d+")
+    private val PLACE_INFO_CHECK_REGEX = Regex("(.+)\\[\\d\\]")
+
+    fun parseLesson(cellInfo: ParsedCellInfo): List<GroupBasedLesson> {
         if (!filterCell(cellInfo)) return emptyList()
         return getLesson(
             scheduleInfo = cellInfo.scheduleInfo,
@@ -332,13 +334,6 @@ class HseTimetableCellExcelParserImpl : HseTimetableCellExcelParser {
         if (str == null) return null
         if (str.isEmpty()) return null
         return str
-    }
-
-    companion object {
-        private val LESSON_BUILDING_INFO_REGEX = Regex("\\([^\\(\\)]*\\[\\d*\\].*\\)")
-        private val ADDITIONAL_INFO_REGEX = Regex("([^\\/]*)\\((.*)\\)")
-        private val PLACE_INFO_REGEX = Regex("\\A[.[^\\[]]+|\\d+")
-        private val PLACE_INFO_CHECK_REGEX = Regex("(.+)\\[\\d\\]")
     }
 
     internal enum class FieldType {

@@ -8,4 +8,7 @@ data class InternalTimetableInfo(
     val start: LocalDate,
     val end: LocalDate,
     val type: InternalTimetableType,
+    val educationType: EducationType,
+    val isParent: Boolean,
+    val lessonsHash: Int,
 )

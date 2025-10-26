@@ -26,48 +26,54 @@ class MinorEmbeddedTimetable(
                 return timetable
             }
 
-        val hseAppLessons = hseAppApiService.getLessons(email, timetable.start, timetable.end)
-            .filter { it.isMinor }
-            .map {
-                val startTime = it.dateStart.fromGmtToPermTime().asStr()
-                val endTime = it.dateEnd.fromGmtToPermTime().asStr()
+        try {
+            val hseAppLessons = hseAppApiService.getLessons(email, timetable.start, timetable.end)
+                .filter { it.isMinor }
+                .map {
+                    val startTime = it.dateStart.fromGmtToPermTime().asStr()
+                    val endTime = it.dateEnd.fromGmtToPermTime().asStr()
 
-                val places: MutableList<LessonPlace> = mutableListOf()
-                if (it.auditorium == HSE_APP_ONLINE_PLACE_DEFINITION) {
-                    places.add(LessonPlace(null, 0))
-                } else {
-                    places.add(LessonPlace(it.auditorium, null))
+                    val places: MutableList<LessonPlace> = mutableListOf()
+                    if (it.auditorium == HSE_APP_ONLINE_PLACE_DEFINITION) {
+                        places.add(LessonPlace(null, 0))
+                    } else {
+                        places.add(LessonPlace(it.auditorium, null))
+                    }
+
+                    MinorLesson(
+                        subject = it.subject,
+                        time = ScheduledTime(
+                            it.dateStart.toLocalDate(),
+                            startTime,
+                            endTime
+
+                        ),
+                        lecturer = it.lecturers.firstOrNull(),
+                        links = it.streamLinks,
+                        additionalInfo = it.note?.let { note -> listOf(note) },
+                        lessonType = it.type,
+                    )
                 }
 
-                MinorLesson(
-                    subject = it.subject,
-                    time = ScheduledTime(
-                        dayOfWeek = it.dateStart.dayOfWeek,
-                        it.dateStart.toLocalDate(),
-                        startTime,
-                        endTime
+            logger.info { "Added ${hseAppLessons.size} minor lessons" }
 
-                    ),
-                    lecturer = it.lecturers.firstOrNull(),
-                    links = it.streamLinks,
-                    additionalInfo = it.note?.let { note -> listOf(note) },
-                    lessonType = it.type,
-                )
+            return timetable.copy(
+                lessons = (hseAppLessons + timetable.lessons)
+                    .filterNot { it.lessonType == LessonType.COMMON_MINOR }
+                    .sorted()
+            )
+        } catch (e: RuntimeException) {
+            logger.warn(e) {
+                "Failed to embed minor lessons for email $email"
             }
-
-        logger.info { "Added ${hseAppLessons.size} minor lessons" }
-
-        return timetable.copy(
-            lessons = (hseAppLessons + timetable.lessons)
-                .filterNot { it.lessonType == LessonType.COMMON_MINOR }
-                .sorted()
-        )
+            return timetable
+        }
     }
 
     override fun isEmbeddable(user: UserDto, timetable: InternalTimetable, context: TimetableContext): Boolean {
         return user.email != null &&
-            (timetable.type == InternalTimetableType.BACHELOR_WEEK_SCHEDULE
-                || timetable.type == InternalTimetableType.BACHELOR_SESSION_SCHEDULE)
+            (timetable.type == InternalTimetableType.BACHELOR_WEEK_TIMETABLE
+                || timetable.type == InternalTimetableType.BACHELOR_SESSION_TIMETABLE)
     }
 
     companion object {

@@ -6,12 +6,12 @@ import com.melowetty.hsepermhelper.timetable.model.InternalTimetableType
 object TimetableTypeUtils {
     fun getScheduleType(excelInfo: ParsedExcelInfo): InternalTimetableType {
         val (number, start, end) = excelInfo
-        var scheduleType = InternalTimetableType.BACHELOR_WEEK_SCHEDULE
+        var scheduleType = InternalTimetableType.BACHELOR_WEEK_TIMETABLE
 
         if (number == null) {
-            scheduleType = InternalTimetableType.BACHELOR_SESSION_SCHEDULE
+            scheduleType = InternalTimetableType.BACHELOR_SESSION_TIMETABLE
         } else if (end.toEpochDay() - start.toEpochDay() > 7) {
-            scheduleType = InternalTimetableType.BACHELOR_QUARTER_SCHEDULE
+            scheduleType = InternalTimetableType.BACHELOR_QUARTER_TIMETABLE
         }
         return scheduleType
     }

@@ -68,7 +68,7 @@ class PersonalTimetableV2Service(
 
     private fun getTimetableForDate(user: UserDto, timetables: List<ScheduleInfo>, date: LocalDate): Schedule {
         val targetTimetable = timetables.firstOrNull { it.start >= date }
-            ?: throw ScheduleNotFoundException("No timetable for tomorrow")
+            ?: throw ScheduleNotFoundException("No timetable for date $date")
 
         return timetableComposer.getTimetable(targetTimetable.id, user)
     }

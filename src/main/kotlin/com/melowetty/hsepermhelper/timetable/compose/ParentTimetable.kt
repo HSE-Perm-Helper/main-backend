@@ -2,8 +2,8 @@ package com.melowetty.hsepermhelper.timetable.compose
 
 import com.melowetty.hsepermhelper.domain.dto.UserDto
 import com.melowetty.hsepermhelper.timetable.model.InternalTimetable
-import com.melowetty.hsepermhelper.timetable.model.InternalTimetableProcessorType
 import com.melowetty.hsepermhelper.timetable.model.InternalTimetableInfo
+import com.melowetty.hsepermhelper.timetable.model.InternalTimetableProcessorType
 
 interface ParentTimetable {
     fun getTimetables(): List<InternalTimetableInfo>

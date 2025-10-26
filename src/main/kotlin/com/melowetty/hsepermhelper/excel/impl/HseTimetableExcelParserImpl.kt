@@ -4,24 +4,23 @@ import com.melowetty.hsepermhelper.annotation.Slf4j
 import com.melowetty.hsepermhelper.annotation.Slf4j.Companion.log
 import com.melowetty.hsepermhelper.domain.model.file.File
 import com.melowetty.hsepermhelper.excel.HseTimetableExcelParser
-import com.melowetty.hsepermhelper.timetable.integration.excel.bachelor.shared.BachelorTimetableSheetExcelParser
-import com.melowetty.hsepermhelper.timetable.model.InternalLesson
-import com.melowetty.hsepermhelper.timetable.model.InternalTimetable
 import com.melowetty.hsepermhelper.excel.model.ParsedExcelInfo
 import com.melowetty.hsepermhelper.excel.model.ParsedScheduleInfo
 import com.melowetty.hsepermhelper.notification.ServiceWarnNotification
 import com.melowetty.hsepermhelper.service.NotificationService
+import com.melowetty.hsepermhelper.timetable.integration.excel.bachelor.shared.BachelorTimetableSheetExcelParser
 import com.melowetty.hsepermhelper.timetable.integration.excel.bachelor.shared.TimetableTypeUtils
+import com.melowetty.hsepermhelper.timetable.model.EducationType
 import com.melowetty.hsepermhelper.timetable.model.ExcelTimetable
 import com.melowetty.hsepermhelper.timetable.model.impl.GroupBasedLesson
 import com.melowetty.hsepermhelper.util.RowUtils.Companion.getCellValue
-import java.io.InputStream
-import java.time.LocalDate
-import java.time.format.DateTimeFormatter
 import org.apache.poi.ss.usermodel.Sheet
 import org.apache.poi.ss.usermodel.Workbook
 import org.apache.poi.ss.usermodel.WorkbookFactory
 import org.springframework.stereotype.Component
+import java.io.InputStream
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 
 @Component
 @Slf4j
@@ -63,7 +62,9 @@ class HseTimetableExcelParserImpl(
                 start = scheduleInfo.startDate,
                 end = scheduleInfo.endDate,
                 lessons = lessons,
-                type = scheduleInfo.type
+                type = scheduleInfo.type,
+                educationType = EducationType.BACHELOR_OFFLINE,
+                isParent = true,
             )
         } catch (exception: Exception) {
             log.error(

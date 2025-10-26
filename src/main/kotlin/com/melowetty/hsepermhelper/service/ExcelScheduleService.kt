@@ -34,7 +34,7 @@ class ExcelScheduleService(
         group: String,
     ): List<Lesson> {
         return scheduleRepository.getSchedules().asSequence()
-            .filterNot { it.type == InternalTimetableType.BACHELOR_QUARTER_SCHEDULE }
+            .filterNot { it.type == InternalTimetableType.BACHELOR_QUARTER_TIMETABLE }
             .map { it.lessons }
             .flatten()
             .mapNotNull { it as? GroupBasedLesson }
