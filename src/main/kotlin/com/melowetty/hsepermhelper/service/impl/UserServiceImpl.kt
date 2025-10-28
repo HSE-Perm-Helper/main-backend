@@ -37,6 +37,7 @@ import org.springframework.web.util.UriComponentsBuilder
 
 @Service
 @Validated
+@Deprecated("Remove telegram id from service")
 class UserServiceImpl(
     private val userRepository: UserRepository,
     private val hiddenLessonRepository: HiddenLessonRepository,

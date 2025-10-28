@@ -12,6 +12,7 @@ import jakarta.persistence.Table
 
 @Entity
 @Table(name = "settings")
+@Deprecated("Refactor settings entity")
 data class SettingsEntity(
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

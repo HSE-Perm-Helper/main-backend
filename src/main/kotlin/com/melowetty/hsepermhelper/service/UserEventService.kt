@@ -1,21 +1,32 @@
 package com.melowetty.hsepermhelper.service
 
 import com.melowetty.hsepermhelper.domain.model.event.UserEventType
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.context.annotation.Lazy
+import com.melowetty.hsepermhelper.repository.UserRepository
+import io.github.oshai.kotlinlogging.KotlinLogging
 import org.springframework.stereotype.Service
+import java.util.*
 
 @Service
 class UserEventService(
+    private val userRepository: UserRepository,
     private val messageBrokerService: MessageBrokerService,
 ) {
-    @Deprecated("Remove lazy init")
-    @Autowired
-    @Lazy
-    private lateinit var userService: UserService
 
     fun addUserEvent(telegramId: Long, eventType: UserEventType) {
-        val user = userService.getByTelegramId(telegramId)
-        messageBrokerService.sendUserEvent(user.id, eventType)
+        val userId = userRepository.getIdByTelegramId(telegramId)
+            ?: run {
+                logger.warn { "User with telegramId $telegramId not found" }
+                return
+            }
+
+        messageBrokerService.sendUserEvent(userId, eventType)
+    }
+
+    fun addUserEvent(userId: UUID, eventType: UserEventType) {
+        messageBrokerService.sendUserEvent(userId, eventType)
+    }
+
+    companion object {
+        private val logger = KotlinLogging.logger {  }
     }
 }
