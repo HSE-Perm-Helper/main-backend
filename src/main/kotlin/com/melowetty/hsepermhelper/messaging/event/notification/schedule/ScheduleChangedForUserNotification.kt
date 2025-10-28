@@ -1,7 +1,7 @@
-package com.melowetty.hsepermhelper.notification.schedule
+package com.melowetty.hsepermhelper.messaging.event.notification.schedule
 
 import com.melowetty.hsepermhelper.domain.model.schedule.ScheduleInfo
-import com.melowetty.hsepermhelper.notification.Notification
+import com.melowetty.hsepermhelper.messaging.event.notification.Notification
 import io.swagger.v3.oas.annotations.media.Schema
 import java.time.DayOfWeek
 

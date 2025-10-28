@@ -1,4 +1,4 @@
-package com.melowetty.hsepermhelper.notification
+package com.melowetty.hsepermhelper.messaging.event.notification
 
 import com.fasterxml.jackson.annotation.JsonIgnore
 

@@ -3,7 +3,7 @@ package com.melowetty.hsepermhelper.service
 import com.melowetty.hsepermhelper.domain.dto.EmailVerificationDto
 import com.melowetty.hsepermhelper.domain.entity.EmailVerificationEntity
 import com.melowetty.hsepermhelper.domain.model.event.EmailIsVerifiedEvent
-import com.melowetty.hsepermhelper.notification.verification.EmailVerificationSendNotification
+import com.melowetty.hsepermhelper.messaging.event.notification.verification.EmailVerificationSendNotification
 import com.melowetty.hsepermhelper.exception.UserNotFoundException
 import com.melowetty.hsepermhelper.exception.verification.ReachMaxAttemptsToVerificationRequestException
 import com.melowetty.hsepermhelper.exception.verification.VerificationNotFoundOrExpiredException

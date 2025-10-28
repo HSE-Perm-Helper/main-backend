@@ -16,7 +16,7 @@ import com.melowetty.hsepermhelper.exception.UserIsExistsException
 import com.melowetty.hsepermhelper.exception.UserNotFoundException
 import com.melowetty.hsepermhelper.extension.UserExtensions.Companion.toDto
 import com.melowetty.hsepermhelper.extension.UserExtensions.Companion.toEntity
-import com.melowetty.hsepermhelper.notification.verification.EmailIsVerifiedNotification
+import com.melowetty.hsepermhelper.messaging.event.notification.verification.EmailIsVerifiedNotification
 import com.melowetty.hsepermhelper.repository.HiddenLessonRepository
 import com.melowetty.hsepermhelper.repository.UserRepository
 import com.melowetty.hsepermhelper.service.EmailVerificationService

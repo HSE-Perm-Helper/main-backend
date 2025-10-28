@@ -3,7 +3,7 @@ package com.melowetty.hsepermhelper.controller.user.v3
 import com.melowetty.hsepermhelper.domain.model.lesson.Lesson
 import com.melowetty.hsepermhelper.domain.model.schedule.Schedule
 import com.melowetty.hsepermhelper.domain.model.schedule.ScheduleInfo
-import com.melowetty.hsepermhelper.service.PersonalTimetableV2Service
+import com.melowetty.hsepermhelper.service.PersonalTimetableService
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestMapping
@@ -13,7 +13,7 @@ import java.util.UUID
 @RestController
 @RequestMapping("/v3/users/{id}/timetables")
 class UserTimetableController(
-    private val personalTimetableService: PersonalTimetableV2Service
+    private val personalTimetableService: PersonalTimetableService
 ) {
     @GetMapping
     fun getTimetables(@PathVariable("id") userId: UUID): List<ScheduleInfo> {

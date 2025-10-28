@@ -2,7 +2,7 @@ package com.melowetty.hsepermhelper.service.impl.timetable
 
 import com.melowetty.hsepermhelper.domain.model.schedule.ScheduleInfo
 import com.melowetty.hsepermhelper.extension.ScheduleExtensions.Companion.toScheduleType
-import com.melowetty.hsepermhelper.notification.timetable.TimetableAddedNotification
+import com.melowetty.hsepermhelper.messaging.event.notification.timetable.TimetableAddedNotification
 import com.melowetty.hsepermhelper.repository.UserRepository
 import com.melowetty.hsepermhelper.service.NotificationService
 import com.melowetty.hsepermhelper.timetable.TimetableInfoEncoder

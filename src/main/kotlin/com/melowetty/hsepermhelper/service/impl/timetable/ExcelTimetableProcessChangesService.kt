@@ -8,10 +8,8 @@ import org.springframework.stereotype.Service
 @Service
 class ExcelTimetableProcessChangesService(
     private val storage: ExcelTimetableStorage,
-    private val timetableNotificationService: TimetableNotificationService,
+    private val timetableChangeDispatcher: ExcelTimetableChangeDispatcher,
 ) {
-    // TODO: сделать запуск задач по проверке изменений и отправке уведомлений
-
     fun processChangesByRunIds(prevRunId: String, currentRunId: String) {
         val oldTimetables = storage.getTimetablesInfoIdByRunId(prevRunId)
         val oldTimetablesIds = oldTimetables.map { it.id }.toSet()
@@ -59,7 +57,7 @@ class ExcelTimetableProcessChangesService(
     ) {
         processNotChangedTimetables(currentRunId, notChanged)
         processAddedTimetables(added)
-
+        processChangedTimetables(changed)
     }
 
     private fun processNotChangedTimetables(
@@ -89,7 +87,29 @@ class ExcelTimetableProcessChangesService(
             return
         }
 
-        timetableNotificationService.notifyAboutAddedTimetables(mustBeNotified)
+        timetableChangeDispatcher.dispatchNewTimetableNotification(mustBeNotified)
+    }
+
+    fun processChangedTimetables(timetables: List<Pair<InternalTimetableInfo, InternalTimetableInfo>>) {
+        timetables.forEach { timetablesGroup ->
+            val detailedTimetables = storage.getTimetables(listOf(timetablesGroup.first.id, timetablesGroup.second.id))
+
+            if (detailedTimetables.size != 2) {
+                logger.warn {
+                    "Expected 2 timetables, but got ${detailedTimetables.size}"
+                }
+                return@forEach
+            }
+
+            val prev = detailedTimetables.first { it.id == timetablesGroup.first.id }
+            val current = detailedTimetables.first { it.id == timetablesGroup.second.id }
+            current.id = prev.id
+
+            storage.updateTimetable(prev.id(), current)
+            storage.deleteTimetable(timetablesGroup.second.id)
+
+            timetableChangeDispatcher.dispatchChangeDetection(current, prev)
+        }
     }
 
     companion object {

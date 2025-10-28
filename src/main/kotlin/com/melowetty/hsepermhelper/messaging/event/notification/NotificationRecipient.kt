@@ -1,4 +1,4 @@
-package com.melowetty.hsepermhelper.notification
+package com.melowetty.hsepermhelper.messaging.event.notification
 
 enum class NotificationRecipient {
     NONE,

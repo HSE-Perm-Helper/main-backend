@@ -18,7 +18,7 @@ import org.springframework.stereotype.Service
 
 @Service
 @Deprecated("Refactor when new schedule flow is implemented")
-class PersonalScheduleService(
+class OldPersonalScheduleService(
     private val excelScheduleService: ExcelScheduleService,
     private val hseAppApiService: HseAppApiService,
     private val userService: UserService,

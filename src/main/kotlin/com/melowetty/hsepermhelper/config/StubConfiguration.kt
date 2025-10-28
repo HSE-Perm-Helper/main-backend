@@ -1,7 +1,7 @@
 package com.melowetty.hsepermhelper.config
 
-import com.melowetty.hsepermhelper.service.MessageBrokerService
-import com.melowetty.hsepermhelper.service.impl.broker.StubMessageBrokerService
+import com.melowetty.hsepermhelper.messaging.broker.MessageBrokerService
+import com.melowetty.hsepermhelper.messaging.broker.StubMessageBrokerService
 import io.github.oshai.kotlinlogging.KotlinLogging
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
 import org.springframework.context.annotation.Bean

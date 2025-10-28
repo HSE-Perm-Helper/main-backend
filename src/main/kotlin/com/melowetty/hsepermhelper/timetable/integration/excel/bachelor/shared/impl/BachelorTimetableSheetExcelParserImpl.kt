@@ -10,7 +10,7 @@ import com.melowetty.hsepermhelper.timetable.integration.excel.bachelor.shared.B
 import com.melowetty.hsepermhelper.excel.model.CellInfo
 import com.melowetty.hsepermhelper.excel.model.ParsedCellInfo
 import com.melowetty.hsepermhelper.excel.model.ParsedScheduleInfo
-import com.melowetty.hsepermhelper.notification.ServiceWarnNotification
+import com.melowetty.hsepermhelper.messaging.event.notification.ServiceWarnNotification
 import com.melowetty.hsepermhelper.service.NotificationService
 import com.melowetty.hsepermhelper.timetable.model.InternalTimetableType
 import com.melowetty.hsepermhelper.timetable.model.impl.GroupBasedLesson

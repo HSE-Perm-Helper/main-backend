@@ -4,7 +4,7 @@ import com.melowetty.hsepermhelper.domain.entity.UserEntity
 import com.melowetty.hsepermhelper.domain.model.hseapp.HseAppLesson
 import com.melowetty.hsepermhelper.domain.model.schedule.ScheduleInfo
 import com.melowetty.hsepermhelper.domain.model.schedule.ScheduleType
-import com.melowetty.hsepermhelper.notification.schedule.ScheduleChangedForUserNotification
+import com.melowetty.hsepermhelper.messaging.event.notification.schedule.ScheduleChangedForUserNotification
 import com.melowetty.hsepermhelper.repository.UserRepository
 import com.melowetty.hsepermhelper.service.ExcelScheduleService
 import com.melowetty.hsepermhelper.service.HseAppApiService

@@ -10,50 +10,25 @@ import org.quartz.Job
 import org.quartz.JobExecutionContext
 import org.quartz.PersistJobDataAfterExecution
 import org.slf4j.MDC
-import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component
 import java.time.Instant
 
 @Component
-//@DisallowConcurrentExecution
-//@PersistJobDataAfterExecution
+@DisallowConcurrentExecution
+@PersistJobDataAfterExecution
 class TimetableFilesObserveJob(
     val scheduleFilesRepository: ScheduleFilesRepository,
     val excelTimetableFilesProcessService: ExcelTimetableFilesProcessService,
-) /*: Job*/ {
+) : Job {
 
-    @Deprecated("Remove after persist timetables")
-    private var prevRunId: String? = null
+    override fun execute(context: JobExecutionContext) {
+        val jobDataMap = context.jobDetail.jobDataMap
 
-//    override fun execute(context: JobExecutionContext) {
-//        val jobDataMap = context.jobDetail.jobDataMap
-//
-//        val jobRunId = generateJobId()
-//        val prevJobRunId = jobDataMap[PREV_RUN_ID_KEY] as String?
-//
-//        val runContext = JobRunContext(jobRunId, prevJobRunId)
-//        JobRunContextHolder.set(runContext)
-//
-//        try {
-//            MDC.put(JOB_ID_LOGGING_KEY, jobRunId)
-//            val current = scheduleFilesRepository.fetchScheduleFiles()
-//            logger.info { "Fetched new timetables files" }
-//            excelTimetableFilesProcessService.processOrNothing(current)
-//        } finally {
-//            MDC.remove(JOB_ID_LOGGING_KEY)
-//            JobRunContextHolder.clear()
-//        }
-//
-//        jobDataMap[PREV_RUN_ID_KEY] = jobRunId
-//    }
-
-    @Scheduled(fixedRate = 1000 * 60 * 1, initialDelay = 1000 * 60 * 1)
-    @Deprecated("Remove after persist timetables")
-    fun observe() {
         val jobRunId = generateJobId()
+        val prevJobRunId = jobDataMap[PREV_RUN_ID_KEY] as String?
 
-        val context = JobRunContext(jobRunId, prevRunId)
-        JobRunContextHolder.set(context)
+        val runContext = JobRunContext(jobRunId, prevJobRunId)
+        JobRunContextHolder.set(runContext)
 
         try {
             MDC.put(JOB_ID_LOGGING_KEY, jobRunId)
@@ -65,7 +40,7 @@ class TimetableFilesObserveJob(
             JobRunContextHolder.clear()
         }
 
-        prevRunId = jobRunId
+        jobDataMap[PREV_RUN_ID_KEY] = jobRunId
     }
 
     companion object {

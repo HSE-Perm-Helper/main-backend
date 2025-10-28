@@ -16,7 +16,7 @@ import java.time.LocalDate
 import java.util.UUID
 
 @Service
-class PersonalTimetableV2Service(
+class PersonalTimetableService(
     private val userService: UserService,
     private val timetableComposer: TimetableComposer,
 ) {

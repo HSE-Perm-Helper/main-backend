@@ -6,7 +6,7 @@ import com.melowetty.hsepermhelper.domain.model.file.File
 import com.melowetty.hsepermhelper.excel.HseTimetableExcelParser
 import com.melowetty.hsepermhelper.excel.model.ParsedExcelInfo
 import com.melowetty.hsepermhelper.excel.model.ParsedScheduleInfo
-import com.melowetty.hsepermhelper.notification.ServiceWarnNotification
+import com.melowetty.hsepermhelper.messaging.event.notification.ServiceWarnNotification
 import com.melowetty.hsepermhelper.service.NotificationService
 import com.melowetty.hsepermhelper.timetable.integration.excel.bachelor.shared.BachelorTimetableSheetExcelParser
 import com.melowetty.hsepermhelper.timetable.integration.excel.bachelor.shared.TimetableTypeUtils
@@ -74,10 +74,12 @@ class HseTimetableExcelParserImpl(
                         "Stacktrace: ", exception
             )
 
-            notificationService.sendNotificationV2(ServiceWarnNotification(
+            notificationService.sendNotificationV2(
+                ServiceWarnNotification(
                 "Произошла ошибка во время обработки файла с расписанием! Файл: ${file.name}\n" +
                         "Stacktrace: ${exception.stackTraceToString()}"
-            ))
+            )
+            )
             return null
         }
     }

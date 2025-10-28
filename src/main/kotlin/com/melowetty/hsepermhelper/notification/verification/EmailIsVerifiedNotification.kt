@@ -1,6 +1,0 @@
-package com.melowetty.hsepermhelper.notification.verification
-
-import com.melowetty.hsepermhelper.notification.NotificationV2
-import com.melowetty.hsepermhelper.notification.NotificationType
-
-class EmailIsVerifiedNotification: NotificationV2(NotificationType.EMAIL_IS_VERIFIED)

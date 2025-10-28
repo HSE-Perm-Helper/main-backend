@@ -7,4 +7,5 @@ data class KafkaTopicsConfig(
     val baseNotifications: String,
     val newNotifications: String,
     val userEvents: String,
+    val tasks: String,
 )

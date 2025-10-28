@@ -1,9 +1,10 @@
 package com.melowetty.hsepermhelper.service
 
 import com.melowetty.hsepermhelper.domain.model.user.UserRole
-import com.melowetty.hsepermhelper.notification.NotificationV2
-import com.melowetty.hsepermhelper.notification.Notification
-import com.melowetty.hsepermhelper.notification.NotificationRecipient
+import com.melowetty.hsepermhelper.messaging.broker.MessageBrokerService
+import com.melowetty.hsepermhelper.messaging.event.notification.NotificationV2
+import com.melowetty.hsepermhelper.messaging.event.notification.Notification
+import com.melowetty.hsepermhelper.messaging.event.notification.NotificationRecipient
 import com.melowetty.hsepermhelper.repository.UserRepository
 import org.springframework.stereotype.Service
 import java.util.UUID

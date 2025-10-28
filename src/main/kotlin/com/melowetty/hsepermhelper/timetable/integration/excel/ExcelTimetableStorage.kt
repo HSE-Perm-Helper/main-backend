@@ -32,6 +32,10 @@ class ExcelTimetableStorage {
         )
     }
 
+    fun getTimetables(ids: List<String>): List<ExcelTimetable> {
+        return ids.mapNotNull { id -> storage[id] }
+    }
+
     fun getTimetable(id: String): ExcelTimetable {
         return storage[id]
             ?: throw TimetableByIdNotFoundException(id)

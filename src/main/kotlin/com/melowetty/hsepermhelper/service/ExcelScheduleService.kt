@@ -13,8 +13,8 @@ import com.melowetty.hsepermhelper.extension.LessonExtensions.Companion.toLesson
 import com.melowetty.hsepermhelper.extension.ScheduleExtensions.Companion.toSchedule
 import com.melowetty.hsepermhelper.extension.ScheduleExtensions.Companion.toScheduleInfo
 import com.melowetty.hsepermhelper.extension.UserExtensions.Companion.getGroupedBySettingsUsers
-import com.melowetty.hsepermhelper.notification.schedule.ScheduleAddedNotification
-import com.melowetty.hsepermhelper.notification.schedule.ScheduleChangedForUserNotification
+import com.melowetty.hsepermhelper.messaging.event.notification.schedule.ScheduleAddedNotification
+import com.melowetty.hsepermhelper.messaging.event.notification.schedule.ScheduleChangedForUserNotification
 import com.melowetty.hsepermhelper.repository.ExcelScheduleRepository
 import com.melowetty.hsepermhelper.timetable.model.InternalTimetableType
 import com.melowetty.hsepermhelper.timetable.model.impl.GroupBasedLesson

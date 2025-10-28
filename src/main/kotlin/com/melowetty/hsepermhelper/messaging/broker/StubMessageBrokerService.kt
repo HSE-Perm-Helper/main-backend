@@ -1,13 +1,22 @@
-package com.melowetty.hsepermhelper.service.impl.broker
+package com.melowetty.hsepermhelper.messaging.broker
 
 import com.melowetty.hsepermhelper.domain.model.event.UserEventType
-import com.melowetty.hsepermhelper.notification.Notification
-import com.melowetty.hsepermhelper.notification.NotificationV2
-import com.melowetty.hsepermhelper.service.MessageBrokerService
+import com.melowetty.hsepermhelper.messaging.event.notification.Notification
+import com.melowetty.hsepermhelper.messaging.event.notification.NotificationV2
+import com.melowetty.hsepermhelper.messaging.event.task.ChangeDetectionTask
+import com.melowetty.hsepermhelper.messaging.event.task.NewTimetableNotifyTask
 import io.github.oshai.kotlinlogging.KotlinLogging
 import java.util.UUID
 
 class StubMessageBrokerService : MessageBrokerService {
+    override fun submitTimetableChangeDetection(task: ChangeDetectionTask) {
+        logger.info { "Stub change detection task added: $task" }
+    }
+
+    override fun submitNewTimetableNotifyTask(task: NewTimetableNotifyTask) {
+        logger.info { "Stub new timetable notify task added: $task" }
+    }
+
     override fun sendUserEvent(userId: UUID, eventType: UserEventType) {
         logger.info { "Stub user event added: $userId, $eventType" }
     }
