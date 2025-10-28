@@ -10,6 +10,8 @@ class ExcelTimetableProcessChangesService(
     private val storage: ExcelTimetableStorage,
     private val timetableNotificationService: TimetableNotificationService,
 ) {
+    // TODO: сделать запуск задач по проверке изменений и отправке уведомлений
+
     fun processChangesByRunIds(prevRunId: String, currentRunId: String) {
         val oldTimetables = storage.getTimetablesInfoIdByRunId(prevRunId)
         val oldTimetablesIds = oldTimetables.map { it.id }.toSet()
@@ -44,7 +46,9 @@ class ExcelTimetableProcessChangesService(
 
         storage.showTimetables(currentTimetablesIds.toList())
 
-        storage.deleteTimetablesByRunId(prevRunId)
+        if (notChangedTimetables.size != currentTimetables.size) {
+            storage.deleteTimetablesByRunId(prevRunId)
+        }
     }
 
     private fun processTimetables(

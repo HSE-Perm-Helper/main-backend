@@ -1,8 +1,11 @@
 [versions]
 mockK = "1.14.5"
+logback = "8.1"
 
 [libraries]
 mockK = { module = "io.mockk:mockk", version.ref = "mockK" }
 
 spring-quartz = { module = "org.springframework.boot:spring-boot-starter-quartz" }
 spring-tx = { module = "org.springframework:spring-tx" }
+
+logback-encoder = { module = "net.logstash.logback:logstash-logback-encoder", version.ref = "logback" }

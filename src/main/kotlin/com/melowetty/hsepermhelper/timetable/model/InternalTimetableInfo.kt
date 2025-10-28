@@ -11,4 +11,5 @@ data class InternalTimetableInfo(
     val educationType: EducationType,
     val isParent: Boolean,
     val lessonsHash: Int,
+    val source: InternalTimetableSource,
 )

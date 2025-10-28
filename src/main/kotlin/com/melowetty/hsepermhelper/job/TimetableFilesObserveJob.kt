@@ -15,16 +15,17 @@ import org.springframework.stereotype.Component
 import java.time.Instant
 
 @Component
-@DisallowConcurrentExecution
-@PersistJobDataAfterExecution
+//@DisallowConcurrentExecution
+//@PersistJobDataAfterExecution
 class TimetableFilesObserveJob(
     val scheduleFilesRepository: ScheduleFilesRepository,
     val excelTimetableFilesProcessService: ExcelTimetableFilesProcessService,
-) : Job {
+) /*: Job*/ {
+
     @Deprecated("Remove after persist timetables")
     private var prevRunId: String? = null
 
-    override fun execute(context: JobExecutionContext) {
+//    override fun execute(context: JobExecutionContext) {
 //        val jobDataMap = context.jobDetail.jobDataMap
 //
 //        val jobRunId = generateJobId()
@@ -44,9 +45,9 @@ class TimetableFilesObserveJob(
 //        }
 //
 //        jobDataMap[PREV_RUN_ID_KEY] = jobRunId
-    }
+//    }
 
-    @Scheduled(fixedRate = 1000 * 60 * 1, initialDelay = 1000 * 60 * 0)
+    @Scheduled(fixedRate = 1000 * 60 * 1, initialDelay = 1000 * 60 * 1)
     @Deprecated("Remove after persist timetables")
     fun observe() {
         val jobRunId = generateJobId()
@@ -68,7 +69,7 @@ class TimetableFilesObserveJob(
     }
 
     companion object {
-        private const val JOB_ID_LOGGING_KEY = "jobRunId"
+        private const val JOB_ID_LOGGING_KEY = "job_run_id"
         private const val PREV_RUN_ID_KEY = "prevRunId"
 
         private val logger = KotlinLogging.logger {  }

@@ -12,6 +12,7 @@ open class InternalTimetable(
     val type: InternalTimetableType,
     val educationType: EducationType,
     val isParent: Boolean,
+    val source: InternalTimetableSource,
     val created: LocalDateTime = LocalDateTime.now(),
     val updated: LocalDateTime = LocalDateTime.now(),
 ) {
@@ -54,9 +55,10 @@ open class InternalTimetable(
         type: InternalTimetableType = this.type,
         educationType: EducationType = this.educationType,
         isParent: Boolean = this.isParent,
+        source: InternalTimetableSource = this.source,
         created: LocalDateTime = this.created,
         updated: LocalDateTime = this.updated,
     ): InternalTimetable {
-        return InternalTimetable(id, number, lessons, start, end, type, educationType, isParent, created, updated)
+        return InternalTimetable(id, number, lessons, start, end, type, educationType, isParent, source, created, updated)
     }
 }

@@ -1,6 +1,6 @@
 package com.melowetty.hsepermhelper.notification.verification
 
-import com.melowetty.hsepermhelper.notification.KafkaNotificationV2
+import com.melowetty.hsepermhelper.notification.NotificationV2
 import com.melowetty.hsepermhelper.notification.NotificationType
 
-class EmailIsVerifiedNotification: KafkaNotificationV2(NotificationType.EMAIL_IS_VERIFIED)
+class EmailIsVerifiedNotification: NotificationV2(NotificationType.EMAIL_IS_VERIFIED)

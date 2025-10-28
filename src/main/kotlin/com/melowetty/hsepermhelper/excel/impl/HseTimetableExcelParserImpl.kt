@@ -12,6 +12,7 @@ import com.melowetty.hsepermhelper.timetable.integration.excel.bachelor.shared.B
 import com.melowetty.hsepermhelper.timetable.integration.excel.bachelor.shared.TimetableTypeUtils
 import com.melowetty.hsepermhelper.timetable.model.EducationType
 import com.melowetty.hsepermhelper.timetable.model.ExcelTimetable
+import com.melowetty.hsepermhelper.timetable.model.InternalTimetableSource
 import com.melowetty.hsepermhelper.timetable.model.impl.GroupBasedLesson
 import com.melowetty.hsepermhelper.util.RowUtils.Companion.getCellValue
 import org.apache.poi.ss.usermodel.Sheet
@@ -65,6 +66,7 @@ class HseTimetableExcelParserImpl(
                 type = scheduleInfo.type,
                 educationType = EducationType.BACHELOR_OFFLINE,
                 isParent = true,
+                source = InternalTimetableSource.EXCEL,
             )
         } catch (exception: Exception) {
             log.error(

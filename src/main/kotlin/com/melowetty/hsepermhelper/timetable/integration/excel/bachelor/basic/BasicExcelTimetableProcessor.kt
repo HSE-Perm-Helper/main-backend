@@ -6,6 +6,7 @@ import com.melowetty.hsepermhelper.timetable.integration.excel.bachelor.shared.T
 import com.melowetty.hsepermhelper.timetable.integration.excel.bachelor.shared.TimetableParseUtils
 import com.melowetty.hsepermhelper.timetable.model.EducationType
 import com.melowetty.hsepermhelper.timetable.model.ExcelTimetable
+import com.melowetty.hsepermhelper.timetable.model.InternalTimetableSource
 import org.apache.poi.ss.usermodel.Workbook
 import org.springframework.stereotype.Component
 
@@ -33,6 +34,7 @@ class BasicExcelTimetableProcessor: ExcelTimetableProcessor {
                 type =scheduleInfo.type,
                 educationType = EducationType.BACHELOR_OFFLINE,
                 isParent = true,
+                source = InternalTimetableSource.EXCEL,
             )
         )
     }

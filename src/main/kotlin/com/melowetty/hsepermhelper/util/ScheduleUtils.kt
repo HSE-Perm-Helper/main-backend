@@ -32,6 +32,7 @@ class ScheduleUtils {
                 number = sortedSchedules.first().number,
                 lessons = sortedSchedules.flatMap { it.lessons }.sorted(),
                 isParent = true,
+                source = sortedSchedules.first().source,
             )
             return mergedSchedule
         }

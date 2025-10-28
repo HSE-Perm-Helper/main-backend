@@ -42,6 +42,8 @@ dependencies {
     implementation(libs.spring.quartz)
     implementation(libs.spring.tx)
 
+    implementation(libs.logback.encoder)
+
     implementation("com.github.ben-manes.caffeine:caffeine")
 
     implementation("org.liquibase:liquibase-core")

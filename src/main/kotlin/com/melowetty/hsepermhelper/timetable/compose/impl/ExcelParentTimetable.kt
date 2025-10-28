@@ -5,13 +5,15 @@ import com.melowetty.hsepermhelper.timetable.compose.ParentTimetable
 import com.melowetty.hsepermhelper.timetable.integration.excel.ExcelTimetableStorage
 import com.melowetty.hsepermhelper.timetable.model.InternalTimetable
 import com.melowetty.hsepermhelper.timetable.model.InternalTimetableInfo
-import com.melowetty.hsepermhelper.timetable.model.InternalTimetableProcessorType
+import com.melowetty.hsepermhelper.timetable.model.InternalTimetableSource
 import org.springframework.stereotype.Component
 
 @Component
-class BachelorParentTimetable(
+class ExcelParentTimetable(
     private val storage: ExcelTimetableStorage
 ) : ParentTimetable {
+    // TODO: добавить разделение по уровню образования
+
     override fun getTimetables(): List<InternalTimetableInfo> {
         return storage.getParentTimetables()
     }
@@ -20,8 +22,8 @@ class BachelorParentTimetable(
         return storage.getTimetableFilteredByGroup(id, user.settings.group)
     }
 
-    override fun getProcessorType(): InternalTimetableProcessorType {
-        return InternalTimetableProcessorType.BACHELOR_OFFLINE_TIMETABLE
+    override fun getProcessorType(): InternalTimetableSource {
+        return InternalTimetableSource.EXCEL
     }
 
     override fun isAvailableForUser(user: UserDto): Boolean {

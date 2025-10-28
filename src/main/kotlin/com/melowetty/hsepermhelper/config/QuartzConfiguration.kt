@@ -18,23 +18,23 @@ class QuartzConfiguration {
     @Value("\${jobs.timetable-files-obverse.cron}")
     private lateinit var timetableFilesObserveCron: String
 
-    @Bean
-    fun timetableFilesObserveJobDetail(): JobDetail {
-        return JobBuilder
-            .newJob(TimetableFilesObserveJob::class.java).withIdentity("TimetableFilesObserveJob")
-            .requestRecovery(true)
-            .storeDurably()
-            .build()
-    }
-
-    @Bean
-    fun timetableFilesObserveJobTrigger(): Trigger {
-        return TriggerBuilder.newTrigger().forJob(timetableFilesObserveJobDetail())
-            .withIdentity("TimetableFilesObserveJobTrigger")
-            .withSchedule(CronScheduleBuilder.cronSchedule(timetableFilesObserveCron))
-            .build()
-
-    }
+//    @Bean
+//    fun timetableFilesObserveJobDetail(): JobDetail {
+//        return JobBuilder
+//            .newJob(TimetableFilesObserveJob::class.java).withIdentity("TimetableFilesObserveJob")
+//            .requestRecovery(true)
+//            .storeDurably()
+//            .build()
+//    }
+//
+//    @Bean
+//    fun timetableFilesObserveJobTrigger(): Trigger {
+//        return TriggerBuilder.newTrigger().forJob(timetableFilesObserveJobDetail())
+//            .withIdentity("TimetableFilesObserveJobTrigger")
+//            .withSchedule(CronScheduleBuilder.cronSchedule(timetableFilesObserveCron))
+//            .build()
+//
+//    }
 
     @Bean
     fun scheduler(

@@ -20,6 +20,7 @@ class ScheduleExtensions {
                 educationType = educationType,
                 isParent = isParent,
                 lessonsHash = lessonsHash,
+                source = source,
             )
         }
 
