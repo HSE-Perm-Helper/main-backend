@@ -10,26 +10,26 @@ import com.melowetty.hsepermhelper.domain.model.schedule.ScheduleType
 import com.melowetty.hsepermhelper.timetable.model.InternalLesson
 import com.melowetty.hsepermhelper.timetable.model.InternalTimetable
 import com.melowetty.hsepermhelper.repository.ExcelScheduleRepository
+import io.mockk.impl.annotations.InjectMockKs
+import io.mockk.impl.annotations.MockK
+import io.mockk.junit5.MockKExtension
 import java.time.DayOfWeek
 import java.time.LocalDate
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
-import org.mockito.InjectMocks
-import org.mockito.Mock
-import org.mockito.junit.jupiter.MockitoExtension
 
-@ExtendWith(MockitoExtension::class)
+@ExtendWith(MockKExtension::class)
 class ScheduleServiceTest {
-    @InjectMocks
+    @InjectMockKs
     private lateinit var scheduleService: ExcelScheduleService
 
-    @Mock
+    @MockK
     private lateinit var scheduleRepository: ExcelScheduleRepository
 
-    @Mock
+    @MockK
     private lateinit var userService: UserService
 
-    @Mock
+    @MockK
     private lateinit var notificationService: NotificationService
 }

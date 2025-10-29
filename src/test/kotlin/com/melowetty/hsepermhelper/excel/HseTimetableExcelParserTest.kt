@@ -5,23 +5,23 @@ import com.melowetty.hsepermhelper.excel.model.ParsedScheduleInfo
 import com.melowetty.hsepermhelper.service.NotificationService
 import com.melowetty.hsepermhelper.timetable.integration.excel.bachelor.shared.BachelorTimetableSheetExcelParser
 import com.melowetty.hsepermhelper.timetable.model.InternalTimetableType
+import io.mockk.impl.annotations.InjectMockKs
+import io.mockk.impl.annotations.MockK
+import io.mockk.junit5.MockKExtension
 import java.time.LocalDate
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
-import org.mockito.InjectMocks
-import org.mockito.Mock
-import org.mockito.junit.jupiter.MockitoExtension
 
-@ExtendWith(MockitoExtension::class)
+@ExtendWith(MockKExtension::class)
 class HseTimetableExcelParserTest {
-    @InjectMocks
+    @InjectMockKs
     private lateinit var parser: HseTimetableExcelParserImpl
 
-    @Mock
+    @MockK
     private lateinit var sheetParser: BachelorTimetableSheetExcelParser
 
-    @Mock
+    @MockK
     private lateinit var notificationService: NotificationService
 
     @Test

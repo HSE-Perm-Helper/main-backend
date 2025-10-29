@@ -13,4 +13,14 @@ object LoggingUtils {
             MDC.clear()
         }
     }
+
+    fun executeWithRequestIdContext(block: () -> Unit) {
+        val requestId = RequestIdGenerator.generate()
+        try {
+            MDC.put(LOGGING_REQUEST_ID_KEY, requestId)
+            return block()
+        } finally {
+            MDC.clear()
+        }
+    }
 }

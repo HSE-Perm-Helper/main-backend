@@ -3,6 +3,7 @@ package com.melowetty.hsepermhelper.service.impl.timetable
 import com.melowetty.hsepermhelper.timetable.integration.excel.ExcelTimetableStorage
 import com.melowetty.hsepermhelper.timetable.model.EducationType
 import com.melowetty.hsepermhelper.timetable.model.InternalTimetableInfo
+import com.melowetty.hsepermhelper.timetable.model.InternalTimetableSource
 import com.melowetty.hsepermhelper.timetable.model.InternalTimetableType
 import io.mockk.Runs
 import io.mockk.every
@@ -55,6 +56,7 @@ class ExcelTimetableNormalizerServiceTest {
             educationType = EducationType.BACHELOR_OFFLINE,
             isParent = true,
             lessonsHash = 123,
+            source = InternalTimetableSource.EXCEL,
         )
     }
 }

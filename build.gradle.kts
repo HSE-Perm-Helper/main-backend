@@ -76,15 +76,14 @@ dependencies {
 
     developmentOnly("org.springframework.boot:spring-boot-devtools")
 
-    // TODO: Remove mockito from spring test starter
-    testImplementation("org.springframework.boot:spring-boot-starter-test")
+    testImplementation("org.springframework.boot:spring-boot-starter-test") {
+        exclude(group = "org.mockito", module = "mockito-core")
+        exclude(group = "org.mockito", module = "mockito-junit-jupiter")
+    }
     testImplementation("org.springframework.kafka:spring-kafka-test")
 
-    // TODO: Remove mockito from project
-    testImplementation("org.mockito:mockito-core:${mockitoVersion}")
-    testImplementation("org.mockito.kotlin:mockito-kotlin:${mockitoKotlinVersion}")
-
     testImplementation(libs.mockK)
+    testImplementation(libs.spring.mockk)
 }
 dependencyManagement {
     imports {
