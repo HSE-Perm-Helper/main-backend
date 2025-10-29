@@ -1,7 +1,5 @@
 package com.melowetty.hsepermhelper.excel.impl
 
-import com.melowetty.hsepermhelper.annotation.Slf4j
-import com.melowetty.hsepermhelper.annotation.Slf4j.Companion.log
 import com.melowetty.hsepermhelper.domain.model.file.File
 import com.melowetty.hsepermhelper.excel.HseTimetableExcelParser
 import com.melowetty.hsepermhelper.excel.model.ParsedExcelInfo
@@ -15,6 +13,7 @@ import com.melowetty.hsepermhelper.timetable.model.ExcelTimetable
 import com.melowetty.hsepermhelper.timetable.model.InternalTimetableSource
 import com.melowetty.hsepermhelper.timetable.model.impl.GroupBasedLesson
 import com.melowetty.hsepermhelper.util.RowUtils.Companion.getCellValue
+import io.github.oshai.kotlinlogging.KotlinLogging
 import org.apache.poi.ss.usermodel.Sheet
 import org.apache.poi.ss.usermodel.Workbook
 import org.apache.poi.ss.usermodel.WorkbookFactory
@@ -24,18 +23,10 @@ import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
 @Component
-@Slf4j
 class HseTimetableExcelParserImpl(
     private val sheetParser: BachelorTimetableSheetExcelParser,
     private val notificationService: NotificationService
 ) : HseTimetableExcelParser {
-    companion object {
-        private const val NUMS_DETECT_REGEX_PATTERN = "[\\d\\.]+"
-        private const val SCHEDULE_DATES_REGEX_PATTERN = "[\\(]{1}(.+)[\\)]{1}"
-
-        private val numsDetectRegex = NUMS_DETECT_REGEX_PATTERN.toRegex()
-        private val scheduleDatesRegex = SCHEDULE_DATES_REGEX_PATTERN.toRegex()
-    }
 
     private fun getWorkbook(inputStream: InputStream): Workbook {
         return WorkbookFactory.create(inputStream)
@@ -69,10 +60,9 @@ class HseTimetableExcelParserImpl(
                 source = InternalTimetableSource.EXCEL,
             )
         } catch (exception: Exception) {
-            log.error(
-                "Произошла ошибка во время обработки файла с расписанием! Файл: ${file.name}\n" +
-                        "Stacktrace: ", exception
-            )
+            logger.error(exception) {
+                "Произошла ошибка во время обработки файла с расписанием! Файл: ${file.name}\n"
+            }
 
             notificationService.sendNotificationV2(
                 ServiceWarnNotification(
@@ -115,7 +105,7 @@ class HseTimetableExcelParserImpl(
                 val value = row.getCellValue(i)?.let { parseScheduleInfo(it) }
                 if (value != null) return value
             } catch (e: RuntimeException) {
-                log.trace(e.stackTraceToString())
+                logger.trace(e) { "Got error when get schedule info by sheet ${sheet.sheetName}" }
                 continue
             }
         }
@@ -168,5 +158,15 @@ class HseTimetableExcelParserImpl(
 
     private fun filterSheet(sheet: Sheet): Boolean {
         return sheet.sheetName.lowercase() != "доц"
+    }
+
+    companion object {
+        private const val NUMS_DETECT_REGEX_PATTERN = "[\\d\\.]+"
+        private const val SCHEDULE_DATES_REGEX_PATTERN = "[\\(]{1}(.+)[\\)]{1}"
+
+        private val numsDetectRegex = NUMS_DETECT_REGEX_PATTERN.toRegex()
+        private val scheduleDatesRegex = SCHEDULE_DATES_REGEX_PATTERN.toRegex()
+
+        private val logger = KotlinLogging.logger {  }
     }
 }

@@ -1,6 +1,5 @@
 package com.melowetty.hsepermhelper.repository.impl
 
-import com.melowetty.hsepermhelper.annotation.Slf4j
 import com.melowetty.hsepermhelper.domain.model.file.File
 import com.melowetty.hsepermhelper.repository.ScheduleFilesRepository
 import java.io.InputStream

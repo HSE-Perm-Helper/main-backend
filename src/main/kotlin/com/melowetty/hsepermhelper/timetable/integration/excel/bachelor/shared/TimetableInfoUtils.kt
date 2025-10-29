@@ -1,9 +1,9 @@
 package com.melowetty.hsepermhelper.timetable.integration.excel.bachelor.shared
 
-import com.melowetty.hsepermhelper.annotation.Slf4j.Companion.log
 import com.melowetty.hsepermhelper.excel.model.ParsedExcelInfo
 import com.melowetty.hsepermhelper.excel.model.ParsedScheduleInfo
 import com.melowetty.hsepermhelper.util.RowUtils.Companion.getCellValue
+import io.github.oshai.kotlinlogging.KotlinLogging
 import org.apache.poi.ss.usermodel.Sheet
 import org.apache.poi.ss.usermodel.Workbook
 import java.time.LocalDate
@@ -15,6 +15,8 @@ object TimetableInfoUtils {
 
     private val numsDetectRegex = NUMS_DETECT_REGEX_PATTERN.toRegex()
     private val scheduleDatesRegex = SCHEDULE_DATES_REGEX_PATTERN.toRegex()
+
+    private val logger = KotlinLogging.logger {  }
 
     fun getTimetableInfoIteratively(workbook: Workbook): ParsedScheduleInfo? {
         for (sheet in workbook.sheetIterator()) {
@@ -32,7 +34,7 @@ object TimetableInfoUtils {
                 val value = row.getCellValue(i)?.let { parseScheduleInfo(it) }
                 if (value != null) return value
             } catch (e: RuntimeException) {
-                log.trace(e.stackTraceToString())
+                logger.trace(e) { "Не удалось распознать расписание, sheet ${sheet.sheetName}" }
                 continue
             }
         }

@@ -13,11 +13,8 @@ val springCloudVersion by extra("2022.0.4")
 val apachePoiVersion = "5.2.3"
 val caffeineVersion = "3.2.0"
 val postgresVersion = "42.6.0"
-val slf4jVersion = "2.0.0"
 val springDocStarterVersion = "2.2.0"
 val springDocKotlinVersion = "2.2.0"
-val mockitoVersion = "5.11.0"
-val mockitoKotlinVersion = "5.4.0"
 val jsoupVersion = "1.16.1"
 val kotlinLoggingVersion = "7.0.3"
 
@@ -64,8 +61,6 @@ dependencies {
     implementation("org.springframework.cloud:spring-cloud-starter-openfeign")
 
     implementation("io.github.oshai:kotlin-logging-jvm:${kotlinLoggingVersion}")
-
-    implementation("org.slf4j:slf4j-api:${slf4jVersion}")
 
     implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:${springDocStarterVersion}")
 

@@ -1,7 +1,5 @@
 package com.melowetty.hsepermhelper.timetable.integration.excel.bachelor.shared.impl
 
-import com.melowetty.hsepermhelper.annotation.Slf4j
-import com.melowetty.hsepermhelper.annotation.Slf4j.Companion.log
 import com.melowetty.hsepermhelper.domain.model.lesson.CycleTime
 import com.melowetty.hsepermhelper.domain.model.lesson.LessonTime
 import com.melowetty.hsepermhelper.domain.model.lesson.ScheduledTime
@@ -15,6 +13,7 @@ import com.melowetty.hsepermhelper.service.NotificationService
 import com.melowetty.hsepermhelper.timetable.model.InternalTimetableType
 import com.melowetty.hsepermhelper.timetable.model.impl.GroupBasedLesson
 import com.melowetty.hsepermhelper.util.RowUtils.Companion.getCellValue
+import io.github.oshai.kotlinlogging.KotlinLogging
 import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
@@ -25,7 +24,6 @@ import org.apache.poi.ss.usermodel.Sheet
 import org.springframework.stereotype.Component
 
 @Component
-@Slf4j
 class BachelorTimetableSheetExcelParserImpl(
     private val cellParser: HseTimetableCellExcelParser,
     private val notificationService: NotificationService,
@@ -87,11 +85,10 @@ class BachelorTimetableSheetExcelParserImpl(
                 lessons.addAll(parsedLessons)
 
             } catch (e: Exception) {
-                log.error("Произошла ошибка во время обработки пары!")
-                log.error(
-                    "Расписание: ${rowData.scheduleInfo}, sheet: ${row.sheet.sheetName}, cellAddress: ${cell.address}, value: $cellValue, stacktrace: ",
-                    e
-                )
+                logger.error { "Произошла ошибка во время обработки пары!" }
+                logger.error(e) {
+                    "Расписание: ${rowData.scheduleInfo}, sheet: ${row.sheet.sheetName}, cellAddress: ${cell.address}, value: $cellValue, stacktrace: "
+                }
 
                 notificationService.sendNotificationV2(
                     ServiceWarnNotification(
@@ -202,5 +199,9 @@ class BachelorTimetableSheetExcelParserImpl(
 
     internal class PreviousData {
         var prevDay = ""
+    }
+
+    companion object {
+        private val logger = KotlinLogging.logger {  }
     }
 }

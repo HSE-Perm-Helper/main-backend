@@ -1,6 +1,5 @@
 package com.melowetty.hsepermhelper.scheduled
 
-import com.melowetty.hsepermhelper.annotation.Slf4j
 import com.melowetty.hsepermhelper.domain.entity.UserEntity
 import com.melowetty.hsepermhelper.domain.model.schedule.Schedule
 import com.melowetty.hsepermhelper.extension.UserExtensions.Companion.getGroupedEntityBySettingsUsers
@@ -15,7 +14,6 @@ import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component
 
 @Component
-@Slf4j
 class NotifyComingScheduleJob(
     private val userRepository: UserRepository,
     private val scheduleService: OldPersonalScheduleService,
