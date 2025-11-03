@@ -1,64 +1,73 @@
 package com.melowetty.hsepermhelper.service.impl
 
-import com.melowetty.hsepermhelper.domain.model.user.UserCreateRequest
+import com.melowetty.hsepermhelper.domain.dto.ApiUserHideLesson
 import com.melowetty.hsepermhelper.domain.dto.EmailVerificationDto
-import com.melowetty.hsepermhelper.domain.dto.HideLessonDto
 import com.melowetty.hsepermhelper.domain.dto.RemoteScheduleLink
 import com.melowetty.hsepermhelper.domain.dto.SettingsDto
 import com.melowetty.hsepermhelper.domain.dto.UserDto
-import com.melowetty.hsepermhelper.domain.entity.HideLessonEntity
-import com.melowetty.hsepermhelper.domain.entity.SettingsEntity
-import com.melowetty.hsepermhelper.domain.entity.UserEntity
-import com.melowetty.hsepermhelper.domain.model.user.UserRole
 import com.melowetty.hsepermhelper.domain.model.event.EmailIsVerifiedEvent
 import com.melowetty.hsepermhelper.domain.model.event.UserEventType
-import com.melowetty.hsepermhelper.exception.UserIsExistsException
-import com.melowetty.hsepermhelper.exception.UserNotFoundException
+import com.melowetty.hsepermhelper.domain.model.user.EducationGroupEntity
+import com.melowetty.hsepermhelper.domain.model.user.UserCreateRequest
+import com.melowetty.hsepermhelper.domain.model.user.UserRole
+import com.melowetty.hsepermhelper.exception.user.UserByIdNotFoundException
+import com.melowetty.hsepermhelper.exception.user.UserByTelegramIdNotFoundException
+import com.melowetty.hsepermhelper.exception.user.UserIsExistsException
+import com.melowetty.hsepermhelper.exception.user.UserNotFoundException
 import com.melowetty.hsepermhelper.extension.UserExtensions.Companion.toDto
 import com.melowetty.hsepermhelper.extension.UserExtensions.Companion.toEntity
 import com.melowetty.hsepermhelper.messaging.event.notification.verification.EmailIsVerifiedNotification
-import com.melowetty.hsepermhelper.repository.HiddenLessonRepository
-import com.melowetty.hsepermhelper.repository.UserRepository
+import com.melowetty.hsepermhelper.persistence.entity.UserEntity
+import com.melowetty.hsepermhelper.persistence.projection.UserRecord
+import com.melowetty.hsepermhelper.persistence.repository.UserRepository
+import com.melowetty.hsepermhelper.persistence.storage.UserStorage
 import com.melowetty.hsepermhelper.service.EmailVerificationService
 import com.melowetty.hsepermhelper.service.NotificationService
+import com.melowetty.hsepermhelper.service.OldUserService
 import com.melowetty.hsepermhelper.service.RemoteScheduleService
 import com.melowetty.hsepermhelper.service.UserEventService
-import com.melowetty.hsepermhelper.service.UserService
+import com.melowetty.hsepermhelper.service.UserHiddenLessonService
+import com.melowetty.hsepermhelper.timetable.model.EducationType
+import com.melowetty.hsepermhelper.util.Paginator
 import com.melowetty.hsepermhelper.validation.annotation.ValidHseEmail
 import jakarta.validation.Valid
-import java.util.UUID
-import kotlin.jvm.optionals.getOrNull
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.event.EventListener
 import org.springframework.stereotype.Service
 import org.springframework.util.ReflectionUtils
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.util.UriComponentsBuilder
+import java.util.*
+import kotlin.jvm.optionals.getOrNull
 
 @Service
 @Validated
-@Deprecated("Remove telegram id from service")
-class UserServiceImpl(
+@Deprecated("Migrate to new user service")
+class OldUserServiceImpl(
     private val userRepository: UserRepository,
-    private val hiddenLessonRepository: HiddenLessonRepository,
+    private val userStorage: UserStorage,
     private val remoteScheduleService: RemoteScheduleService,
     private val emailVerificationService: EmailVerificationService,
     private val notificationService: NotificationService,
-    private val userEventService: UserEventService
-) : UserService {
+    private val userEventService: UserEventService,
+    private val userHiddenLessonService: UserHiddenLessonService,
+) : OldUserService {
     @Value("\${remote-schedule.connect-url}")
     private lateinit var remoteScheduleConnectUrl: String
 
     override fun getByTelegramId(telegramId: Long): UserDto {
-        return getUserEntityByTelegramId(telegramId).toDto()
+        val user = getUserRecordByTelegramId(telegramId)
+
+        return user.toDto()
     }
 
     override fun getById(id: UUID): UserDto {
-        val user = userRepository.findById(id)
-        if (user.isEmpty) throw UserNotFoundException("Пользователь с таким ID не найден!")
-        return user.get().toDto()
+        val user = getUserRecordById(id)
+
+        return user.toDto()
     }
 
+    // TODO: исправить запрос на создание пользователя с запросом Education Type по его группе
     override fun create(request: UserCreateRequest): UserDto {
         val isExists = userRepository.existsByTelegramId(request.telegramId)
         if (isExists) {
@@ -67,13 +76,19 @@ class UserServiceImpl(
 
         val user = UserEntity(
             telegramId = request.telegramId,
-            settings = SettingsEntity(
-                group = request.group
+            educationGroup = EducationGroupEntity(
+                group = request.group,
+                educationType = EducationType.BACHELOR_OFFLINE,
             ),
+            isEnabledNewScheduleNotifications = true,
+            isEnabledChangedScheduleNotifications = true,
+            isEnabledComingLessonsNotifications = false,
             roles = listOf(UserRole.USER)
         )
 
-        return userRepository.save(user).toDto()
+        return userRepository.save(user).toDto(
+            listOf()
+        )
     }
 
     override fun deleteById(id: UUID) {
@@ -91,7 +106,7 @@ class UserServiceImpl(
         val userId = getByTelegramId(user.telegramId).id
         val newUser = userRepository.save(
             user.copy(id = userId).toEntity()
-        ).toDto()
+        ).toDtoWithFetchHiddenLessons()
 
         return newUser
     }
@@ -102,7 +117,7 @@ class UserServiceImpl(
             user.copy(
                 settings = settings
             ).toEntity()
-        ).toDto()
+        ).toDtoWithFetchHiddenLessons()
 
         return newUser
     }
@@ -127,71 +142,36 @@ class UserServiceImpl(
         return updateUserSettings(telegramId, userSettings)
     }
 
-    override fun addHiddenLesson(telegramId: Long, lesson: HideLessonDto): UserDto {
-        val user = getUserEntityByTelegramId(telegramId)
-        val hiddenLessons = user.settings.hiddenLessons.toMutableSet()
+    override fun addHiddenLesson(telegramId: Long, lesson: ApiUserHideLesson): UserDto {
+        val user = getUserRecordByTelegramId(telegramId)
 
-        if (hiddenLessons.any {
-                it.lesson == lesson.lesson
-                        && it.lessonType == lesson.lessonType
-                        && it.subGroup == lesson.subGroup
-            }) {
-            throw RuntimeException("Эта пара уже скрыта!")
-        }
+        userHiddenLessonService.hideLesson(user.id, lesson.lesson, lesson.lessonType, lesson.subGroup)
 
-        val lessonEntity = hiddenLessonRepository.save(
-            HideLessonEntity(
-                lesson = lesson.lesson,
-                lessonType = lesson.lessonType,
-                subGroup = lesson.subGroup
-            )
-        )
+        val hiddenLessons = userHiddenLessonService.getUserHiddenLessons(user.id)
+        val newUser = user.copy(hiddenLessons = hiddenLessons)
 
-        hiddenLessons.add(lessonEntity)
-
-        return userRepository.save(
-            user.copy(
-                settings = user.settings.copy(
-                    hiddenLessons = hiddenLessons,
-                )
-            )
-        ).toDto()
+        return newUser.toDto()
     }
 
-    override fun removeHiddenLesson(telegramId: Long, lesson: HideLessonDto): UserDto {
-        val user = getUserEntityByTelegramId(telegramId)
-        val hiddenLessons = user.settings.hiddenLessons.toMutableSet()
+    override fun removeHiddenLesson(telegramId: Long, lesson: ApiUserHideLesson): UserDto {
+        val user = getUserRecordByTelegramId(telegramId)
 
-        hiddenLessons.removeIf {
-            if (it.lesson == lesson.lesson
-                && it.lessonType == lesson.lessonType
-                && it.subGroup == lesson.subGroup
-            ) {
-                hiddenLessonRepository.delete(it)
-                return@removeIf true
-            }
-            return@removeIf false
-        }
+        userHiddenLessonService.unHideLesson(user.id, lesson.lesson, lesson.lessonType, lesson.subGroup)
 
-        return userRepository.save(
-            user.copy(
-                settings = user.settings.copy(
-                    hiddenLessons = hiddenLessons,
-                )
-            )
-        ).toDto()
+        val hiddenLessons = userHiddenLessonService.getUserHiddenLessons(user.id)
+        val newUser = user.copy(hiddenLessons = hiddenLessons)
+
+        return newUser.toDto()
     }
 
     override fun clearHiddenLessons(telegramId: Long): UserDto {
-        val user = getUserEntityByTelegramId(telegramId)
+        val user = getUserRecordByTelegramId(telegramId)
 
-        hiddenLessonRepository.deleteAllInBatch(user.settings.hiddenLessons)
+        userHiddenLessonService.clearHiddenLessons(user.id)
 
-        return userRepository.save(
-            user.copy(
-                settings = user.settings.copy(hiddenLessons = setOf())
-            )
-        ).toDto()
+        val clearedUser = user.copy(hiddenLessons = listOf())
+
+        return clearedUser.toDto()
     }
 
     override fun getRemoteScheduleLink(telegramId: Long): RemoteScheduleLink {
@@ -256,12 +236,39 @@ class UserServiceImpl(
             .toUriString()
     }
 
-    override fun getAllUsers(): List<UserDto> {
-        return userRepository.findAll().map { it.toDto() }
+    @Deprecated("Use projection")
+    private fun getUserEntityByTelegramId(telegramId: Long): UserEntity {
+        return userRepository.findByTelegramId(telegramId).getOrNull()
+            ?: throw UserByTelegramIdNotFoundException(telegramId)
     }
 
-    private fun getUserEntityByTelegramId(telegramId: Long): UserEntity {
-        return userRepository.findByTelegramId(telegramId)
-            .orElseThrow { UserNotFoundException("Пользователь с таким telegram ID не найден!") }
+    private fun getUserRecordByTelegramId(telegramId: Long): UserRecord {
+        return userStorage.findUserByTelegramId(telegramId)
+            ?: throw UserByTelegramIdNotFoundException(telegramId)
+    }
+
+    private fun getUserRecordById(id: UUID): UserRecord {
+        return userStorage.findUserById(id) ?: throw UserByIdNotFoundException(id)
+    }
+
+    private fun UserEntity.toDtoWithFetchHiddenLessons(): UserDto {
+        return toDto(userHiddenLessonService.getUserHiddenLessons(id))
+    }
+
+    override fun getAllUsers(): List<UserDto> {
+        val result = mutableListOf<UserDto>()
+        Paginator.fetchPageable(
+            fetchFunction = { limit, token ->
+                val options = UserStorage.Options(
+                    withRoles = true,
+                    withHiddenLessons = true
+                )
+                userStorage.findUsersAfterId(token, limit, options = options)
+            }
+        ) { users ->
+            result.addAll(users.map { it.toDto() })
+        }
+
+        return result
     }
 }

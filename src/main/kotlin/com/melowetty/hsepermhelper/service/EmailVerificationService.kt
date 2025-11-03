@@ -1,16 +1,16 @@
 package com.melowetty.hsepermhelper.service
 
 import com.melowetty.hsepermhelper.domain.dto.EmailVerificationDto
-import com.melowetty.hsepermhelper.domain.entity.EmailVerificationEntity
+import com.melowetty.hsepermhelper.persistence.entity.EmailVerificationEntity
 import com.melowetty.hsepermhelper.domain.model.event.EmailIsVerifiedEvent
 import com.melowetty.hsepermhelper.messaging.event.notification.verification.EmailVerificationSendNotification
-import com.melowetty.hsepermhelper.exception.UserNotFoundException
+import com.melowetty.hsepermhelper.exception.user.UserNotFoundException
 import com.melowetty.hsepermhelper.exception.verification.ReachMaxAttemptsToVerificationRequestException
 import com.melowetty.hsepermhelper.exception.verification.VerificationNotFoundOrExpiredException
 import com.melowetty.hsepermhelper.exception.verification.VerificationRequestNotFoundException
 import com.melowetty.hsepermhelper.exception.verification.VerificationRequestYetNotReadyForResendException
-import com.melowetty.hsepermhelper.repository.EmailVerificationRepository
-import com.melowetty.hsepermhelper.repository.UserRepository
+import com.melowetty.hsepermhelper.persistence.repository.EmailVerificationRepository
+import com.melowetty.hsepermhelper.persistence.repository.UserRepository
 import java.time.LocalDateTime
 import org.apache.commons.lang3.RandomStringUtils
 import org.springframework.beans.factory.annotation.Value

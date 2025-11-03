@@ -2,7 +2,7 @@ package com.melowetty.hsepermhelper.job
 
 import com.melowetty.hsepermhelper.context.JobRunContextHolder
 import com.melowetty.hsepermhelper.domain.model.context.JobRunContext
-import com.melowetty.hsepermhelper.repository.ScheduleFilesRepository
+import com.melowetty.hsepermhelper.persistence.repository.ScheduleFilesRepository
 import com.melowetty.hsepermhelper.service.impl.timetable.ExcelTimetableFilesProcessService
 import io.github.oshai.kotlinlogging.KotlinLogging
 import org.quartz.DisallowConcurrentExecution

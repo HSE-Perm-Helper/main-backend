@@ -1,8 +1,8 @@
 package com.melowetty.hsepermhelper.interceptor
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.melowetty.hsepermhelper.exception.UserNotFoundException
-import com.melowetty.hsepermhelper.repository.UserRepository
+import com.melowetty.hsepermhelper.exception.user.UserByTelegramIdNotFoundException
+import com.melowetty.hsepermhelper.persistence.storage.UserStorage
 import jakarta.servlet.FilterChain
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletRequestWrapper
@@ -13,7 +13,7 @@ import org.springframework.web.filter.OncePerRequestFilter
 
 @Component
 class TelegramIdRewriteFilter(
-    private val userRepository: UserRepository,
+    private val userStorage: UserStorage,
     private val objectMapper: ObjectMapper,
 ) : OncePerRequestFilter() {
 
@@ -31,7 +31,7 @@ class TelegramIdRewriteFilter(
             val telegramId = matchResult.groupValues[1].toLongOrNull()
 
             if (telegramId != null) {
-                val id = userRepository.getIdByTelegramId(telegramId)
+                val id = userStorage.getUserIdByTelegramId(telegramId)
 
                 if (id != null) {
                     val newPath = path.replace(
@@ -43,7 +43,7 @@ class TelegramIdRewriteFilter(
                     filterChain.doFilter(wrappedRequest, response)
                     return
                 } else {
-                    val error = UserNotFoundException("User with telegramId=$telegramId not found").toResponseEntity()
+                    val error = UserByTelegramIdNotFoundException(telegramId).toResponseEntity()
                     writeResponseEntity(response, error)
                     return
                 }
@@ -57,7 +57,7 @@ class TelegramIdRewriteFilter(
         response: HttpServletResponse,
         responseEntity: ResponseEntity<*>
     ) {
-        response.status = responseEntity.statusCodeValue
+        response.status = responseEntity.statusCode.value()
         responseEntity.headers.forEach { (key, values) ->
             values.forEach { value ->
                 response.addHeader(key, value)

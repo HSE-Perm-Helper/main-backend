@@ -2,7 +2,7 @@ package com.melowetty.hsepermhelper.service
 
 import com.melowetty.hsepermhelper.domain.model.event.UserEventType
 import com.melowetty.hsepermhelper.messaging.broker.MessageBrokerService
-import com.melowetty.hsepermhelper.repository.UserRepository
+import com.melowetty.hsepermhelper.persistence.repository.UserRepository
 import io.github.oshai.kotlinlogging.KotlinLogging
 import org.springframework.stereotype.Service
 import java.util.*

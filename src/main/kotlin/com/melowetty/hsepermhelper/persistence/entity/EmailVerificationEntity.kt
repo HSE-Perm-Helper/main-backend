@@ -1,4 +1,4 @@
-package com.melowetty.hsepermhelper.domain.entity
+package com.melowetty.hsepermhelper.persistence.entity
 
 import jakarta.persistence.Column
 import jakarta.persistence.Entity

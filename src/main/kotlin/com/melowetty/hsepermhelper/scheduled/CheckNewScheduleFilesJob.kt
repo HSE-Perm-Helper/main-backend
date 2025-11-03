@@ -8,6 +8,7 @@ import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component
 
 @Component
+@Deprecated("Remove when old timetables flow is not needed")
 class CheckNewScheduleFilesJob(
     private val eventPublisher: ApplicationEventPublisher,
     private val filesCheckingChangesService: FilesCheckingChangesService,

@@ -1,23 +1,23 @@
-package com.melowetty.hsepermhelper.domain.entity
+package com.melowetty.hsepermhelper.persistence.entity
 
+import com.melowetty.hsepermhelper.domain.model.user.EducationGroupEntity
 import com.melowetty.hsepermhelper.domain.model.user.UserRole
-import jakarta.persistence.CascadeType
 import jakarta.persistence.CollectionTable
 import jakarta.persistence.Column
 import jakarta.persistence.ElementCollection
+import jakarta.persistence.Embedded
 import jakarta.persistence.Entity
+import jakarta.persistence.EnumType
+import jakarta.persistence.Enumerated
 import jakarta.persistence.FetchType
 import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
 import jakarta.persistence.JoinColumn
-import jakarta.persistence.OneToOne
 import jakarta.persistence.Table
-import java.time.LocalDateTime
-import org.hibernate.annotations.OnDelete
-import org.hibernate.annotations.OnDeleteAction
-import java.util.UUID
 import org.springframework.data.annotation.CreatedDate
+import java.time.LocalDateTime
+import java.util.*
 
 @Entity
 @Table(name = "users")
@@ -29,13 +29,20 @@ data class UserEntity(
     @Column(name = "telegram_id", unique = true)
     val telegramId: Long = 0L,
 
-    @Column
+    @Column(name = "email")
     val email: String? = null,
 
-    @OneToOne(cascade = [CascadeType.ALL])
-    @OnDelete(action = OnDeleteAction.CASCADE)
-    @JoinColumn(name = "settings_id")
-    val settings: SettingsEntity,
+    @Embedded
+    val educationGroup: EducationGroupEntity,
+
+    @Column(name = "is_enabled_new_schedule_notification")
+    val isEnabledNewScheduleNotifications: Boolean,
+
+    @Column(name = "is_enabled_changed_schedule_notification")
+    val isEnabledChangedScheduleNotifications: Boolean,
+
+    @Column(name = "is_enabled_coming_lessons_notification")
+    val isEnabledComingLessonsNotifications: Boolean,
 
     @CreatedDate
     val createdDate: LocalDateTime = LocalDateTime.now(),
@@ -44,7 +51,8 @@ data class UserEntity(
         name = "user_role",
         joinColumns = [JoinColumn(name = "user_id")]
     )
-    @ElementCollection(fetch = FetchType.EAGER)
-    @Column(name = "role_id")
+    @ElementCollection(fetch = FetchType.LAZY)
+    @Column(name = "role")
+    @Enumerated(EnumType.STRING)
     val roles: List<UserRole>,
 )

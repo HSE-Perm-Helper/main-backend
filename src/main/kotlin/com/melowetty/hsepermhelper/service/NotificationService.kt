@@ -5,7 +5,7 @@ import com.melowetty.hsepermhelper.messaging.broker.MessageBrokerService
 import com.melowetty.hsepermhelper.messaging.event.notification.NotificationV2
 import com.melowetty.hsepermhelper.messaging.event.notification.Notification
 import com.melowetty.hsepermhelper.messaging.event.notification.NotificationRecipient
-import com.melowetty.hsepermhelper.repository.UserRepository
+import com.melowetty.hsepermhelper.persistence.repository.UserRepository
 import org.springframework.stereotype.Service
 import java.util.UUID
 

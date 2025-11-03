@@ -11,6 +11,7 @@ import com.melowetty.hsepermhelper.service.impl.timetable.TimetableChangeDetecti
 import com.melowetty.hsepermhelper.service.impl.timetable.TimetableNotificationService
 import com.melowetty.hsepermhelper.util.LoggingUtils
 import io.github.oshai.kotlinlogging.KotlinLogging
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
 import org.springframework.kafka.annotation.KafkaListener
 import org.springframework.kafka.annotation.RetryableTopic
 import org.springframework.kafka.retrytopic.DltStrategy
@@ -18,6 +19,7 @@ import org.springframework.retry.annotation.Backoff
 import org.springframework.stereotype.Component
 
 @Component
+@ConditionalOnProperty("app.message-broker.type", havingValue = "kafka")
 class TasksConsumer(
     private val objectMapper: ObjectMapper,
     private val timetableChangeDetectionService: TimetableChangeDetectionService,
@@ -52,10 +54,6 @@ class TasksConsumer(
 
                     is NewTimetableNotifyTask -> {
                         timetableNotificationService.notifyAboutAddedTimetables(task.timetables)
-                    }
-
-                    else -> {
-                        throw IllegalArgumentException("Unknown task type: ${task::class.simpleName}")
                     }
                 }
             } catch (e: RuntimeException) {

@@ -1,4 +1,4 @@
-package com.melowetty.hsepermhelper.repository
+package com.melowetty.hsepermhelper.persistence.repository
 
 import com.melowetty.hsepermhelper.domain.model.file.FilesChanging
 import com.melowetty.hsepermhelper.excel.HseTimetableExcelParser

@@ -1,7 +1,7 @@
-package com.melowetty.hsepermhelper.repository.impl
+package com.melowetty.hsepermhelper.persistence.repository.impl
 
 import com.melowetty.hsepermhelper.domain.model.file.File
-import com.melowetty.hsepermhelper.repository.ScheduleFilesRepository
+import com.melowetty.hsepermhelper.persistence.repository.ScheduleFilesRepository
 import java.io.InputStream
 import java.net.URL
 import org.jsoup.Jsoup

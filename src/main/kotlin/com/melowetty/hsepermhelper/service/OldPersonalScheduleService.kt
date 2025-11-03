@@ -21,7 +21,7 @@ import org.springframework.stereotype.Service
 class OldPersonalScheduleService(
     private val excelScheduleService: ExcelScheduleService,
     private val hseAppApiService: HseAppApiService,
-    private val userService: UserService,
+    private val oldUserService: OldUserService,
 ) {
     fun getScheduleByGroup(group: String) = excelScheduleService.getScheduleByGroup(group)
 
@@ -37,7 +37,7 @@ class OldPersonalScheduleService(
     }
 
     fun getUserSchedulesByTelegramId(telegramId: Long): List<Schedule> {
-        val user = userService.getByTelegramId(telegramId)
+        val user = oldUserService.getByTelegramId(telegramId)
 
         val schedules = excelScheduleService.getUserSchedules(user)
 
@@ -82,7 +82,7 @@ class OldPersonalScheduleService(
     }
 
     fun getUserScheduleByTelegramId(telegramId: Long, start: LocalDate, end: LocalDate): Schedule {
-        val user = userService.getByTelegramId(telegramId)
+        val user = oldUserService.getByTelegramId(telegramId)
 
         val schedule = excelScheduleService.getUserSchedule(user, start, end)
 
@@ -119,7 +119,7 @@ class OldPersonalScheduleService(
     }
 
     fun getAvailableLessonsForHiding(telegramId: Long): List<AvailableLessonForHiding> {
-        val user = userService.getByTelegramId(telegramId)
+        val user = oldUserService.getByTelegramId(telegramId)
         return excelScheduleService.getAvailableLessonsForHiding(user)
     }
 }

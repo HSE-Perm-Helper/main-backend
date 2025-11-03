@@ -12,7 +12,7 @@ class StubConfiguration {
     @Bean
     @ConditionalOnMissingBean(MessageBrokerService::class)
     fun stubMessageBrokerService(): MessageBrokerService {
-        logger.info { "Used stub message broker service" }
+        logger.warn { "Used stub message broker service" }
         return StubMessageBrokerService()
     }
 

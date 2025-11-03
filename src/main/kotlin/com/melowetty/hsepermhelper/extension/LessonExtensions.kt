@@ -9,6 +9,7 @@ import com.melowetty.hsepermhelper.timetable.model.InternalLesson
 import com.melowetty.hsepermhelper.util.DateUtils.Companion.asStr
 import com.melowetty.hsepermhelper.util.DateUtils.Companion.fromGmtToPermTime
 
+// TODO: make as object
 class LessonExtensions {
     companion object {
         private const val HSE_APP_ONLINE_PLACE_DEFINITION = "Онлайн"

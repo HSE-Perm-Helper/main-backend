@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
-import java.util.UUID
+import java.util.*
 
 @RestController
 @RequestMapping("/v3/users")
@@ -15,6 +15,6 @@ class UserV3Controller(
 ) {
     @GetMapping("/{id}")
     fun getUser(@PathVariable("id") userId: UUID): UserDto {
-        return userService.getById(userId)
+        return userService.getUserById(userId)
     }
 }

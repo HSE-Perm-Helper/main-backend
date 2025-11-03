@@ -11,7 +11,7 @@ data class SettingsDto(
     @Schema(description = "Учебная группа пользователя", example = "РИС-22-3")
     val group: String = "",
 
-    val hiddenLessons: Set<HideLessonDto> = setOf(),
+    val hiddenLessons: List<ApiUserHideLesson> = listOf(),
 
     @Schema(description = "Включены ли уведомления о новом расписании", example = "true")
     val isEnabledNewScheduleNotifications: Boolean = true,

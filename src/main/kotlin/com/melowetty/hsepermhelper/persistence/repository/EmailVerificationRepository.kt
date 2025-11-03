@@ -1,7 +1,7 @@
-package com.melowetty.hsepermhelper.repository
+package com.melowetty.hsepermhelper.persistence.repository
 
-import com.melowetty.hsepermhelper.domain.entity.EmailVerificationEntity
-import com.melowetty.hsepermhelper.domain.entity.UserEntity
+import com.melowetty.hsepermhelper.persistence.entity.EmailVerificationEntity
+import com.melowetty.hsepermhelper.persistence.entity.UserEntity
 import java.time.LocalDateTime
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Modifying

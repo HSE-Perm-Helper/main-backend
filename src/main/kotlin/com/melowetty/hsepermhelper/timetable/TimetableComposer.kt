@@ -91,7 +91,7 @@ class TimetableComposer(
                     )
                 }
             } else null
-        }.flatten()
+        }.flatten().sortedWith(compareBy({ it.start }, { it.end }))
     }
 
     companion object {

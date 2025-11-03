@@ -8,6 +8,7 @@ import com.melowetty.hsepermhelper.extension.LessonExtensions.Companion.toLesson
 import com.melowetty.hsepermhelper.timetable.model.InternalTimetableInfo
 import com.melowetty.hsepermhelper.timetable.model.InternalTimetableType
 
+// TODO: make as object
 class ScheduleExtensions {
     companion object {
         fun InternalTimetable.toInfo(): InternalTimetableInfo {

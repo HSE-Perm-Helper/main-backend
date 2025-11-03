@@ -17,16 +17,16 @@ import java.util.UUID
 
 @Service
 class PersonalTimetableService(
-    private val userService: UserService,
+    private val oldUserService: OldUserService,
     private val timetableComposer: TimetableComposer,
 ) {
     fun getTimetables(userId: UUID): List<ScheduleInfo> {
-        val user = userService.getById(userId)
+        val user = oldUserService.getById(userId)
         return timetableComposer.getAvailableTimetables(user)
     }
 
     fun getTodayLessons(userId: UUID): List<Lesson> {
-        val user = userService.getById(userId)
+        val user = oldUserService.getById(userId)
         val timetables = timetableComposer.getAvailableTimetables(user).filterNonWeekTimetables()
 
         val todayDate = LocalDate.now(DateUtils.PERM_TIME_ZONE.toZoneId())
@@ -36,7 +36,7 @@ class PersonalTimetableService(
     }
 
     fun getTomorrowLessons(userId: UUID): List<Lesson> {
-        val user = userService.getById(userId)
+        val user = oldUserService.getById(userId)
         val timetables = timetableComposer.getAvailableTimetables(user).filterNonWeekTimetables()
 
         var tomorrowDate = LocalDate.now(DateUtils.PERM_TIME_ZONE.toZoneId()).plusDays(1)
@@ -48,12 +48,12 @@ class PersonalTimetableService(
     }
 
     fun getTimetable(userId: UUID, timetableId: String): Schedule {
-        val user = userService.getById(userId)
+        val user = oldUserService.getById(userId)
         return timetableComposer.getTimetable(timetableId, user)
     }
 
     fun getLessonsForHiding(userId: UUID): List<AvailableLessonForHiding> {
-        val user = userService.getById(userId)
+        val user = oldUserService.getById(userId)
         return timetableComposer.getAllLessons(user).map {
             AvailableLessonForHiding(lesson = it.subject, lessonType = it.lessonType, subGroup = it.subGroup)
         }

@@ -1,6 +1,6 @@
 package com.melowetty.hsepermhelper.scheduled
 
-import com.melowetty.hsepermhelper.repository.EmailVerificationRepository
+import com.melowetty.hsepermhelper.persistence.repository.EmailVerificationRepository
 import java.time.LocalDateTime
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component

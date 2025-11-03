@@ -22,7 +22,7 @@ class MinorEmbeddedTimetable(
     override fun embed(user: UserDto, timetable: InternalTimetable): InternalTimetable {
         val email = user.email
             ?: run {
-                logger.warn { "User email is null" }
+                logger.warn { "User ${user.id} have null email" }
                 return timetable
             }
 
