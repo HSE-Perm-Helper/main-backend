@@ -23,17 +23,31 @@ class UserStorage(
 ) {
     fun getUserIdByTelegramId(telegramId: Long): UUID? = userRepository.getIdByTelegramId(telegramId)
 
+    fun getUsersById(ids: List<UUID>): List<UserRecord> {
+        val pureUsers = userRepository.findAllById(ids).map { UserRecord.from(it) }
+        val hiddenLessons = hiddenLessonStorage.getUsersHiddenLessons(ids)
+        val roles = loadUserRoles(ids)
+
+        return pureUsers.map { user ->
+            user.copy(
+                roles = roles[user.id].orEmpty(),
+                hiddenLessons = hiddenLessons[user.id].orEmpty(),
+            )
+        }
+    }
+
     @Suppress("LongParameterList")
     fun findUsersAfterId(
         lastId: UUID? = null,
         size: Int = 500,
+        educationGroup: String? = null,
         educationType: EducationType? = null,
         isEnabledNewSchedule: Boolean? = null,
         isEnabledChangedSchedule: Boolean? = null,
         isEnabledComingLessons: Boolean? = null,
         options: Options = Options(),
     ): Pageable<UserRecord> {
-        val baseUsers = loadBaseUsers(lastId, educationType, isEnabledNewSchedule, isEnabledChangedSchedule, isEnabledComingLessons, size)
+        val baseUsers = loadBaseUsers(lastId, educationGroup, educationType, isEnabledNewSchedule, isEnabledChangedSchedule, isEnabledComingLessons, size)
         if (baseUsers.isEmpty()) return Pageable(emptyList(), null)
 
         val userIds = baseUsers.map { it.id }
@@ -72,6 +86,7 @@ class UserStorage(
 
     private fun loadBaseUsers(
         lastId: UUID?,
+        educationGroup: String? = null,
         educationType: EducationType?,
         isEnabledNewSchedule: Boolean?,
         isEnabledChangedSchedule: Boolean?,
@@ -79,17 +94,20 @@ class UserStorage(
         size: Int,
     ): List<UserRecord> {
         val cb = entityManager.criteriaBuilder
-        val query = cb.createTupleQuery() // ← Важно: TupleQuery
+        val query = cb.createTupleQuery()
         val root = query.from(UserEntity::class.java)
-        val educationGroup = root.get<EducationGroupEntity>("educationGroup")
+        val educationGroupNode = root.get<EducationGroupEntity>("educationGroup")
 
         val predicates = mutableListOf<Predicate>()
 
         if (lastId != null) {
             predicates.add(cb.greaterThan(root.get("id"), lastId))
         }
+        if (educationGroup != null) {
+            predicates.add(cb.equal(educationGroupNode.get<String>("group"), educationGroup))
+        }
         if (educationType != null) {
-            predicates.add(cb.equal(educationGroup.get<EducationType>("educationType"), educationType))
+            predicates.add(cb.equal(educationGroupNode.get<EducationType>("educationType"), educationType))
         }
         if (isEnabledNewSchedule != null) {
             predicates.add(cb.equal(root.get<Boolean>("isEnabledNewScheduleNotifications"), isEnabledNewSchedule))
@@ -105,8 +123,8 @@ class UserStorage(
             root.get<UUID>("id"),
             root.get<Long>("telegramId"),
             root.get<String>("email"),
-            educationGroup.get<String>("group"),
-            educationGroup.get<EducationType>("educationType"),
+            educationGroupNode.get<String>("group"),
+            educationGroupNode.get<EducationType>("educationType"),
             root.get<Boolean>("isEnabledNewScheduleNotifications"),
             root.get<Boolean>("isEnabledChangedScheduleNotifications"),
             root.get<Boolean>("isEnabledComingLessonsNotifications"),
@@ -115,7 +133,11 @@ class UserStorage(
             .where(cb.and(*predicates.toTypedArray()))
             .orderBy(cb.asc(root.get<UUID>("id")))
 
-        val tuples = entityManager.createQuery(query).resultList
+        val typedQuery = entityManager.createQuery(query)
+        typedQuery.firstResult = 0
+        typedQuery.maxResults = size
+
+        val tuples = typedQuery.resultList
 
         return tuples.map { tuple ->
             UserRecord(

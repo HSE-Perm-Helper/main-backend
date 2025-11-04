@@ -1,6 +1,6 @@
 package com.melowetty.hsepermhelper.timetable.compose.impl
 
-import com.melowetty.hsepermhelper.domain.dto.UserDto
+import com.melowetty.hsepermhelper.persistence.projection.UserRecord
 import com.melowetty.hsepermhelper.timetable.compose.EmbeddedTimetable
 import com.melowetty.hsepermhelper.timetable.model.InternalTimetable
 import com.melowetty.hsepermhelper.timetable.model.TimetableContext
@@ -10,8 +10,8 @@ import org.springframework.stereotype.Component
 
 @Component
 class HiddenLessonsEmbeddedTimetable: EmbeddedTimetable {
-    override fun embed(user: UserDto, timetable: InternalTimetable): InternalTimetable {
-        val hiddenLessons = user.settings.hiddenLessons.map { hideLesson ->
+    override fun embed(user: UserRecord, timetable: InternalTimetable): InternalTimetable {
+        val hiddenLessons = user.hiddenLessons.map { hideLesson ->
             "${hideLesson.lesson} ${hideLesson.lessonType} ${hideLesson.subGroup}"
         }.toSet()
 
@@ -25,9 +25,9 @@ class HiddenLessonsEmbeddedTimetable: EmbeddedTimetable {
         return timetable.copy(lessons = lessons)
     }
 
-    override fun isEmbeddable(user: UserDto, timetable: InternalTimetable, context: TimetableContext): Boolean {
+    override fun isEmbeddable(user: UserRecord, timetable: InternalTimetable, context: TimetableContext): Boolean {
         return context.purpose != TimetablePurpose.SETTINGS
-                && user.settings.hiddenLessons.isNotEmpty()
+                && user.hiddenLessons.isNotEmpty()
     }
 
     override fun priority(): Int {

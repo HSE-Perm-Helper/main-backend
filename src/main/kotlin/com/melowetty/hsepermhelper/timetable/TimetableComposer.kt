@@ -1,11 +1,11 @@
 package com.melowetty.hsepermhelper.timetable
 
-import com.melowetty.hsepermhelper.domain.dto.UserDto
 import com.melowetty.hsepermhelper.domain.model.lesson.Lesson
 import com.melowetty.hsepermhelper.domain.model.schedule.Schedule
 import com.melowetty.hsepermhelper.domain.model.schedule.ScheduleInfo
 import com.melowetty.hsepermhelper.extension.ScheduleExtensions.Companion.toSchedule
 import com.melowetty.hsepermhelper.extension.ScheduleExtensions.Companion.toScheduleType
+import com.melowetty.hsepermhelper.persistence.projection.UserRecord
 import com.melowetty.hsepermhelper.timetable.compose.EmbeddedTimetable
 import com.melowetty.hsepermhelper.timetable.compose.ParentTimetable
 import com.melowetty.hsepermhelper.timetable.model.TimetableContext
@@ -18,11 +18,11 @@ class TimetableComposer(
     private val timetables: List<ParentTimetable>,
     private val embeddedTimetables: List<EmbeddedTimetable>,
 ) {
-    fun getTimetable(id: String, user: UserDto): Schedule {
+    fun getTimetable(id: String, user: UserRecord): Schedule {
         return internalGetTimetable(id, user, TimetableContext(TimetablePurpose.DISPLAY))
     }
 
-    fun getAllLessons(user: UserDto): List<Lesson> {
+    fun getAllLessons(user: UserRecord): List<Lesson> {
         val context = TimetableContext(TimetablePurpose.SETTINGS)
 
         val timetables = timetables.mapNotNull { timetable ->
@@ -53,7 +53,7 @@ class TimetableComposer(
         }.map { it.lessons }.flatten().distinct().sortedBy { it.time }.toList()
     }
 
-    private fun internalGetTimetable(id: String, user: UserDto, context: TimetableContext): Schedule {
+    private fun internalGetTimetable(id: String, user: UserRecord, context: TimetableContext): Schedule {
         val (originalId, processorType) = TimetableInfoEncoder.decode(id)
         logger.info { "Decoded timetable id $id to original id $originalId and processor type $processorType" }
 
@@ -78,7 +78,7 @@ class TimetableComposer(
         return resultTimetable.toSchedule()
     }
 
-    fun getAvailableTimetables(user: UserDto): List<ScheduleInfo> {
+    fun getAvailableTimetables(user: UserRecord): List<ScheduleInfo> {
         return timetables.mapNotNull { timetable ->
             if (timetable.isAvailableForUser(user)) {
                 timetable.getTimetables().map {

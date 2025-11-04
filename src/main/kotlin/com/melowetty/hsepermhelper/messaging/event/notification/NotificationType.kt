@@ -5,4 +5,5 @@ enum class NotificationType {
     EMAIL_IS_VERIFIED,
     SERVICE_WARNING,
     TIMETABLE_ADDED,
+    TIMETABLE_CHANGED,
 }

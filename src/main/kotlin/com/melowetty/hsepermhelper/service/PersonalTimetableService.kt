@@ -8,6 +8,7 @@ import com.melowetty.hsepermhelper.domain.model.schedule.Schedule
 import com.melowetty.hsepermhelper.domain.model.schedule.ScheduleInfo
 import com.melowetty.hsepermhelper.domain.model.schedule.ScheduleType
 import com.melowetty.hsepermhelper.exception.ScheduleNotFoundException
+import com.melowetty.hsepermhelper.persistence.projection.UserRecord
 import com.melowetty.hsepermhelper.timetable.TimetableComposer
 import com.melowetty.hsepermhelper.util.DateUtils
 import org.springframework.stereotype.Service
@@ -17,16 +18,16 @@ import java.util.UUID
 
 @Service
 class PersonalTimetableService(
-    private val oldUserService: OldUserService,
+    private val userService: UserService,
     private val timetableComposer: TimetableComposer,
 ) {
     fun getTimetables(userId: UUID): List<ScheduleInfo> {
-        val user = oldUserService.getById(userId)
+        val user = userService.getUserRecordById(userId)
         return timetableComposer.getAvailableTimetables(user)
     }
 
     fun getTodayLessons(userId: UUID): List<Lesson> {
-        val user = oldUserService.getById(userId)
+        val user = userService.getUserRecordById(userId)
         val timetables = timetableComposer.getAvailableTimetables(user).filterNonWeekTimetables()
 
         val todayDate = LocalDate.now(DateUtils.PERM_TIME_ZONE.toZoneId())
@@ -36,7 +37,7 @@ class PersonalTimetableService(
     }
 
     fun getTomorrowLessons(userId: UUID): List<Lesson> {
-        val user = oldUserService.getById(userId)
+        val user = userService.getUserRecordById(userId)
         val timetables = timetableComposer.getAvailableTimetables(user).filterNonWeekTimetables()
 
         var tomorrowDate = LocalDate.now(DateUtils.PERM_TIME_ZONE.toZoneId()).plusDays(1)
@@ -48,12 +49,12 @@ class PersonalTimetableService(
     }
 
     fun getTimetable(userId: UUID, timetableId: String): Schedule {
-        val user = oldUserService.getById(userId)
+        val user = userService.getUserRecordById(userId)
         return timetableComposer.getTimetable(timetableId, user)
     }
 
     fun getLessonsForHiding(userId: UUID): List<AvailableLessonForHiding> {
-        val user = oldUserService.getById(userId)
+        val user = userService.getUserRecordById(userId)
         return timetableComposer.getAllLessons(user).map {
             AvailableLessonForHiding(lesson = it.subject, lessonType = it.lessonType, subGroup = it.subGroup)
         }
@@ -66,7 +67,7 @@ class PersonalTimetableService(
         return this.filter { it.scheduleType != ScheduleType.QUARTER_SCHEDULE }
     }
 
-    private fun getTimetableForDate(user: UserDto, timetables: List<ScheduleInfo>, date: LocalDate): Schedule {
+    private fun getTimetableForDate(user: UserRecord, timetables: List<ScheduleInfo>, date: LocalDate): Schedule {
         val targetTimetable = timetables.firstOrNull { it.start >= date }
             ?: throw ScheduleNotFoundException("No timetable for date $date")
 

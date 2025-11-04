@@ -13,7 +13,6 @@ import java.util.*
 class UserQueryService(
     private val userStorage: UserStorage,
 ) {
-
     @Transactional(readOnly = true)
     fun findUsersAfterId(
         lastId: UUID?,

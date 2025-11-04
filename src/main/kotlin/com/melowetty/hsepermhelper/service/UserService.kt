@@ -21,12 +21,12 @@ class UserService(
         return getUserRecordById(id).toDto()
     }
 
-    private fun getUserRecordByTelegramId(telegramId: Long): UserRecord {
+    fun getUserRecordByTelegramId(telegramId: Long): UserRecord {
         return userStorage.findUserByTelegramId(telegramId)
             ?: throw UserByTelegramIdNotFoundException(telegramId)
     }
 
-    private fun getUserRecordById(id: UUID): UserRecord {
+    fun getUserRecordById(id: UUID): UserRecord {
         return userStorage.findUserById(id) ?: throw UserByIdNotFoundException(id)
     }
 }
