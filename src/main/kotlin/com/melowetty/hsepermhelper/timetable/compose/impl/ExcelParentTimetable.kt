@@ -2,7 +2,7 @@ package com.melowetty.hsepermhelper.timetable.compose.impl
 
 import com.melowetty.hsepermhelper.persistence.projection.UserRecord
 import com.melowetty.hsepermhelper.timetable.compose.ParentTimetable
-import com.melowetty.hsepermhelper.timetable.integration.excel.ExcelTimetableStorage
+import com.melowetty.hsepermhelper.persistence.storage.ExcelTimetableStorage
 import com.melowetty.hsepermhelper.timetable.model.InternalTimetable
 import com.melowetty.hsepermhelper.timetable.model.InternalTimetableInfo
 import com.melowetty.hsepermhelper.timetable.model.InternalTimetableSource

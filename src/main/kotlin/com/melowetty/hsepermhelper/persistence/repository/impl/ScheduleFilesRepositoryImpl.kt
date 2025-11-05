@@ -6,9 +6,11 @@ import java.io.InputStream
 import java.net.URL
 import org.jsoup.Jsoup
 import org.springframework.beans.factory.annotation.Value
+import org.springframework.context.annotation.Scope
 import org.springframework.stereotype.Repository
 
 @Repository
+@Scope("prototype")
 class ScheduleFilesRepositoryImpl(
     @Value("\${api.timetable.base-url}")
     private val timetableBaseUrl: String,

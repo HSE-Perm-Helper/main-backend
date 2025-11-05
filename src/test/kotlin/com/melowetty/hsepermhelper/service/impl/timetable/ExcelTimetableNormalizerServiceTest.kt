@@ -1,6 +1,6 @@
 package com.melowetty.hsepermhelper.service.impl.timetable
 
-import com.melowetty.hsepermhelper.timetable.integration.excel.ExcelTimetableStorage
+import com.melowetty.hsepermhelper.persistence.storage.ExcelTimetableStorage
 import com.melowetty.hsepermhelper.timetable.model.EducationType
 import com.melowetty.hsepermhelper.timetable.model.InternalTimetableInfo
 import com.melowetty.hsepermhelper.timetable.model.InternalTimetableSource

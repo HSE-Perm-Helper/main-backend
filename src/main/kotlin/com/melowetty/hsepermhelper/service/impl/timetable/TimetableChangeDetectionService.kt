@@ -1,9 +1,10 @@
 package com.melowetty.hsepermhelper.service.impl.timetable
 
+import com.melowetty.hsepermhelper.extension.ScheduleExtensions.Companion.computeHash
 import com.melowetty.hsepermhelper.persistence.projection.UserRecord
 import com.melowetty.hsepermhelper.persistence.storage.UserStorage
 import com.melowetty.hsepermhelper.timetable.compose.impl.HiddenLessonsEmbeddedTimetable
-import com.melowetty.hsepermhelper.timetable.integration.excel.ExcelTimetableStorage
+import com.melowetty.hsepermhelper.persistence.storage.ExcelTimetableStorage
 import com.melowetty.hsepermhelper.timetable.model.ExcelTimetable
 import com.melowetty.hsepermhelper.timetable.model.InternalTimetableInfo
 import com.melowetty.hsepermhelper.timetable.model.impl.GroupBasedLesson
@@ -48,7 +49,7 @@ class TimetableChangeDetectionService(
         oldLessons: List<GroupBasedLesson>,
         newLessons: List<GroupBasedLesson>,
     ) {
-        if (oldLessons.hashCode() == newLessons.hashCode()) {
+        if (oldLessons.computeHash() == newLessons.computeHash()) {
             logger.trace { "No changes detected for group $group" }
             return
         }
@@ -98,8 +99,8 @@ class TimetableChangeDetectionService(
         val changedDays = mutableListOf<DayOfWeek>()
 
         for (day in days) {
-            val oldHash = oldLessonsGroupedByDay[day]?.hashCode() ?: 0
-            val newHash = newLessonsGroupedByDay[day]?.hashCode() ?: 0
+            val oldHash = oldLessonsGroupedByDay[day]?.computeHash() ?: 0
+            val newHash = newLessonsGroupedByDay[day]?.computeHash() ?: 0
 
             if (oldHash != newHash) {
                 changedDays.add(day)
@@ -126,7 +127,7 @@ class TimetableChangeDetectionService(
     }
 
     private fun groupByHiddenLessons(users: List<UserRecord>): List<List<UserRecord>> {
-        return users.groupBy { it.hiddenLessons.hashCode() }.map { it.value }
+        return users.groupBy { it.hiddenLessons.sumOf { it.hashCode() } }.map { it.value }
     }
 
     companion object {

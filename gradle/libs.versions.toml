@@ -11,3 +11,5 @@ spring-tx = { module = "org.springframework:spring-tx" }
 spring-mockk = { module = "com.ninja-squad:springmockk", version.ref = "springMockk" }
 
 logback-encoder = { module = "net.logstash.logback:logstash-logback-encoder", version.ref = "logback" }
+
+jackson-datatype-jsr310 = { module = "com.fasterxml.jackson.datatype:jackson-datatype-jsr310" }

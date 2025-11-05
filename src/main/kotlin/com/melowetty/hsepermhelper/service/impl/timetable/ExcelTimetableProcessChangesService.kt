@@ -1,6 +1,6 @@
 package com.melowetty.hsepermhelper.service.impl.timetable
 
-import com.melowetty.hsepermhelper.timetable.integration.excel.ExcelTimetableStorage
+import com.melowetty.hsepermhelper.persistence.storage.ExcelTimetableStorage
 import com.melowetty.hsepermhelper.timetable.model.InternalTimetableInfo
 import io.github.oshai.kotlinlogging.KotlinLogging
 import org.springframework.stereotype.Service
@@ -103,10 +103,12 @@ class ExcelTimetableProcessChangesService(
 
             val prev = detailedTimetables.first { it.id == timetablesGroup.first.id }
             val current = detailedTimetables.first { it.id == timetablesGroup.second.id }
+
+            val secondId = current.id()
             current.id = prev.id
 
             storage.updateTimetable(prev.id(), current)
-            storage.deleteTimetable(timetablesGroup.second.id)
+            storage.deleteTimetable(secondId)
 
             timetableChangeDispatcher.dispatchChangeDetection(current, prev)
         }

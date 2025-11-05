@@ -1,6 +1,5 @@
 package com.melowetty.hsepermhelper.service
 
-import com.melowetty.hsepermhelper.domain.dto.UserDto
 import com.melowetty.hsepermhelper.domain.model.lesson.AvailableLessonForHiding
 import com.melowetty.hsepermhelper.domain.model.lesson.Lesson
 import com.melowetty.hsepermhelper.domain.model.lesson.ScheduledTime
@@ -14,7 +13,7 @@ import com.melowetty.hsepermhelper.util.DateUtils
 import org.springframework.stereotype.Service
 import java.time.DayOfWeek
 import java.time.LocalDate
-import java.util.UUID
+import java.util.*
 
 @Service
 class PersonalTimetableService(

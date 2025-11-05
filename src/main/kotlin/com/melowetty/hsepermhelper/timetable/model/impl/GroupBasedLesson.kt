@@ -17,6 +17,16 @@ data class GroupBasedLesson(
     override val additionalInfo: List<String>? = null,
     override val lessonType: LessonType
 ) : InternalLesson(subject, subGroup, time, lecturer, places, links, additionalInfo, lessonType) {
+    override fun hashCode(): Int {
+        return 31 * group.hashCode() + super.hashCode()
+    }
+
+    override fun equals(other: Any?): Boolean {
+        return other is GroupBasedLesson
+                && super.equals(other)
+                && group == other.group
+    }
+
     fun program() = group.split("-").first()
 
     fun course(): Int {

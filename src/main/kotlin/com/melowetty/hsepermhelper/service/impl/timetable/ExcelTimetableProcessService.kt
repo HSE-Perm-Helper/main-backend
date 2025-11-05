@@ -3,7 +3,7 @@ package com.melowetty.hsepermhelper.service.impl.timetable
 import com.melowetty.hsepermhelper.context.JobRunContextHolder
 import com.melowetty.hsepermhelper.domain.model.file.File
 import com.melowetty.hsepermhelper.timetable.integration.excel.ExcelTimetableAdapter
-import com.melowetty.hsepermhelper.timetable.integration.excel.ExcelTimetableStorage
+import com.melowetty.hsepermhelper.persistence.storage.ExcelTimetableStorage
 import com.melowetty.hsepermhelper.timetable.model.ExcelFileMetadata
 import io.github.oshai.kotlinlogging.KotlinLogging
 import org.springframework.stereotype.Service
@@ -24,18 +24,18 @@ class ExcelTimetableProcessService(
 
         val runId = runContext.id
 
-//        if (addedOrChanged.isEmpty() && deleted.isEmpty()) {
-//            logger.info { "No timetables for update, updating run id for exists timetables" }
-//
-//            val prevRunId = runContext.prevId
-//                ?: run {
-//                    logger.warn { "No previous run id found, nothing to process" }
-//                    return
-//                }
-//
-//            storage.updateTimetablesRunId(prevRunId, runId)
-//            return
-//        }
+        if (addedOrChanged.isEmpty() && deleted.isEmpty()) {
+            logger.info { "No timetables for update, updating run id for exists timetables" }
+
+            val prevRunId = runContext.prevId
+                ?: run {
+                    logger.warn { "No previous run id found, nothing to process" }
+                    return
+                }
+
+            storage.updateTimetablesRunIdByRunId(prevRunId, runId)
+            return
+        }
 
         val ids = (addedOrChanged + notChanged).map {
             excelTimetableAdapter.processAndPersist(it)
