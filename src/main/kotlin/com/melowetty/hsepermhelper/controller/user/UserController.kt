@@ -1,10 +1,10 @@
 package com.melowetty.hsepermhelper.controller.user
 
-import com.melowetty.hsepermhelper.domain.dto.HideLessonDto
+import com.melowetty.hsepermhelper.domain.dto.ApiUserHideLesson
 import com.melowetty.hsepermhelper.domain.dto.RemoteScheduleLink
 import com.melowetty.hsepermhelper.domain.dto.UserDto
 import com.melowetty.hsepermhelper.domain.model.Response
-import com.melowetty.hsepermhelper.service.UserService
+import com.melowetty.hsepermhelper.service.OldUserService
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.Parameter
 import io.swagger.v3.oas.annotations.security.SecurityRequirement
@@ -26,7 +26,7 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 @RequestMapping
 class UserController(
-    private val userService: UserService,
+    private val oldUserService: OldUserService,
 ) {
     @SecurityRequirement(name = "X-Secret-Key")
     @Operation(
@@ -42,7 +42,7 @@ class UserController(
         @RequestParam("telegramId")
         telegramId: Long,
     ): Response<UserDto> {
-        return Response(userService.getByTelegramId(telegramId = telegramId))
+        return Response(oldUserService.getByTelegramId(telegramId = telegramId))
     }
 
     @SecurityRequirement(name = "X-Secret-Key")
@@ -59,7 +59,7 @@ class UserController(
         @PathVariable("id")
         id: UUID,
     ): Response<UserDto> {
-        return Response(userService.getById(id))
+        return Response(oldUserService.getById(id))
     }
 
     @SecurityRequirement(name = "X-Secret-Key")
@@ -76,7 +76,7 @@ class UserController(
         @PathVariable("id")
         id: UUID,
     ): Response<String> {
-        userService.deleteById(id)
+        oldUserService.deleteById(id)
         return Response("Пользователь успешно удалён!")
     }
 
@@ -94,7 +94,7 @@ class UserController(
         @RequestParam("telegramId")
         telegramId: Long,
     ): Response<String> {
-        userService.deleteByTelegramId(telegramId)
+        oldUserService.deleteByTelegramId(telegramId)
         return Response("Пользователь успешно удалён!")
     }
 
@@ -116,7 +116,7 @@ class UserController(
         @Parameter(description = "Новые настройки пользователя")
         settings: Map<String, Any>,
     ): Response<UserDto> {
-        val user = userService.updateUserSettings(telegramId, settings)
+        val user = oldUserService.updateUserSettings(telegramId, settings)
         return Response(user)
     }
 
@@ -130,7 +130,7 @@ class UserController(
         produces = [MediaType.APPLICATION_JSON_VALUE]
     )
     fun getUsers(): Response<List<UserDto>> {
-        val users = userService.getAllUsers()
+        val users = oldUserService.getAllUsers()
         return Response(users)
     }
 
@@ -147,27 +147,27 @@ class UserController(
     fun updateUser(
         @RequestBody userDto: UserDto,
     ): Response<UserDto> {
-        val user = userService.updateUser(userDto)
+        val user = oldUserService.updateUser(userDto)
         return Response(user)
     }
 
     @PostMapping("user/hidden-lessons")
-    fun addHiddenLesson(@RequestParam telegramId: Long, @RequestBody lesson: HideLessonDto): UserDto {
-        return userService.addHiddenLesson(telegramId, lesson)
+    fun addHiddenLesson(@RequestParam telegramId: Long, @RequestBody lesson: ApiUserHideLesson): UserDto {
+        return oldUserService.addHiddenLesson(telegramId, lesson)
     }
 
     @DeleteMapping("user/hidden-lessons")
-    fun removeHiddenLesson(@RequestParam telegramId: Long, @RequestBody lesson: HideLessonDto): UserDto {
-        return userService.removeHiddenLesson(telegramId, lesson)
+    fun removeHiddenLesson(@RequestParam telegramId: Long, @RequestBody lesson: ApiUserHideLesson): UserDto {
+        return oldUserService.removeHiddenLesson(telegramId, lesson)
     }
 
     @GetMapping("user/remote-schedule")
     fun getRemoteScheduleLink(@RequestParam telegramId: Long): RemoteScheduleLink {
-        return userService.getRemoteScheduleLink(telegramId)
+        return oldUserService.getRemoteScheduleLink(telegramId)
     }
 
     @PostMapping("user/remote-schedule")
     fun createOrUpdateScheduleLink(@RequestParam telegramId: Long): RemoteScheduleLink {
-        return userService.createOrUpdateScheduleLink(telegramId)
+        return oldUserService.createOrUpdateScheduleLink(telegramId)
     }
 }

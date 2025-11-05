@@ -3,7 +3,6 @@ package com.melowetty.hsepermhelper.excel.impl
 import com.melowetty.hsepermhelper.domain.model.lesson.LessonPlace
 import com.melowetty.hsepermhelper.excel.HseTimetableCellExcelParser
 import com.melowetty.hsepermhelper.excel.model.CellInfo
-import com.melowetty.hsepermhelper.timetable.model.InternalLesson
 import com.melowetty.hsepermhelper.excel.model.ParsedCellInfo
 import com.melowetty.hsepermhelper.excel.model.ParsedLessonInfo
 import com.melowetty.hsepermhelper.excel.model.ParsedScheduleInfo
@@ -229,7 +228,7 @@ class HseTimetableCellExcelParserImpl : HseTimetableCellExcelParser {
         val subject = fields.first { it.fieldType == FieldType.SUBJECT }.value
         val lessonType = LessonTypeUtils.getLessonType(
             ParsedLessonInfo(
-                isSessionWeek = scheduleInfo.type == InternalTimetableType.BACHELOR_SESSION_SCHEDULE,
+                isSessionWeek = scheduleInfo.type == InternalTimetableType.BACHELOR_SESSION_TIMETABLE,
                 isUnderlined = cell.isUnderlined,
                 subject = subject,
                 lessonInfo = additionalLessonInfo.lecturer,

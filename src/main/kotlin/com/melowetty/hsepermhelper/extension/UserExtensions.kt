@@ -1,19 +1,46 @@
 package com.melowetty.hsepermhelper.extension
 
+import com.melowetty.hsepermhelper.domain.dto.ApiUserHideLesson
+import com.melowetty.hsepermhelper.persistence.projection.HideLessonRecord
 import com.melowetty.hsepermhelper.domain.dto.SettingsDto
 import com.melowetty.hsepermhelper.domain.dto.UserDto
-import com.melowetty.hsepermhelper.domain.entity.SettingsEntity
-import com.melowetty.hsepermhelper.domain.entity.UserEntity
-import com.melowetty.hsepermhelper.extension.HideLessonExtension.Companion.toDto
-import com.melowetty.hsepermhelper.extension.HideLessonExtension.Companion.toEntity
+import com.melowetty.hsepermhelper.persistence.entity.UserEntity
+import com.melowetty.hsepermhelper.domain.model.user.EducationGroupEntity
+import com.melowetty.hsepermhelper.persistence.projection.UserRecord
+import com.melowetty.hsepermhelper.timetable.model.EducationType
+import java.util.*
 
+// TODO: make as object
 class UserExtensions {
     companion object {
-        fun UserEntity.toDto(): UserDto {
+        fun UserEntity.toDto(hiddenLessons: List<HideLessonRecord>): UserDto {
             return UserDto(
                 id = id,
                 telegramId = telegramId,
-                settings = settings.toDto(),
+                settings = SettingsDto(
+                    group = educationGroup.group,
+                    hiddenLessons = hiddenLessons.map { it.toApiDto() },
+                    isEnabledNewScheduleNotifications = isEnabledNewScheduleNotifications,
+                    isEnabledChangedScheduleNotifications = isEnabledChangedScheduleNotifications,
+                    isEnabledComingLessonsNotifications = isEnabledComingLessonsNotifications,
+                ),
+                createdDate = createdDate,
+                email = email,
+                roles = roles
+            )
+        }
+
+        fun UserRecord.toDto(): UserDto {
+            return UserDto(
+                id = id,
+                telegramId = telegramId,
+                settings = SettingsDto(
+                    group = educationGroup.group,
+                    hiddenLessons = hiddenLessons.map { it.toApiDto() },
+                    isEnabledNewScheduleNotifications = isEnabledNewScheduleNotifications,
+                    isEnabledChangedScheduleNotifications = isEnabledChangedScheduleNotifications,
+                    isEnabledComingLessonsNotifications = isEnabledComingLessonsNotifications,
+                ),
                 createdDate = createdDate,
                 email = email,
                 roles = roles
@@ -24,38 +51,30 @@ class UserExtensions {
             return UserEntity(
                 id = id,
                 telegramId = telegramId,
-                settings = settings.toEntity(),
+                educationGroup = EducationGroupEntity(
+                    settings.group,
+                    EducationType.BACHELOR_OFFLINE,
+                ),
+                isEnabledNewScheduleNotifications = settings.isEnabledNewScheduleNotifications,
+                isEnabledChangedScheduleNotifications = settings.isEnabledChangedScheduleNotifications,
+                isEnabledComingLessonsNotifications = settings.isEnabledComingLessonsNotifications,
                 createdDate = createdDate,
                 email = email,
                 roles = roles,
             )
         }
 
-        fun SettingsDto.toEntity(): SettingsEntity {
-            return SettingsEntity(
-                id = id,
-                group = group,
-                isEnabledNewScheduleNotifications = isEnabledNewScheduleNotifications,
-                isEnabledChangedScheduleNotifications = isEnabledChangedScheduleNotifications,
-                isEnabledComingLessonsNotifications = isEnabledComingLessonsNotifications,
-                hiddenLessons = hiddenLessons.map { it.toEntity() }.toHashSet()
+        fun HideLessonRecord.toApiDto(): ApiUserHideLesson {
+            return ApiUserHideLesson(
+                lesson = lesson,
+                lessonType = lessonType,
+                subGroup = subGroup,
             )
         }
 
-        fun SettingsEntity.toDto(): SettingsDto {
-            return SettingsDto(
-                id = id,
-                group = group,
-                isEnabledNewScheduleNotifications = isEnabledNewScheduleNotifications,
-                isEnabledChangedScheduleNotifications = isEnabledChangedScheduleNotifications,
-                isEnabledComingLessonsNotifications = isEnabledComingLessonsNotifications,
-                hiddenLessons = hiddenLessons.map { it.toDto() }.toHashSet(),
-            )
-        }
-
-        fun Iterable<UserEntity>.getGroupedEntityBySettingsUsers() =
+        fun Iterable<UserEntity>.getGroupedEntityBySettingsUsers(hiddenLessons: Map<UUID, List<HideLessonRecord>>) =
             this
-                .groupBy { "${it.settings.group} ${it.settings.hiddenLessons}" }
+                .groupBy { "${it.educationGroup.group}${hiddenLessons.getOrDefault(it.id, listOf()).hashCode()}" }
 
         fun Iterable<UserDto>.getGroupedBySettingsUsers() =
             this

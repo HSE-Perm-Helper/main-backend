@@ -11,6 +11,9 @@ class ExcelTimetable(
     start: LocalDate,
     end: LocalDate,
     type: InternalTimetableType,
+    educationType: EducationType,
+    isParent: Boolean,
+    source: InternalTimetableSource,
     created: LocalDateTime = LocalDateTime.now(),
     updated: LocalDateTime = LocalDateTime.now(),
 ) : InternalTimetable(
@@ -20,6 +23,9 @@ class ExcelTimetable(
     start = start,
     end = end,
     type = type,
+    educationType = educationType,
+    isParent = isParent,
+    source = source,
     created = created,
     updated = updated,
 ) {
@@ -30,6 +36,9 @@ class ExcelTimetable(
         start: LocalDate = this.start,
         end: LocalDate = this.end,
         type: InternalTimetableType = this.type,
+        educationType: EducationType = this.educationType,
+        isParent: Boolean = this.isParent,
+        source: InternalTimetableSource = this.source,
         created: LocalDateTime = this.created,
         updated: LocalDateTime = this.updated,
     ): ExcelTimetable {
@@ -40,6 +49,9 @@ class ExcelTimetable(
             start = start,
             end = end,
             type = type,
+            educationType = educationType,
+            isParent = isParent,
+            source = source,
             created = created,
             updated = updated,
         )

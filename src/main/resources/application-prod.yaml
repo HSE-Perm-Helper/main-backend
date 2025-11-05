@@ -1,0 +1,6 @@
+  springdoc:
+    api-docs:
+      enabled: false
+
+  logging:
+    config: classpath:logback-prod.xml

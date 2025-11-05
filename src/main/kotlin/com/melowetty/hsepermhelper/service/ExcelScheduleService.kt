@@ -13,9 +13,9 @@ import com.melowetty.hsepermhelper.extension.LessonExtensions.Companion.toLesson
 import com.melowetty.hsepermhelper.extension.ScheduleExtensions.Companion.toSchedule
 import com.melowetty.hsepermhelper.extension.ScheduleExtensions.Companion.toScheduleInfo
 import com.melowetty.hsepermhelper.extension.UserExtensions.Companion.getGroupedBySettingsUsers
-import com.melowetty.hsepermhelper.notification.schedule.ScheduleAddedNotification
-import com.melowetty.hsepermhelper.notification.schedule.ScheduleChangedForUserNotification
-import com.melowetty.hsepermhelper.repository.ExcelScheduleRepository
+import com.melowetty.hsepermhelper.messaging.event.notification.schedule.ScheduleAddedNotification
+import com.melowetty.hsepermhelper.messaging.event.notification.schedule.ScheduleChangedForUserNotification
+import com.melowetty.hsepermhelper.persistence.repository.ExcelScheduleRepository
 import com.melowetty.hsepermhelper.timetable.model.InternalTimetableType
 import com.melowetty.hsepermhelper.timetable.model.impl.GroupBasedLesson
 import com.melowetty.hsepermhelper.util.ScheduleUtils
@@ -27,14 +27,14 @@ import org.springframework.stereotype.Service
 @Deprecated("Stop using when new schedule flow is implemented")
 class ExcelScheduleService(
     private val scheduleRepository: ExcelScheduleRepository,
-    private val userService: UserService,
+    private val oldUserService: OldUserService,
     private val notificationService: NotificationService,
 ) {
     fun getScheduleByGroup(
         group: String,
     ): List<Lesson> {
         return scheduleRepository.getSchedules().asSequence()
-            .filterNot { it.type == InternalTimetableType.BACHELOR_QUARTER_SCHEDULE }
+            .filterNot { it.type == InternalTimetableType.BACHELOR_QUARTER_TIMETABLE }
             .map { it.lessons }
             .flatten()
             .mapNotNull { it as? GroupBasedLesson }
@@ -135,7 +135,7 @@ class ExcelScheduleService(
 
     fun processNewExcelSchedule(schedule: InternalTimetable) {
         val users = mutableListOf<Long>()
-        users.addAll(userService.getAllUsers()
+        users.addAll(oldUserService.getAllUsers()
             .filter { it.settings.isEnabledNewScheduleNotifications }
             .map { it.telegramId })
         val scheduleAddedNotification = ScheduleAddedNotification(
@@ -146,7 +146,7 @@ class ExcelScheduleService(
     }
 
     fun processEditedExcelSchedule(before: InternalTimetable, after: InternalTimetable) {
-        userService.getAllUsers()
+        oldUserService.getAllUsers()
             .filter { user ->
                 user.settings.isEnabledChangedScheduleNotifications
             }

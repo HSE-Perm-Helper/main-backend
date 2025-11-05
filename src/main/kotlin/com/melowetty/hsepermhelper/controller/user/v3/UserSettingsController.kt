@@ -1,17 +1,17 @@
 package com.melowetty.hsepermhelper.controller.user.v3
 
 import com.melowetty.hsepermhelper.domain.model.lesson.AvailableLessonForHiding
-import com.melowetty.hsepermhelper.service.PersonalTimetableV2Service
+import com.melowetty.hsepermhelper.service.PersonalTimetableService
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
-import java.util.*
+import java.util.UUID
 
 @RestController
 @RequestMapping("/v3/users/{id}/settings")
 class UserSettingsController(
-    private val personalTimetableService: PersonalTimetableV2Service
+    private val personalTimetableService: PersonalTimetableService
 ) {
     @GetMapping("hidden-lessons")
     fun getHiddenLessons(

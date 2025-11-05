@@ -3,8 +3,8 @@ package com.melowetty.hsepermhelper.controller
 import com.melowetty.hsepermhelper.domain.model.ErrorResponse
 import com.melowetty.hsepermhelper.exception.CustomException
 import com.melowetty.hsepermhelper.exception.ScheduleNotFoundException
-import com.melowetty.hsepermhelper.exception.UserIsExistsException
-import com.melowetty.hsepermhelper.exception.UserNotFoundException
+import com.melowetty.hsepermhelper.exception.user.UserIsExistsException
+import com.melowetty.hsepermhelper.exception.user.UserNotFoundException
 import com.melowetty.hsepermhelper.exception.verification.VerificationNotFoundOrExpiredException
 import io.github.oshai.kotlinlogging.KotlinLogging
 import jakarta.validation.ConstraintViolationException

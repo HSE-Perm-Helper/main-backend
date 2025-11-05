@@ -1,7 +1,7 @@
 package com.melowetty.hsepermhelper.service.impl
 
 import com.melowetty.hsepermhelper.domain.model.file.File
-import com.melowetty.hsepermhelper.repository.ScheduleFilesRepository
+import com.melowetty.hsepermhelper.persistence.repository.ScheduleFilesRepository
 import com.melowetty.hsepermhelper.service.ScheduleFilesService
 import org.springframework.stereotype.Service
 

@@ -2,7 +2,7 @@ package com.melowetty.hsepermhelper.controller
 
 import com.melowetty.hsepermhelper.domain.model.Response
 import com.melowetty.hsepermhelper.domain.model.lesson.Lesson
-import com.melowetty.hsepermhelper.service.PersonalScheduleService
+import com.melowetty.hsepermhelper.service.OldPersonalScheduleService
 import com.melowetty.hsepermhelper.service.ScheduleInfoService
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.Parameter
@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 @RequestMapping("/public/schedule")
 class PublicScheduleController(
-    private val personalScheduleService: PersonalScheduleService,
+    private val oldPersonalScheduleService: OldPersonalScheduleService,
     private val scheduleInfoService: ScheduleInfoService,
 ) {
     @GetMapping
@@ -24,7 +24,7 @@ class PublicScheduleController(
         @RequestParam("group")
         group: String,
     ): Response<List<Lesson>> {
-        return Response(personalScheduleService.getScheduleByGroup(group))
+        return Response(oldPersonalScheduleService.getScheduleByGroup(group))
     }
 
     @Deprecated("Use v1/schedule-info/courses")
