@@ -1,0 +1,12 @@
+app:
+  features:
+      new-changed-timetable-notification:
+          enabled: false
+#          enabled-for:
+#              - ADMIN
+#              - SERVICE_ADMIN
+      added-timetables-notification:
+          enabled: false
+#          enabled-for:
+#              - ADMIN
+#              - SERVICE_ADMIN

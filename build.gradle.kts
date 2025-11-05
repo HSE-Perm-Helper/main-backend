@@ -13,11 +13,8 @@ val springCloudVersion by extra("2022.0.4")
 val apachePoiVersion = "5.2.3"
 val caffeineVersion = "3.2.0"
 val postgresVersion = "42.6.0"
-val slf4jVersion = "2.0.0"
 val springDocStarterVersion = "2.2.0"
 val springDocKotlinVersion = "2.2.0"
-val mockitoVersion = "5.11.0"
-val mockitoKotlinVersion = "5.4.0"
 val jsoupVersion = "1.16.1"
 val kotlinLoggingVersion = "7.0.3"
 
@@ -39,6 +36,11 @@ allOpen {
 }
 
 dependencies {
+    implementation(libs.spring.quartz)
+    implementation(libs.spring.tx)
+
+    implementation(libs.logback.encoder)
+
     implementation("com.github.ben-manes.caffeine:caffeine")
 
     implementation("org.liquibase:liquibase-core")
@@ -50,6 +52,7 @@ dependencies {
 
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
+    implementation(libs.jackson.datatype.jsr310)
     implementation("org.jetbrains.kotlin:kotlin-reflect")
 
     implementation("org.springframework.boot:spring-boot-starter-actuator")
@@ -60,8 +63,6 @@ dependencies {
 
     implementation("io.github.oshai:kotlin-logging-jvm:${kotlinLoggingVersion}")
 
-    implementation("org.slf4j:slf4j-api:${slf4jVersion}")
-
     implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:${springDocStarterVersion}")
 
     implementation("org.jsoup:jsoup:${jsoupVersion}")
@@ -71,10 +72,14 @@ dependencies {
 
     developmentOnly("org.springframework.boot:spring-boot-devtools")
 
-    testImplementation("org.springframework.boot:spring-boot-starter-test")
+    testImplementation("org.springframework.boot:spring-boot-starter-test") {
+        exclude(group = "org.mockito", module = "mockito-core")
+        exclude(group = "org.mockito", module = "mockito-junit-jupiter")
+    }
     testImplementation("org.springframework.kafka:spring-kafka-test")
-    testImplementation("org.mockito:mockito-core:${mockitoVersion}")
-    testImplementation("org.mockito.kotlin:mockito-kotlin:${mockitoKotlinVersion}")
+
+    testImplementation(libs.mockK)
+    testImplementation(libs.spring.mockk)
 }
 dependencyManagement {
     imports {
@@ -113,7 +118,7 @@ jacoco {
 }
 
 tasks.jacocoTestReport {
-    dependsOn(tasks.test) // tests are required to run before generating the report
+    dependsOn(tasks.test)
     reports {
         xml.required.set(false)
         csv.required.set(true)

@@ -1,30 +1,27 @@
 package com.melowetty.hsepermhelper.excel
 
-import com.melowetty.hsepermhelper.domain.model.schedule.ScheduleType
 import com.melowetty.hsepermhelper.excel.impl.HseTimetableExcelParserImpl
 import com.melowetty.hsepermhelper.excel.model.ParsedScheduleInfo
 import com.melowetty.hsepermhelper.service.NotificationService
 import com.melowetty.hsepermhelper.timetable.integration.excel.bachelor.shared.BachelorTimetableSheetExcelParser
 import com.melowetty.hsepermhelper.timetable.model.InternalTimetableType
+import io.mockk.impl.annotations.InjectMockKs
+import io.mockk.impl.annotations.MockK
+import io.mockk.junit5.MockKExtension
 import java.time.LocalDate
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
-import org.mockito.InjectMocks
-import org.mockito.Mock
-import org.mockito.Mockito
-import org.mockito.junit.jupiter.MockitoExtension
-import org.mockito.kotlin.any
 
-@ExtendWith(MockitoExtension::class)
+@ExtendWith(MockKExtension::class)
 class HseTimetableExcelParserTest {
-    @InjectMocks
+    @InjectMockKs
     private lateinit var parser: HseTimetableExcelParserImpl
 
-    @Mock
+    @MockK
     private lateinit var sheetParser: BachelorTimetableSheetExcelParser
 
-    @Mock
+    @MockK
     private lateinit var notificationService: NotificationService
 
     @Test
@@ -36,7 +33,7 @@ class HseTimetableExcelParserTest {
             number = 1,
             startDate = LocalDate.of(2024, 12, 12),
             endDate = LocalDate.of(2024, 12, 19),
-            type = InternalTimetableType.BACHELOR_WEEK_SCHEDULE
+            type = InternalTimetableType.BACHELOR_WEEK_TIMETABLE
         )
 
         assertEquals(expected, actual)
@@ -51,7 +48,7 @@ class HseTimetableExcelParserTest {
             number = null,
             startDate = LocalDate.of(2024, 11, 1),
             endDate = LocalDate.of(2024, 12, 19),
-            type = InternalTimetableType.BACHELOR_SESSION_SCHEDULE
+            type = InternalTimetableType.BACHELOR_SESSION_TIMETABLE
         )
 
         assertEquals(expected, actual)
@@ -66,7 +63,7 @@ class HseTimetableExcelParserTest {
             number = 2,
             startDate = LocalDate.of(2024, 11, 1),
             endDate = LocalDate.of(2024, 12, 19),
-            type = InternalTimetableType.BACHELOR_QUARTER_SCHEDULE
+            type = InternalTimetableType.BACHELOR_QUARTER_TIMETABLE
         )
 
         assertEquals(expected, actual)
@@ -81,7 +78,7 @@ class HseTimetableExcelParserTest {
             number = 2,
             startDate = LocalDate.of(2024, 11, 1),
             endDate = LocalDate.of(2024, 12, 19),
-            type = InternalTimetableType.BACHELOR_QUARTER_SCHEDULE
+            type = InternalTimetableType.BACHELOR_QUARTER_TIMETABLE
         )
 
         assertEquals(expected, actual)
@@ -96,7 +93,7 @@ class HseTimetableExcelParserTest {
             number = 6,
             startDate = LocalDate.of(2024, 12, 19),
             endDate = LocalDate.of(2024, 12, 19),
-            type = InternalTimetableType.BACHELOR_WEEK_SCHEDULE
+            type = InternalTimetableType.BACHELOR_WEEK_TIMETABLE
         )
 
         assertEquals(expected, actual)
@@ -111,7 +108,7 @@ class HseTimetableExcelParserTest {
             number = null,
             startDate = LocalDate.of(2024, 12, 19),
             endDate = LocalDate.of(2024, 12, 19),
-            type = InternalTimetableType.BACHELOR_SESSION_SCHEDULE
+            type = InternalTimetableType.BACHELOR_SESSION_TIMETABLE
         )
 
         assertEquals(expected, actual)

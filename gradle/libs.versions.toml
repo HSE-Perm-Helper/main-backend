@@ -1,0 +1,15 @@
+[versions]
+mockK = "1.14.5"
+springMockk = "4.0.2"
+logback = "8.1"
+
+[libraries]
+mockK = { module = "io.mockk:mockk", version.ref = "mockK" }
+
+spring-quartz = { module = "org.springframework.boot:spring-boot-starter-quartz" }
+spring-tx = { module = "org.springframework:spring-tx" }
+spring-mockk = { module = "com.ninja-squad:springmockk", version.ref = "springMockk" }
+
+logback-encoder = { module = "net.logstash.logback:logstash-logback-encoder", version.ref = "logback" }
+
+jackson-datatype-jsr310 = { module = "com.fasterxml.jackson.datatype:jackson-datatype-jsr310" }

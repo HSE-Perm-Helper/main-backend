@@ -1,21 +1,19 @@
 package com.melowetty.hsepermhelper.timetable.integration.excel.bachelor.shared.impl
 
-import com.melowetty.hsepermhelper.annotation.Slf4j
-import com.melowetty.hsepermhelper.annotation.Slf4j.Companion.log
 import com.melowetty.hsepermhelper.domain.model.lesson.CycleTime
 import com.melowetty.hsepermhelper.domain.model.lesson.LessonTime
 import com.melowetty.hsepermhelper.domain.model.lesson.ScheduledTime
 import com.melowetty.hsepermhelper.excel.HseTimetableCellExcelParser
 import com.melowetty.hsepermhelper.timetable.integration.excel.bachelor.shared.BachelorTimetableSheetExcelParser
 import com.melowetty.hsepermhelper.excel.model.CellInfo
-import com.melowetty.hsepermhelper.timetable.model.InternalLesson
 import com.melowetty.hsepermhelper.excel.model.ParsedCellInfo
 import com.melowetty.hsepermhelper.excel.model.ParsedScheduleInfo
-import com.melowetty.hsepermhelper.notification.ServiceWarnNotification
+import com.melowetty.hsepermhelper.messaging.event.notification.ServiceWarnNotification
 import com.melowetty.hsepermhelper.service.NotificationService
 import com.melowetty.hsepermhelper.timetable.model.InternalTimetableType
 import com.melowetty.hsepermhelper.timetable.model.impl.GroupBasedLesson
 import com.melowetty.hsepermhelper.util.RowUtils.Companion.getCellValue
+import io.github.oshai.kotlinlogging.KotlinLogging
 import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
@@ -26,53 +24,45 @@ import org.apache.poi.ss.usermodel.Sheet
 import org.springframework.stereotype.Component
 
 @Component
-@Slf4j
 class BachelorTimetableSheetExcelParserImpl(
     private val cellParser: HseTimetableCellExcelParser,
     private val notificationService: NotificationService,
 ) : BachelorTimetableSheetExcelParser {
     override fun parseSheet(sheet: Sheet, scheduleInfo: ParsedScheduleInfo): List<GroupBasedLesson> {
         val lessons = mutableListOf<GroupBasedLesson>()
-        val course = getCourse(sheet.sheetName) ?: return listOf()
 
-        val (groups, programs) = fillGroupsAndProgramsFromSheet(sheet)
+        val groups = parseGroups(sheet)
 
         val previousData = PreviousData()
-        run schedule@{
-            for (rowNum in 3 until sheet.lastRowNum) {
-                val row = sheet.getRow(rowNum)
-                val (parsedLessons, action) = parseRow(
-                    RowData(
-                        row = row,
-                        course = course,
-                        programs = programs,
-                        groups = groups,
-                        scheduleInfo = scheduleInfo,
-                        previousData = previousData
-                    )
+
+        for (rowNum in 3 until sheet.lastRowNum) {
+            val row = sheet.getRow(rowNum)
+            val (parsedLessons, action) = parseRow(
+                RowData(
+                    row = row,
+                    scheduleInfo = scheduleInfo,
+                    groups = groups,
+                    previousData = previousData
                 )
+            )
 
-                if (action == Action.BREAK) break
-                if (action == Action.CONTINUE) continue
+            if (action == Action.BREAK) break
+            if (action == Action.CONTINUE) continue
 
-                lessons.addAll(parsedLessons)
-            }
+            lessons.addAll(parsedLessons)
         }
         return lessons
     }
 
-    private fun fillGroupsAndProgramsFromSheet(sheet: Sheet): Pair<Map<Int, String>, Map<Int, String>> {
+    private fun parseGroups(sheet: Sheet): Map<Int, String> {
         val groups = mutableMapOf<Int, String>()
-        val programs = mutableMapOf<Int, String>()
         for (cellNum in 2 until sheet.getRow(2).physicalNumberOfCells) {
             val group = sheet.getRow(2).getCellValue(cellNum) ?: continue
             if (group != "" && groups.containsValue(group).not()) {
                 groups[cellNum] = group
-                val programme = getProgramme(group) ?: ""
-                programs[cellNum] = programme
             }
         }
-        return Pair(groups, programs)
+        return groups
     }
 
     private fun parseRow(rowData: RowData): Pair<List<GroupBasedLesson>, Action> {
@@ -95,11 +85,10 @@ class BachelorTimetableSheetExcelParserImpl(
                 lessons.addAll(parsedLessons)
 
             } catch (e: Exception) {
-                log.error("Произошла ошибка во время обработки пары!")
-                log.error(
-                    "Расписание: ${rowData.scheduleInfo}, sheet: ${row.sheet.sheetName}, cellAddress: ${cell.address}, value: $cellValue, stacktrace: ",
-                    e
-                )
+                logger.error { "Произошла ошибка во время обработки пары!" }
+                logger.error(e) {
+                    "Расписание: ${rowData.scheduleInfo}, sheet: ${row.sheet.sheetName}, cellAddress: ${cell.address}, value: $cellValue, stacktrace: "
+                }
 
                 notificationService.sendNotificationV2(
                     ServiceWarnNotification(
@@ -116,14 +105,11 @@ class BachelorTimetableSheetExcelParserImpl(
 
     private fun getParsedLessonInfo(cellNum: Int, rowData: RowData, lessonTime: LessonTime): ParsedCellInfo? {
         val group = rowData.groups[cellNum] ?: return null
-        val programme = rowData.programs[cellNum] ?: return null
         val isUnderlined = checkIsUnderlined(rowData.row.getCell(cellNum))
 
         return ParsedCellInfo(
             cellInfo = CellInfo(
                 value = rowData.row.getCellValue(cellNum) ?: return null,
-                course = rowData.course,
-                program = programme,
                 group = group,
                 time = lessonTime,
                 isUnderlined = isUnderlined
@@ -143,7 +129,7 @@ class BachelorTimetableSheetExcelParserImpl(
         val (startTime, endTime) = getStartAndEndTime(timeCell)
 
         if (unparsedDate.size < 2) {
-            if (rowData.scheduleInfo.type != InternalTimetableType.BACHELOR_QUARTER_SCHEDULE) {
+            if (rowData.scheduleInfo.type != InternalTimetableType.BACHELOR_QUARTER_TIMETABLE) {
                 if (rowData.previousData.prevDay.isNotEmpty()) {
                     unparsedDate = rowData.previousData.prevDay.split("\n")
                 } else {
@@ -154,7 +140,7 @@ class BachelorTimetableSheetExcelParserImpl(
             lessonTime = CycleTime(day, startTime, endTime)
         } else {
             val date = LocalDate.parse(unparsedDate[1], DateTimeFormatter.ofPattern("dd.MM.yyyy"))
-            lessonTime = ScheduledTime(date.dayOfWeek, date, startTime, endTime)
+            lessonTime = ScheduledTime(date, startTime, endTime)
         }
 
         rowData.previousData.prevDay = rowData.row.getCellValue(1)!!
@@ -207,13 +193,15 @@ class BachelorTimetableSheetExcelParserImpl(
     internal data class RowData(
         val row: Row,
         val scheduleInfo: ParsedScheduleInfo,
-        val course: Int,
         val groups: Map<Int, String>,
-        val programs: Map<Int, String>,
         val previousData: PreviousData
     )
 
     internal class PreviousData {
         var prevDay = ""
+    }
+
+    companion object {
+        private val logger = KotlinLogging.logger {  }
     }
 }

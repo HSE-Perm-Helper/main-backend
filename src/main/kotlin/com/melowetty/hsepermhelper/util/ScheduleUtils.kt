@@ -4,7 +4,6 @@ import com.melowetty.hsepermhelper.domain.model.lesson.Lesson
 import com.melowetty.hsepermhelper.domain.model.lesson.ScheduledTime
 import com.melowetty.hsepermhelper.domain.model.schedule.Schedule
 import com.melowetty.hsepermhelper.domain.model.schedule.ScheduleType
-import com.melowetty.hsepermhelper.timetable.model.InternalLesson
 import com.melowetty.hsepermhelper.timetable.model.InternalTimetableType
 import com.melowetty.hsepermhelper.timetable.model.InternalTimetable
 import java.time.DayOfWeek
@@ -13,9 +12,9 @@ import java.time.LocalDate
 class ScheduleUtils {
     companion object {
         fun normalizeSchedules(schedules: List<InternalTimetable>): List<InternalTimetable> {
-            val sessionSchedules = schedules.filter { it.type == InternalTimetableType.BACHELOR_SESSION_SCHEDULE }
+            val sessionSchedules = schedules.filter { it.type == InternalTimetableType.BACHELOR_SESSION_TIMETABLE }
             if (sessionSchedules.size < 2) return schedules
-            val filteredSchedules = schedules.filter { it.type != InternalTimetableType.BACHELOR_SESSION_SCHEDULE }
+            val filteredSchedules = schedules.filter { it.type != InternalTimetableType.BACHELOR_SESSION_TIMETABLE }
             val mergedSchedule = mergeSessionSchedules(sessionSchedules)
             return filteredSchedules + mergedSchedule
         }
@@ -27,10 +26,13 @@ class ScheduleUtils {
             val mergedSchedule = InternalTimetable(
                 id = sessionSchedules.first().id,
                 type = sessionSchedules.first().type,
+                educationType = sessionSchedules.first().educationType,
                 start = start,
                 end = end,
                 number = sortedSchedules.first().number,
-                lessons = sortedSchedules.flatMap { it.lessons }.sorted()
+                lessons = sortedSchedules.flatMap { it.lessons }.sorted(),
+                isParent = true,
+                source = sortedSchedules.first().source,
             )
             return mergedSchedule
         }
@@ -40,7 +42,7 @@ class ScheduleUtils {
         }
 
         fun List<InternalTimetable>.filterWeekExcelSchedules(): List<InternalTimetable> {
-            return filter { it.type != InternalTimetableType.BACHELOR_QUARTER_SCHEDULE }
+            return filter { it.type != InternalTimetableType.BACHELOR_QUARTER_TIMETABLE }
         }
 
         fun getWeekScheduleByDate(schedules: List<InternalTimetable>, date: LocalDate): InternalTimetable? {
@@ -55,26 +57,10 @@ class ScheduleUtils {
                 .firstOrNull { it.start <= date && it.end >= date }
         }
 
-        fun getLessonsAtDateInWeekSchedule(schedule: InternalTimetable, date: LocalDate): List<InternalLesson> {
-            return schedule.lessons.filter {
-                (it.time as ScheduledTime).date.isEqual(date)
-            }
-        }
-
         fun getLessonsAtDateInWeekSchedule(schedule: Schedule, date: LocalDate): List<Lesson> {
             return schedule.lessons.filter {
                 (it.time as ScheduledTime).date.isEqual(date)
             }
-        }
-
-        fun getCourseFromGroup(group: String): Int {
-            val dividedGroup = group.split("-")
-            val year = dividedGroup[1].toInt()
-            return 25 - year
-        }
-
-        fun getShortGroupFromGroup(group: String): String {
-            return group.split("-")[0]
         }
 
         fun getDifferentDaysByLessons(before: InternalTimetable, after: InternalTimetable): List<DayOfWeek> {

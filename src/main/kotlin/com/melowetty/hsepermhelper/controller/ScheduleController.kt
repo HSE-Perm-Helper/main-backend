@@ -6,7 +6,7 @@ import com.melowetty.hsepermhelper.domain.model.lesson.AvailableLessonForHiding
 import com.melowetty.hsepermhelper.domain.model.lesson.Lesson
 import com.melowetty.hsepermhelper.domain.model.schedule.Schedule
 import com.melowetty.hsepermhelper.domain.model.schedule.ScheduleInfo
-import com.melowetty.hsepermhelper.service.PersonalScheduleService
+import com.melowetty.hsepermhelper.service.OldPersonalScheduleService
 import com.melowetty.hsepermhelper.service.ScheduleInfoService
 import com.melowetty.hsepermhelper.service.UserEventService
 import com.melowetty.hsepermhelper.util.DateUtils
@@ -26,7 +26,7 @@ import org.springframework.web.bind.annotation.RestController
 @Tag(name = "Расписание", description = "Взаимодействие с расписанием")
 @RestController
 class ScheduleController(
-    private val personalScheduleService: PersonalScheduleService,
+    private val oldPersonalScheduleService: OldPersonalScheduleService,
     private val userEventService: UserEventService,
     private val scheduleInfoService: ScheduleInfoService,
 ) {
@@ -41,7 +41,7 @@ class ScheduleController(
     )
     fun getSchedules(
     ): Response<List<ScheduleInfo>> {
-        val schedules = personalScheduleService.getAvailableSchedules()
+        val schedules = oldPersonalScheduleService.getAvailableSchedules()
         return Response(schedules)
     }
 
@@ -64,7 +64,7 @@ class ScheduleController(
         val startDate = LocalDate.parse(start, DateTimeFormatter.ofPattern(DateUtils.DATE_PATTERN))
         val endDate = LocalDate.parse(end, DateTimeFormatter.ofPattern(DateUtils.DATE_PATTERN))
         userEventService.addUserEvent(telegramId, UserEventType.GET_SCHEDULE)
-        val schedule = personalScheduleService.getUserScheduleByTelegramId(telegramId, startDate, endDate)
+        val schedule = oldPersonalScheduleService.getUserScheduleByTelegramId(telegramId, startDate, endDate)
         return Response(schedule)
     }
 
@@ -75,7 +75,7 @@ class ScheduleController(
     fun getTodaySchedule(
         @PathVariable telegramId: Long,
     ): Response<List<Lesson>> {
-        val schedule = personalScheduleService.getTodayLessons(telegramId)
+        val schedule = oldPersonalScheduleService.getTodayLessons(telegramId)
         userEventService.addUserEvent(telegramId, UserEventType.GET_TODAY_SCHEDULE)
         return Response(schedule)
     }
@@ -87,7 +87,7 @@ class ScheduleController(
     fun getTomorrowSchedule(
         @PathVariable telegramId: Long,
     ): Response<List<Lesson>> {
-        val schedule = personalScheduleService.getTomorrowLessons(telegramId)
+        val schedule = oldPersonalScheduleService.getTomorrowLessons(telegramId)
         userEventService.addUserEvent(telegramId, UserEventType.GET_TOMORROW_SCHEDULE)
         return Response(schedule)
     }
@@ -107,7 +107,7 @@ class ScheduleController(
         telegramId: Long,
     ): Response<List<Schedule>> {
         userEventService.addUserEvent(telegramId, UserEventType.GET_SCHEDULE)
-        val schedule = personalScheduleService.getUserSchedulesByTelegramId(telegramId)
+        val schedule = oldPersonalScheduleService.getUserSchedulesByTelegramId(telegramId)
         return Response(schedule)
     }
 
@@ -158,7 +158,7 @@ class ScheduleController(
         produces = [MediaType.APPLICATION_JSON_VALUE]
     )
     fun getAvailableLessonsForHiding(@RequestParam telegramId: Long): List<AvailableLessonForHiding> {
-        return personalScheduleService.getAvailableLessonsForHiding(telegramId).sortedBy { it.lessonType.ordinal }
+        return oldPersonalScheduleService.getAvailableLessonsForHiding(telegramId).sortedBy { it.lessonType.ordinal }
             .sortedBy { it.lesson }
     }
 }
