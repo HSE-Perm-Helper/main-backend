@@ -21,11 +21,6 @@ class HideLessonEntity(
     }
 
     override fun hashCode(): Int = id.hashCode()
-
-    companion object {
-        fun of(userId: UUID, lesson: String, lessonType: LessonType, subGroup: Int? = null) =
-            HideLessonEntity(HideLessonId(userId, lesson, lessonType, subGroup))
-    }
 }
 
 @Embeddable
@@ -40,6 +35,6 @@ data class HideLessonId(
     @Column(name = "lesson_type", nullable = false)
     val lessonType: LessonType,
 
-    @Column(name = "sub_group")
-    val subGroup: Int? = null,
+    @Column(name = "sub_group", nullable = false)
+    val subGroup: Int,
 )
