@@ -22,7 +22,7 @@ class HiddenLessonStorage(
     }
 
     fun hideLesson(userId: UUID, lesson: String, lessonType: LessonType, subGroup: Int?) {
-        val id = HideLessonId(userId, lesson, lessonType, subGroup)
+        val id = HideLessonId(userId, lesson, lessonType, subGroup ?: 0)
 
         if (hiddenLessonRepository.existsById(id)) {
             logger.warn { "User $userId already has hidden lesson $lesson" }
@@ -35,7 +35,7 @@ class HiddenLessonStorage(
     }
 
     fun unHideLesson(userId: UUID, lesson: String, lessonType: LessonType, subGroup: Int?) {
-        val id = HideLessonId(userId, lesson, lessonType, subGroup)
+        val id = HideLessonId(userId, lesson, lessonType, subGroup ?: 0)
 
         if (!hiddenLessonRepository.existsById(id)) {
             logger.warn { "User $userId has no hidden lesson $lesson" }
@@ -56,7 +56,7 @@ class HiddenLessonStorage(
         userId = id.userId,
         lesson = id.lesson,
         lessonType = id.lessonType,
-        subGroup = id.subGroup
+        subGroup = if (id.subGroup == 0) null else id.subGroup
     )
 
     companion object {
