@@ -11,4 +11,9 @@ class MultithreadingConfig {
     fun executorServiceForHseApiCheckingChanges(): ExecutorService {
         return Executors.newFixedThreadPool(10)
     }
+
+    @Bean("add-user-events-executor-service")
+    fun executorServiceForAddingUserEvents(): ExecutorService {
+        return Executors.newFixedThreadPool(10)
+    }
 }

@@ -35,10 +35,6 @@ class StubMessageBrokerService(
         timetableNotificationService.notifyAboutAddedTimetables(task.timetables)
     }
 
-    override fun sendUserEvent(userId: UUID, eventType: UserEventType) {
-        logger.info { "Stub user event added: $userId, $eventType" }
-    }
-
     override fun sendNotificationV1(notification: Notification) {
         logger.info { "Stub notification v1 added: $notification" }
     }

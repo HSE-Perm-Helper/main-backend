@@ -13,6 +13,10 @@ import java.util.*
 class UserService(
     private val userStorage: UserStorage,
 ) {
+    fun getUsersById(ids: List<UUID>): List<UserDto> {
+        return userStorage.getUsersById(ids).map { it.toDto() }
+    }
+
     fun getUserByTelegramId(telegramId: Long): UserDto {
         return getUserRecordByTelegramId(telegramId).toDto()
     }

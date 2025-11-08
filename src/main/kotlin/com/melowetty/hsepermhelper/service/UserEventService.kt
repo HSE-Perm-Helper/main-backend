@@ -3,14 +3,17 @@ package com.melowetty.hsepermhelper.service
 import com.melowetty.hsepermhelper.domain.model.event.UserEventType
 import com.melowetty.hsepermhelper.messaging.broker.MessageBrokerService
 import com.melowetty.hsepermhelper.persistence.repository.UserRepository
+import com.melowetty.hsepermhelper.persistence.storage.EventStorage
 import io.github.oshai.kotlinlogging.KotlinLogging
+import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.stereotype.Service
 import java.util.*
+import java.util.concurrent.ExecutorService
 
 @Service
 class UserEventService(
     private val userRepository: UserRepository,
-    private val messageBrokerService: MessageBrokerService,
+    private val eventStorage: EventStorage,
 ) {
 
     fun addUserEvent(telegramId: Long, eventType: UserEventType) {
@@ -20,11 +23,11 @@ class UserEventService(
                 return
             }
 
-        messageBrokerService.sendUserEvent(userId, eventType)
+        eventStorage.saveEvent(userId, eventType)
     }
 
     fun addUserEvent(userId: UUID, eventType: UserEventType) {
-        messageBrokerService.sendUserEvent(userId, eventType)
+        eventStorage.saveEvent(userId, eventType)
     }
 
     companion object {
