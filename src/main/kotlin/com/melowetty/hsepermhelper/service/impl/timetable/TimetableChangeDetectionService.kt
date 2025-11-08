@@ -6,6 +6,7 @@ import com.melowetty.hsepermhelper.persistence.storage.UserStorage
 import com.melowetty.hsepermhelper.timetable.compose.impl.HiddenLessonsEmbeddedTimetable
 import com.melowetty.hsepermhelper.persistence.storage.ExcelTimetableStorage
 import com.melowetty.hsepermhelper.timetable.model.ExcelTimetable
+import com.melowetty.hsepermhelper.timetable.model.InternalTimetable
 import com.melowetty.hsepermhelper.timetable.model.InternalTimetableInfo
 import com.melowetty.hsepermhelper.timetable.model.impl.GroupBasedLesson
 import com.melowetty.hsepermhelper.util.Paginator
@@ -78,8 +79,8 @@ class TimetableChangeDetectionService(
                 val oldTimetable = makeTimetable(timetableInfo, oldLessons)
                 val newTimetable = makeTimetable(timetableInfo, newLessons)
 
-                val filteredOldTimetable = hiddenLessonsEmbeddedTimetable.embed(user, oldTimetable) as  ExcelTimetable
-                val filteredNewTimetable = hiddenLessonsEmbeddedTimetable.embed(user, newTimetable) as ExcelTimetable
+                val filteredOldTimetable = hiddenLessonsEmbeddedTimetable.embed(user, oldTimetable)
+                val filteredNewTimetable = hiddenLessonsEmbeddedTimetable.embed(user, newTimetable)
 
                 val changedDays = getChangesByDays(filteredOldTimetable, filteredNewTimetable)
 
@@ -90,7 +91,7 @@ class TimetableChangeDetectionService(
         }
     }
 
-    private fun getChangesByDays(oldTimetable: ExcelTimetable, newTimetable: ExcelTimetable): List<DayOfWeek> {
+    private fun getChangesByDays(oldTimetable: InternalTimetable, newTimetable: InternalTimetable): List<DayOfWeek> {
         val oldLessonsGroupedByDay = oldTimetable.lessons.groupBy { it.time.dayOfWeek }
         val newLessonsGroupedByDay = newTimetable.lessons.groupBy { it.time.dayOfWeek }
 
