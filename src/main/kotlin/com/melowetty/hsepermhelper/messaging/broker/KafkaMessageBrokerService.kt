@@ -30,10 +30,6 @@ class KafkaMessageBrokerService(
         kafkaTemplate.send(kafkaTopicsConfig.tasks, task)
     }
 
-    override fun sendUserEvent(userId: UUID, eventType: UserEventType) {
-        kafkaTemplate.send(kafkaTopicsConfig.userEvents, eventType.toString(), mapOf(USER_EVENT_USER_ID_FIELD to userId))
-    }
-
     override fun sendNotificationV1(notification: Notification) {
         kafkaTemplate.send(
             kafkaTopicsConfig.baseNotifications, KafkaNotification(
@@ -62,8 +58,6 @@ class KafkaMessageBrokerService(
     }
 
     companion object {
-        private const val USER_EVENT_USER_ID_FIELD = "source"
-
         private const val NOTIFICATION_USER_ID_FIELD = "userId"
     }
 }

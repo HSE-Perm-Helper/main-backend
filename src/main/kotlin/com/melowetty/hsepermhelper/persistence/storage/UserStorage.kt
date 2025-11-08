@@ -14,6 +14,7 @@ import jakarta.persistence.criteria.Predicate
 import org.springframework.stereotype.Component
 import java.time.LocalDateTime
 import java.util.*
+import kotlin.jvm.optionals.getOrNull
 
 @Component
 class UserStorage(
@@ -21,6 +22,8 @@ class UserStorage(
     private val userRepository: UserRepository,
     private val hiddenLessonStorage: HiddenLessonStorage,
 ) {
+    fun existsUserById(id: UUID): Boolean = userRepository.existsById(id)
+
     fun getUserIdByTelegramId(telegramId: Long): UUID? = userRepository.getIdByTelegramId(telegramId)
 
     fun getUsersById(ids: List<UUID>): List<UserRecord> {
@@ -66,15 +69,17 @@ class UserStorage(
     }
 
     fun findUserById(id: UUID): UserRecord? {
-        return userRepository.findById(id).map { UserRecord.from(it) }.orElse(null)
-            .let {
+        return userRepository.findById(id)
+            .map { UserRecord.from(it) }.getOrNull()
+            ?.let {
                 addAdditionalFields(it)
             }
     }
 
     fun findUserByTelegramId(telegramId: Long): UserRecord? {
-        return userRepository.findByTelegramId(telegramId).map { UserRecord.from(it) }.orElse(null)
-            .let {
+        return userRepository.findByTelegramId(telegramId)
+            .map { UserRecord.from(it) }.getOrNull()
+            ?.let {
                 addAdditionalFields(it)
             }
     }
