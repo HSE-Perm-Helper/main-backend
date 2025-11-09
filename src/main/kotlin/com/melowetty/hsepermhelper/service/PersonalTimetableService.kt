@@ -32,7 +32,7 @@ class PersonalTimetableService(
         val todayDate = LocalDate.now(DateUtils.PERM_TIME_ZONE.toZoneId())
 
         val timetable = getTimetableForDate(user, timetables, todayDate)
-        return  getLessonsAtDate(timetable, todayDate)
+        return getLessonsAtDate(timetable, todayDate)
     }
 
     fun getTomorrowLessons(userId: UUID): List<Lesson> {
@@ -44,7 +44,7 @@ class PersonalTimetableService(
 
         val timetable = getTimetableForDate(user, timetables, tomorrowDate)
 
-        return  getLessonsAtDate(timetable, tomorrowDate)
+        return getLessonsAtDate(timetable, tomorrowDate)
     }
 
     fun getTimetable(userId: UUID, timetableId: String): Schedule {
@@ -67,7 +67,8 @@ class PersonalTimetableService(
     }
 
     private fun getTimetableForDate(user: UserRecord, timetables: List<ScheduleInfo>, date: LocalDate): Schedule {
-        val targetTimetable = timetables.firstOrNull { it.start >= date }
+        val targetTimetable = timetables
+            .firstOrNull { date >= it.start && date <= it.end }
             ?: throw ScheduleNotFoundException("No timetable for date $date")
 
         return timetableComposer.getTimetable(targetTimetable.id, user)
