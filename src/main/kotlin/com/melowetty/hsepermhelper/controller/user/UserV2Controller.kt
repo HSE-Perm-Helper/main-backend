@@ -82,11 +82,13 @@ class UserV2Controller(
     }
 
     @PostMapping("{id}/hidden-lessons")
+    @Deprecated("Use v3/users/{id}/hidden-lessons", replaceWith = ReplaceWith("v3/users/{id}/hidden-lessons"))
     fun addHiddenLesson(@PathVariable("id") telegramId: Long, @RequestBody lesson: ApiUserHideLesson): UserDto {
         return oldUserService.addHiddenLesson(telegramId, lesson)
     }
 
     @DeleteMapping("{id}/hidden-lessons")
+    @Deprecated("Use v3/users/{id}/hidden-lessons", replaceWith = ReplaceWith("v3/users/{id}/hidden-lessons"))
     fun removeHiddenLesson(@PathVariable("id") telegramId: Long, @RequestBody lesson: ApiUserHideLesson): UserDto {
         return oldUserService.removeHiddenLesson(telegramId, lesson)
     }
