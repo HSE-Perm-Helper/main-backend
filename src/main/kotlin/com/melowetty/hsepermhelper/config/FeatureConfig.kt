@@ -7,11 +7,11 @@ import org.springframework.stereotype.Component
 @Component
 @ConfigurationProperties(prefix = "app.features")
 class FeatureConfig {
-    data class Feature(
-        val enabled: Boolean = false,
-        val enabledFor: MutableList<UserRole> = mutableListOf()
-    )
-
-    var newChangedTimetableNotification: Feature = Feature()
-    var addedTimetablesNotification: Feature = Feature()
+    lateinit var newChangedTimetableNotification: Feature
+    lateinit var addedTimetablesNotification: Feature
 }
+
+data class Feature(
+    val enabled: Boolean = false,
+    val enabledFor: MutableList<UserRole> = mutableListOf()
+)
