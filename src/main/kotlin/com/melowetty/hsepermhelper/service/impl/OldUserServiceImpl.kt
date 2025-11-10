@@ -142,38 +142,6 @@ class OldUserServiceImpl(
         return updateUserSettings(telegramId, userSettings)
     }
 
-    override fun addHiddenLesson(telegramId: Long, lesson: ApiUserHideLesson): UserDto {
-        val user = getUserRecordByTelegramId(telegramId)
-
-        userHiddenLessonService.hideLesson(user.id, lesson.lesson, lesson.lessonType, lesson.subGroup)
-
-        val hiddenLessons = userHiddenLessonService.getUserHiddenLessons(user.id)
-        val newUser = user.copy(hiddenLessons = hiddenLessons)
-
-        return newUser.toDto()
-    }
-
-    override fun removeHiddenLesson(telegramId: Long, lesson: ApiUserHideLesson): UserDto {
-        val user = getUserRecordByTelegramId(telegramId)
-
-        userHiddenLessonService.unHideLesson(user.id, lesson.lesson, lesson.lessonType, lesson.subGroup)
-
-        val hiddenLessons = userHiddenLessonService.getUserHiddenLessons(user.id)
-        val newUser = user.copy(hiddenLessons = hiddenLessons)
-
-        return newUser.toDto()
-    }
-
-    override fun clearHiddenLessons(telegramId: Long): UserDto {
-        val user = getUserRecordByTelegramId(telegramId)
-
-        userHiddenLessonService.clearHiddenLessons(user.id)
-
-        val clearedUser = user.copy(hiddenLessons = listOf())
-
-        return clearedUser.toDto()
-    }
-
     override fun getRemoteScheduleLink(telegramId: Long): RemoteScheduleLink {
         try {
             val token = remoteScheduleService.getUserScheduleToken(telegramId).token

@@ -4,7 +4,6 @@ import com.melowetty.hsepermhelper.domain.model.file.FilesChanging
 import com.melowetty.hsepermhelper.excel.HseTimetableExcelParser
 import com.melowetty.hsepermhelper.exception.ScheduleNotFoundException
 import com.melowetty.hsepermhelper.service.ScheduleFilesService
-import com.melowetty.hsepermhelper.service.SchedulesCheckingChangesService
 import com.melowetty.hsepermhelper.timetable.model.ExcelTimetable
 import com.melowetty.hsepermhelper.timetable.model.InternalTimetable
 import com.melowetty.hsepermhelper.util.ScheduleUtils
@@ -15,9 +14,7 @@ import org.springframework.stereotype.Component
 
 @Component
 class ExcelScheduleRepository(
-    private val eventPublisher: ApplicationEventPublisher,
     private val scheduleFilesService: ScheduleFilesService,
-    private val schedulesCheckingChangesService: SchedulesCheckingChangesService,
     private val timetableExcelParser: HseTimetableExcelParser,
 ) {
     private var schedules = listOf<ExcelTimetable>()
@@ -33,13 +30,7 @@ class ExcelScheduleRepository(
 
     @EventListener
     fun handleScheduleFilesUpdate(event: FilesChanging) {
-        val prevSchedules = schedules
         fetchSchedules()
-        val newSchedules = schedules
-        val changes = schedulesCheckingChangesService.getChanges(prevSchedules, newSchedules)
-        if (changes.changed.isNotEmpty() || changes.deleted.isNotEmpty() || changes.added.isNotEmpty()) {
-            eventPublisher.publishEvent(changes)
-        }
     }
 
     private fun fetchSchedules() {

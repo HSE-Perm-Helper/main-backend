@@ -44,6 +44,7 @@ class NotifyComingScheduleJob(
             }
     }
 
+    @Deprecated("Use personal timetable service for get timetable")
     private fun getCurrentSchedule(currentDate: LocalDate, user: UserEntity): Schedule? {
         val schedules = scheduleService.getUserSchedulesByTelegramId(user.telegramId)
         return ScheduleUtils.getWeekScheduleByDate(schedules, currentDate)

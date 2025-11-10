@@ -48,9 +48,10 @@ class KafkaMessageBrokerService(
 
     override fun sendBatchNotificationsV2(userIds: List<UUID>, notification: NotificationV2) {
         val notificationAsMap = convertNotificationToMap(notification)
-        notificationAsMap[NOTIFICATION_USER_ID_FIELD] = userIds
-
-        kafkaTemplate.send(kafkaTopicsConfig.newNotifications, notificationAsMap)
+        userIds.chunked(100).forEach { chunk ->
+            notificationAsMap[NOTIFICATION_USER_ID_FIELD] = chunk
+            kafkaTemplate.send(kafkaTopicsConfig.newNotifications, notificationAsMap)
+        }
     }
 
     private fun convertNotificationToMap(notification: NotificationV2): MutableMap<String, Any?> {

@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.RestController
 @Tag(name = "Пользователи", description = "Взаимодействие с пользователями")
 @RestController
 @RequestMapping
+@Deprecated("Use /api/v3/users")
 class UserController(
     private val oldUserService: OldUserService,
 ) {
@@ -149,16 +150,6 @@ class UserController(
     ): Response<UserDto> {
         val user = oldUserService.updateUser(userDto)
         return Response(user)
-    }
-
-    @PostMapping("user/hidden-lessons")
-    fun addHiddenLesson(@RequestParam telegramId: Long, @RequestBody lesson: ApiUserHideLesson): UserDto {
-        return oldUserService.addHiddenLesson(telegramId, lesson)
-    }
-
-    @DeleteMapping("user/hidden-lessons")
-    fun removeHiddenLesson(@RequestParam telegramId: Long, @RequestBody lesson: ApiUserHideLesson): UserDto {
-        return oldUserService.removeHiddenLesson(telegramId, lesson)
     }
 
     @GetMapping("user/remote-schedule")
