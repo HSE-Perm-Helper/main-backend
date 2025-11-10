@@ -4,11 +4,11 @@ import com.melowetty.hsepermhelper.persistence.entity.UserEntity
 import com.melowetty.hsepermhelper.domain.model.hseapp.HseAppLesson
 import com.melowetty.hsepermhelper.domain.model.schedule.ScheduleInfo
 import com.melowetty.hsepermhelper.domain.model.schedule.ScheduleType
-import com.melowetty.hsepermhelper.messaging.event.notification.schedule.ScheduleChangedForUserNotification
+import com.melowetty.hsepermhelper.messaging.event.notification.timetable.TimetableChangedNotification
 import com.melowetty.hsepermhelper.persistence.repository.UserRepository
-import com.melowetty.hsepermhelper.service.ExcelScheduleService
 import com.melowetty.hsepermhelper.service.HseAppApiService
 import com.melowetty.hsepermhelper.service.NotificationService
+import com.melowetty.hsepermhelper.service.PersonalTimetableService
 import java.time.LocalDate
 import java.util.UUID
 import java.util.concurrent.Callable
@@ -21,7 +21,7 @@ import org.springframework.stereotype.Component
 @Component
 class CheckChangesFromHseApiJob(
     private val hseAppApiService: HseAppApiService,
-    private val scheduleService: ExcelScheduleService,
+    private val personalTimetableService: PersonalTimetableService,
     private val userRepository: UserRepository,
     @Qualifier("check-changes-from-hse-api-executor-service")
     private val executorService: ExecutorService,
@@ -44,18 +44,13 @@ class CheckChangesFromHseApiJob(
         val startPage = 1
         val pageSize = 50
 
-        val schedules = scheduleService.getAvailableSchedules()
-            .filterNot { it.scheduleType == ScheduleType.QUARTER_SCHEDULE }
-
-        val (start, end) = getScheduleRange(schedules) ?: return
-
         val pageable = Pageable.ofSize(pageSize)
 
         val users = userRepository.findByEmailNotNull(pageable)
 
         val tasks = users.map {
             Callable {
-                processUser(it, schedules, start, end)
+                processUser(it)
             }
         }.toList()
 
@@ -66,7 +61,7 @@ class CheckChangesFromHseApiJob(
                 Pageable.ofSize(pageSize).withPage(page)
             ).map {
                 Callable {
-                    processUser(it, schedules, start, end)
+                    processUser(it)
                 }
             }.toList()
 
@@ -74,8 +69,13 @@ class CheckChangesFromHseApiJob(
         }
     }
 
-    private fun processUser(user: UserEntity, schedules: List<ScheduleInfo>, start: LocalDate, end: LocalDate) {
+    private fun processUser(user: UserEntity) {
         try {
+            val timetables = personalTimetableService.getTimetables(user.id)
+                .filter { it.scheduleType != ScheduleType.QUARTER_SCHEDULE }
+
+            val (start, end) = getScheduleRange(timetables) ?: return
+
             val lessons = hseAppApiService.directGetLessons(user.email!!, start, end)
 
             val hash = lessons.hashCode()
@@ -85,11 +85,11 @@ class CheckChangesFromHseApiJob(
 
             if (prevMinorHash.containsKey(user.id).not()) {
                 val minorLessons = getMinorLessons(lessons)
-                prevMinorHash[user.id] = getMinorLessonsMap(schedules, minorLessons)
+                prevMinorHash[user.id] = getMinorLessonsMap(timetables, minorLessons)
             }
 
             if (hash != prevHash) {
-                checkChanges(user, schedules, lessons)
+                checkChanges(user, timetables, lessons)
             }
         } catch (e: RuntimeException) {
             e.printStackTrace()
@@ -133,12 +133,11 @@ class CheckChangesFromHseApiJob(
             .filter { prevHashes[it.key] != it.value }
             .map { it.key }
             .forEach {
-                val scheduleChangedEvent = ScheduleChangedForUserNotification(
-                    targetSchedule = it,
-                    users = listOf(user.telegramId),
-                    differentDays = listOf(dayOfWeek)
+                val timetableChangedEvent = TimetableChangedNotification(
+                    timetableInfo = it,
+                    changedDays = listOf(dayOfWeek),
                 )
-                notificationService.sendNotification(scheduleChangedEvent)
+                notificationService.sendUserNotification(user.id, timetableChangedEvent)
             }
 
         prevMinorHash[user.id] = hashes

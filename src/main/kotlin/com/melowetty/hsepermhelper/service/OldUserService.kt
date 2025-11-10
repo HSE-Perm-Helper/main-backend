@@ -76,13 +76,6 @@ interface OldUserService {
      */
     fun updateUserSettings(telegramId: Long, settings: Map<String, Any?>): UserDto
 
-
-    fun addHiddenLesson(telegramId: Long, lesson: ApiUserHideLesson): UserDto
-
-    fun removeHiddenLesson(telegramId: Long, lesson: ApiUserHideLesson): UserDto
-
-    fun clearHiddenLessons(telegramId: Long): UserDto
-
     fun getRemoteScheduleLink(telegramId: Long): RemoteScheduleLink
 
     fun createOrUpdateScheduleLink(telegramId: Long): RemoteScheduleLink
