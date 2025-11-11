@@ -17,6 +17,6 @@ data class ScheduledTime(
                 other
             )
         }
-        return compareBy(LessonTime::startTime, LessonTime::endTime).compare(this, other)
+        return super.compareTo(other)
     }
 }

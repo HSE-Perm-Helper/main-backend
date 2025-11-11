@@ -20,4 +20,8 @@ abstract class LessonTime(
     val startLocaltime: LocalTime = DateUtils.parseTime(startTime),
     @JsonIgnore
     val endLocaltime: LocalTime = DateUtils.parseTime(endTime)
-) : Comparable<LessonTime>
+) : Comparable<LessonTime> {
+    override fun compareTo(other: LessonTime): Int {
+        return compareBy(LessonTime::startLocaltime, LessonTime::endLocaltime).compare(this, other)
+    }
+}
