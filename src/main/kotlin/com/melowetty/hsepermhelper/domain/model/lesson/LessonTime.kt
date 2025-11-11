@@ -22,6 +22,6 @@ abstract class LessonTime(
     val endLocaltime: LocalTime = DateUtils.parseTime(endTime)
 ) : Comparable<LessonTime> {
     override fun compareTo(other: LessonTime): Int {
-        return compareBy(LessonTime::startLocaltime, LessonTime::endLocaltime).compare(this, other)
+        return compareBy(LessonTime::dayOfWeek, LessonTime::startLocaltime, LessonTime::endLocaltime).compare(this, other)
     }
 }
