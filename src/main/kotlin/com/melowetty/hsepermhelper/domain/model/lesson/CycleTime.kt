@@ -14,6 +14,6 @@ data class CycleTime(
                 other
             )
         }
-        return compareBy(LessonTime::startLocaltime, LessonTime::endLocaltime).compare(this, other)
+        return super.compareTo(other)
     }
 }

@@ -58,8 +58,7 @@ class PersonalTimetableService(
             AvailableLessonForHiding(lesson = it.subject, lessonType = it.lessonType, subGroup = it.subGroup)
         }
             .distinct()
-            .sortedBy { it.lessonType }
-            .sortedBy { it.lesson }
+            .sortedWith(compareBy({ it.lesson }, { it.lessonType }, { it.subGroup ?: 0 }))
     }
 
     private fun List<ScheduleInfo>.filterNonWeekTimetables(): List<ScheduleInfo> {
