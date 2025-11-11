@@ -2,6 +2,7 @@ package com.melowetty.hsepermhelper.service
 
 import com.melowetty.hsepermhelper.domain.model.lesson.AvailableLessonForHiding
 import com.melowetty.hsepermhelper.domain.model.lesson.Lesson
+import com.melowetty.hsepermhelper.domain.model.lesson.LessonType
 import com.melowetty.hsepermhelper.domain.model.lesson.ScheduledTime
 import com.melowetty.hsepermhelper.domain.model.schedule.Schedule
 import com.melowetty.hsepermhelper.domain.model.schedule.ScheduleInfo
@@ -54,9 +55,12 @@ class PersonalTimetableService(
 
     fun getLessonsForHiding(userId: UUID): List<AvailableLessonForHiding> {
         val user = userService.getUserRecordById(userId)
+        val bannedLessonTypes = setOf(LessonType.EVENT)
+
         return timetableComposer.getAllLessons(user).map {
             AvailableLessonForHiding(lesson = it.subject, lessonType = it.lessonType, subGroup = it.subGroup)
         }
+            .filterNot { it.lessonType in bannedLessonTypes }
             .distinct()
             .sortedWith(compareBy({ it.lesson }, { it.lessonType }, { it.subGroup ?: 0 }))
     }
