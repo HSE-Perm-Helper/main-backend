@@ -44,6 +44,7 @@ class ScheduleExtensions {
 
         fun InternalTimetable.toSchedule(): Schedule {
             return Schedule(
+                id = id ?: "",
                 number = number,
                 start = start,
                 end = end,

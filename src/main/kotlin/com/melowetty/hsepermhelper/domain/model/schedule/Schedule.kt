@@ -8,6 +8,8 @@ import java.time.LocalDate
 
 @Schema(description = "Расписание занятий")
 data class Schedule(
+    @Schema(description = "Идентификатор расписания", example = "dfs92")
+    val id: String,
     @Schema(description = "Номер расписания", example = "6", nullable = true)
     val number: Int?,
     val lessons: List<Lesson>,
