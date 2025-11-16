@@ -10,6 +10,9 @@ jobs:
   build-test:
     name: Build and test project
     runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+      checks: write
 
     steps:
       - uses: actions/checkout@v3
@@ -28,6 +31,24 @@ jobs:
 
       - name: Test
         run: ./gradlew check
+
+      - name: Publish code coverage
+        id: jacoco
+        uses: madrapps/jacoco-report@v1.7.2
+        with:
+          paths: |
+            build/reports/jacoco/**/jacocoTestReport.xml
+          token: ${{ secrets.GITHUB_TOKEN }}
+          comment-type: both
+          update-comment: true
+          title: '# :lobster: Coverage Report'
+
+      - name: Publish Sonarlint Results
+        uses: jwgmeligmeyling/spotbugs-github-action@v1.2
+        with:
+          name: Sonarlint
+          title: Sonarlint report
+          path: build/reports/sonarlint/*.xml
 
       - name: Archive build artifacts
         uses: actions/upload-artifact@v4

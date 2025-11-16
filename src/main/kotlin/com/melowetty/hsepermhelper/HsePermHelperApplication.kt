@@ -6,7 +6,6 @@ import org.springframework.cloud.openfeign.EnableFeignClients
 import org.springframework.scheduling.annotation.EnableScheduling
 import org.springframework.web.servlet.config.annotation.EnableWebMvc
 import java.util.concurrent.ThreadLocalRandom
-import kotlin.random.Random
 
 @SpringBootApplication
 @EnableWebMvc
