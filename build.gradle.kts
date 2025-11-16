@@ -7,6 +7,7 @@ plugins {
     kotlin("plugin.spring") version "1.9.24"
     kotlin("plugin.jpa") version "1.9.24"
     id("jacoco")
+    id("se.solrike.sonarlint") version "2.2.0"
 }
 
 val springCloudVersion by extra("2022.0.4")
@@ -19,7 +20,7 @@ val jsoupVersion = "1.16.1"
 val kotlinLoggingVersion = "7.0.3"
 
 group = "com.melowetty"
-version = "1.03.0"
+version = "1.4.0"
 
 java {
     sourceCompatibility = JavaVersion.VERSION_21
@@ -99,7 +100,7 @@ tasks.withType<Test> {
 }
 
 tasks.jar {
-    archiveFileName.set("app.jar")
+    enabled = false
 }
 
 tasks.bootJar {
@@ -107,21 +108,38 @@ tasks.bootJar {
 }
 
 tasks.test {
-    testLogging {
-        events("passed", "failed", "skipped")
-    }
     finalizedBy(tasks.jacocoTestReport)
+    finalizedBy(tasks.sonarlintMain)
 }
 
 jacoco {
-    toolVersion = "0.8.9"
+    toolVersion = "0.8.14"
 }
 
 tasks.jacocoTestReport {
     dependsOn(tasks.test)
     reports {
-        xml.required.set(false)
-        csv.required.set(true)
-        html.outputLocation.set(layout.buildDirectory.dir("jacocoHtml"))
+        xml.required.set(true)
+        html.required.set(false)
     }
+}
+
+sonarlint {
+    maxIssues = 0
+    dependencies {
+        sonarlintPlugins("org.sonarsource.kotlin:sonar-kotlin-plugin:2.13.0.2116")
+    }
+}
+
+tasks.sonarlintMain {
+    ignoreFailures.set(true)
+    reports {
+        create("xml") {
+            enabled.set(true)
+        }
+    }
+}
+
+tasks.sonarlintTest {
+    ignoreFailures.set(true)
 }
