@@ -1,0 +1,60 @@
+api:
+  hse-app-x:
+    base-url: ${HSE_APP_X_API_URL}
+  remote-schedule-service:
+    url: ${REMOTE_SCHEDULE_SERVICE_URL}
+  timetable:
+    base-url: ${TIMETABLE_BASE_URL:https://perm.hse.ru/students/timetable}
+    download-url: ${TIMETABLE_DOWNLOAD_URL:https://hse.ru}
+app:
+  message-broker:
+    kafka:
+      group-id: main-service
+      topics:
+        base-notifications: new-notification
+        new-notifications: next-gen-notification
+        tasks: tasks
+    type: kafka
+email-verification:
+  base-url: https://api.hse-perm-helper.ru/verification
+  redirect-url: https://t.me/hse_perm_helper_bot
+jobs:
+  timetable-files-obverse:
+    cron: 0 0/15 * * * ?
+remote-schedule:
+  connect-url: https://api.hse-perm-helper.ru/remote-schedule
+server:
+  servlet:
+    encoding:
+      charset: UTF-8
+      force-response: true
+spring:
+  application:
+    name: main-backend
+  jpa:
+    database: postgresql
+    database-platform: org.hibernate.dialect.PostgreSQL94Dialect
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        type:
+          json_format_mapper: com.melowetty.hsepermhelper.config.hibernate.HibernateObjectMapper
+  kafka:
+    bootstrap-servers: ${kafka_bootstrap_servers:localhost:29092}
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+    topic:
+      base-notifications: new-notification
+      new-notifications: next-gen-notification
+  mvc:
+    throw-exception-if-no-handler-found: true
+  profiles:
+    include:
+      - quartz
+      - features
+springdoc:
+  swagger-ui:
+    path: /api-documentation.html
