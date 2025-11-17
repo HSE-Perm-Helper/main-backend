@@ -3,10 +3,12 @@ package com.melowetty.hsepermhelper.interceptor
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.melowetty.hsepermhelper.exception.user.UserByTelegramIdNotFoundException
 import com.melowetty.hsepermhelper.persistence.storage.UserStorage
+import com.melowetty.hsepermhelper.util.LoggingUtils
 import jakarta.servlet.FilterChain
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletRequestWrapper
 import jakarta.servlet.http.HttpServletResponse
+import org.slf4j.MDC
 import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Component
 import org.springframework.web.filter.OncePerRequestFilter
@@ -40,7 +42,14 @@ class TelegramIdRewriteFilter(
                     )
 
                     val wrappedRequest = PathRewriteRequestWrapper(request, newPath)
-                    filterChain.doFilter(wrappedRequest, response)
+                    val context = mapOf(
+                        "telegram_id" to telegramId,
+                        "user_id" to id
+                    )
+
+                    LoggingUtils.executeWithContext(context) {
+                        filterChain.doFilter(wrappedRequest, response)
+                    }
                     return
                 } else {
                     val error = UserByTelegramIdNotFoundException(telegramId).toResponseEntity()
