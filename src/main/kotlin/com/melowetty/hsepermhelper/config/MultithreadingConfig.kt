@@ -13,9 +13,7 @@ class MultithreadingConfig {
 
     @Bean("check-changes-from-hse-api-executor-service")
     fun executorServiceForHseApiCheckingChanges(): ExecutorService {
-        return Executors.newFixedThreadPool(10) { runnable ->
-            newThreadWithMdc(runnable, "hse-api-checker")
-        }
+        return Executors.newFixedThreadPool(10)
     }
 
     @Bean("add-user-events-executor-service")
