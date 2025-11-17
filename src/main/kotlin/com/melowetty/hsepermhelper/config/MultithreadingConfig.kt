@@ -1,48 +1,38 @@
 package com.melowetty.hsepermhelper.config
 
 import org.slf4j.MDC
-import java.util.concurrent.ExecutorService
-import java.util.concurrent.Executors
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.core.task.TaskDecorator
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor
+import java.util.concurrent.ExecutorService
+import java.util.concurrent.Executors
 
 @Configuration
 class MultithreadingConfig {
 
     @Bean("check-changes-from-hse-api-executor-service")
     fun executorServiceForHseApiCheckingChanges(): ExecutorService {
-        return Executors.newFixedThreadPool(10) { runnable ->
-            newThreadWithMdc(runnable, "hse-api-checker")
-        }
+        return Executors.newFixedThreadPool(10)
     }
 
     @Bean("add-user-events-executor-service")
     fun executorServiceForAddingUserEvents(): ExecutorService {
-        return Executors.newFixedThreadPool(10) { runnable ->
-            newThreadWithMdc(runnable, "user-events")
-        }
+        val executor = ThreadPoolTaskExecutor();
+        executor.setTaskDecorator(MDCTaskDecorator());
+        executor.initialize();
+        return executor.threadPoolExecutor
     }
 
-    private fun newThreadWithMdc(runnable: Runnable, name: String): Thread {
-        val contextMap = MDC.getCopyOfContextMap()
-
-        val thread = Thread(runnable, name)
-        thread.setUncaughtExceptionHandler { _, e ->
-            e.printStackTrace()
-        }
-        return object : Thread(runnable, name) {
-            override fun run() {
-                val previous = MDC.getCopyOfContextMap()
+    class MDCTaskDecorator : TaskDecorator {
+        override fun decorate(runnable: Runnable): Runnable {
+            val contextMap = MDC.getCopyOfContextMap();
+            return Runnable {
                 try {
-                    if (contextMap != null) {
-                        MDC.setContextMap(contextMap)
-                    }
-                    super.run()
+                    MDC.setContextMap(contextMap);
+                    runnable.run();
                 } finally {
-                    MDC.clear()
-                    if (previous != null) {
-                        MDC.setContextMap(previous)
-                    }
+                    MDC.clear();
                 }
             }
         }
