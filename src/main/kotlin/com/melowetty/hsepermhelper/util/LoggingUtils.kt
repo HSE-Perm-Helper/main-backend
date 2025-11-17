@@ -23,4 +23,13 @@ object LoggingUtils {
             MDC.clear()
         }
     }
+
+    fun executeWithContext(params: Map<String, Any>, block: () -> Unit) {
+        try {
+            params.forEach { (key, value) -> MDC.put(key, value.toString()) }
+            return block()
+        } finally {
+            params.forEach { (key, _) -> MDC.remove(key) }
+        }
+    }
 }

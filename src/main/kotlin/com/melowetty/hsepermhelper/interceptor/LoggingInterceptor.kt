@@ -16,6 +16,7 @@ class LoggingInterceptor: OncePerRequestFilter() {
         filterChain: FilterChain
     ) {
         val id = request.getHeader(REQUEST_ID_HEADER) ?: RequestIdGenerator.generate()
+        response.addHeader(REQUEST_ID_HEADER, id)
 
         LoggingUtils.executeWithRequestIdContext(id) {
             filterChain.doFilter(request, response)
