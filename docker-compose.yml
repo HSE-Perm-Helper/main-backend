@@ -15,11 +15,16 @@ services:
       - HSE_APP_X_API_URL=$HSE_APP_X_API_URL
       - SERVER_PORT=$SERVER_PORT
     restart: always
+    logging:
+      driver: "fluentd"
+      options:
+        fluentd-address: 127.0.0.1:24224
     expose:
       - $SERVER_PORT
     networks:
       - message-broker_shared
       - api-gateway_backend
+      - logging
       - internal
   postgresdb:
     image: postgres
@@ -42,4 +47,6 @@ networks:
   message-broker_shared:
     external: true
   api-gateway_backend:
+    external: true
+  logging:
     external: true

@@ -1,0 +1,23 @@
+api:
+  hse-app-x:
+    base-url: https://google.com
+  remote-schedule-service:
+    url: https://google.com
+app:
+  message-broker:
+    type: stub
+debug: true
+jobs:
+  timetable-files-obverse:
+    cron: 0 0/1 * * * ?
+server:
+  port: 8082
+  servlet:
+    context-path: /
+spring:
+  datasource:
+    password: root
+    url: jdbc:postgresql://localhost:5433/hse_perm_schedule
+    username: root
+  jpa:
+    show-sql: true
