@@ -42,7 +42,7 @@ class ExcelTimetableFilesProcessService(
         deleted.forEach { storage.deleteById(it.id) }
         storage.save(addedOrChanged)
 
-        if (addedOrChanged.isNotEmpty()) {
+        if (addedOrChanged.isNotEmpty() || deleted.isNotEmpty()) {
             logger.info { "Added or changed ${addedOrChanged.size} files and deleted ${deleted.size} files" }
         } else {
             logger.info { "No files added or changed" }

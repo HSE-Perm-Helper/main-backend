@@ -43,10 +43,7 @@ class ExcelTimetableProcessChangesService(
         processTimetables(currentRunId, addedTimetables, changedTimetables, notChangedTimetables)
 
         storage.showTimetables(currentTimetablesIds.toList())
-
-        if (notChangedTimetables.size != currentTimetables.size) {
-            storage.deleteTimetablesByRunId(prevRunId)
-        }
+        storage.deleteTimetablesByRunId(prevRunId)
     }
 
     private fun processTimetables(

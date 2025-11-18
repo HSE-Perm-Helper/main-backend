@@ -9,6 +9,8 @@ class ExcelTimetableNormalizerService(
     private val excelTimetableStorage: ExcelTimetableStorage,
 ) {
     fun normalizeTimetables(ids: List<String>) {
+        if (ids.isEmpty()) return
+
         logger.info { "Normalizing timetables with ids: ${ids.joinToString(", ")}" }
 
         val info = excelTimetableStorage.getTimetablesInfo(ids)
