@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
 import java.io.InputStream
 import java.net.URL
+import kotlin.time.DurationUnit
+import kotlin.time.toDuration
 
 @Service
 class HsePermTimetableFilesService(
@@ -33,11 +35,16 @@ class HsePermTimetableFilesService(
             }
         }
 
+        if (pathsForDownloadByName.isNotEmpty() && files.isEmpty()) {
+            throw RuntimeException("Failed to download any files")
+        }
+
         return files
     }
 
     private fun getPathsForDownloadByName(): Map<String, String> {
         return RetryUtils.retryWithExponentialBackoff(
+            maxAttempts = 5,
             exceptionallyBlock = {
                 logger.error(it) { "Failed to fetch timetables files" }
                 throw it
@@ -79,6 +86,9 @@ class HsePermTimetableFilesService(
 
     private fun downloadFileAsInputStream(path: String): InputStream? {
         return RetryUtils.retryWithExponentialBackoff(
+            maxAttempts = 5,
+            initialDelay = 3.toDuration(DurationUnit.SECONDS),
+            multiplier = 3.0,
             exceptionallyBlock = {
                 logger.error(it) { "Failed to download file by path $path" }
                 null
