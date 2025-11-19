@@ -1,21 +1,22 @@
 package com.melowetty.hsepermhelper.service
 
 import com.melowetty.hsepermhelper.domain.dto.EmailVerificationDto
-import com.melowetty.hsepermhelper.persistence.entity.EmailVerificationEntity
 import com.melowetty.hsepermhelper.domain.model.event.EmailIsVerifiedEvent
-import com.melowetty.hsepermhelper.messaging.event.notification.verification.EmailVerificationSendNotification
-import com.melowetty.hsepermhelper.exception.user.UserNotFoundException
+import com.melowetty.hsepermhelper.exception.user.UserByIdNotFoundException
 import com.melowetty.hsepermhelper.exception.verification.ReachMaxAttemptsToVerificationRequestException
 import com.melowetty.hsepermhelper.exception.verification.VerificationNotFoundOrExpiredException
 import com.melowetty.hsepermhelper.exception.verification.VerificationRequestNotFoundException
 import com.melowetty.hsepermhelper.exception.verification.VerificationRequestYetNotReadyForResendException
+import com.melowetty.hsepermhelper.messaging.event.notification.verification.EmailVerificationSendNotification
+import com.melowetty.hsepermhelper.persistence.entity.EmailVerificationEntity
 import com.melowetty.hsepermhelper.persistence.repository.EmailVerificationRepository
 import com.melowetty.hsepermhelper.persistence.repository.UserRepository
-import java.time.LocalDateTime
 import org.apache.commons.lang3.RandomStringUtils
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.ApplicationEventPublisher
 import org.springframework.stereotype.Service
+import java.time.LocalDateTime
+import java.util.*
 
 @Service
 class EmailVerificationService(
@@ -34,9 +35,10 @@ class EmailVerificationService(
         private const val MAX_ATTEMPTS_COUNT = 3
     }
 
-    fun startVerificationProcess(telegramId: Long, email: String): EmailVerificationDto {
-        val user = userRepository.findByTelegramId(telegramId).orElseThrow {
-            UserNotFoundException("Пользователь с таким ID не найден")
+    // TODO: remove from entity user entity
+    fun startVerificationProcess(id: UUID, email: String): EmailVerificationDto {
+        val user = userRepository.findById(id).orElseThrow {
+            UserByIdNotFoundException(id)
         }
 
         val existsVerification = emailVerificationRepository.findByUser(user)
@@ -44,7 +46,6 @@ class EmailVerificationService(
         existsVerification?.let {
             emailVerificationRepository.delete(existsVerification)
         }
-
 
         val currentDate = LocalDateTime.now()
 

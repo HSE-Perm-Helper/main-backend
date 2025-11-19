@@ -27,7 +27,7 @@ class TimetableComposer(
 
         val timetables = timetables.mapNotNull { timetable ->
             if (timetable.isAvailableForUser(user)) {
-                timetable.getTimetables().map {
+                timetable.getTimetables(user).map {
                     it.copy(id = TimetableInfoEncoder.encode(it.id, timetable.getProcessorType()))
                 }
             } else null
@@ -81,7 +81,7 @@ class TimetableComposer(
     fun getAvailableTimetables(user: UserRecord): List<ScheduleInfo> {
         return timetables.mapNotNull { timetable ->
             if (timetable.isAvailableForUser(user)) {
-                timetable.getTimetables().map {
+                timetable.getTimetables(user).map {
                     ScheduleInfo(
                         id = TimetableInfoEncoder.encode(it.id, timetable.getProcessorType()),
                         number = it.number,

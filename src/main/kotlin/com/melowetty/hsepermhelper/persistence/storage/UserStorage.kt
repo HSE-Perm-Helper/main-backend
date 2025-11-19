@@ -1,9 +1,12 @@
 package com.melowetty.hsepermhelper.persistence.storage
 
 import com.melowetty.hsepermhelper.domain.Pageable
+import com.melowetty.hsepermhelper.domain.model.Field
 import com.melowetty.hsepermhelper.persistence.entity.UserEntity
 import com.melowetty.hsepermhelper.domain.model.user.EducationGroupEntity
+import com.melowetty.hsepermhelper.domain.model.user.UserChangeRequest
 import com.melowetty.hsepermhelper.domain.model.user.UserRole
+import com.melowetty.hsepermhelper.exception.user.UserByIdNotFoundException
 import com.melowetty.hsepermhelper.persistence.projection.EducationGroupRecord
 import com.melowetty.hsepermhelper.persistence.projection.UserRecord
 import com.melowetty.hsepermhelper.persistence.repository.UserRepository
@@ -14,6 +17,7 @@ import jakarta.persistence.criteria.Predicate
 import org.springframework.stereotype.Component
 import java.time.LocalDateTime
 import java.util.*
+import kotlin.jvm.optionals.getOrElse
 import kotlin.jvm.optionals.getOrNull
 
 @Component
@@ -23,6 +27,61 @@ class UserStorage(
     private val hiddenLessonStorage: HiddenLessonStorage,
 ) {
     fun existsUserById(id: UUID): Boolean = userRepository.existsById(id)
+    fun existsUserByTelegramId(telegramId: Long): Boolean = userRepository.existsByTelegramId(telegramId)
+    fun existsUserByEmail(email: String): Boolean = userRepository.existsByEmail(email)
+
+    fun createUser(
+        telegramId: Long,
+        group: String,
+        educationType: EducationType,
+        isEnabledNewScheduleNotifications: Boolean,
+        isEnabledChangedScheduleNotifications: Boolean,
+        isEnabledComingLessonsNotifications: Boolean,
+        roles: List<UserRole>,
+    ): UserRecord {
+        val user = UserEntity(
+            telegramId = telegramId,
+            educationGroup = EducationGroupEntity(
+                group = group,
+                educationType = educationType,
+            ),
+            isEnabledNewScheduleNotifications = isEnabledNewScheduleNotifications,
+            isEnabledChangedScheduleNotifications = isEnabledChangedScheduleNotifications,
+            isEnabledComingLessonsNotifications = isEnabledComingLessonsNotifications,
+            roles = roles
+        )
+
+        return addAdditionalFields(UserRecord.from(userRepository.save(user)))
+    }
+
+    fun changeUser(userId: UUID, changeRequest: UserChangeRequest): UserRecord {
+        val user = userRepository.findById(userId).getOrElse {
+            throw UserByIdNotFoundException(userId)
+        }
+
+        val updatedUser = user.apply {
+            if (changeRequest.email is Field.Set) this.email = changeRequest.email.value
+
+            if (changeRequest.group is Field.Set) this.educationGroup =
+                this.educationGroup.copy(group = changeRequest.group.value)
+
+            if (changeRequest.educationType is Field.Set) this.educationGroup =
+                this.educationGroup.copy(educationType = changeRequest.educationType.value)
+
+            if (changeRequest.isEnabledNewScheduleNotifications is Field.Set) this.isEnabledNewScheduleNotifications =
+                    changeRequest.isEnabledNewScheduleNotifications.value
+
+            if (changeRequest.isEnabledChangedScheduleNotifications is Field.Set) this.isEnabledChangedScheduleNotifications =
+                    changeRequest.isEnabledChangedScheduleNotifications.value
+
+            if (changeRequest.isEnabledComingLessonsNotifications is Field.Set) this.isEnabledComingLessonsNotifications =
+                    changeRequest.isEnabledComingLessonsNotifications.value
+        }
+
+        val savedUser = userRepository.save(updatedUser)
+
+        return addAdditionalFields(UserRecord.from(savedUser))
+    }
 
     fun getUserIdByTelegramId(telegramId: Long): UUID? = userRepository.getIdByTelegramId(telegramId)
 

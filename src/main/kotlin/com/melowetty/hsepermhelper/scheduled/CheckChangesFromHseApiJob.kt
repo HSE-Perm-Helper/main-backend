@@ -8,7 +8,8 @@ import com.melowetty.hsepermhelper.messaging.event.notification.timetable.Timeta
 import com.melowetty.hsepermhelper.persistence.repository.UserRepository
 import com.melowetty.hsepermhelper.service.HseAppApiService
 import com.melowetty.hsepermhelper.service.NotificationService
-import com.melowetty.hsepermhelper.service.PersonalTimetableService
+import com.melowetty.hsepermhelper.service.timetable.PersonalTimetableService
+import io.github.oshai.kotlinlogging.KotlinLogging
 import java.time.LocalDate
 import java.util.UUID
 import java.util.concurrent.Callable
@@ -92,7 +93,7 @@ class CheckChangesFromHseApiJob(
                 checkChanges(user, timetables, lessons)
             }
         } catch (e: RuntimeException) {
-            e.printStackTrace()
+            logger.error(e) { "Error while processing hse app api for user ${user.id}" }
             return
         }
     }
@@ -141,5 +142,9 @@ class CheckChangesFromHseApiJob(
             }
 
         prevMinorHash[user.id] = hashes
+    }
+
+    companion object {
+        private val logger = KotlinLogging.logger {  }
     }
 }

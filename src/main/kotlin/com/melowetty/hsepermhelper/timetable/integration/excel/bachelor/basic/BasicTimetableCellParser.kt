@@ -1,10 +1,10 @@
 package com.melowetty.hsepermhelper.timetable.integration.excel.bachelor.basic
 
 import com.melowetty.hsepermhelper.domain.model.lesson.LessonPlace
-import com.melowetty.hsepermhelper.excel.model.CellInfo
-import com.melowetty.hsepermhelper.excel.model.ParsedCellInfo
-import com.melowetty.hsepermhelper.excel.model.ParsedLessonInfo
-import com.melowetty.hsepermhelper.excel.model.ParsedScheduleInfo
+import com.melowetty.hsepermhelper.timetable.integration.excel.bachelor.shared.model.CellInfo
+import com.melowetty.hsepermhelper.timetable.integration.excel.bachelor.shared.model.ParsedCellInfo
+import com.melowetty.hsepermhelper.timetable.integration.excel.bachelor.shared.model.ParsedLessonInfo
+import com.melowetty.hsepermhelper.timetable.integration.excel.bachelor.shared.model.ParsedScheduleInfo
 import com.melowetty.hsepermhelper.timetable.integration.excel.bachelor.shared.LessonTypeUtils
 import com.melowetty.hsepermhelper.timetable.model.InternalTimetableType
 import com.melowetty.hsepermhelper.timetable.model.impl.GroupBasedLesson

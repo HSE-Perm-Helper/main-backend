@@ -2,8 +2,8 @@ package com.melowetty.hsepermhelper.job
 
 import com.melowetty.hsepermhelper.context.JobRunContextHolder
 import com.melowetty.hsepermhelper.domain.model.context.JobRunContext
-import com.melowetty.hsepermhelper.persistence.repository.ScheduleFilesRepository
-import com.melowetty.hsepermhelper.service.impl.timetable.ExcelTimetableFilesProcessService
+import com.melowetty.hsepermhelper.service.timetable.HsePermTimetableFilesService
+import com.melowetty.hsepermhelper.service.timetable.excel.ExcelTimetableFilesProcessService
 import io.github.oshai.kotlinlogging.KotlinLogging
 import org.quartz.DisallowConcurrentExecution
 import org.quartz.Job
@@ -17,7 +17,7 @@ import java.time.Instant
 @DisallowConcurrentExecution
 @PersistJobDataAfterExecution
 class TimetableFilesObserveJob(
-    val scheduleFilesRepository: ScheduleFilesRepository,
+    val timetableFilesService: HsePermTimetableFilesService,
     val excelTimetableFilesProcessService: ExcelTimetableFilesProcessService,
 ) : Job {
 
@@ -32,7 +32,7 @@ class TimetableFilesObserveJob(
 
         try {
             MDC.put(JOB_ID_LOGGING_KEY, jobRunId)
-            val current = scheduleFilesRepository.fetchScheduleFiles()
+            val current = timetableFilesService.getTimetableFiles()
             logger.info { "Fetched new timetables files" }
             excelTimetableFilesProcessService.processOrNothing(current)
         } finally {

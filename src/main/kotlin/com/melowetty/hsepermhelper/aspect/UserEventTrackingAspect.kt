@@ -2,7 +2,7 @@ package com.melowetty.hsepermhelper.aspect
 
 import com.melowetty.hsepermhelper.annotation.TrackUserEvent
 import com.melowetty.hsepermhelper.domain.model.event.UserEventType
-import com.melowetty.hsepermhelper.service.UserEventService
+import com.melowetty.hsepermhelper.service.user.UserEventService
 import org.aspectj.lang.JoinPoint
 import org.aspectj.lang.annotation.AfterReturning
 import org.aspectj.lang.annotation.Aspect

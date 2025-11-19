@@ -1,8 +1,8 @@
 package com.melowetty.hsepermhelper.consumer
 
 import com.melowetty.hsepermhelper.messaging.event.task.TaskType
-import com.melowetty.hsepermhelper.service.impl.timetable.TimetableChangeDetectionService
-import com.melowetty.hsepermhelper.service.impl.timetable.TimetableNotificationService
+import com.melowetty.hsepermhelper.service.timetable.TimetableChangeDetectionService
+import com.melowetty.hsepermhelper.service.timetable.TimetableNotificationService
 import com.melowetty.hsepermhelper.timetable.model.InternalTimetableInfo
 import com.melowetty.hsepermhelper.timetable.model.impl.GroupBasedLesson
 import com.ninjasquad.springmockk.MockkBean

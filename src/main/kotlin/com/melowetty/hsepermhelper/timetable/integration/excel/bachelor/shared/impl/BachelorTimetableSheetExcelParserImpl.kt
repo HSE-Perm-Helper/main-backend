@@ -3,11 +3,11 @@ package com.melowetty.hsepermhelper.timetable.integration.excel.bachelor.shared.
 import com.melowetty.hsepermhelper.domain.model.lesson.CycleTime
 import com.melowetty.hsepermhelper.domain.model.lesson.LessonTime
 import com.melowetty.hsepermhelper.domain.model.lesson.ScheduledTime
-import com.melowetty.hsepermhelper.excel.HseTimetableCellExcelParser
+import com.melowetty.hsepermhelper.timetable.integration.excel.bachelor.shared.HseTimetableCellExcelParser
 import com.melowetty.hsepermhelper.timetable.integration.excel.bachelor.shared.BachelorTimetableSheetExcelParser
-import com.melowetty.hsepermhelper.excel.model.CellInfo
-import com.melowetty.hsepermhelper.excel.model.ParsedCellInfo
-import com.melowetty.hsepermhelper.excel.model.ParsedScheduleInfo
+import com.melowetty.hsepermhelper.timetable.integration.excel.bachelor.shared.model.CellInfo
+import com.melowetty.hsepermhelper.timetable.integration.excel.bachelor.shared.model.ParsedCellInfo
+import com.melowetty.hsepermhelper.timetable.integration.excel.bachelor.shared.model.ParsedScheduleInfo
 import com.melowetty.hsepermhelper.messaging.event.notification.ServiceWarnNotification
 import com.melowetty.hsepermhelper.service.NotificationService
 import com.melowetty.hsepermhelper.timetable.model.InternalTimetableType

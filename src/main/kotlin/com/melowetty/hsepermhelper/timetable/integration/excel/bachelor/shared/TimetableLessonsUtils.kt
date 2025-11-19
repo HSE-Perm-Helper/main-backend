@@ -5,9 +5,9 @@ import com.melowetty.hsepermhelper.domain.model.context.ParseError
 import com.melowetty.hsepermhelper.domain.model.lesson.CycleTime
 import com.melowetty.hsepermhelper.domain.model.lesson.LessonTime
 import com.melowetty.hsepermhelper.domain.model.lesson.ScheduledTime
-import com.melowetty.hsepermhelper.excel.model.CellInfo
-import com.melowetty.hsepermhelper.excel.model.ParsedCellInfo
-import com.melowetty.hsepermhelper.excel.model.ParsedScheduleInfo
+import com.melowetty.hsepermhelper.timetable.integration.excel.bachelor.shared.model.CellInfo
+import com.melowetty.hsepermhelper.timetable.integration.excel.bachelor.shared.model.ParsedCellInfo
+import com.melowetty.hsepermhelper.timetable.integration.excel.bachelor.shared.model.ParsedScheduleInfo
 import com.melowetty.hsepermhelper.timetable.model.InternalTimetableType
 import com.melowetty.hsepermhelper.timetable.model.impl.GroupBasedLesson
 import com.melowetty.hsepermhelper.util.RowUtils.Companion.getCellValue
@@ -22,6 +22,20 @@ import java.time.format.DateTimeFormatter
 
 object TimetableLessonsUtils {
     private val logger = KotlinLogging.logger {  }
+
+    fun extractProgram(group: String) = group.split("-").first()
+
+    fun extractCourse(group: String): Int {
+        val year = group.split("-")[1].toInt()
+        val curDate = LocalDate.now()
+        val curYear = curDate.year % 100
+
+        if (curDate.monthValue < 9) {
+            return curYear - year
+        } else {
+            return curYear - year + 1
+        }
+    }
 
     fun parseSheet(
         sheet: Sheet,
