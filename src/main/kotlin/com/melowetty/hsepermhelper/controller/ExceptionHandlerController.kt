@@ -30,34 +30,10 @@ class ExceptionHandlerController {
             .body(exception.message)
     }
 
-    @ExceptionHandler
-    fun handleScheduleNotFoundException(exception: ScheduleNotFoundException): ResponseEntity<ErrorResponse> {
-        log.warn(exception) {
-            "Schedule not found"
-        }
-        return exception.toResponseEntity()
-    }
-
-    @ExceptionHandler
-    fun handleUserNotFoundException(exception: UserNotFoundException): ResponseEntity<ErrorResponse> {
-        log.warn(exception) {
-            "User not found"
-        }
-        return exception.toResponseEntity()
-    }
-
-    @ExceptionHandler
-    fun handleUserIsExistsException(exception: UserIsExistsException): ResponseEntity<ErrorResponse> {
-        log.warn(exception) {
-            "User is exists"
-        }
-        return exception.toResponseEntity()
-    }
-
     @ExceptionHandler(CustomException::class)
     fun handleCustomException(e: CustomException): ResponseEntity<ErrorResponse> {
         log.warn(e) {
-            "Handled uncategorized custom exception"
+            e.message
         }
         return e.toResponseEntity()
     }
@@ -125,7 +101,7 @@ class ExceptionHandlerController {
     @ExceptionHandler(RuntimeException::class)
     fun handleRuntimeException(exception: RuntimeException): ResponseEntity<ErrorResponse> {
         log.warn(exception) {
-            "Internal server error"
+            exception.message
         }
         return exceptionToEntity(
             exception,
