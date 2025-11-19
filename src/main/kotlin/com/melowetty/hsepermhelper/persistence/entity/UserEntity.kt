@@ -30,19 +30,19 @@ data class UserEntity(
     val telegramId: Long = 0L,
 
     @Column(name = "email")
-    val email: String? = null,
+    var email: String? = null,
 
     @Embedded
-    val educationGroup: EducationGroupEntity,
+    var educationGroup: EducationGroupEntity,
 
     @Column(name = "is_enabled_new_schedule_notification")
-    val isEnabledNewScheduleNotifications: Boolean,
+    var isEnabledNewScheduleNotifications: Boolean,
 
     @Column(name = "is_enabled_changed_schedule_notification")
-    val isEnabledChangedScheduleNotifications: Boolean,
+    var isEnabledChangedScheduleNotifications: Boolean,
 
     @Column(name = "is_enabled_coming_lessons_notification")
-    val isEnabledComingLessonsNotifications: Boolean,
+    var isEnabledComingLessonsNotifications: Boolean,
 
     @CreatedDate
     val createdDate: LocalDateTime = LocalDateTime.now(),

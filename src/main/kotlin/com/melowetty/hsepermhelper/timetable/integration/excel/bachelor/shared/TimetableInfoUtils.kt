@@ -1,7 +1,7 @@
 package com.melowetty.hsepermhelper.timetable.integration.excel.bachelor.shared
 
-import com.melowetty.hsepermhelper.excel.model.ParsedExcelInfo
-import com.melowetty.hsepermhelper.excel.model.ParsedScheduleInfo
+import com.melowetty.hsepermhelper.timetable.integration.excel.bachelor.shared.model.ParsedExcelInfo
+import com.melowetty.hsepermhelper.timetable.integration.excel.bachelor.shared.model.ParsedScheduleInfo
 import com.melowetty.hsepermhelper.util.RowUtils.Companion.getCellValue
 import io.github.oshai.kotlinlogging.KotlinLogging
 import org.apache.poi.ss.usermodel.Sheet

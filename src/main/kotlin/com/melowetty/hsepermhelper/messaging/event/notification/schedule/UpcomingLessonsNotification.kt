@@ -1,10 +1,11 @@
 package com.melowetty.hsepermhelper.messaging.event.notification.schedule
 
+import com.melowetty.hsepermhelper.domain.model.lesson.Lesson
 import com.melowetty.hsepermhelper.domain.model.schedule.Schedule
 import com.melowetty.hsepermhelper.messaging.event.notification.Notification
 
 data class UpcomingLessonsNotification(
-    val targetSchedule: Schedule,
+    val lessons: List<Lesson>,
     val users: List<Long>,
 ) : Notification() {
     override fun getNotificationType(): String {

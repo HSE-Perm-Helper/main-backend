@@ -5,8 +5,8 @@ import com.melowetty.hsepermhelper.messaging.event.notification.Notification
 import com.melowetty.hsepermhelper.messaging.event.notification.NotificationV2
 import com.melowetty.hsepermhelper.messaging.event.task.ChangeDetectionTask
 import com.melowetty.hsepermhelper.messaging.event.task.NewTimetableNotifyTask
-import com.melowetty.hsepermhelper.service.impl.timetable.TimetableChangeDetectionService
-import com.melowetty.hsepermhelper.service.impl.timetable.TimetableNotificationService
+import com.melowetty.hsepermhelper.service.timetable.TimetableChangeDetectionService
+import com.melowetty.hsepermhelper.service.timetable.TimetableNotificationService
 import io.github.oshai.kotlinlogging.KotlinLogging
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Lazy

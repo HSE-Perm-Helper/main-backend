@@ -1,6 +1,7 @@
 package com.melowetty.hsepermhelper.persistence.repository
 
 import com.melowetty.hsepermhelper.persistence.entity.ExcelTimetableEntity
+import com.melowetty.hsepermhelper.timetable.model.EducationType
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Modifying
 import org.springframework.data.jpa.repository.Query
@@ -8,8 +9,8 @@ import org.springframework.stereotype.Repository
 
 @Repository
 interface ExcelTimetableRepository : JpaRepository<ExcelTimetableEntity, String> {
-    @Query("SELECT e FROM ExcelTimetableEntity e WHERE e.isVisible = true AND e.isParent = true")
-    fun findAllByVisibleIsTrueAndParentIsTrue(): List<ExcelTimetableEntity>
+    @Query("SELECT e FROM ExcelTimetableEntity e WHERE e.educationType = :educationType AND e.isVisible = true AND e.isParent = true")
+    fun findAllByVisibleIsTrueAndParentIsTrue(educationType: EducationType): List<ExcelTimetableEntity>
 
     @Query("UPDATE ExcelTimetableEntity SET isVisible = true WHERE id IN (:ids)")
     @Modifying

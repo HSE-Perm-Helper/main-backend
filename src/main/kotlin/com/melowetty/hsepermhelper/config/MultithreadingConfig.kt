@@ -6,21 +6,28 @@ import org.springframework.context.annotation.Configuration
 import org.springframework.core.task.TaskDecorator
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor
 import java.util.concurrent.ExecutorService
-import java.util.concurrent.Executors
 
 @Configuration
 class MultithreadingConfig {
 
     @Bean("check-changes-from-hse-api-executor-service")
     fun executorServiceForHseApiCheckingChanges(): ExecutorService {
-        return Executors.newFixedThreadPool(10)
+        val executor = ThreadPoolTaskExecutor()
+        executor.corePoolSize = 10
+        executor.setTaskDecorator(MDCTaskDecorator())
+        executor.setThreadNamePrefix("hse-app-changes-")
+        executor.initialize()
+        return executor.threadPoolExecutor
     }
 
     @Bean("add-user-events-executor-service")
     fun executorServiceForAddingUserEvents(): ExecutorService {
-        val executor = ThreadPoolTaskExecutor();
-        executor.setTaskDecorator(MDCTaskDecorator());
-        executor.initialize();
+        val executor = ThreadPoolTaskExecutor()
+        executor.corePoolSize = 10
+        executor.maxPoolSize = 50
+        executor.setTaskDecorator(MDCTaskDecorator())
+        executor.setThreadNamePrefix("user-events-")
+        executor.initialize()
         return executor.threadPoolExecutor
     }
 

@@ -6,7 +6,7 @@ import com.melowetty.hsepermhelper.timetable.model.InternalTimetableInfo
 import com.melowetty.hsepermhelper.timetable.model.InternalTimetableSource
 
 interface ParentTimetable {
-    fun getTimetables(): List<InternalTimetableInfo>
+    fun getTimetables(user: UserRecord): List<InternalTimetableInfo>
     fun get(id: String, user: UserRecord): InternalTimetable
     fun getProcessorType(): InternalTimetableSource
     fun isAvailableForUser(user: UserRecord): Boolean

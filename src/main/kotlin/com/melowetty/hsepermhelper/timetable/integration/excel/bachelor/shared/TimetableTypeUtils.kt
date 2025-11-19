@@ -1,6 +1,6 @@
 package com.melowetty.hsepermhelper.timetable.integration.excel.bachelor.shared
 
-import com.melowetty.hsepermhelper.excel.model.ParsedExcelInfo
+import com.melowetty.hsepermhelper.timetable.integration.excel.bachelor.shared.model.ParsedExcelInfo
 import com.melowetty.hsepermhelper.timetable.model.InternalTimetableType
 
 object TimetableTypeUtils {

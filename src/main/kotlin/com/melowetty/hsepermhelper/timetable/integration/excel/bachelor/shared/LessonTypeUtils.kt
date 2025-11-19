@@ -1,7 +1,7 @@
 package com.melowetty.hsepermhelper.timetable.integration.excel.bachelor.shared
 
 import com.melowetty.hsepermhelper.domain.model.lesson.LessonType
-import com.melowetty.hsepermhelper.excel.model.ParsedLessonInfo
+import com.melowetty.hsepermhelper.timetable.integration.excel.bachelor.shared.model.ParsedLessonInfo
 import java.time.Month
 
 object LessonTypeUtils {

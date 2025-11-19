@@ -8,6 +8,7 @@ import com.melowetty.hsepermhelper.persistence.entity.GroupLessonsEntity
 import com.melowetty.hsepermhelper.persistence.entity.GroupLessonsEntityId
 import com.melowetty.hsepermhelper.persistence.repository.ExcelTimetableRepository
 import com.melowetty.hsepermhelper.persistence.repository.GroupLessonsRepository
+import com.melowetty.hsepermhelper.timetable.model.EducationType
 import com.melowetty.hsepermhelper.timetable.model.ExcelTimetable
 import com.melowetty.hsepermhelper.timetable.model.InternalTimetableInfo
 import com.melowetty.hsepermhelper.timetable.model.impl.GroupBasedLesson
@@ -23,8 +24,8 @@ class ExcelTimetableStorage(
     private val excelTimetableRepository: ExcelTimetableRepository,
     private val groupLessonsRepository: GroupLessonsRepository,
 ) {
-    fun getParentTimetables(): List<InternalTimetableInfo> {
-        return excelTimetableRepository.findAllByVisibleIsTrueAndParentIsTrue()
+    fun getParentTimetables(educationType: EducationType): List<InternalTimetableInfo> {
+        return excelTimetableRepository.findAllByVisibleIsTrueAndParentIsTrue(educationType)
             .map { it.toInfo() }
     }
 
@@ -57,8 +58,15 @@ class ExcelTimetableStorage(
         return getExcelTimetableEntity(id).toInfo()
     }
 
-    fun getTimetablesGroups(ids: List<String>): List<String> {
-        return groupLessonsRepository.getTimetablesGroups(ids)
+    fun getAllTimetablesGroups(): Map<EducationType, List<String>> {
+        val timetables = excelTimetableRepository.findAll()
+
+        val groupsByTimetableId = groupLessonsRepository.getGroupsAndTimetableIds(timetables.map { it.id })
+            .groupBy { it.timetableId }
+
+        return timetables.associate { timetable ->
+            timetable.educationType to (groupsByTimetableId[timetable.id]?.map { it.group }?.sorted() ?: emptyList())
+        }
     }
 
     fun getTimetablesInfo(ids: List<String>): List<InternalTimetableInfo> {
