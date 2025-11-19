@@ -6,7 +6,7 @@ import com.melowetty.hsepermhelper.serialization.FieldDeserializer
 
 data class ApiUserUpdateRequest(
     @JsonDeserialize(using = FieldDeserializer::class)
-    val group: Field<String>,
+    val group: Field<String> = Field.Unset,
 
     @JsonDeserialize(using = FieldDeserializer::class)
     val isEnabledNewScheduleNotifications: Field<Boolean> = Field.Unset,
