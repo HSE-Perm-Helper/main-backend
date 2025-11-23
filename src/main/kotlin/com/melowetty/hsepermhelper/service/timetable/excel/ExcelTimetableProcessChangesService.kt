@@ -18,7 +18,7 @@ class ExcelTimetableProcessChangesService(
         val currentTimetablesIds = currentTimetables.map { it.id }.toSet()
 
         val groupedSimilarTimetables = (oldTimetables + currentTimetables).groupBy {
-            Triple(it.start, it.end, it.type)
+            Pair(Pair(it.start, it.end), Pair(it.type, it.educationType))
         }
 
         val addedOrDeletedTimetables = groupedSimilarTimetables.values.filter { it.size == 1 }.flatten()

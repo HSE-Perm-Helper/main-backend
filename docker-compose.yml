@@ -3,10 +3,19 @@ services:
   main-backend:
     image: melowetty/main-backend
     container_name: main-service
+    healthcheck:
+      test: [ "CMD", "/workspace/health-check" ]
+      interval: 10s
+      timeout: 10s
+      retries: 3
+      start_period: 120s
     depends_on:
       - postgresdb
     env_file: .env
     environment:
+      - THC_PORT=8080
+      - THC_PATH='/actuator/health'
+      - THC_USE_LOOPBACK_ADDRESS="true"
       - SPRING_PROFILES_ACTIVE=$ACTIVE_PROFILE
       - SPRING_DATASOURCE_URL=jdbc:postgresql://postgresdb:$POSTGRESDB_DOCKER_PORT/$DB_NAME
       - SPRING_DATASOURCE_USERNAME=$DB_USERNAME
