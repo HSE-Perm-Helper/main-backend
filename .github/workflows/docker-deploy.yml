@@ -46,11 +46,13 @@ jobs:
       - name: Tag & publish to Docker Container Registry
         id: image-build
         run: |
+          docker tag main-backend melowetty/main-backend:latest
           docker push melowetty/main-backend:latest
 
   deploy:
     name: Service deploying
     runs-on: ubuntu-latest
+    needs: build-image
     steps:
       - name: executing remote ssh commands
         uses: appleboy/ssh-action@v1.0.0
