@@ -75,7 +75,7 @@ class HsePermTimetableFilesService(
     }
 
     private fun isProcessable(name: String): Boolean {
-        val banWords = setOf("английский", "англ", "программные системы", "управление бизнесом", "оп")
+        val banWords = setOf("английский", "англ", "управление бизнесом")
 
         for (word in banWords) {
             if (name.contains(word)) return false
