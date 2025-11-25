@@ -14,8 +14,8 @@ import io.github.oshai.kotlinlogging.KotlinLogging
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
 import org.springframework.kafka.annotation.KafkaListener
 import org.springframework.kafka.annotation.RetryableTopic
+import org.springframework.kafka.annotation.BackOff
 import org.springframework.kafka.retrytopic.DltStrategy
-import org.springframework.retry.annotation.Backoff
 import org.springframework.stereotype.Component
 
 @Component
@@ -34,7 +34,7 @@ class TasksConsumer(
     @RetryableTopic(
         attempts = "6",
         autoCreateTopics = "true",
-        backoff = Backoff(1000, multiplier = 5.0, maxDelay = 3_125_000),
+        backOff = BackOff(1000, multiplier = 5.0, maxDelay = 3_125_000),
         dltStrategy = DltStrategy.FAIL_ON_ERROR,
         exclude = [JsonMappingException::class, JsonProcessingException::class],
     )

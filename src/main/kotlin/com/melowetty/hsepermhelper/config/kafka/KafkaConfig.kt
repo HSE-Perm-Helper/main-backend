@@ -11,7 +11,7 @@ import org.springframework.kafka.annotation.EnableKafka
 import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory
 import org.springframework.kafka.core.ConsumerFactory
 import org.springframework.kafka.core.DefaultKafkaConsumerFactory
-import org.springframework.kafka.support.serializer.JsonDeserializer
+import org.springframework.kafka.support.serializer.JacksonJsonDeserializer
 
 @Configuration
 @EnableKafka
@@ -26,7 +26,7 @@ class KafkaConfig {
         val props: MutableMap<String, Any> = HashMap()
         props[ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG] = bootstrapServers
         props[ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG] = StringDeserializer::class.java
-        props[ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG] = JsonDeserializer::class.java
+        props[ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG] = JacksonJsonDeserializer::class.java
         props[ConsumerConfig.AUTO_OFFSET_RESET_CONFIG] = "latest"
         return props
     }
@@ -36,14 +36,14 @@ class KafkaConfig {
         DefaultKafkaConsumerFactory(
             consumerConfigs(),
             StringDeserializer(),
-            JsonDeserializer(Map::class.java, false),
+            JacksonJsonDeserializer(Map::class.java, false),
         )
 
     @Bean
     fun kafkaListenerContainerFactoryHashMap(): ConcurrentKafkaListenerContainerFactory<String, HashMap<String, Any?>> {
         val factory: ConcurrentKafkaListenerContainerFactory<String, HashMap<String, Any?>> =
-            ConcurrentKafkaListenerContainerFactory<String, HashMap<String, Any?>>()
-        factory.consumerFactory = consumerFactoryHashMap()
+            ConcurrentKafkaListenerContainerFactory()
+        factory.setConsumerFactory(consumerFactoryHashMap())
         return factory
     }
 }
