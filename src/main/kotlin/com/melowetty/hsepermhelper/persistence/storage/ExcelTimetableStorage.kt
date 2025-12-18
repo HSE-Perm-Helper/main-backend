@@ -7,22 +7,24 @@ import com.melowetty.hsepermhelper.persistence.entity.ExcelTimetableEntity
 import com.melowetty.hsepermhelper.persistence.entity.GroupLessonsEntity
 import com.melowetty.hsepermhelper.persistence.entity.GroupLessonsEntityId
 import com.melowetty.hsepermhelper.persistence.repository.ExcelTimetableRepository
+import com.melowetty.hsepermhelper.persistence.repository.GroupLessonsJdbcRepository
 import com.melowetty.hsepermhelper.persistence.repository.GroupLessonsRepository
 import com.melowetty.hsepermhelper.timetable.model.EducationType
 import com.melowetty.hsepermhelper.timetable.model.ExcelTimetable
 import com.melowetty.hsepermhelper.timetable.model.InternalTimetableInfo
 import com.melowetty.hsepermhelper.timetable.model.impl.GroupBasedLesson
 import io.github.oshai.kotlinlogging.KotlinLogging
+import java.time.LocalDateTime
+import kotlin.jvm.optionals.getOrNull
 import org.apache.commons.lang3.RandomStringUtils
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
-import java.time.LocalDateTime
-import kotlin.jvm.optionals.getOrNull
 
 @Component
 class ExcelTimetableStorage(
     private val excelTimetableRepository: ExcelTimetableRepository,
     private val groupLessonsRepository: GroupLessonsRepository,
+    private val groupLessonsJdbcRepository: GroupLessonsJdbcRepository,
 ) {
     fun getParentTimetables(educationType: EducationType): List<InternalTimetableInfo> {
         return excelTimetableRepository.findAllByVisibleIsTrueAndParentIsTrue(educationType)
@@ -113,7 +115,6 @@ class ExcelTimetableStorage(
             logger.info { "Updating lessons for timetable $id" }
             groupLessonsRepository.deleteById_TimetableId(id)
             groupAndSaveLessons(timetable)
-            groupLessonsRepository.flush()
         }
     }
 
@@ -141,7 +142,9 @@ class ExcelTimetableStorage(
     @Transactional
     fun mergeTimetables(timetablesIds: List<String>) {
         val timetables = getTimetablesInfo(timetablesIds)
-        val newLessonsHash = groupLessonsRepository.findAllById_TimetableIdIn(timetablesIds).map { it.lessons }.flatten().computeHash()
+        val newLessons = groupLessonsRepository.findAllById_TimetableIdIn(timetablesIds).map { it.lessons }.flatten()
+        val newLessonsHash = newLessons.computeHash()
+
         val targetTimetable = timetables.sortedBy { it.start }.reduce { acc, timetable ->
             acc.copy(
                 end = maxOf(acc.end, timetable.end)
@@ -149,7 +152,9 @@ class ExcelTimetableStorage(
         }.copy(lessonsHash = newLessonsHash)
 
         updateTimetableInfo(targetTimetable.id, targetTimetable)
-        groupLessonsRepository.updateTimetableId(timetablesIds, targetTimetable.id)
+
+        groupLessonsRepository.deleteGroupsLessonsByTimetableIds(timetablesIds)
+        groupAndSaveLessons(newLessons, targetTimetable.id)
 
         val idsForDelete = timetablesIds.filter { it != targetTimetable.id }
         deleteTimetables(idsForDelete)
@@ -188,11 +193,9 @@ class ExcelTimetableStorage(
         )
 
         excelTimetableRepository.save(entity)
+        excelTimetableRepository.flush()
 
         groupAndSaveLessons(timetable)
-
-        excelTimetableRepository.flush()
-        groupLessonsRepository.flush()
 
         return timetable
     }
@@ -235,9 +238,13 @@ class ExcelTimetableStorage(
     }
 
     private fun groupAndSaveLessons(timetable: ExcelTimetable) {
-        val entities = timetable.lessons.groupBy { it.group }.map { (group, lessons) ->
+        groupAndSaveLessons(timetable.lessons, timetable.id())
+    }
+
+    private fun groupAndSaveLessons(lessons: List<GroupBasedLesson>, timetableId: String) {
+        val entities = lessons.groupBy { it.group }.map { (group, lessons) ->
             val id = GroupLessonsEntityId(
-                timetableId = timetable.id(),
+                timetableId = timetableId,
                 group = group,
             )
             val lessonsEntity = GroupLessonsEntity(
@@ -248,7 +255,7 @@ class ExcelTimetableStorage(
             lessonsEntity
         }
 
-        groupLessonsRepository.saveAll(entities)
+        groupLessonsJdbcRepository.batchInsert(entities)
     }
 
     private fun ExcelTimetableEntity.toInfo(): InternalTimetableInfo {

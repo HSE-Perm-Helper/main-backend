@@ -2,8 +2,6 @@ package com.melowetty.hsepermhelper.consumer
 
 import com.fasterxml.jackson.core.JsonProcessingException
 import com.fasterxml.jackson.databind.JsonMappingException
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.module.kotlin.convertValue
 import com.melowetty.hsepermhelper.messaging.event.task.ChangeDetectionTask
 import com.melowetty.hsepermhelper.messaging.event.task.NewTimetableNotifyTask
 import com.melowetty.hsepermhelper.messaging.event.task.Task
@@ -12,11 +10,12 @@ import com.melowetty.hsepermhelper.service.timetable.TimetableNotificationServic
 import com.melowetty.hsepermhelper.util.LoggingUtils
 import io.github.oshai.kotlinlogging.KotlinLogging
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
+import org.springframework.kafka.annotation.BackOff
 import org.springframework.kafka.annotation.KafkaListener
 import org.springframework.kafka.annotation.RetryableTopic
-import org.springframework.kafka.annotation.BackOff
 import org.springframework.kafka.retrytopic.DltStrategy
 import org.springframework.stereotype.Component
+import tools.jackson.databind.ObjectMapper
 
 @Component
 @ConditionalOnProperty("app.message-broker.type", havingValue = "kafka")
@@ -41,7 +40,7 @@ class TasksConsumer(
     fun consumeTask(taskAsMap: Map<String, Any?>) {
         LoggingUtils.executeWithRequestIdContext {
             try {
-                val task = objectMapper.convertValue<Task>(taskAsMap)
+                val task = objectMapper.convertValue(taskAsMap, Task::class.java)
 
                 when (task) {
                     is ChangeDetectionTask -> {

@@ -17,11 +17,11 @@ interface GroupLessonsRepository : JpaRepository<GroupLessonsEntity, GroupLesson
     @Modifying
     fun deleteById_TimetableId(timetableId: String)
 
+    @Query("DELETE FROM group_lessons WHERE timetable_id IN (:timetableIds)", nativeQuery = true)
+    @Modifying
+    fun deleteGroupsLessonsByTimetableIds(timetableIds: List<String>)
+
     @Query("SELECT DISTINCT new com.melowetty.hsepermhelper.persistence.projection.GroupByTimetableIdProjection(id.group, id.timetableId) " +
             "FROM GroupLessonsEntity WHERE id.timetableId IN :timetableIds")
     fun getGroupsAndTimetableIds(timetableIds: List<String>): List<GroupByTimetableIdProjection>
-
-    @Query("UPDATE group_lessons SET timetable_id = :newTimetableId WHERE timetable_id IN (:oldTimetableId)", nativeQuery = true)
-    @Modifying
-    fun updateTimetableId(oldTimetableId: List<String>, newTimetableId: String)
 }

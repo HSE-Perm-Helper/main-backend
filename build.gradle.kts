@@ -1,6 +1,3 @@
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-import se.solrike.sonarlint.SonarlintReport
-
 plugins {
     id("org.springframework.boot") version "4.0.0"
     id("io.spring.dependency-management") version "1.1.7"
@@ -156,7 +153,7 @@ tasks.sonarlintTest {
 
 tasks.bootBuildImage {
     imageName = "main-backend"
-    val env = mapOf("BP_HEALTH_CHECKER_ENABLED" to "true")
-    environment.set(env)
-    buildpacks.addAll("urn:cnb:builder:paketo-buildpacks/java", "docker.io/paketobuildpacks/health-checker:2.10.2")
+    //val env = mapOf("BP_HEALTH_CHECKER_ENABLED" to "true")
+    //environment.set(env)
+    //buildpacks.addAll("urn:cnb:builder:paketo-buildpacks/java", "docker.io/paketobuildpacks/health-checker:2.10.2")
 }
