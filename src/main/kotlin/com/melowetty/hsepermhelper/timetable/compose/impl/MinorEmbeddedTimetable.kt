@@ -62,7 +62,7 @@ class MinorEmbeddedTimetable(
                     .filterNot { it.lessonType == LessonType.COMMON_MINOR }
                     .sorted()
             )
-        } catch (e: RuntimeException) {
+        } catch (e: Exception) {
             logger.warn(e) {
                 "Failed to embed minor lessons for email $email"
             }

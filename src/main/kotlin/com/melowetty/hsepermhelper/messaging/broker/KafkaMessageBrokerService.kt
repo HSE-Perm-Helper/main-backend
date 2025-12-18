@@ -19,7 +19,7 @@ import java.util.*
 @ConditionalOnProperty("app.message-broker.type", havingValue = "kafka")
 class KafkaMessageBrokerService(
     private val kafkaTopicsConfig: KafkaTopicsConfig,
-    private val kafkaTemplate: KafkaTemplate<String, Any?>,
+    private val kafkaTemplate: KafkaTemplate<String, Any>,
     private val objectMapper: ObjectMapper,
 ) : MessageBrokerService {
     override fun submitTimetableChangeDetection(task: ChangeDetectionTask) {

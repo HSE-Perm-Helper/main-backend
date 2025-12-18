@@ -12,6 +12,7 @@ import com.melowetty.hsepermhelper.persistence.projection.UserRecord
 import com.melowetty.hsepermhelper.persistence.repository.UserRepository
 import com.melowetty.hsepermhelper.timetable.model.EducationType
 import jakarta.persistence.EntityManager
+import jakarta.persistence.PersistenceContext
 import jakarta.persistence.Tuple
 import jakarta.persistence.criteria.Predicate
 import org.springframework.stereotype.Component
@@ -19,13 +20,17 @@ import java.time.LocalDateTime
 import java.util.*
 import kotlin.jvm.optionals.getOrElse
 import kotlin.jvm.optionals.getOrNull
+import org.springframework.beans.factory.annotation.Autowired
 
 @Component
 class UserStorage(
-    private val entityManager: EntityManager,
     private val userRepository: UserRepository,
     private val hiddenLessonStorage: HiddenLessonStorage,
 ) {
+    @Autowired
+    @PersistenceContext
+    private lateinit var entityManager: EntityManager
+
     fun existsUserById(id: UUID): Boolean = userRepository.existsById(id)
     fun existsUserByTelegramId(telegramId: Long): Boolean = userRepository.existsByTelegramId(telegramId)
     fun existsUserByEmail(email: String): Boolean = userRepository.existsByEmail(email)

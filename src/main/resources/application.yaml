@@ -23,11 +23,6 @@ jobs:
     cron: 0 0/15 * * * ?
 remote-schedule:
   connect-url: https://api.hse-perm-helper.ru/remote-schedule
-server:
-  servlet:
-    encoding:
-      charset: UTF-8
-      force-response: true
 spring:
   application:
     name: main-backend
@@ -49,8 +44,6 @@ spring:
     topic:
       base-notifications: new-notification
       new-notifications: next-gen-notification
-  mvc:
-    throw-exception-if-no-handler-found: true
   profiles:
     include:
       - quartz

@@ -1,16 +1,14 @@
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-
 plugins {
-    id("org.springframework.boot") version "3.1.2"
-    id("io.spring.dependency-management") version "1.1.2"
-    kotlin("jvm") version "1.9.24"
-    kotlin("plugin.spring") version "1.9.24"
-    kotlin("plugin.jpa") version "1.9.24"
+    id("org.springframework.boot") version "4.0.0"
+    id("io.spring.dependency-management") version "1.1.7"
+    kotlin("jvm") version "2.2.21"
+    kotlin("plugin.spring") version "2.2.21"
+    kotlin("plugin.jpa") version "2.2.21"
     id("jacoco")
     id("se.solrike.sonarlint") version "2.2.0"
 }
 
-val springCloudVersion by extra("2022.0.4")
+val springCloudVersion by extra("2025.1.0-RC1")
 val apachePoiVersion = "5.2.3"
 val caffeineVersion = "3.2.0"
 val postgresVersion = "42.6.0"
@@ -37,6 +35,7 @@ allOpen {
 }
 
 dependencies {
+    implementation(libs.quartz)
     implementation(libs.spring.quartz)
     implementation(libs.spring.tx)
 
@@ -59,7 +58,8 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-actuator")
     implementation("org.springframework.kafka:spring-kafka")
     implementation("org.springframework.boot:spring-boot-starter-validation")
-    implementation("org.springframework.boot:spring-boot-starter-web")
+    implementation("org.springframework.boot:spring-boot-starter-webmvc")
+    implementation("org.springframework.boot:spring-boot-starter-jackson")
     implementation("org.springframework.cloud:spring-cloud-starter-openfeign")
 
     implementation("io.github.oshai:kotlin-logging-jvm:${kotlinLoggingVersion}")
@@ -82,16 +82,23 @@ dependencies {
     testImplementation(libs.mockK)
     testImplementation(libs.spring.mockk)
 }
+
 dependencyManagement {
     imports {
         mavenBom("org.springframework.cloud:spring-cloud-dependencies:$springCloudVersion")
     }
 }
 
-tasks.withType<KotlinCompile> {
-    kotlinOptions {
-        freeCompilerArgs += "-Xjsr305=strict"
-        jvmTarget = "21"
+kotlin {
+    compilerOptions {
+        freeCompilerArgs.addAll("-Xjsr305=strict", "-Xannotation-default-target=param-property")
+    }
+}
+
+// Remove when quartz 2.5.1 fix postgres integration
+configurations.all {
+    resolutionStrategy {
+        force("org.quartz-scheduler:quartz:2.5.0")
     }
 }
 
@@ -146,7 +153,7 @@ tasks.sonarlintTest {
 
 tasks.bootBuildImage {
     imageName = "main-backend"
-    val env = mapOf("BP_HEALTH_CHECKER_ENABLED" to "true")
-    environment.set(env)
-    buildpacks.addAll("urn:cnb:builder:paketo-buildpacks/java", "docker.io/paketobuildpacks/health-checker:2.10.2")
+    //val env = mapOf("BP_HEALTH_CHECKER_ENABLED" to "true")
+    //environment.set(env)
+    //buildpacks.addAll("urn:cnb:builder:paketo-buildpacks/java", "docker.io/paketobuildpacks/health-checker:2.10.2")
 }

@@ -1,6 +1,5 @@
 package com.melowetty.hsepermhelper.interceptor
 
-import com.fasterxml.jackson.databind.ObjectMapper
 import com.melowetty.hsepermhelper.exception.user.UserByTelegramIdNotFoundException
 import com.melowetty.hsepermhelper.persistence.storage.UserStorage
 import com.melowetty.hsepermhelper.util.LoggingUtils
@@ -8,10 +7,10 @@ import jakarta.servlet.FilterChain
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletRequestWrapper
 import jakarta.servlet.http.HttpServletResponse
-import org.slf4j.MDC
 import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Component
 import org.springframework.web.filter.OncePerRequestFilter
+import tools.jackson.databind.ObjectMapper
 
 @Component
 class TelegramIdRewriteFilter(
@@ -67,7 +66,7 @@ class TelegramIdRewriteFilter(
         responseEntity: ResponseEntity<*>
     ) {
         response.status = responseEntity.statusCode.value()
-        responseEntity.headers.forEach { (key, values) ->
+        responseEntity.headers.forEach { key, values ->
             values.forEach { value ->
                 response.addHeader(key, value)
             }

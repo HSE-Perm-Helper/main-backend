@@ -12,16 +12,15 @@ import java.time.format.DateTimeFormatter
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.cache.annotation.CachePut
 import org.springframework.cache.annotation.Cacheable
-import org.springframework.retry.support.RetryTemplate
+import org.springframework.core.retry.RetryTemplate
 import org.springframework.stereotype.Service
-import org.springframework.web.client.HttpServerErrorException
-import org.springframework.web.client.RestTemplate
+import org.springframework.web.client.RestClient
 import org.springframework.web.util.UriComponentsBuilder
 
 @Service
 class HseAppApiServiceImpl(
     @Qualifier("hse-app")
-    private val restTemplate: RestTemplate,
+    private val restClient: RestClient,
     @Qualifier("hse-app-retryer")
     private val retryTemplate: RetryTemplate
 ): HseAppApiService {
@@ -43,8 +42,11 @@ class HseAppApiServiceImpl(
             .encode()
             .toUriString()
 
-        val lessons = retryTemplate.execute<Array<HseAppApiLesson>, HttpServerErrorException> {
-            restTemplate.getForObject(url, Array<HseAppApiLesson>::class.java)
+        val lessons = retryTemplate.execute {
+            restClient.get()
+                .uri(url)
+                .retrieve()
+                .body(Array<HseAppApiLesson>::class.java)
                 ?: throw RuntimeException("Произошла ошибка во время получения пар из внешнего источника")
         }
 

@@ -3,6 +3,9 @@ mockK = "1.14.5"
 springMockk = "4.0.2"
 logback = "8.1"
 
+# Remove hardcode versions after fix quartz 2.5.1
+quartz = "2.5.0"
+
 [libraries]
 mockK = { module = "io.mockk:mockk", version.ref = "mockK" }
 
@@ -13,3 +16,5 @@ spring-mockk = { module = "com.ninja-squad:springmockk", version.ref = "springMo
 logback-encoder = { module = "net.logstash.logback:logstash-logback-encoder", version.ref = "logback" }
 
 jackson-datatype-jsr310 = { module = "com.fasterxml.jackson.datatype:jackson-datatype-jsr310" }
+
+quartz = { module = "org.quartz-scheduler:quartz", version.ref = "quartz" }
