@@ -39,6 +39,9 @@ dependencies {
     implementation(libs.spring.quartz)
     implementation(libs.spring.tx)
 
+    implementation("org.apache.httpcomponents.client5:httpclient5:5.4.4")
+    implementation("org.apache.httpcomponents.core5:httpcore5:5.3.4")
+
     implementation(libs.logback.encoder)
 
     implementation("com.github.ben-manes.caffeine:caffeine")
@@ -99,6 +102,8 @@ kotlin {
 configurations.all {
     resolutionStrategy {
         force("org.quartz-scheduler:quartz:2.5.0")
+        force("org.apache.httpcomponents.client5:httpclient5:5.4.4")
+        force("org.apache.httpcomponents.core5:httpcore5:5.3.4")
     }
 }
 

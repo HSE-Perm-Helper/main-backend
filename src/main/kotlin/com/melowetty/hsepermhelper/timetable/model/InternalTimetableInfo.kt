@@ -1,5 +1,6 @@
 package com.melowetty.hsepermhelper.timetable.model
 
+import com.fasterxml.jackson.annotation.JsonProperty
 import java.time.LocalDate
 
 data class InternalTimetableInfo(
@@ -9,6 +10,7 @@ data class InternalTimetableInfo(
     val end: LocalDate,
     val type: InternalTimetableType,
     val educationType: EducationType,
+    @JsonProperty("is_parent")
     val isParent: Boolean,
     val lessonsHash: Int,
     val source: InternalTimetableSource,
