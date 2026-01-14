@@ -1,7 +1,6 @@
 package com.melowetty.hsepermhelper.service.user
 
 import com.melowetty.hsepermhelper.domain.dto.EmailVerificationDto
-import com.melowetty.hsepermhelper.domain.model.Field
 import com.melowetty.hsepermhelper.domain.model.event.EmailIsVerifiedEvent
 import com.melowetty.hsepermhelper.domain.model.user.UserChangeRequest
 import com.melowetty.hsepermhelper.exception.user.UserByIdNotFoundException
@@ -46,7 +45,8 @@ class UserEmailService(
         }
 
         val request = UserChangeRequest(
-            email = Field.Set(null)
+            emailPresent = true,
+            email = null
         )
 
         userStorage.changeUser(id, request)
@@ -57,7 +57,8 @@ class UserEmailService(
         if (!userStorage.existsUserById(event.userId)) return
 
         val request = UserChangeRequest(
-            email = Field.Set(event.email)
+            emailPresent = true,
+            email = event.email
         )
 
         userStorage.changeUser(event.userId, request)
