@@ -57,10 +57,4 @@ class ExcelTimetable(
         )
     }
 
-    fun updateTimestamp(
-        updated: LocalDateTime = LocalDateTime.now(),
-    ): ExcelTimetable = this.copy(
-        lessons = this.lessons,
-        updated = updated
-    )
 }

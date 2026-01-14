@@ -1,12 +1,10 @@
 package com.melowetty.hsepermhelper.extension
 
 import com.melowetty.hsepermhelper.domain.model.schedule.Schedule
-import com.melowetty.hsepermhelper.domain.model.schedule.ScheduleInfo
 import com.melowetty.hsepermhelper.domain.model.schedule.ScheduleType
-import com.melowetty.hsepermhelper.timetable.model.InternalTimetable
 import com.melowetty.hsepermhelper.extension.LessonExtensions.Companion.toLesson
 import com.melowetty.hsepermhelper.timetable.model.InternalLesson
-import com.melowetty.hsepermhelper.timetable.model.InternalTimetableInfo
+import com.melowetty.hsepermhelper.timetable.model.InternalTimetable
 import com.melowetty.hsepermhelper.timetable.model.InternalTimetableType
 
 // TODO: make as object
@@ -16,30 +14,6 @@ class ScheduleExtensions {
             return this.sumOf {
                 it.hashCode()
             }
-        }
-
-        fun InternalTimetable.toInfo(): InternalTimetableInfo {
-            return InternalTimetableInfo(
-                id = id ?: "",
-                number = number,
-                start = start,
-                end = end,
-                type = type,
-                educationType = educationType,
-                isParent = isParent,
-                lessonsHash = lessonsHash,
-                source = source,
-            )
-        }
-
-        fun InternalTimetable.toScheduleInfo(): ScheduleInfo {
-            return ScheduleInfo(
-                id = id ?: "",
-                number = number,
-                start = start,
-                end = end,
-                scheduleType = type.toScheduleType()
-            )
         }
 
         fun InternalTimetable.toSchedule(): Schedule {

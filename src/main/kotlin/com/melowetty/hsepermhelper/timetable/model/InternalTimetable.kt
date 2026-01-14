@@ -1,6 +1,5 @@
 package com.melowetty.hsepermhelper.timetable.model
 
-import com.melowetty.hsepermhelper.extension.ScheduleExtensions.Companion.computeHash
 import java.time.LocalDate
 import java.time.LocalDateTime
 
@@ -17,7 +16,6 @@ open class InternalTimetable(
     val created: LocalDateTime = LocalDateTime.now(),
     val updated: LocalDateTime = LocalDateTime.now(),
 ) {
-    val lessonsHash  by lazy { lessons.computeHash() }
 
     fun id() = id ?: throw IllegalStateException("id is null")
 

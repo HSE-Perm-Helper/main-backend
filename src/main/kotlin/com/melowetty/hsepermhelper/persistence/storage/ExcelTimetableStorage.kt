@@ -91,7 +91,10 @@ class ExcelTimetableStorage(
     fun updateTimetable(id: String, timetable: ExcelTimetable) {
         val existsEntity = getExcelTimetableEntity(id)
 
-        val runId = JobRunContextHolder.get()?.id
+        val newLessonsHash = timetable.lessons.computeHash()
+
+        groupLessonsRepository.deleteById_TimetableId(id)
+        groupAndSaveLessons(timetable)
 
         val entity = ExcelTimetableEntity(
             id = id,
@@ -103,19 +106,13 @@ class ExcelTimetableStorage(
             isParent = timetable.isParent,
             isVisible = existsEntity.isVisible,
             source = timetable.source,
-            lessonsHash = timetable.lessonsHash,
+            lessonsHash = newLessonsHash,
             created = existsEntity.created,
             updated = LocalDateTime.now(),
-            runId = runId ?: existsEntity.runId,
+            runId = JobRunContextHolder.get()?.id ?: existsEntity.runId,
         )
 
-        excelTimetableRepository.saveAndFlush(entity)
-
-        if (timetable.lessonsHash != existsEntity.lessonsHash) {
-            logger.info { "Updating lessons for timetable $id" }
-            groupLessonsRepository.deleteById_TimetableId(id)
-            groupAndSaveLessons(timetable)
-        }
+        excelTimetableRepository.save(entity)
     }
 
     @Transactional
@@ -186,7 +183,7 @@ class ExcelTimetableStorage(
             isParent = timetable.isParent,
             isVisible = false,
             source = timetable.source,
-            lessonsHash = timetable.lessonsHash,
+            lessonsHash = timetable.lessons.computeHash(),
             created = timetable.created,
             updated = timetable.updated,
             runId = runId,
