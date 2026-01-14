@@ -1,5 +1,6 @@
 package com.melowetty.hsepermhelper.domain.model.lesson
 
+import com.fasterxml.jackson.annotation.JsonProperty
 import com.melowetty.hsepermhelper.domain.model.schedule.ScheduleType
 import io.swagger.v3.oas.annotations.media.Schema
 
@@ -21,6 +22,7 @@ data class Lesson(
     @Schema(description = "Тип расписания-родителя", example = "WEEK_SCHEDULE")
     val parentScheduleType: ScheduleType,
 ) : Comparable<Lesson> {
+    @JsonProperty("isOnline")
     /**
      * Returns lesson will be in online mode
      *

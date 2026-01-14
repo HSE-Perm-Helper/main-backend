@@ -1,19 +1,16 @@
 package com.melowetty.hsepermhelper.messaging.broker
 
-import com.fasterxml.jackson.core.type.TypeReference
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.module.kotlin.readValue
 import com.melowetty.hsepermhelper.config.kafka.KafkaTopicsConfig
 import com.melowetty.hsepermhelper.domain.model.event.KafkaNotification
-import com.melowetty.hsepermhelper.domain.model.event.UserEventType
 import com.melowetty.hsepermhelper.messaging.event.notification.Notification
 import com.melowetty.hsepermhelper.messaging.event.notification.NotificationV2
 import com.melowetty.hsepermhelper.messaging.event.task.ChangeDetectionTask
 import com.melowetty.hsepermhelper.messaging.event.task.NewTimetableNotifyTask
+import java.util.UUID
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
 import org.springframework.kafka.core.KafkaTemplate
 import org.springframework.stereotype.Service
-import java.util.*
+import tools.jackson.databind.ObjectMapper
 
 @Service
 @ConditionalOnProperty("app.message-broker.type", havingValue = "kafka")
@@ -55,7 +52,7 @@ class KafkaMessageBrokerService(
     }
 
     private fun convertNotificationToMap(notification: NotificationV2): MutableMap<String, Any?> {
-        return objectMapper.convertValue(notification, object : TypeReference<MutableMap<String, Any?>>() {})
+        return objectMapper.convertValue(notification, MutableMap::class.java) as MutableMap<String, Any?>
     }
 
     companion object {

@@ -1,7 +1,6 @@
 package com.melowetty.hsepermhelper.persistence.storage
 
 import com.melowetty.hsepermhelper.domain.Pageable
-import com.melowetty.hsepermhelper.domain.model.Field
 import com.melowetty.hsepermhelper.persistence.entity.UserEntity
 import com.melowetty.hsepermhelper.domain.model.user.EducationGroupEntity
 import com.melowetty.hsepermhelper.domain.model.user.UserChangeRequest
@@ -65,22 +64,22 @@ class UserStorage(
         }
 
         val updatedUser = user.apply {
-            if (changeRequest.email is Field.Set) this.email = changeRequest.email.value
+            if (changeRequest.emailPresent) this.email = changeRequest.email
 
-            if (changeRequest.group is Field.Set) this.educationGroup =
-                this.educationGroup.copy(group = changeRequest.group.value)
+            if (changeRequest.group != null) this.educationGroup =
+                this.educationGroup.copy(group = changeRequest.group)
 
-            if (changeRequest.educationType is Field.Set) this.educationGroup =
-                this.educationGroup.copy(educationType = changeRequest.educationType.value)
+            if (changeRequest.educationType != null) this.educationGroup =
+                this.educationGroup.copy(educationType = changeRequest.educationType)
 
-            if (changeRequest.isEnabledNewScheduleNotifications is Field.Set) this.isEnabledNewScheduleNotifications =
-                    changeRequest.isEnabledNewScheduleNotifications.value
+            if (changeRequest.isEnabledNewScheduleNotifications != null) this.isEnabledNewScheduleNotifications =
+                    changeRequest.isEnabledNewScheduleNotifications
 
-            if (changeRequest.isEnabledChangedScheduleNotifications is Field.Set) this.isEnabledChangedScheduleNotifications =
-                    changeRequest.isEnabledChangedScheduleNotifications.value
+            if (changeRequest.isEnabledChangedScheduleNotifications != null) this.isEnabledChangedScheduleNotifications =
+                    changeRequest.isEnabledChangedScheduleNotifications
 
-            if (changeRequest.isEnabledComingLessonsNotifications is Field.Set) this.isEnabledComingLessonsNotifications =
-                    changeRequest.isEnabledComingLessonsNotifications.value
+            if (changeRequest.isEnabledComingLessonsNotifications != null) this.isEnabledComingLessonsNotifications =
+                    changeRequest.isEnabledComingLessonsNotifications
         }
 
         val savedUser = userRepository.save(updatedUser)

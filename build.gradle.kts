@@ -1,11 +1,11 @@
 plugins {
-    id("org.springframework.boot") version "4.0.0"
+    id("org.springframework.boot") version "4.0.1"
     id("io.spring.dependency-management") version "1.1.7"
     kotlin("jvm") version "2.2.21"
     kotlin("plugin.spring") version "2.2.21"
     kotlin("plugin.jpa") version "2.2.21"
     id("jacoco")
-    id("se.solrike.sonarlint") version "2.2.0"
+    //id("se.solrike.sonarlint") version "2.2.0"
 }
 
 val springCloudVersion by extra("2025.1.0-RC1")
@@ -95,13 +95,6 @@ kotlin {
     }
 }
 
-// Remove when quartz 2.5.1 fix postgres integration
-configurations.all {
-    resolutionStrategy {
-        force("org.quartz-scheduler:quartz:2.5.0")
-    }
-}
-
 tasks.withType<Test> {
     useJUnitPlatform()
 }
@@ -116,7 +109,7 @@ tasks.bootJar {
 
 tasks.test {
     finalizedBy(tasks.jacocoTestReport)
-    finalizedBy(tasks.sonarlintMain)
+//    finalizedBy(tasks.sonarlintMain)
 }
 
 jacoco {
@@ -131,25 +124,25 @@ tasks.jacocoTestReport {
     }
 }
 
-sonarlint {
-    maxIssues = 0
-    dependencies {
-        sonarlintPlugins("org.sonarsource.kotlin:sonar-kotlin-plugin:2.13.0.2116")
-    }
-}
-
-tasks.sonarlintMain {
-    ignoreFailures.set(true)
-    reports {
-        create("xml") {
-            enabled.set(true)
-        }
-    }
-}
-
-tasks.sonarlintTest {
-    ignoreFailures.set(true)
-}
+//sonarlint {
+//    maxIssues = 0
+//    dependencies {
+//        sonarlintPlugins("org.sonarsource.kotlin:sonar-kotlin-plugin:2.13.0.2116")
+//    }
+//}
+//
+//tasks.sonarlintMain {
+//    ignoreFailures.set(true)
+//    reports {
+//        create("xml") {
+//            enabled.set(true)
+//        }
+//    }
+//}
+//
+//tasks.sonarlintTest {
+//    ignoreFailures.set(true)
+//}
 
 tasks.bootBuildImage {
     imageName = "main-backend"
