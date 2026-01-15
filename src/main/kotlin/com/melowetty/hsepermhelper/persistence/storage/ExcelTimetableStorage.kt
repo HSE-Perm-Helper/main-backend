@@ -93,7 +93,7 @@ class ExcelTimetableStorage(
 
         val newLessonsHash = timetable.lessons.computeHash()
 
-        groupLessonsRepository.deleteById_TimetableId(id)
+        groupLessonsRepository.deleteGroupsLessonsByTimetableIds(listOf(id))
         groupAndSaveLessons(timetable)
 
         val entity = ExcelTimetableEntity(

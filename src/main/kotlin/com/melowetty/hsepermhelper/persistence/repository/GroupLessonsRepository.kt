@@ -14,9 +14,6 @@ interface GroupLessonsRepository : JpaRepository<GroupLessonsEntity, GroupLesson
     fun findAllById_TimetableId(timetableId: String): List<GroupLessonsEntity>
     fun findById_TimetableIdAndId_Group(timetableId: String, group: String): GroupLessonsEntity?
 
-    @Modifying
-    fun deleteById_TimetableId(timetableId: String)
-
     @Query("DELETE FROM group_lessons WHERE timetable_id IN (:timetableIds)", nativeQuery = true)
     @Modifying
     fun deleteGroupsLessonsByTimetableIds(timetableIds: List<String>)
