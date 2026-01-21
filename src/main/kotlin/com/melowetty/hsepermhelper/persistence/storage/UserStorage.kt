@@ -55,7 +55,9 @@ class UserStorage(
             roles = roles
         )
 
-        return addAdditionalFields(UserRecord.from(userRepository.save(user)))
+        val savedUser = userRepository.save(user)
+
+        return addAdditionalFields(UserRecord.from(savedUser))
     }
 
     fun changeUser(userId: UUID, changeRequest: UserChangeRequest): UserRecord {

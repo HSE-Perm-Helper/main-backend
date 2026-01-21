@@ -17,6 +17,7 @@ import java.util.UUID
 import java.util.concurrent.ExecutorService
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 
 @Service
 class UserService(
@@ -54,6 +55,7 @@ class UserService(
         return result
     }
 
+    @Transactional
     fun createUser(request: UserCreateRequest): UserDto {
         checkUserNotExistsByTelegramIdOrThrow(request.telegramId)
 

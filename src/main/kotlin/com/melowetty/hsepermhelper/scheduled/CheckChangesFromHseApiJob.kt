@@ -72,7 +72,7 @@ class CheckChangesFromHseApiJob(
 
     private fun processUser(user: UserEntity) {
         try {
-            val timetables = personalTimetableService.getTimetables(user.id)
+            val timetables = personalTimetableService.getTimetables(user.id())
                 .filter { it.scheduleType != ScheduleType.QUARTER_SCHEDULE }
 
             val (start, end) = getScheduleRange(timetables) ?: return
@@ -82,11 +82,11 @@ class CheckChangesFromHseApiJob(
             val hash = lessons.hashCode()
             val prevHash = prevLessonsHash.getOrDefault(user.id, hash)
 
-            prevLessonsHash[user.id] = hash
+            prevLessonsHash[user.id()] = hash
 
             if (prevMinorHash.containsKey(user.id).not()) {
                 val minorLessons = getMinorLessons(lessons)
-                prevMinorHash[user.id] = getMinorLessonsMap(timetables, minorLessons)
+                prevMinorHash[user.id()] = getMinorLessonsMap(timetables, minorLessons)
             }
 
             if (hash != prevHash) {
@@ -138,10 +138,10 @@ class CheckChangesFromHseApiJob(
                     timetableInfo = it,
                     changedDays = listOf(dayOfWeek),
                 )
-                notificationService.sendUserNotification(user.id, timetableChangedEvent)
+                notificationService.sendUserNotification(user.id(), timetableChangedEvent)
             }
 
-        prevMinorHash[user.id] = hashes
+        prevMinorHash[user.id()] = hashes
     }
 
     companion object {

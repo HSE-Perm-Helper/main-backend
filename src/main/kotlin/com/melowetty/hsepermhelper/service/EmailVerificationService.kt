@@ -78,7 +78,7 @@ class EmailVerificationService(
         val email = verification.email
 
         eventPublisher.publishEvent(EmailIsVerifiedEvent(
-            userId = user.id,
+            userId = user.id(),
             email = email,
         ))
     }

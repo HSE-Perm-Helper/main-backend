@@ -24,7 +24,7 @@ import java.util.*
 data class UserEntity(
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    val id: UUID = UUID.randomUUID(),
+    val id: UUID? = null,
 
     @Column(name = "telegram_id", unique = true)
     val telegramId: Long = 0L,
@@ -55,4 +55,8 @@ data class UserEntity(
     @Column(name = "role")
     @Enumerated(EnumType.STRING)
     val roles: List<UserRole>,
-)
+) {
+    fun id(): UUID {
+        return id ?: throw IllegalStateException("User entity id is null.")
+    }
+}

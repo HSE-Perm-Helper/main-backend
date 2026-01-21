@@ -15,7 +15,7 @@ class UserExtensions {
     companion object {
         fun UserEntity.toDto(hiddenLessons: List<HideLessonRecord>): UserDto {
             return UserDto(
-                id = id,
+                id = id(),
                 telegramId = telegramId,
                 settings = SettingsDto(
                     group = educationGroup.group,
