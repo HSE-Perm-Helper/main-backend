@@ -37,8 +37,13 @@ class ExcelTimetableProcessService(
             return
         }
 
-        val ids = (addedOrChanged + notChanged).map {
-            excelTimetableAdapter.processAndPersist(it)
+        val ids = (addedOrChanged + notChanged).mapNotNull {
+            return@mapNotNull try {
+                excelTimetableAdapter.processAndPersist(it)
+            } catch (e: Exception) {
+                logger.error(e) { "Error when process and persist file ${it.name}" }
+                null
+            }
         }.flatten()
 
         logger.info { "Processed ${ids.size} timetables" }

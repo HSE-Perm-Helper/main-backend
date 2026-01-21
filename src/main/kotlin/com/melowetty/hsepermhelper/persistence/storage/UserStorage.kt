@@ -139,14 +139,6 @@ class UserStorage(
             }
     }
 
-    fun findUserByTelegramId(telegramId: Long): UserRecord? {
-        return userRepository.findByTelegramId(telegramId)
-            .map { UserRecord.from(it) }.getOrNull()
-            ?.let {
-                addAdditionalFields(it)
-            }
-    }
-
     private fun addAdditionalFields(user: UserRecord): UserRecord = user.copy(
         roles = loadUserRoles(user.id),
         hiddenLessons = hiddenLessonStorage.getUserHiddenLessons(user.id),
