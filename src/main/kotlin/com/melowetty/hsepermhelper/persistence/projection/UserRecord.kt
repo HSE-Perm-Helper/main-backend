@@ -20,7 +20,7 @@ data class UserRecord(
     companion object {
         fun from(entity: UserEntity): UserRecord {
             return UserRecord(
-                    id = entity.id,
+                    id = entity.id(),
                     telegramId = entity.telegramId,
                     email = entity.email,
                     educationGroup = EducationGroupRecord.from(entity.educationGroup),

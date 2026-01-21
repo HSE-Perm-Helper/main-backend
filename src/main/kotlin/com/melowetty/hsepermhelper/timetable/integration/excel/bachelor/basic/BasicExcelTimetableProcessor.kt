@@ -31,7 +31,7 @@ class BasicExcelTimetableProcessor: ExcelTimetableProcessor {
                 lessons = lessons,
                 start = scheduleInfo.startDate,
                 end = scheduleInfo.endDate,
-                type =scheduleInfo.type,
+                type = scheduleInfo.type,
                 educationType = EducationType.BACHELOR_OFFLINE,
                 isParent = true,
                 source = InternalTimetableSource.EXCEL,
