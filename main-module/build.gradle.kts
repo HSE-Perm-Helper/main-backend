@@ -1,22 +1,10 @@
-plugins {
-    kotlin("plugin.jpa") version "2.2.21"
-}
-
 val apachePoiVersion = "5.2.3"
 val caffeineVersion = "3.2.0"
-val postgresVersion = "42.6.0"
-val springDocStarterVersion = "2.2.0"
-val springDocKotlinVersion = "2.2.0"
 val jsoupVersion = "1.16.1"
-val kotlinLoggingVersion = "7.0.3"
-
-allOpen {
-    annotation("javax.persistence.Entity")
-    annotation("javax.persistence.Embeddable")
-    annotation("javax.persistence.MappedSuperclass")
-}
 
 dependencies {
+    api(project(":persistence"))
+
     implementation(libs.quartz)
     implementation(libs.spring.quartz)
     implementation(libs.spring.tx)
@@ -24,10 +12,6 @@ dependencies {
     implementation(libs.logback.encoder)
 
     implementation("com.github.ben-manes.caffeine:caffeine")
-
-    implementation("org.liquibase:liquibase-core")
-    implementation("org.postgresql:postgresql:${postgresVersion}")
-    implementation("org.springframework.boot:spring-boot-starter-data-jpa")
 
     implementation("org.apache.poi:poi:${apachePoiVersion}")
     implementation("org.apache.poi:poi-ooxml:${apachePoiVersion}")
@@ -41,11 +25,7 @@ dependencies {
     implementation("org.springframework.kafka:spring-kafka")
     implementation("org.springframework.boot:spring-boot-starter-validation")
     implementation("org.springframework.boot:spring-boot-starter-webmvc")
-    implementation("org.springframework.boot:spring-boot-starter-jackson")
-
-    implementation("io.github.oshai:kotlin-logging-jvm:${kotlinLoggingVersion}")
-
-    implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:${springDocStarterVersion}")
+    api("org.springframework.boot:spring-boot-starter-jackson")
 
     implementation("org.jsoup:jsoup:${jsoupVersion}")
     implementation("org.springframework.boot:spring-boot-starter-cache")
@@ -58,7 +38,6 @@ dependencies {
         exclude(group = "org.mockito", module = "mockito-core")
         exclude(group = "org.mockito", module = "mockito-junit-jupiter")
     }
-    testImplementation("org.springframework.kafka:spring-kafka-test")
 
     testImplementation(libs.mockK)
     testImplementation(libs.spring.mockk)

@@ -1,7 +1,7 @@
 package com.melowetty.hsepermhelper.messaging.event.task
 
 import com.fasterxml.jackson.annotation.JsonTypeName
-import com.melowetty.hsepermhelper.timetable.model.impl.GroupBasedLesson
+import com.melowetty.hsepermhelper.domain.model.timetable.impl.GroupBasedLesson
 
 @JsonTypeName("CHANGE_DETECTION")
 data class ChangeDetectionTask(

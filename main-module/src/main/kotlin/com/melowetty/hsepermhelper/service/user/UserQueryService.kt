@@ -4,7 +4,7 @@ import com.melowetty.hsepermhelper.domain.Pageable
 import com.melowetty.hsepermhelper.domain.dto.UserDto
 import com.melowetty.hsepermhelper.extension.UserExtensions.Companion.toDto
 import com.melowetty.hsepermhelper.persistence.storage.UserStorage
-import com.melowetty.hsepermhelper.timetable.model.EducationType
+import com.melowetty.hsepermhelper.domain.model.timetable.EducationType
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.util.*

@@ -2,10 +2,10 @@ package com.melowetty.hsepermhelper.service.impl.timetable
 
 import com.melowetty.hsepermhelper.persistence.storage.ExcelTimetableStorage
 import com.melowetty.hsepermhelper.service.timetable.excel.ExcelTimetableNormalizerService
-import com.melowetty.hsepermhelper.timetable.model.EducationType
-import com.melowetty.hsepermhelper.timetable.model.InternalTimetableInfo
-import com.melowetty.hsepermhelper.timetable.model.InternalTimetableSource
-import com.melowetty.hsepermhelper.timetable.model.InternalTimetableType
+import com.melowetty.hsepermhelper.domain.model.timetable.EducationType
+import com.melowetty.hsepermhelper.domain.model.timetable.InternalTimetableInfo
+import com.melowetty.hsepermhelper.domain.model.timetable.InternalTimetableSource
+import com.melowetty.hsepermhelper.domain.model.timetable.InternalTimetableType
 import io.mockk.Runs
 import io.mockk.every
 import io.mockk.impl.annotations.InjectMockKs

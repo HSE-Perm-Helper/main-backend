@@ -6,10 +6,10 @@ import com.melowetty.hsepermhelper.domain.model.lesson.ScheduledTime
 import com.melowetty.hsepermhelper.persistence.projection.UserRecord
 import com.melowetty.hsepermhelper.service.HseAppApiService
 import com.melowetty.hsepermhelper.timetable.compose.EmbeddedTimetable
-import com.melowetty.hsepermhelper.timetable.model.InternalTimetable
-import com.melowetty.hsepermhelper.timetable.model.InternalTimetableType
-import com.melowetty.hsepermhelper.timetable.model.TimetableContext
-import com.melowetty.hsepermhelper.timetable.model.impl.MinorLesson
+import com.melowetty.hsepermhelper.domain.model.timetable.InternalTimetable
+import com.melowetty.hsepermhelper.domain.model.timetable.InternalTimetableType
+import com.melowetty.hsepermhelper.domain.model.timetable.TimetableContext
+import com.melowetty.hsepermhelper.domain.model.timetable.impl.MinorLesson
 import com.melowetty.hsepermhelper.util.DateUtils.Companion.asStr
 import com.melowetty.hsepermhelper.util.DateUtils.Companion.fromGmtToPermTime
 import io.github.oshai.kotlinlogging.KotlinLogging

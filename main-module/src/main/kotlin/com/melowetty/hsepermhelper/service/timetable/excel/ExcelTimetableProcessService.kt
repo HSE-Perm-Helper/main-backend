@@ -4,7 +4,7 @@ import com.melowetty.hsepermhelper.context.JobRunContextHolder
 import com.melowetty.hsepermhelper.domain.model.file.File
 import com.melowetty.hsepermhelper.timetable.integration.excel.ExcelTimetableAdapter
 import com.melowetty.hsepermhelper.persistence.storage.ExcelTimetableStorage
-import com.melowetty.hsepermhelper.timetable.model.ExcelFileMetadata
+import com.melowetty.hsepermhelper.domain.model.timetable.ExcelFileMetadata
 import io.github.oshai.kotlinlogging.KotlinLogging
 import org.springframework.stereotype.Service
 

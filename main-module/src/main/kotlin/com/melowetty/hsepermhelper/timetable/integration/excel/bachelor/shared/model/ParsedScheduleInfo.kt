@@ -1,6 +1,6 @@
 package com.melowetty.hsepermhelper.timetable.integration.excel.bachelor.shared.model
 
-import com.melowetty.hsepermhelper.timetable.model.InternalTimetableType
+import com.melowetty.hsepermhelper.domain.model.timetable.InternalTimetableType
 import java.time.LocalDate
 
 data class ParsedScheduleInfo(

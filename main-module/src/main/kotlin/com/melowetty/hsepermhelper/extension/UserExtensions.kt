@@ -1,14 +1,14 @@
 package com.melowetty.hsepermhelper.extension
 
 import com.melowetty.hsepermhelper.domain.dto.ApiUserHideLesson
-import com.melowetty.hsepermhelper.persistence.projection.HideLessonRecord
 import com.melowetty.hsepermhelper.domain.dto.SettingsDto
 import com.melowetty.hsepermhelper.domain.dto.UserDto
+import com.melowetty.hsepermhelper.domain.model.timetable.EducationType
+import com.melowetty.hsepermhelper.persistence.entity.EducationGroupEntity
 import com.melowetty.hsepermhelper.persistence.entity.UserEntity
-import com.melowetty.hsepermhelper.domain.model.user.EducationGroupEntity
+import com.melowetty.hsepermhelper.persistence.projection.HideLessonRecord
 import com.melowetty.hsepermhelper.persistence.projection.UserRecord
-import com.melowetty.hsepermhelper.timetable.model.EducationType
-import java.util.*
+import java.util.UUID
 
 // TODO: make as object
 class UserExtensions {

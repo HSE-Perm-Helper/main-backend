@@ -12,7 +12,7 @@ import com.melowetty.hsepermhelper.extension.UserExtensions.Companion.toDto
 import com.melowetty.hsepermhelper.persistence.projection.UserRecord
 import com.melowetty.hsepermhelper.persistence.storage.UserStorage
 import com.melowetty.hsepermhelper.service.TimetableInfoService
-import com.melowetty.hsepermhelper.timetable.model.EducationType
+import com.melowetty.hsepermhelper.domain.model.timetable.EducationType
 import java.util.UUID
 import java.util.concurrent.ExecutorService
 import org.springframework.beans.factory.annotation.Qualifier

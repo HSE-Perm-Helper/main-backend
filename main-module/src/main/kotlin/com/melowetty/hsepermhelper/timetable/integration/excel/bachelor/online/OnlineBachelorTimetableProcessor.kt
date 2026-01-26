@@ -3,11 +3,11 @@ package com.melowetty.hsepermhelper.timetable.integration.excel.bachelor.online
 import com.melowetty.hsepermhelper.domain.model.lesson.LessonTime
 import com.melowetty.hsepermhelper.domain.model.lesson.LessonType
 import com.melowetty.hsepermhelper.timetable.integration.excel.ExcelTimetableProcessor
-import com.melowetty.hsepermhelper.timetable.model.EducationType
-import com.melowetty.hsepermhelper.timetable.model.ExcelTimetable
-import com.melowetty.hsepermhelper.timetable.model.InternalTimetableSource
-import com.melowetty.hsepermhelper.timetable.model.InternalTimetableType
-import com.melowetty.hsepermhelper.timetable.model.impl.GroupBasedLesson
+import com.melowetty.hsepermhelper.domain.model.timetable.EducationType
+import com.melowetty.hsepermhelper.domain.model.timetable.ExcelTimetable
+import com.melowetty.hsepermhelper.domain.model.timetable.InternalTimetableSource
+import com.melowetty.hsepermhelper.domain.model.timetable.InternalTimetableType
+import com.melowetty.hsepermhelper.domain.model.timetable.impl.GroupBasedLesson
 import org.apache.poi.ss.usermodel.Workbook
 import org.springframework.stereotype.Component
 import java.time.LocalDate

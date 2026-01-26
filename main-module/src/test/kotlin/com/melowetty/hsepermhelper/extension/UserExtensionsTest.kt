@@ -1,13 +1,5 @@
 package com.melowetty.hsepermhelper.extension
 
-import com.melowetty.hsepermhelper.persistence.entity.HideLessonEntity
-import com.melowetty.hsepermhelper.persistence.entity.UserEntity
-import com.melowetty.hsepermhelper.domain.model.user.UserRole
-import com.melowetty.hsepermhelper.domain.model.lesson.LessonType
-import com.melowetty.hsepermhelper.extension.UserExtensions.Companion.getGroupedEntityBySettingsUsers
-import org.junit.jupiter.api.Assertions
-import org.junit.jupiter.api.Test
-
 class UserExtensionsTest {
 //    @Test
 //    fun `test group users entity by settings`() {

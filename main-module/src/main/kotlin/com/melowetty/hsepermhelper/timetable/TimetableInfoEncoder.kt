@@ -1,6 +1,6 @@
 package com.melowetty.hsepermhelper.timetable
 
-import com.melowetty.hsepermhelper.timetable.model.InternalTimetableSource
+import com.melowetty.hsepermhelper.domain.model.timetable.InternalTimetableSource
 
 object TimetableInfoEncoder {
     private const val DELIMITER = "z"

@@ -3,9 +3,9 @@ package com.melowetty.hsepermhelper.service.timetable.excel
 import com.melowetty.hsepermhelper.messaging.broker.MessageBrokerService
 import com.melowetty.hsepermhelper.messaging.event.task.ChangeDetectionTask
 import com.melowetty.hsepermhelper.messaging.event.task.NewTimetableNotifyTask
-import com.melowetty.hsepermhelper.timetable.model.ExcelTimetable
-import com.melowetty.hsepermhelper.timetable.model.InternalTimetableInfo
-import com.melowetty.hsepermhelper.timetable.model.impl.GroupBasedLesson
+import com.melowetty.hsepermhelper.domain.model.timetable.ExcelTimetable
+import com.melowetty.hsepermhelper.domain.model.timetable.InternalTimetableInfo
+import com.melowetty.hsepermhelper.domain.model.timetable.impl.GroupBasedLesson
 import io.github.oshai.kotlinlogging.KotlinLogging
 import org.springframework.stereotype.Service
 

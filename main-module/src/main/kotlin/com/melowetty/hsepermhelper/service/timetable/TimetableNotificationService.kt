@@ -9,8 +9,8 @@ import com.melowetty.hsepermhelper.persistence.storage.UserStorage
 import com.melowetty.hsepermhelper.service.FeatureManager
 import com.melowetty.hsepermhelper.service.NotificationService
 import com.melowetty.hsepermhelper.timetable.TimetableInfoEncoder
-import com.melowetty.hsepermhelper.timetable.model.EducationType
-import com.melowetty.hsepermhelper.timetable.model.InternalTimetableInfo
+import com.melowetty.hsepermhelper.domain.model.timetable.EducationType
+import com.melowetty.hsepermhelper.domain.model.timetable.InternalTimetableInfo
 import com.melowetty.hsepermhelper.util.Paginator
 import io.github.oshai.kotlinlogging.KotlinLogging
 import org.springframework.stereotype.Service

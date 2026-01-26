@@ -1,9 +1,9 @@
 package com.melowetty.hsepermhelper.timetable.compose
 
+import com.melowetty.hsepermhelper.domain.model.timetable.InternalTimetable
+import com.melowetty.hsepermhelper.domain.model.timetable.InternalTimetableInfo
+import com.melowetty.hsepermhelper.domain.model.timetable.InternalTimetableSource
 import com.melowetty.hsepermhelper.persistence.projection.UserRecord
-import com.melowetty.hsepermhelper.timetable.model.InternalTimetable
-import com.melowetty.hsepermhelper.timetable.model.InternalTimetableInfo
-import com.melowetty.hsepermhelper.timetable.model.InternalTimetableSource
 
 interface ParentTimetable {
     fun getTimetables(user: UserRecord): List<InternalTimetableInfo>

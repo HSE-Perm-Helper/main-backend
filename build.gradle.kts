@@ -54,10 +54,10 @@ subprojects {
     tasks.withType<Test> {
         useJUnitPlatform()
     }
-
-    tasks.jar {
-        enabled = false
-    }
+//
+//    tasks.jar {
+//        enabled = false
+//    }
 
     tasks.test {
         finalizedBy(tasks.jacocoTestReport)

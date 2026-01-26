@@ -3,8 +3,8 @@ package com.melowetty.hsepermhelper.consumer
 import com.melowetty.hsepermhelper.messaging.event.task.TaskType
 import com.melowetty.hsepermhelper.service.timetable.TimetableChangeDetectionService
 import com.melowetty.hsepermhelper.service.timetable.TimetableNotificationService
-import com.melowetty.hsepermhelper.timetable.model.InternalTimetableInfo
-import com.melowetty.hsepermhelper.timetable.model.impl.GroupBasedLesson
+import com.melowetty.hsepermhelper.domain.model.timetable.InternalTimetableInfo
+import com.melowetty.hsepermhelper.domain.model.timetable.impl.GroupBasedLesson
 import com.ninjasquad.springmockk.MockkBean
 import io.mockk.Runs
 import io.mockk.every
@@ -15,8 +15,10 @@ import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.jackson.autoconfigure.JacksonAutoConfiguration
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.test.context.ActiveProfiles
 
 @SpringBootTest(classes = [JacksonAutoConfiguration::class, TasksConsumer::class])
+@ActiveProfiles("test")
 class TasksConsumerTest {
     @Autowired
     private lateinit var tasksConsumer: TasksConsumer

@@ -4,7 +4,7 @@
 //import com.melowetty.hsepermhelper.domain.model.file.File
 //import com.melowetty.hsepermhelper.domain.model.file.FilesChanging
 //import com.melowetty.hsepermhelper.excel.HseTimetableExcelParser
-//import com.melowetty.hsepermhelper.timetable.model.InternalScheduleDifference
+//import com.melowetty.hsepermhelper.domain.model.timetable.InternalScheduleDifference
 //import com.melowetty.hsepermhelper.service.ScheduleFilesService
 //import com.melowetty.hsepermhelper.service.SchedulesCheckingChangesService
 //import com.melowetty.hsepermhelper.util.MockitoHelper

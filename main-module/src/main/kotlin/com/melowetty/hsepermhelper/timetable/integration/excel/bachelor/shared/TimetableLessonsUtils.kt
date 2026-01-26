@@ -5,20 +5,20 @@ import com.melowetty.hsepermhelper.domain.model.context.ParseError
 import com.melowetty.hsepermhelper.domain.model.lesson.CycleTime
 import com.melowetty.hsepermhelper.domain.model.lesson.LessonTime
 import com.melowetty.hsepermhelper.domain.model.lesson.ScheduledTime
+import com.melowetty.hsepermhelper.domain.model.timetable.InternalTimetableType
+import com.melowetty.hsepermhelper.domain.model.timetable.impl.GroupBasedLesson
 import com.melowetty.hsepermhelper.timetable.integration.excel.bachelor.shared.model.CellInfo
 import com.melowetty.hsepermhelper.timetable.integration.excel.bachelor.shared.model.ParsedCellInfo
 import com.melowetty.hsepermhelper.timetable.integration.excel.bachelor.shared.model.ParsedScheduleInfo
-import com.melowetty.hsepermhelper.timetable.model.InternalTimetableType
-import com.melowetty.hsepermhelper.timetable.model.impl.GroupBasedLesson
 import com.melowetty.hsepermhelper.util.RowUtils.Companion.getCellValue
 import io.github.oshai.kotlinlogging.KotlinLogging
+import java.time.DayOfWeek
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 import org.apache.poi.ss.usermodel.Cell
 import org.apache.poi.ss.usermodel.Font
 import org.apache.poi.ss.usermodel.Row
 import org.apache.poi.ss.usermodel.Sheet
-import java.time.DayOfWeek
-import java.time.LocalDate
-import java.time.format.DateTimeFormatter
 
 object TimetableLessonsUtils {
     private val logger = KotlinLogging.logger {  }

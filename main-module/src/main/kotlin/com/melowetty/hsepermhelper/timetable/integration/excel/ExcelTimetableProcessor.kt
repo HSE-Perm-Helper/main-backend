@@ -1,6 +1,6 @@
 package com.melowetty.hsepermhelper.timetable.integration.excel
 
-import com.melowetty.hsepermhelper.timetable.model.ExcelTimetable
+import com.melowetty.hsepermhelper.domain.model.timetable.ExcelTimetable
 import org.apache.poi.ss.usermodel.Workbook
 
 interface ExcelTimetableProcessor {

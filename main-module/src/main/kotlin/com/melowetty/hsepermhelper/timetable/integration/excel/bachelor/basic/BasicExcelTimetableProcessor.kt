@@ -4,9 +4,9 @@ import com.melowetty.hsepermhelper.timetable.integration.excel.ExcelTimetablePro
 import com.melowetty.hsepermhelper.timetable.integration.excel.bachelor.shared.TimetableInfoUtils
 import com.melowetty.hsepermhelper.timetable.integration.excel.bachelor.shared.TimetableLessonsUtils
 import com.melowetty.hsepermhelper.timetable.integration.excel.bachelor.shared.TimetableParseUtils
-import com.melowetty.hsepermhelper.timetable.model.EducationType
-import com.melowetty.hsepermhelper.timetable.model.ExcelTimetable
-import com.melowetty.hsepermhelper.timetable.model.InternalTimetableSource
+import com.melowetty.hsepermhelper.domain.model.timetable.EducationType
+import com.melowetty.hsepermhelper.domain.model.timetable.ExcelTimetable
+import com.melowetty.hsepermhelper.domain.model.timetable.InternalTimetableSource
 import org.apache.poi.ss.usermodel.Workbook
 import org.springframework.stereotype.Component
 

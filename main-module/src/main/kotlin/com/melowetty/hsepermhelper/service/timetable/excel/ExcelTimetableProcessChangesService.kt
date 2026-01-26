@@ -1,7 +1,7 @@
 package com.melowetty.hsepermhelper.service.timetable.excel
 
 import com.melowetty.hsepermhelper.persistence.storage.ExcelTimetableStorage
-import com.melowetty.hsepermhelper.timetable.model.InternalTimetableInfo
+import com.melowetty.hsepermhelper.domain.model.timetable.InternalTimetableInfo
 import io.github.oshai.kotlinlogging.KotlinLogging
 import org.springframework.stereotype.Service
 

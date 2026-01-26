@@ -3,7 +3,7 @@ package com.melowetty.hsepermhelper.service.timetable
 import com.melowetty.hsepermhelper.domain.model.CacheWrapper
 import com.melowetty.hsepermhelper.service.TimetableInfoService
 import com.melowetty.hsepermhelper.timetable.compose.ParentTimetableInfo
-import com.melowetty.hsepermhelper.timetable.model.EducationType
+import com.melowetty.hsepermhelper.domain.model.timetable.EducationType
 import org.springframework.stereotype.Service
 
 @Service

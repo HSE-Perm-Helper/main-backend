@@ -2,9 +2,9 @@ package com.melowetty.hsepermhelper.timetable.compose.impl
 
 import com.melowetty.hsepermhelper.persistence.projection.UserRecord
 import com.melowetty.hsepermhelper.timetable.compose.EmbeddedTimetable
-import com.melowetty.hsepermhelper.timetable.model.InternalTimetable
-import com.melowetty.hsepermhelper.timetable.model.TimetableContext
-import com.melowetty.hsepermhelper.timetable.model.TimetablePurpose
+import com.melowetty.hsepermhelper.domain.model.timetable.InternalTimetable
+import com.melowetty.hsepermhelper.domain.model.timetable.TimetableContext
+import com.melowetty.hsepermhelper.domain.model.timetable.TimetablePurpose
 import io.github.oshai.kotlinlogging.KotlinLogging
 import org.springframework.stereotype.Component
 

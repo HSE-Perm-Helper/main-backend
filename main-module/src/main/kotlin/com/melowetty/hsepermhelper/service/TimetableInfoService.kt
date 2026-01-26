@@ -1,6 +1,6 @@
 package com.melowetty.hsepermhelper.service
 
-import com.melowetty.hsepermhelper.timetable.model.EducationType
+import com.melowetty.hsepermhelper.domain.model.timetable.EducationType
 
 interface TimetableInfoService {
     fun getAvailableEducationTypes(): List<EducationType>

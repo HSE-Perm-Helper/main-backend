@@ -5,10 +5,10 @@ import com.melowetty.hsepermhelper.timetable.compose.ParentTimetable
 import com.melowetty.hsepermhelper.persistence.storage.ExcelTimetableStorage
 import com.melowetty.hsepermhelper.timetable.compose.ParentTimetableInfo
 import com.melowetty.hsepermhelper.timetable.integration.excel.bachelor.shared.TimetableLessonsUtils
-import com.melowetty.hsepermhelper.timetable.model.EducationType
-import com.melowetty.hsepermhelper.timetable.model.InternalTimetable
-import com.melowetty.hsepermhelper.timetable.model.InternalTimetableInfo
-import com.melowetty.hsepermhelper.timetable.model.InternalTimetableSource
+import com.melowetty.hsepermhelper.domain.model.timetable.EducationType
+import com.melowetty.hsepermhelper.domain.model.timetable.InternalTimetable
+import com.melowetty.hsepermhelper.domain.model.timetable.InternalTimetableInfo
+import com.melowetty.hsepermhelper.domain.model.timetable.InternalTimetableSource
 import org.springframework.stereotype.Component
 
 @Component

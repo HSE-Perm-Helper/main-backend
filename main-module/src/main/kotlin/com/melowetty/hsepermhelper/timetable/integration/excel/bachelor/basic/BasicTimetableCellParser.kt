@@ -6,8 +6,8 @@ import com.melowetty.hsepermhelper.timetable.integration.excel.bachelor.shared.m
 import com.melowetty.hsepermhelper.timetable.integration.excel.bachelor.shared.model.ParsedLessonInfo
 import com.melowetty.hsepermhelper.timetable.integration.excel.bachelor.shared.model.ParsedScheduleInfo
 import com.melowetty.hsepermhelper.timetable.integration.excel.bachelor.shared.LessonTypeUtils
-import com.melowetty.hsepermhelper.timetable.model.InternalTimetableType
-import com.melowetty.hsepermhelper.timetable.model.impl.GroupBasedLesson
+import com.melowetty.hsepermhelper.domain.model.timetable.InternalTimetableType
+import com.melowetty.hsepermhelper.domain.model.timetable.impl.GroupBasedLesson
 import com.melowetty.hsepermhelper.util.LinkUtils
 
 object BasicTimetableCellParser {

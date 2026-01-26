@@ -10,8 +10,8 @@ import com.melowetty.hsepermhelper.timetable.integration.excel.bachelor.shared.m
 import com.melowetty.hsepermhelper.timetable.integration.excel.bachelor.shared.model.ParsedScheduleInfo
 import com.melowetty.hsepermhelper.messaging.event.notification.ServiceWarnNotification
 import com.melowetty.hsepermhelper.service.NotificationService
-import com.melowetty.hsepermhelper.timetable.model.InternalTimetableType
-import com.melowetty.hsepermhelper.timetable.model.impl.GroupBasedLesson
+import com.melowetty.hsepermhelper.domain.model.timetable.InternalTimetableType
+import com.melowetty.hsepermhelper.domain.model.timetable.impl.GroupBasedLesson
 import com.melowetty.hsepermhelper.util.RowUtils.Companion.getCellValue
 import io.github.oshai.kotlinlogging.KotlinLogging
 import java.time.DayOfWeek

@@ -1,7 +1,7 @@
 package com.melowetty.hsepermhelper.timetable.integration.excel.bachelor.shared
 
+import com.melowetty.hsepermhelper.domain.model.timetable.InternalTimetableType
 import com.melowetty.hsepermhelper.timetable.integration.excel.bachelor.shared.model.ParsedExcelInfo
-import com.melowetty.hsepermhelper.timetable.model.InternalTimetableType
 
 object TimetableTypeUtils {
     fun getScheduleType(excelInfo: ParsedExcelInfo): InternalTimetableType {

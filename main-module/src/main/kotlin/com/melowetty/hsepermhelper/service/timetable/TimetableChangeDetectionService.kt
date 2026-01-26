@@ -5,10 +5,10 @@ import com.melowetty.hsepermhelper.persistence.projection.UserRecord
 import com.melowetty.hsepermhelper.persistence.storage.UserStorage
 import com.melowetty.hsepermhelper.timetable.compose.impl.HiddenLessonsEmbeddedTimetable
 import com.melowetty.hsepermhelper.persistence.storage.ExcelTimetableStorage
-import com.melowetty.hsepermhelper.timetable.model.ExcelTimetable
-import com.melowetty.hsepermhelper.timetable.model.InternalTimetable
-import com.melowetty.hsepermhelper.timetable.model.InternalTimetableInfo
-import com.melowetty.hsepermhelper.timetable.model.impl.GroupBasedLesson
+import com.melowetty.hsepermhelper.domain.model.timetable.ExcelTimetable
+import com.melowetty.hsepermhelper.domain.model.timetable.InternalTimetable
+import com.melowetty.hsepermhelper.domain.model.timetable.InternalTimetableInfo
+import com.melowetty.hsepermhelper.domain.model.timetable.impl.GroupBasedLesson
 import com.melowetty.hsepermhelper.util.Paginator
 import io.github.oshai.kotlinlogging.KotlinLogging
 import org.springframework.stereotype.Service

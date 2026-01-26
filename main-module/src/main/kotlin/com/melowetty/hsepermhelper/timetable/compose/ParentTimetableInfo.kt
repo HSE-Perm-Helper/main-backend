@@ -1,6 +1,6 @@
 package com.melowetty.hsepermhelper.timetable.compose
 
-import com.melowetty.hsepermhelper.timetable.model.EducationType
+import com.melowetty.hsepermhelper.domain.model.timetable.EducationType
 
 interface ParentTimetableInfo {
     fun getCourses(): Map<EducationType, List<Int>>

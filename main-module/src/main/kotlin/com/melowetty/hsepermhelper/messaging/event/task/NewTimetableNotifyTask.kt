@@ -1,7 +1,7 @@
 package com.melowetty.hsepermhelper.messaging.event.task
 
 import com.fasterxml.jackson.annotation.JsonTypeName
-import com.melowetty.hsepermhelper.timetable.model.InternalTimetableInfo
+import com.melowetty.hsepermhelper.domain.model.timetable.InternalTimetableInfo
 
 @JsonTypeName("NEW_TIMETABLE_NOTIFY")
 data class NewTimetableNotifyTask(

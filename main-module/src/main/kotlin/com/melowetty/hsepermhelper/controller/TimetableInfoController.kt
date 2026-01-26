@@ -2,7 +2,7 @@ package com.melowetty.hsepermhelper.controller
 
 import com.melowetty.hsepermhelper.domain.model.Response
 import com.melowetty.hsepermhelper.service.TimetableInfoService
-import com.melowetty.hsepermhelper.timetable.model.EducationType
+import com.melowetty.hsepermhelper.domain.model.timetable.EducationType
 import io.swagger.v3.oas.annotations.Parameter
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.GetMapping

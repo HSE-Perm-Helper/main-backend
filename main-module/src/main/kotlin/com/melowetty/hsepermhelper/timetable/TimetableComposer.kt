@@ -3,13 +3,13 @@ package com.melowetty.hsepermhelper.timetable
 import com.melowetty.hsepermhelper.domain.model.lesson.Lesson
 import com.melowetty.hsepermhelper.domain.model.schedule.Schedule
 import com.melowetty.hsepermhelper.domain.model.schedule.ScheduleInfo
+import com.melowetty.hsepermhelper.domain.model.timetable.TimetableContext
+import com.melowetty.hsepermhelper.domain.model.timetable.TimetablePurpose
 import com.melowetty.hsepermhelper.extension.ScheduleExtensions.Companion.toSchedule
 import com.melowetty.hsepermhelper.extension.ScheduleExtensions.Companion.toScheduleType
 import com.melowetty.hsepermhelper.persistence.projection.UserRecord
 import com.melowetty.hsepermhelper.timetable.compose.EmbeddedTimetable
 import com.melowetty.hsepermhelper.timetable.compose.ParentTimetable
-import com.melowetty.hsepermhelper.timetable.model.TimetableContext
-import com.melowetty.hsepermhelper.timetable.model.TimetablePurpose
 import io.github.oshai.kotlinlogging.KotlinLogging
 import org.springframework.stereotype.Component
 
