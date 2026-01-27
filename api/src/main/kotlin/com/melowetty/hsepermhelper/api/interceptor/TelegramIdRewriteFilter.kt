@@ -1,4 +1,4 @@
-package com.melowetty.hsepermhelper.interceptor
+package com.melowetty.hsepermhelper.api.interceptor
 
 import com.melowetty.hsepermhelper.exception.user.UserByTelegramIdNotFoundException
 import com.melowetty.hsepermhelper.persistence.storage.UserStorage

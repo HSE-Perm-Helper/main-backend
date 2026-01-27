@@ -21,18 +21,14 @@ dependencies {
     implementation(libs.jackson.datatype.jsr310)
     implementation("org.jetbrains.kotlin:kotlin-reflect")
 
-    implementation("org.springframework.boot:spring-boot-starter-actuator")
     implementation("org.springframework.kafka:spring-kafka")
     implementation("org.springframework.boot:spring-boot-starter-validation")
-    implementation("org.springframework.boot:spring-boot-starter-webmvc")
     api("org.springframework.boot:spring-boot-starter-jackson")
 
     implementation("org.jsoup:jsoup:${jsoupVersion}")
     implementation("org.springframework.boot:spring-boot-starter-cache")
 
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
-
-    developmentOnly("org.springframework.boot:spring-boot-devtools")
 
     testImplementation("org.springframework.boot:spring-boot-starter-test") {
         exclude(group = "org.mockito", module = "mockito-core")

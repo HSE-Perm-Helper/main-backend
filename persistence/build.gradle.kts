@@ -19,3 +19,7 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-jackson")
     implementation("org.springframework.boot:spring-boot-starter-liquibase")
 }
+
+tasks.bootJar {
+    enabled = false
+}

@@ -4,6 +4,8 @@ dependencies {
     implementation(project(":api"))
     implementation(project(":remote-timetable"))
     implementation(project(":main-module"))
+
+    developmentOnly("org.springframework.boot:spring-boot-devtools")
 }
 
 tasks.bootJar {
