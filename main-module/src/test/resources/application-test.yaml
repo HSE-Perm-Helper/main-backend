@@ -1,0 +1,9 @@
+app:
+  message-broker:
+    kafka:
+      group-id: main-service
+      topics:
+        base-notifications: new-notification
+        new-notifications: next-gen-notification
+        tasks: tasks
+    type: kafka
