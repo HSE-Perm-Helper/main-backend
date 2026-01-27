@@ -14,7 +14,13 @@ tasks.bootJar {
 
 tasks.bootBuildImage {
     imageName = "main-backend"
-    //val env = mapOf("BP_HEALTH_CHECKER_ENABLED" to "true")
-    //environment.set(env)
+    val env = mapOf(
+        "BP_HEALTH_CHECKER_ENABLED" to "true",
+        "JAVA_TOOL_OPTIONS" to
+                "-Xmx1024m " +
+                "-XX:MaxMetaspaceSize=256m " +
+                "-XX:+UseG1GC "
+    )
+    environment.set(env)
     //buildpacks.addAll("urn:cnb:builder:paketo-buildpacks/java", "docker.io/paketobuildpacks/health-checker:2.10.2")
 }
