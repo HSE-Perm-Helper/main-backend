@@ -35,7 +35,7 @@ jobs:
       - name: Build docker image with cache
         run: |
           chmod +x ./gradlew
-          ./gradlew bootBuildImage --build-cache
+          ./gradlew :application:bootBuildImage --build-cache
 
       - name: Log in to Docker Hub
         uses: docker/login-action@40891eba8c2bcd1309b07ba8b11232f313e86779
