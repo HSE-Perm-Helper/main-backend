@@ -1,16 +1,19 @@
 databaseChangeLog:
   - includeAll:
-      path: /2024/11
+      path: 2024/11
       relativeToChangelogFile: true
   - includeAll:
-      path: /2025/02
+      path: 2025/02
       relativeToChangelogFile: true
   - includeAll:
-      path: /2025/05
+      path: 2025/05
       relativeToChangelogFile: true
   - includeAll:
-      path: /2025/10
+      path: 2025/10
       relativeToChangelogFile: true
   - includeAll:
-      path: /2025/11
+      path: 2025/11
+      relativeToChangelogFile: true
+  - includeAll:
+      path: 2026/01
       relativeToChangelogFile: true

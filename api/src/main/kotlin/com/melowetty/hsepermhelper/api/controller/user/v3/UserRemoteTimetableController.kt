@@ -1,7 +1,7 @@
-package com.melowetty.hsepermhelper.controller.user.v3
+package com.melowetty.hsepermhelper.api.controller.user.v3
 
 import com.melowetty.hsepermhelper.domain.dto.RemoteScheduleLink
-import com.melowetty.hsepermhelper.service.user.UserRemoteTimetableService
+import com.melowetty.hsepermhelper.remote.service.UserRemoteTimetableService
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping

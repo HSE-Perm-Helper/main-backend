@@ -1,4 +1,4 @@
-package com.melowetty.hsepermhelper.controller
+package com.melowetty.hsepermhelper.api.controller
 
 import com.melowetty.hsepermhelper.domain.dto.EmailVerificationDto
 import com.melowetty.hsepermhelper.service.EmailVerificationService

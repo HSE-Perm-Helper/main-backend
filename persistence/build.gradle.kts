@@ -17,4 +17,5 @@ dependencies {
     implementation("org.postgresql:postgresql:${postgresVersion}")
     api("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("org.springframework.boot:spring-boot-starter-jackson")
+    implementation("org.springframework.boot:spring-boot-starter-liquibase")
 }

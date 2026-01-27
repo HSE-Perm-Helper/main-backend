@@ -1,4 +1,4 @@
-package com.melowetty.hsepermhelper.controller.user.v3
+package com.melowetty.hsepermhelper.api.controller.user.v3
 
 import com.melowetty.hsepermhelper.domain.dto.UserDto
 import com.melowetty.hsepermhelper.domain.model.user.UserCreateRequest

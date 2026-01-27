@@ -1,7 +1,7 @@
-package com.melowetty.hsepermhelper.controller.user.v3
+package com.melowetty.hsepermhelper.api.controller.user.v3
 
-import com.melowetty.hsepermhelper.controller.request.ApiUserUpdateRequest
-import com.melowetty.hsepermhelper.controller.request.UserSetEmailRequest
+import com.melowetty.hsepermhelper.domain.request.ApiUserUpdateRequest
+import com.melowetty.hsepermhelper.domain.request.UserSetEmailRequest
 import com.melowetty.hsepermhelper.domain.dto.ApiUserHideLesson
 import com.melowetty.hsepermhelper.domain.dto.EmailVerificationDto
 import com.melowetty.hsepermhelper.domain.dto.UserDto

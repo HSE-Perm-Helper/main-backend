@@ -1,6 +1,5 @@
 package com.melowetty.hsepermhelper.service.user
 
-import com.melowetty.hsepermhelper.controller.request.ApiUserUpdateRequest
 import com.melowetty.hsepermhelper.domain.dto.UserDto
 import com.melowetty.hsepermhelper.domain.model.event.UserEventType
 import com.melowetty.hsepermhelper.domain.model.user.UserChangeRequest
@@ -13,6 +12,7 @@ import com.melowetty.hsepermhelper.persistence.projection.UserRecord
 import com.melowetty.hsepermhelper.persistence.storage.UserStorage
 import com.melowetty.hsepermhelper.service.TimetableInfoService
 import com.melowetty.hsepermhelper.domain.model.timetable.EducationType
+import com.melowetty.hsepermhelper.domain.request.ApiUserUpdateRequest
 import java.util.UUID
 import java.util.concurrent.ExecutorService
 import org.springframework.beans.factory.annotation.Qualifier

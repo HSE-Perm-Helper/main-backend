@@ -1,5 +1,6 @@
-package com.melowetty.hsepermhelper.remote.controller
+package com.melowetty.hsepermhelper.api.controller
 
+import com.melowetty.hsepermhelper.remote.service.RemoteTimetableService
 import java.nio.charset.Charset
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
@@ -12,8 +13,8 @@ import org.springframework.web.servlet.view.RedirectView
 
 @RestController
 @RequestMapping("remote-schedule")
-class RemoteScheduleController(
-//    private val remoteScheduleService: RemoteScheduleService
+class RemoteTimetableController(
+    private val remoteTimetableService: RemoteTimetableService,
 ) {
     @GetMapping
     fun getRemoteSchedule(
@@ -21,7 +22,7 @@ class RemoteScheduleController(
     ): ResponseEntity<ByteArray> {
         return ResponseEntity.ok()
             .contentType(MediaType.asMediaType(MimeType("text", "calendar", Charset.forName("UTF-8"))))
-            .body("".toByteArray())
+            .body(remoteTimetableService.getRemoteScheduleAsText(token).toByteArray())
     }
 
     @GetMapping("/redirect")

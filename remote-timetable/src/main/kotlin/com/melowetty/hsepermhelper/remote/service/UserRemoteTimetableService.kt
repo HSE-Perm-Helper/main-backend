@@ -1,17 +1,17 @@
-package com.melowetty.hsepermhelper.service.user
+package com.melowetty.hsepermhelper.remote.service
 
 import com.melowetty.hsepermhelper.domain.dto.RemoteScheduleLink
 import com.melowetty.hsepermhelper.exception.user.UserByIdNotFoundException
 import com.melowetty.hsepermhelper.persistence.storage.UserStorage
+import java.util.UUID
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
 import org.springframework.web.util.UriComponentsBuilder
-import java.util.UUID
 
 @Service
 class UserRemoteTimetableService(
     private val userStorage: UserStorage,
-//    private val remoteScheduleService: RemoteScheduleService,
+    private val remoteTimetableManagementService: RemoteTimetableManagementService
 ) {
     @Value("\${remote-schedule.connect-url}")
     private lateinit var remoteTimetableConnectUrl: String
@@ -21,7 +21,7 @@ class UserRemoteTimetableService(
             ?: throw UserByIdNotFoundException(id)
 
         try {
-            val token = "123"
+            val token = remoteTimetableManagementService.getToken(user.id)
 
             return RemoteScheduleLink(
                 direct = generateRemoteScheduleConnectLink(token)
@@ -35,7 +35,7 @@ class UserRemoteTimetableService(
         val user = userStorage.findUserById(id)
             ?: throw UserByIdNotFoundException(id)
 
-        val token = "123"
+        val token = remoteTimetableManagementService.createOrUpdateToken(user.id)
 
         return RemoteScheduleLink(
             direct = generateRemoteScheduleConnectLink(token)
