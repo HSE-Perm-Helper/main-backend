@@ -4,7 +4,9 @@ val springDocStarterVersion = "2.2.0"
 dependencies {
     api("io.github.oshai:kotlin-logging-jvm:${kotlinLoggingVersion}")
 
-    api("org.springframework.boot:spring-boot-starter-webmvc")
+    implementation("org.springframework.boot:spring-boot-starter-webmvc")
+    api("com.fasterxml.jackson.module:jackson-module-kotlin")
+    api("org.jetbrains.kotlin:kotlin-reflect")
 
     api("org.springdoc:springdoc-openapi-starter-webmvc-ui:${springDocStarterVersion}")
 }

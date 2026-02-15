@@ -15,13 +15,17 @@ data class SettingsDto(
     val hiddenLessons: List<ApiUserHideLesson> = listOf(),
 
     @Schema(description = "Включены ли уведомления о новом расписании", example = "true")
-    @JsonProperty("isEnabledNewScheduleNotifications")
+    @get:JsonProperty("isEnabledNewScheduleNotifications")
+    @param:JsonProperty("isEnabledNewScheduleNotifications")
     val isEnabledNewScheduleNotifications: Boolean = true,
 
     @Schema(description = "Включены ли уведомления о изменении расписания", example = "true")
-    @JsonProperty("isEnabledChangedScheduleNotifications")
+    @get:JsonProperty("isEnabledChangedScheduleNotifications")
+    @param:JsonProperty("isEnabledChangedScheduleNotifications")
     val isEnabledChangedScheduleNotifications: Boolean = true,
 
-    @JsonProperty("isEnabledComingLessonsNotifications")
+    @get:JsonProperty("isEnabledComingLessonsNotifications")
+    @param:JsonProperty("isEnabledComingLessonsNotifications")
     val isEnabledComingLessonsNotifications: Boolean = false,
+
 )

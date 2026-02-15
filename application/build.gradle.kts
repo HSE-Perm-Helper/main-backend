@@ -3,6 +3,7 @@ dependencies {
 
     implementation(project(":api"))
     implementation(project(":remote-timetable"))
+    implementation(project(":common"))
     implementation(project(":main-module"))
 
     developmentOnly("org.springframework.boot:spring-boot-devtools")
