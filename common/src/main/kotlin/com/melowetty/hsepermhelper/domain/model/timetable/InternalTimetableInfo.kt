@@ -10,7 +10,9 @@ data class InternalTimetableInfo(
     val end: LocalDate,
     val type: InternalTimetableType,
     val educationType: EducationType,
-    @JsonProperty("is_parent")
+
+    @get:JsonProperty("is_parent")
+    @param:JsonProperty("is_parent")
     val isParent: Boolean,
     val lessonsHash: Int,
     val source: InternalTimetableSource,

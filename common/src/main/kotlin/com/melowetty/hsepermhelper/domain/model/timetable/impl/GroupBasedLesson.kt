@@ -34,10 +34,10 @@ data class GroupBasedLesson(
         val curDate = LocalDate.now()
         val curYear = curDate.year % 100
 
-        if (curDate.monthValue < 9) {
-            return curYear - year
+        return if (curDate.monthValue < 9) {
+            curYear - year
         } else {
-            return curYear - year + 1
+            curYear - year + 1
         }
     }
 }
