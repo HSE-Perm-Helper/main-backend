@@ -1,0 +1,92 @@
+package com.melowetty.hsepermhelper.remote.service
+
+import com.melowetty.hsepermhelper.domain.model.schedule.ScheduleType
+import com.melowetty.hsepermhelper.remote.exception.CalendarTokenNotFoundException
+import com.melowetty.hsepermhelper.remote.extension.LessonExtension.toVEvent
+import com.melowetty.hsepermhelper.remote.utils.DateUtils
+import com.melowetty.hsepermhelper.service.timetable.PersonalTimetableService
+import java.time.Duration
+import java.time.LocalDateTime
+import net.fortuna.ical4j.model.Calendar
+import net.fortuna.ical4j.model.ParameterList
+import net.fortuna.ical4j.model.TimeZoneRegistryFactory
+import net.fortuna.ical4j.model.parameter.Value
+import net.fortuna.ical4j.model.property.Color
+import net.fortuna.ical4j.model.property.Description
+import net.fortuna.ical4j.model.property.Method
+import net.fortuna.ical4j.model.property.Name
+import net.fortuna.ical4j.model.property.ProdId
+import net.fortuna.ical4j.model.property.RefreshInterval
+import net.fortuna.ical4j.model.property.XProperty
+import org.springframework.stereotype.Service
+
+@Service
+class RemoteTimetableService(
+    private val remoteTimetableManagementService: RemoteTimetableManagementService,
+    private val timetableService: PersonalTimetableService
+) {
+    fun getRemoteScheduleAsText(token: String): String {
+        val userId = remoteTimetableManagementService.getUserIdByToken(token)
+            ?: throw CalendarTokenNotFoundException()
+
+        val calendar = Calendar().withDefaults().fluentTarget
+        addMetaDataToCalendar(calendar)
+
+        val currentDateTime = LocalDateTime.now(DateUtils.timeZone)
+        val lessons = timetableService.getTimetables(userId).map { timetable ->
+            timetableService.getTimetable(userId, timetable.id)
+        }.filter {
+            it.scheduleType != ScheduleType.QUARTER_SCHEDULE
+        }.flatMap { it.lessons }
+
+        lessons.forEach { calendar.add(it.toVEvent(currentDateTime)) }
+
+        remoteTimetableManagementService.markTokenAsUsed(token)
+
+        return calendar.toString()
+    }
+
+    private fun addMetaDataToCalendar(calendar: Calendar) {
+        val name = "Расписание"
+        addCalendarName(calendar, name)
+
+
+        val description = "Расписание пар"
+        addCalendarDescription(calendar, description)
+
+        addAdditionalCalendarData(calendar)
+    }
+
+    private fun addCalendarName(calendar: Calendar, name: String) {
+        calendar.add(Name(name))
+        calendar.add(XProperty("X-WR-CALNAME", name))
+    }
+
+    private fun addCalendarDescription(calendar: Calendar, description: String) {
+        calendar.add(Description(description))
+        calendar.add(XProperty("X-WR-CALDESC", description))
+    }
+
+    private fun addAdditionalCalendarData(calendar: Calendar) {
+        calendar.add(ProdId("-//HSE Perm Helper//Расписание пар 1.0//RU"))
+        calendar.add(Method(Method.VALUE_PUBLISH))
+
+        val vTimeZone = TimeZoneRegistryFactory
+            .getInstance()
+            .createRegistry()
+            .getTimeZone(DateUtils.TIME_ZONE_STR)
+            .vTimeZone
+
+        calendar.add(vTimeZone)
+
+        calendar.add(XProperty("X-WR-TIMEZONE", DateUtils.TIME_ZONE_STR))
+
+        val color = Color()
+        color.value = "0:71:187"
+        calendar.add(color)
+        calendar.add(XProperty("X-APPLE-CALENDAR-COLOR", "#0047BB"))
+
+        calendar.add(RefreshInterval(ParameterList(listOf(Value.DURATION)), Duration.ofHours(1)))
+        calendar.add(XProperty("X-PUBLISHED-TTL", Duration.ofHours(1).toString()))
+    }
+}
