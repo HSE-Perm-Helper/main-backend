@@ -11,19 +11,25 @@ import com.melowetty.hsepermhelper.util.LinkUtils
  * Cell parser for online bachelor schedule.
  *
  * Online cell format (lines separated by \n):
- *   Line 0: subject
- *   Line 1: lecturer name (plain string, no building info)
- *   Line 2+: links (https://...)
+ *   Case 1 — lecturer on a separate line:
+ *     Line 0: subject
+ *     Line 1: lecturer name
+ *     Line 2+: links (https://...)
+ *   Case 2 — lecturer embedded in subject line:
+ *     Line 0: "Subject Name Фамилия И.О."
+ *     Line 1+: links (https://...)
  *
  * Unlike offline format, there is no "(Lecturer [building])" pattern.
  */
 object OnlineTimetableCellParser {
 
+    private val EMBEDDED_LECTURER_REGEX = Regex("[А-ЯЁ][а-яё]+\\s+[А-ЯЁ]\\.[А-ЯЁ]\\.")
+
     fun parseLesson(cellInfo: ParsedCellInfo): List<GroupBasedLesson> {
         val lines = cellInfo.cellInfo.value.split("\n").map { it.trim() }.filter { it.isNotEmpty() }
         if (lines.isEmpty()) return emptyList()
 
-        val subject = lines[0]
+        var subject = lines[0]
         if (subject.lowercase().contains("сессия")) return emptyList()
 
         var lecturer: String? = null
@@ -34,6 +40,14 @@ object OnlineTimetableCellParser {
                 links.add(line)
             } else if (lecturer == null) {
                 lecturer = line
+            }
+        }
+
+        if (lecturer == null) {
+            val match = EMBEDDED_LECTURER_REGEX.find(subject)
+            if (match != null) {
+                lecturer = match.value.trim()
+                subject = subject.substring(0, match.range.first).trim()
             }
         }
 
