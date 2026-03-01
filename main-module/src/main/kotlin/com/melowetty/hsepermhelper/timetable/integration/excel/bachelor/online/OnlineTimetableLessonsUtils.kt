@@ -20,11 +20,6 @@ import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
-/**
- * Utility for parsing online bachelor schedule lessons from Excel.
- * Online schedules have different time format: "2  11.10-12.30" instead of multiline "2\n11:10-12:30"
- * and date+day in a single cell: "Пятница 09.01.2026"
- */
 object OnlineTimetableLessonsUtils {
     private val logger = KotlinLogging.logger {  }
 
@@ -149,9 +144,6 @@ object OnlineTimetableLessonsUtils {
         return Pair(lessonTime, Action.NOTHING)
     }
 
-    /**
-     * Parses time from online format: "2  11.10-12.30" (dot-separated, single cell).
-     */
     private fun parseTime(timeCell: String): Pair<String, String>? {
         val normalized = timeCell.replace(".", ":")
         val match = Regex("([0-9]{1,2}:[0-9]{2})\\s*-\\s*([0-9]{1,2}:[0-9]{2})").find(normalized)
@@ -159,9 +151,6 @@ object OnlineTimetableLessonsUtils {
         return Pair(match.groupValues[1], match.groupValues[2])
     }
 
-    /**
-     * Extracts date from "Пятница 09.01.2026" format.
-     */
     private fun parseDate(dateCell: String): LocalDate? {
         val match = Regex("[0-9]{2}\\.[0-9]{2}\\.[0-9]{4}").find(dateCell) ?: return null
         return try {
@@ -172,9 +161,6 @@ object OnlineTimetableLessonsUtils {
         }
     }
 
-    /**
-     * Extracts day of week from "Пятница" or "Пятница 09.01.2026".
-     */
     private fun parseDayOfWeek(str: String): DayOfWeek? {
         val day = str.split(Regex("\\s+|\\|")).firstOrNull()?.lowercase() ?: return null
         return when (day) {

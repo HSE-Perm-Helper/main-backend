@@ -7,20 +7,6 @@ import com.melowetty.hsepermhelper.domain.model.timetable.InternalTimetableType
 import com.melowetty.hsepermhelper.domain.model.timetable.impl.GroupBasedLesson
 import com.melowetty.hsepermhelper.util.LinkUtils
 
-/**
- * Cell parser for online bachelor schedule.
- *
- * Online cell format (lines separated by \n):
- *   Case 1 — lecturer on a separate line:
- *     Line 0: subject
- *     Line 1: lecturer name
- *     Line 2+: links (https://...)
- *   Case 2 — lecturer embedded in subject line:
- *     Line 0: "Subject Name Фамилия И.О."
- *     Line 1+: links (https://...)
- *
- * Unlike offline format, there is no "(Lecturer [building])" pattern.
- */
 object OnlineTimetableCellParser {
 
     private val EMBEDDED_LECTURER_REGEX = Regex("[А-ЯЁ][а-яё]+\\s+[А-ЯЁ]\\.[А-ЯЁ]\\.")
