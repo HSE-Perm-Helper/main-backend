@@ -216,4 +216,85 @@ class OnlineTimetableCellParserTest {
         assertThat(lessons.first().lecturer).isEqualTo("Иванов И.И.")
         assertThat(lessons.first().subject).isEqualTo("Правовая грамотность Панкова Д.Ю.")
     }
+
+    @Test
+    fun `should detect CONSULT type from subject`() {
+        val lessons = OnlineTimetableCellParser.parseLesson(
+            cellInfo("Консультация по математике\nИванов И.И.")
+        )
+
+        assertThat(lessons.first().lessonType).isEqualTo(LessonType.CONSULT)
+    }
+
+    @Test
+    fun `should detect STATEMENT type from subject`() {
+        val lessons = OnlineTimetableCellParser.parseLesson(
+            cellInfo("Ведомость по математике\nИванов И.И.")
+        )
+
+        assertThat(lessons.first().lessonType).isEqualTo(LessonType.STATEMENT)
+    }
+
+    @Test
+    fun `should detect INDEPENDENT_EXAM type from subject`() {
+        val lessons = OnlineTimetableCellParser.parseLesson(
+            cellInfo("Независимый экзамен по математике\nИванов И.И.")
+        )
+
+        assertThat(lessons.first().lessonType).isEqualTo(LessonType.INDEPENDENT_EXAM)
+    }
+
+    @Test
+    fun `should detect AED type from subject`() {
+        val lessons = OnlineTimetableCellParser.parseLesson(
+            cellInfo("ДОЦ по программированию\nИванов И.И.")
+        )
+
+        assertThat(lessons.first().lessonType).isEqualTo(LessonType.AED)
+    }
+
+    @Test
+    fun `should detect UNDEFINED_AED type from subject`() {
+        val lessons = OnlineTimetableCellParser.parseLesson(
+            cellInfo("ДОЦ по выбору\nИванов И.И.")
+        )
+
+        assertThat(lessons.first().lessonType).isEqualTo(LessonType.UNDEFINED_AED)
+    }
+
+    @Test
+    fun `should detect LECTURE type from лек abbreviation`() {
+        val lessons = OnlineTimetableCellParser.parseLesson(
+            cellInfo("Математический анализ (лек.)\nИванов И.И.")
+        )
+
+        assertThat(lessons.first().lessonType).isEqualTo(LessonType.LECTURE)
+    }
+
+    @Test
+    fun `should detect SEMINAR type from сем abbreviation`() {
+        val lessons = OnlineTimetableCellParser.parseLesson(
+            cellInfo("Математический анализ (сем.)\nИванов И.И.")
+        )
+
+        assertThat(lessons.first().lessonType).isEqualTo(LessonType.SEMINAR)
+    }
+
+    @Test
+    fun `should detect TEST type from зачет without ё`() {
+        val lessons = OnlineTimetableCellParser.parseLesson(
+            cellInfo("Зачет по математике\nИванов И.И.")
+        )
+
+        assertThat(lessons.first().lessonType).isEqualTo(LessonType.TEST)
+    }
+
+    @Test
+    fun `should preserve lesson time`() {
+        val lessons = OnlineTimetableCellParser.parseLesson(
+            cellInfo("Математический анализ\nИванов И.И.")
+        )
+
+        assertThat(lessons.first().time).isEqualTo(lessonTime)
+    }
 }

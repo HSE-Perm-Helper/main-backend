@@ -2,6 +2,7 @@ package com.melowetty.hsepermhelper.timetable.integration.excel
 
 import com.melowetty.hsepermhelper.timetable.integration.excel.bachelor.online.OnlineBachelorTimetableProcessor
 import com.melowetty.hsepermhelper.domain.model.timetable.EducationType
+import com.melowetty.hsepermhelper.domain.model.timetable.InternalTimetableSource
 import com.melowetty.hsepermhelper.util.TestUtils
 import org.apache.poi.ss.usermodel.WorkbookFactory
 import org.assertj.core.api.Assertions.assertThat
@@ -32,5 +33,30 @@ class OnlineBachelorProcessorTest {
         assertThat(processor.isParseable("ОП_УБ_1_курс.xls")).isTrue()
         assertThat(processor.isParseable("Расписание_ОП.xlsx")).isTrue()
         assertThat(processor.isParseable("regular_schedule.xls")).isFalse()
+    }
+
+    @Test
+    fun `should set isParent true and source EXCEL`() {
+        val workbook = WorkbookFactory.create(TestUtils.readFileAsInputStream("service/schedule-files/schedule_3.xls"))
+
+        val timetable = processor.process(workbook).first()
+
+        assertThat(timetable.isParent).isTrue()
+        assertThat(timetable.source).isEqualTo(InternalTimetableSource.EXCEL)
+
+        workbook.close()
+    }
+
+    @Test
+    fun `should parse start and end dates`() {
+        val workbook = WorkbookFactory.create(TestUtils.readFileAsInputStream("service/schedule-files/schedule_3.xls"))
+
+        val timetable = processor.process(workbook).first()
+
+        assertThat(timetable.start).isNotNull()
+        assertThat(timetable.end).isNotNull()
+        assertThat(timetable.start).isBefore(timetable.end)
+
+        workbook.close()
     }
 }
