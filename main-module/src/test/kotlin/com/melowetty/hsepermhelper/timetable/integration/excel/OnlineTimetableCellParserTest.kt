@@ -6,7 +6,7 @@ import com.melowetty.hsepermhelper.timetable.integration.excel.bachelor.online.O
 import com.melowetty.hsepermhelper.timetable.integration.excel.bachelor.shared.model.CellInfo
 import com.melowetty.hsepermhelper.timetable.integration.excel.bachelor.shared.model.ParsedCellInfo
 import com.melowetty.hsepermhelper.timetable.integration.excel.bachelor.shared.model.ParsedScheduleInfo
-import com.melowetty.hsepermhelper.timetable.model.InternalTimetableType
+import com.melowetty.hsepermhelper.domain.model.timetable.InternalTimetableType
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import java.time.DayOfWeek

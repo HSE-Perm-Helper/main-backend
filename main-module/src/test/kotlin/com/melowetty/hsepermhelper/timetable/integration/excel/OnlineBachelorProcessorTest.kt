@@ -1,11 +1,11 @@
 package com.melowetty.hsepermhelper.timetable.integration.excel
 
 import com.melowetty.hsepermhelper.timetable.integration.excel.bachelor.online.OnlineBachelorTimetableProcessor
-import com.melowetty.hsepermhelper.timetable.model.EducationType
+import com.melowetty.hsepermhelper.domain.model.timetable.EducationType
+import com.melowetty.hsepermhelper.util.TestUtils
 import org.apache.poi.ss.usermodel.WorkbookFactory
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
-import java.io.File
 
 class OnlineBachelorProcessorTest {
 
@@ -13,8 +13,7 @@ class OnlineBachelorProcessorTest {
 
     @Test
     fun `should parse online bachelor schedule successfully`() {
-        val file = File("src/test/resources/service/schedule-files/schedule_3.xls")
-        val workbook = WorkbookFactory.create(file)
+        val workbook = WorkbookFactory.create(TestUtils.readFileAsInputStream("service/schedule-files/schedule_3.xls"))
 
         val timetables = processor.process(workbook)
 
