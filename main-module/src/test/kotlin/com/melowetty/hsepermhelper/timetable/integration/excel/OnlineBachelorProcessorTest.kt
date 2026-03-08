@@ -55,4 +55,29 @@ class OnlineBachelorProcessorTest {
 
         workbook.close()
     }
+
+    @Test
+    fun `should have unique date ranges for each timetable`() {
+        val workbook = WorkbookFactory.create(TestUtils.readFileAsInputStream("service/schedule-files/schedule_3.xls"))
+
+        val timetables = processor.process(workbook)
+        val startDates = timetables.map { it.start }
+
+        assertThat(startDates).doesNotHaveDuplicates()
+
+        workbook.close()
+    }
+
+    @Test
+    fun `should have timetables sorted chronologically`() {
+        val workbook = WorkbookFactory.create(TestUtils.readFileAsInputStream("service/schedule-files/schedule_3.xls"))
+
+        val timetables = processor.process(workbook)
+
+        for (i in 1 until timetables.size) {
+            assertThat(timetables[i].start).isAfter(timetables[i - 1].start)
+        }
+
+        workbook.close()
+    }
 }
