@@ -27,7 +27,7 @@ object TimetableInfoUtils {
         return null
     }
 
-    private fun getScheduleInfoBySheet(sheet: Sheet): ParsedScheduleInfo? {
+    fun getScheduleInfoBySheet(sheet: Sheet): ParsedScheduleInfo? {
         val row = sheet.getRow(1)
         for (i in 0 until row.physicalNumberOfCells) {
             try {

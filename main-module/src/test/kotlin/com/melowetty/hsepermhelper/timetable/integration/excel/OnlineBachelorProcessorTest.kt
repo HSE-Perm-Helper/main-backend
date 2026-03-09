@@ -18,12 +18,9 @@ class OnlineBachelorProcessorTest {
 
         val timetables = processor.process(workbook)
 
-        assertThat(timetables).hasSize(1)
-
-        val timetable = timetables.first()
-        assertThat(timetable.number).isEqualTo(1)
-        assertThat(timetable.educationType).isEqualTo(EducationType.BACHELOR_ONLINE)
-        assertThat(timetable.lessons).isNotEmpty()
+        assertThat(timetables).hasSize(12)
+        assertThat(timetables).allMatch { it.educationType == EducationType.BACHELOR_ONLINE }
+        assertThat(timetables).anyMatch { it.lessons.isNotEmpty() }
 
         workbook.close()
     }
@@ -48,14 +45,38 @@ class OnlineBachelorProcessorTest {
     }
 
     @Test
-    fun `should parse start and end dates`() {
+    fun `should parse start and end dates for each timetable`() {
         val workbook = WorkbookFactory.create(TestUtils.readFileAsInputStream("service/schedule-files/schedule_3.xls"))
 
-        val timetable = processor.process(workbook).first()
+        val timetables = processor.process(workbook)
 
-        assertThat(timetable.start).isNotNull()
-        assertThat(timetable.end).isNotNull()
-        assertThat(timetable.start).isBefore(timetable.end)
+        assertThat(timetables).allMatch { it.start != null && it.end != null }
+        assertThat(timetables).allMatch { !it.start.isAfter(it.end) }
+
+        workbook.close()
+    }
+
+    @Test
+    fun `should have unique date ranges for each timetable`() {
+        val workbook = WorkbookFactory.create(TestUtils.readFileAsInputStream("service/schedule-files/schedule_3.xls"))
+
+        val timetables = processor.process(workbook)
+        val startDates = timetables.map { it.start }
+
+        assertThat(startDates).doesNotHaveDuplicates()
+
+        workbook.close()
+    }
+
+    @Test
+    fun `should have timetables sorted chronologically`() {
+        val workbook = WorkbookFactory.create(TestUtils.readFileAsInputStream("service/schedule-files/schedule_3.xls"))
+
+        val timetables = processor.process(workbook)
+
+        for (i in 1 until timetables.size) {
+            assertThat(timetables[i].start).isAfter(timetables[i - 1].start)
+        }
 
         workbook.close()
     }
